@@ -1,4 +1,6 @@
-﻿using Avalonia;
+﻿using System;
+using System.Text.Json;
+using Avalonia;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 
@@ -29,5 +31,19 @@ public static class AvaloniaService
         }
 
         return bitmap;
+    }
+    
+    public static (int, string) ConvertApp(JsonElement app)
+    {
+        int appId = app.GetProperty("appid").GetInt32();
+        string appName = app.GetProperty("name").GetString() ?? "Unknown";
+
+        if (appId == 0 || appName == "Unknown")
+        {
+            Console.WriteLine("Dont find app");
+            return (0, "Unknown");
+        }
+
+        return (appId, appName);
     }
 }

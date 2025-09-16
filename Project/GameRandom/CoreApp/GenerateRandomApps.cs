@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
+using GameRandom.Service;
 using GameRandom.SteamSDK;
 using Path = System.IO.Path;
 
@@ -49,97 +50,96 @@ public class GenerateRandomApps
             
             var element = rootArray[_random.Next(0, rootArray.Length)];
             
-            (int appId, string nameApp) = ConvertApp(element);
+            (int appId, string nameApp) = AvaloniaService.ConvertApp(element);
 
-            if (!await CheckImageOnApp(appId))
+            AppFilterResult? appFilterResult = await CheckAppFilter(appId);
+
+            if (appFilterResult == null || appFilterResult.IsValid == false)
             {
+                Console.WriteLine("App not success");
                 continue;
             }
             
             appContexts.Add(new AppContext(appId, nameApp));
-            
             iterCount++;
         }
         
         return appContexts;
     }
 
-    public async Task<Bitmap?> GetAppImage(int appId)
+    private async Task<AppFilterResult?> CheckAppFilter(int appId)
     {
-        using var client = new HttpClient();
-        string url = $"https://cdn.cloudflare.steamstatic.com/steam/apps/{appId}/header.jpg";
-
-        string localPath = Path.Combine("Images", $"{appId}.jpg");
-        Directory.CreateDirectory("Images");
+        using var httpClient = new HttpClient();
+        string url = $"https://store.steampowered.com/api/appdetails?appids={appId}&l=english&cc=US\n";
 
         try
         {
-            var response = await client.GetAsync(url);
+            var response = await httpClient.GetAsync(url);
+
             if (!response.IsSuccessStatusCode)
             {
-                Console.WriteLine($"Image not found for AppID {appId}, status: {response.StatusCode}");
+                Console.WriteLine("AppFilter returned error code: " + response.StatusCode);
                 return null;
             }
 
-            var data = await response.Content.ReadAsByteArrayAsync();
-            await File.WriteAllBytesAsync(localPath, data);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Failed to download image for {appId}: {ex.Message}");
-            return null;
-        }
-
-        var bitmap = new Bitmap(localPath);
-        return bitmap;
-    }
-
-    private async Task<bool> CheckImageOnApp(int appId)
-    {
-        using var client = new HttpClient();
-        string url = $"https://cdn.cloudflare.steamstatic.com/steam/apps/{appId}/header.jpg";
-        
-        try
-        {
-            var response = await client.GetAsync(url);
-            if (!response.IsSuccessStatusCode)
-            {
-                Console.WriteLine($"Image not found for AppID {appId}, status: {response.StatusCode}");
-                return false;
-            }
-
-            return true;
+            var appData = await ParseJsonData(response, appId);
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
-            return false;
+            throw;
         }
+        
+        return new AppFilterResult(new AppContext(0, "unknown"), false);
     }
-    
-    private (int, string) ConvertApp(JsonElement app)
-    {
-        int appId = app.GetProperty("appid").GetInt32();
-        string appName = app.GetProperty("name").GetString() ?? "Unknown";
 
-        if (appId == 0 || appName == "Unknown")
+    private async Task<AppData?> ParseJsonData(HttpResponseMessage response, int appID)
+    {
+        try
         {
-            Console.WriteLine("Dont find app");
-            return (0, "Unknown");
+            var json = await response.Content.ReadAsStringAsync();
+            using var doc = JsonDocument.Parse(json);
+            
+            var root = doc.RootElement.GetProperty(appID.ToString());
+            if (!root.GetProperty("success").GetBoolean())
+            {
+                Console.WriteLine("App ID not success");
+                return null;
+            }
+            
+            var data = root.GetProperty("data");
+            
+            string type = data.GetProperty("type").GetString() ?? "Unknown";
+            string imageUrl = data.GetProperty("header_image").GetString() ?? "Unknown";
+            string price = data.GetProperty("price_overview").GetString() ?? "0";
+            
+            if (type != "game" || imageUrl == "Unknown")
+            {
+                Console.WriteLine("App not success to filter");
+                return null;
+            }
+            
+            return new AppData(type, imageUrl, price);
         }
-
-        return (appId, appName);
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return null;
+        }
     }
 }
 
-public class AppContext
+public class AppData
 {
-    public int AppId { get; private set; }
-    public string AppName { get; private set; }
+    public string ImageUrl { get; private set; }
+    public string Type { get; private set; }
+    public string Price { get; private set; }
 
-    public AppContext(int appId, string appName)
+    public AppData(string type, string imageUrl, string price)
     {
-        AppId = appId;
-        AppName = appName;
+        ImageUrl = imageUrl;
+        Type = type;
+        Price = price;
     }
 }
+

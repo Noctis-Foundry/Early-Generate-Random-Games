@@ -60,7 +60,7 @@ public partial class MainWindow : Window
         
         foreach (var app in apps)
         {
-            Bitmap? bitmap = await _generateRandomApps.GetAppImage(app.AppId);
+            Bitmap? bitmap = await SteamService.Instance.GetImage(app.AppName.ToString());
 
             if (bitmap == null)
             {
