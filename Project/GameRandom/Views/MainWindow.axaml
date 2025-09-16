@@ -21,11 +21,11 @@
         <Label x:Name="AccName" Content="Ar0cka" HorizontalAlignment="Right" VerticalAlignment="Top"></Label>
         <Grid RowDefinitions="Auto" ColumnDefinitions="Auto, Auto, Auto" HorizontalAlignment="Center">
             <Image Grid.Column="0" x:Name="AppImage1" Source="../Assets/avalonia-logo.ico"
-                   Width="184" Height="184"></Image>
+                   ></Image>
             <Image Grid.Column="1" x:Name="AppImage2" Source="../Assets/avalonia-logo.ico"
-                   Width="184" Height="184"></Image>
+                   ></Image>
             <Image Grid.Column="2" x:Name="AppImage3" Source="../Assets/avalonia-logo.ico"
-                   Width="184" Height="184"></Image>
+                   ></Image>
         </Grid>
         <Button Content="Generate app" HorizontalAlignment="Center" Click="GenerateGames"></Button>
     </StackPanel>

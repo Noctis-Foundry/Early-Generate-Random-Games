@@ -5,7 +5,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Avalonia.Controls.Shapes;
 using Avalonia.Media.Imaging;
 using GameRandom.SteamSDK;
 using Path = System.IO.Path;
@@ -14,6 +13,8 @@ namespace GameRandom.CoreApp;
 
 public class GenerateRandomApps
 {
+    private readonly Random _random = new();
+    
     public async Task<List<AppContext>> GenerateApps(int count)
     {
         SteamManager steamManager = SteamManager.Instance;
@@ -31,31 +32,43 @@ public class GenerateRandomApps
             Console.WriteLine("No app list found. Await app list");
             return new List<AppContext>();
         }
-        
+
         List<AppContext> appContexts = new List<AppContext>();
-        
+
         var jsonDoc = JsonDocument.Parse(jsonFile);
         var root = jsonDoc.RootElement.GetProperty("applist").GetProperty("apps");
 
-        var rootArray = root.EnumerateArray();
+        var rootArray = root.EnumerateArray().ToArray();
 
-        foreach (var app in rootArray)
+        int iterCount = 0;
+
+        while (iterCount < count)
         {
             if (appContexts.Count >= count)
                 break;
+            
+            var element = rootArray[_random.Next(0, rootArray.Length)];
+            
+            (int appId, string nameApp) = ConvertApp(element);
 
-            (int appId, string appName) = ConvertApp(app);
-            appContexts.Add(new AppContext(appId, appName));
+            if (!await CheckImageOnApp(appId))
+            {
+                continue;
+            }
+            
+            appContexts.Add(new AppContext(appId, nameApp));
+            
+            iterCount++;
         }
         
         return appContexts;
     }
 
-    public async Task<Bitmap?>GetAppImage(int appId)
+    public async Task<Bitmap?> GetAppImage(int appId)
     {
         using var client = new HttpClient();
         string url = $"https://cdn.cloudflare.steamstatic.com/steam/apps/{appId}/header.jpg";
-        
+
         string localPath = Path.Combine("Images", $"{appId}.jpg");
         Directory.CreateDirectory("Images");
 
@@ -80,6 +93,29 @@ public class GenerateRandomApps
         var bitmap = new Bitmap(localPath);
         return bitmap;
     }
+
+    private async Task<bool> CheckImageOnApp(int appId)
+    {
+        using var client = new HttpClient();
+        string url = $"https://cdn.cloudflare.steamstatic.com/steam/apps/{appId}/header.jpg";
+        
+        try
+        {
+            var response = await client.GetAsync(url);
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"Image not found for AppID {appId}, status: {response.StatusCode}");
+                return false;
+            }
+
+            return true;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return false;
+        }
+    }
     
     private (int, string) ConvertApp(JsonElement app)
     {
@@ -91,7 +127,7 @@ public class GenerateRandomApps
             Console.WriteLine("Dont find app");
             return (0, "Unknown");
         }
-        
+
         return (appId, appName);
     }
 }
