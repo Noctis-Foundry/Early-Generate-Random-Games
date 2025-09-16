@@ -1,0 +1,33 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:GameRandom.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="450"
+        x:Class="GameRandom.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="GameRandom">
+
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+    
+    <StackPanel Spacing="5">
+        <Image x:Name="AvatarImage" Width="184" Height="184" HorizontalAlignment="Right"
+               VerticalAlignment="Top"></Image>
+        <Label x:Name="AccName" Content="Ar0cka" HorizontalAlignment="Right" VerticalAlignment="Top"></Label>
+        <Grid RowDefinitions="Auto" ColumnDefinitions="Auto, Auto, Auto" HorizontalAlignment="Center">
+            <Image Grid.Column="0" x:Name="AppImage1" Source="../Assets/avalonia-logo.ico"
+                   Width="184" Height="184"></Image>
+            <Image Grid.Column="1" x:Name="AppImage2" Source="../Assets/avalonia-logo.ico"
+                   Width="184" Height="184"></Image>
+            <Image Grid.Column="2" x:Name="AppImage3" Source="../Assets/avalonia-logo.ico"
+                   Width="184" Height="184"></Image>
+        </Grid>
+        <Button Content="Generate app" HorizontalAlignment="Center" Click="GenerateGames"></Button>
+    </StackPanel>
+
+</Window>
