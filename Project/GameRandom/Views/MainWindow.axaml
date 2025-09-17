@@ -15,9 +15,17 @@
         <vm:MainWindowViewModel />
     </Design.DataContext>
     <Grid>
-        <Button Classes="ButtonBackGround" Grid.Column="0" Margin="5,0" Click="ClickBackButton" 
+        <Button Classes="ButtonLeftUpGround" Grid.Column="0" Margin="5,0" Click="ClickBackButton" 
                 HorizontalAlignment="Left" VerticalAlignment="Top">
-            <Image Source="../Assets/LeftDownClick.jpg" Width="500"> </Image>
+            <Image Source="../Assets/LeftUpClick.jpg" Width="475"> </Image>
+        </Button>
+        <Button Classes="ButtonLeftDownGround" Grid.Column="0" Margin="5,0" Click="ClickBackButton" 
+                HorizontalAlignment="Left" VerticalAlignment="Bottom">
+            <Image Source="../Assets/LeftDownClick.jpg" Width="475"> </Image>
+        </Button>
+        <Button Classes="ButtonRightGround" Grid.Column="0" Margin="5,0" Click="ClickBackButton" 
+                HorizontalAlignment="Right">
+            <Image Source="../Assets/RightClick.jpg" Width="600"> </Image>
         </Button>
         
         <StackPanel Spacing="5">
