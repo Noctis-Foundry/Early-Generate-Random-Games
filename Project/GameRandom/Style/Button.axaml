@@ -2,13 +2,80 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Style Selector="Button.ButtonLeftUpGround:pointerover /template/ContentPresenter">
-        <Setter Property="Margin" Value="15 15 0 0"></Setter>
+        <Setter Property="Margin" Value="20 20 0 0"></Setter>
+        <Setter Property="Background" Value="#20000000"> </Setter>
+        <Setter Property="BorderBrush" Value="Transparent"> </Setter>
+        <Setter Property="BorderThickness" Value="0"> </Setter>
     </Style>
+
+    <Style Selector="Button.ButtonLeftUpGround /template/ContentPresenter">
+        <Setter Property="Transitions">
+            <Transitions>
+                <ThicknessTransition Property="Margin" Duration="0:0:0.2"> </ThicknessTransition>
+                <BrushTransition Property="Background" Duration="0:0:0.2"> </BrushTransition>
+            </Transitions>
+        </Setter>
+    </Style>
+
     <Style Selector="Button.ButtonLeftDownGround:pointerover /template/ContentPresenter">
-        <Setter Property="Margin" Value="15 15 0 0"></Setter>
+        <Setter Property="Margin" Value="20 0 0 20"></Setter>
+        <Setter Property="Background" Value="Transparent"> </Setter>
+        <Setter Property="BorderBrush" Value="Transparent"> </Setter>
+        <Setter Property="BorderThickness" Value="0"> </Setter>
     </Style>
+
+    <Style Selector="Button.ButtonLeftDownGround /template/ContentPresenter">
+        <Setter Property="Transitions">
+            <Transitions>
+                <ThicknessTransition Property="Margin" Duration="0:0:0.2"> </ThicknessTransition>
+                <BrushTransition Property="Background" Duration="0:0:0.2"> </BrushTransition>
+            </Transitions>
+        </Setter>
+    </Style>
+
     <Style Selector="Button.ButtonRightGround:pointerover /template/ContentPresenter">
-        <Setter Property="Margin" Value="15 15 0 0"></Setter>
+        <Setter Property="Margin" Value="0 0 20 0"></Setter>
+        <Setter Property="Background" Value="Transparent"> </Setter>
+        <Setter Property="BorderBrush" Value="Transparent"> </Setter>
+        <Setter Property="BorderThickness" Value="0"> </Setter>
     </Style>
-    
+
+    <Style Selector="Button.ButtonRightGround /template/ContentPresenter">
+        <Setter Property="Transitions">
+            <Transitions>
+                <ThicknessTransition Property="Margin" Duration="0:0:0.2"> </ThicknessTransition>
+                <BrushTransition Property="Background" Duration="0:0:0.2"> </BrushTransition>
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <Style Selector="Image.BackGroundImage">
+    </Style>
+    <Style Selector="Button.ButtonLeftUpGround">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ContentPresenter 
+                    Content="{TemplateBinding Content}" Margin="{TemplateBinding Padding}" >
+                </ContentPresenter>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    <Style Selector="Button.ButtonLeftDownGround">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ContentPresenter 
+                    Content="{TemplateBinding Content}" Margin="{TemplateBinding Padding}" >
+                </ContentPresenter>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    <Style Selector="Button.ButtonRightGround">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ContentPresenter 
+                    Content="{TemplateBinding Content}" Margin="{TemplateBinding Padding}" >
+                </ContentPresenter>
+            </ControlTemplate>
+        </Setter>
+    </Style>
 </Styles>
