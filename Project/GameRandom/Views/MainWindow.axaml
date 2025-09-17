@@ -38,9 +38,9 @@
             </Image>
             <Label x:Name="AccName" Content="Ar0cka" HorizontalAlignment="Right" VerticalAlignment="Top" Background="Black"></Label>
             <Grid RowDefinitions="Auto" ColumnDefinitions="Auto, Auto, Auto" HorizontalAlignment="Center">
-                <Image Grid.Column="0" x:Name="AppImage1" Source="../Assets/avalonia-logo.ico" Width="75" Height="75"></Image>
-                <Image Grid.Column="1" x:Name="AppImage2" Source="../Assets/avalonia-logo.ico" Width="75" Height="75"></Image>
-                <Image Grid.Column="2" x:Name="AppImage3" Source="../Assets/avalonia-logo.ico" Width="75" Height="75"></Image>
+                <Image Grid.Column="0" Classes="GameImages" x:Name="AppImage1" Source="../Assets/avalonia-logo.ico"></Image>
+                <Image Grid.Column="1" Classes="GameImages" x:Name="AppImage2" Source="../Assets/avalonia-logo.ico"></Image>
+                <Image Grid.Column="2" Classes="GameImages" x:Name="AppImage3" Source="../Assets/avalonia-logo.ico"></Image>
             </Grid>
             <Button Content="Generate app" HorizontalAlignment="Center" Click="GenerateGames" Background="Black"></Button>
         </StackPanel>

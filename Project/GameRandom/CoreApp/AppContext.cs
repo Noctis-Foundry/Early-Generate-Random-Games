@@ -23,12 +23,14 @@ public class AppFilterResult
     }
 }
 
-public class AppFilterSend
+public struct AppFilterSend
 {
     public string AppGenres { get; private set; }
-
-    public AppFilterSend(string appGenres)
+    public int CountGenerate { get; private set; }
+    
+    public AppFilterSend(string appGenres, int  countGenerate)
     {
         AppGenres = appGenres;
+        CountGenerate = countGenerate;
     }
 }

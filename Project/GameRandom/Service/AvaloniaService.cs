@@ -32,7 +32,6 @@ public static class AvaloniaService
 
         return bitmap;
     }
-    
     public static (int, string) ConvertApp(JsonElement app)
     {
         int appId = app.GetProperty("appid").GetInt32();

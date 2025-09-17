@@ -48,7 +48,7 @@ public partial class MainWindow : Window
     
     private async void GenerateGames(object sender, RoutedEventArgs e)
     {
-        List<AppFilterResult> apps = await _generateRandomApps.GenerateApps(3);
+        List<AppFilterResult> apps = await _generateRandomApps.GenerateApps(new AppFilterSend("RPG", 3));
 
         if (apps.Count <= 0)
         {
