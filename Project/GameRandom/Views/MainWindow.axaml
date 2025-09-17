@@ -12,22 +12,26 @@
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:MainWindowViewModel/>
+        <vm:MainWindowViewModel />
     </Design.DataContext>
-    
-    <StackPanel Spacing="5">
-        <Image x:Name="AvatarImage" Width="184" Height="184" HorizontalAlignment="Right"
-               VerticalAlignment="Top"></Image>
-        <Label x:Name="AccName" Content="Ar0cka" HorizontalAlignment="Right" VerticalAlignment="Top"></Label>
-        <Grid RowDefinitions="Auto" ColumnDefinitions="Auto, Auto, Auto" HorizontalAlignment="Center">
-            <Image Grid.Column="0" x:Name="AppImage1" Source="../Assets/avalonia-logo.ico"
-                   ></Image>
-            <Image Grid.Column="1" x:Name="AppImage2" Source="../Assets/avalonia-logo.ico"
-                   ></Image>
-            <Image Grid.Column="2" x:Name="AppImage3" Source="../Assets/avalonia-logo.ico"
-                   ></Image>
-        </Grid>
-        <Button Content="Generate app" HorizontalAlignment="Center" Click="GenerateGames"></Button>
-    </StackPanel>
+    <Grid>
+        <Button Classes="ButtonBackGround" Grid.Column="0" Margin="5,0" Click="ClickBackButton" 
+                HorizontalAlignment="Left" VerticalAlignment="Top">
+            <Image Source="../Assets/LeftDownClick.jpg" Width="500"> </Image>
+        </Button>
+        
+        <StackPanel Spacing="5">
+            <Image x:Name="AvatarImage" Width="184" Height="184" HorizontalAlignment="Right"
+                   VerticalAlignment="Top">
+            </Image>
+            <Label x:Name="AccName" Content="Ar0cka" HorizontalAlignment="Right" VerticalAlignment="Top"></Label>
+            <Grid RowDefinitions="Auto" ColumnDefinitions="Auto, Auto, Auto" HorizontalAlignment="Center">
+                <Image Grid.Column="0" x:Name="AppImage1" Source="../Assets/avalonia-logo.ico"></Image>
+                <Image Grid.Column="1" x:Name="AppImage2" Source="../Assets/avalonia-logo.ico"></Image>
+                <Image Grid.Column="2" x:Name="AppImage3" Source="../Assets/avalonia-logo.ico"></Image>
+            </Grid>
+            <Button Content="Generate app" HorizontalAlignment="Center" Click="GenerateGames"></Button>
+        </StackPanel>
+    </Grid>
 
 </Window>

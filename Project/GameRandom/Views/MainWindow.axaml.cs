@@ -76,4 +76,9 @@ public partial class MainWindow : Window
             imageCount++;
         }
     }
+
+    private void ClickBackButton(object? sender, RoutedEventArgs e)
+    {
+        
+    }
 }
