@@ -1,13 +1,60 @@
-Project/GameRandom/obj/Debug/net9.0/GameRandom.AssemblyInfo.cs
-Project/GameRandom/obj/Debug/net9.0/Avalonia/Resources.Inputs.cache
-Project/GameRandom/obj/Debug/net9.0/GameRandom.AssemblyInfoInputs.cache
-Project/GameRandom/obj/Debug/net9.0/GameRandom.assets.cache
-Project/GameRandom/obj/Debug/net9.0/GameRandom.csproj.AssemblyReference.cache
-Project/GameRandom/obj/Debug/net9.0/GameRandom.GeneratedMSBuildEditorConfig.editorconfig
-Project/GameRandom/obj/GameRandom.csproj.nuget.dgspec.json
-Project/GameRandom/obj/GameRandom.csproj.nuget.g.props
-Project/GameRandom/obj/project.assets.json
-Project/GameRandom/obj/project.nuget.cache
-Project/GameRandom/obj/project.packagespec.json
-Project/GameRandom/obj/rider.project.model.nuget.info
-Project/GameRandom/obj/rider.project.restore.info
+### Build artifacts
+bin/
+obj/
+[Bb]uild/
+[Ll]og/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+*.exe
+*.dll
+*.pdb
+*.cache
+*.log
+
+### Avalonia / .NET specific
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+launchSettings.json
+
+### Rider
+.idea/
+*.sln.iml
+
+### Visual Studio
+.vs/
+*.VC.db
+*.VC.VC.opendb
+
+### VS Code
+.vscode/
+.history/
+*.code-workspace
+
+### NuGet
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+project.lock.json
+project.fragment.lock.json
+
+### Resharper / Rider caches
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+### Others
+*.dbmdl
+*.bak
+*.swp
+*.tmp
+*.orig
+
+# OS generated
+.DS_Store
+Thumbs.db
+ehthumbs.db
