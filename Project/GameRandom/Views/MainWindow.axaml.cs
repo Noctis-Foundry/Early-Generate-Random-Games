@@ -48,7 +48,7 @@ public partial class MainWindow : Window
     
     private async void GenerateGames(object sender, RoutedEventArgs e)
     {
-        List<AppContext> apps = await _generateRandomApps.GenerateApps(3);
+        List<AppFilterResult> apps = await _generateRandomApps.GenerateApps(3);
 
         if (apps.Count <= 0)
         {
@@ -60,7 +60,7 @@ public partial class MainWindow : Window
         
         foreach (var app in apps)
         {
-            Bitmap? bitmap = await SteamService.Instance.GetImage(app.AppName.ToString());
+            Bitmap? bitmap = await SteamService.Instance.GetImage(app.AppData.ImageUrl);
 
             if (bitmap == null)
             {

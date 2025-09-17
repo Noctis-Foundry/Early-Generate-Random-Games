@@ -16,14 +16,14 @@ public class GenerateRandomApps
 {
     private readonly Random _random = new();
     
-    public async Task<List<AppContext>> GenerateApps(int count)
+    public async Task<List<AppFilterResult>> GenerateApps(int count)
     {
         SteamManager steamManager = SteamManager.Instance;
 
         if (steamManager == null)
         {
             Console.WriteLine("SteamManager dont initialize. Await app initialize");
-            return new List<AppContext>();
+            return new List<AppFilterResult>();
         }
 
         string jsonFile = await steamManager.GetAppList();
@@ -31,10 +31,10 @@ public class GenerateRandomApps
         if (jsonFile == " ")
         {
             Console.WriteLine("No app list found. Await app list");
-            return new List<AppContext>();
+            return new List<AppFilterResult>();
         }
 
-        List<AppContext> appContexts = new List<AppContext>();
+        List<AppFilterResult> appFiltersData = new();
 
         var jsonDoc = JsonDocument.Parse(jsonFile);
         var root = jsonDoc.RootElement.GetProperty("applist").GetProperty("apps");
@@ -45,7 +45,7 @@ public class GenerateRandomApps
 
         while (iterCount < count)
         {
-            if (appContexts.Count >= count)
+            if (appFiltersData.Count >= count)
                 break;
             
             var element = rootArray[_random.Next(0, rootArray.Length)];
@@ -60,11 +60,11 @@ public class GenerateRandomApps
                 continue;
             }
             
-            appContexts.Add(new AppContext(appId, nameApp));
+            appFiltersData.Add(appFilterResult);
             iterCount++;
         }
         
-        return appContexts;
+        return appFiltersData;
     }
 
     private async Task<AppFilterResult?> CheckAppFilter(int appId)
@@ -83,14 +83,21 @@ public class GenerateRandomApps
             }
 
             var appData = await ParseJsonData(response, appId);
+
+            if (appData == null)
+            {
+                Console.WriteLine("Parse returned null app data");
+                return null;
+            }
+
+            return new AppFilterResult(appData, true);
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
-            throw;
         }
         
-        return new AppFilterResult(new AppContext(0, "unknown"), false);
+        return new AppFilterResult(new AppData("unknown", "unknown", "unknown", "unknown"), false);
     }
 
     private async Task<AppData?> ParseJsonData(HttpResponseMessage response, int appID)
@@ -110,16 +117,17 @@ public class GenerateRandomApps
             var data = root.GetProperty("data");
             
             string type = data.GetProperty("type").GetString() ?? "Unknown";
+            string name = data.GetProperty("name").GetString() ?? "Unknown";
             string imageUrl = data.GetProperty("header_image").GetString() ?? "Unknown";
             string price = data.GetProperty("price_overview").GetString() ?? "0";
             
-            if (type != "game" || imageUrl == "Unknown")
+            if (type != "game" || imageUrl == "Unknown" || name == "Unknown")
             {
                 Console.WriteLine("App not success to filter");
                 return null;
             }
             
-            return new AppData(type, imageUrl, price);
+            return new AppData(type, imageUrl, price, name);
         }
         catch (Exception e)
         {
@@ -134,12 +142,15 @@ public class AppData
     public string ImageUrl { get; private set; }
     public string Type { get; private set; }
     public string Price { get; private set; }
+    
+    public string Name { get; private set; }
 
-    public AppData(string type, string imageUrl, string price)
+    public AppData(string type, string imageUrl, string price,  string name)
     {
         ImageUrl = imageUrl;
         Type = type;
         Price = price;
+        Name = name;
     }
 }
 

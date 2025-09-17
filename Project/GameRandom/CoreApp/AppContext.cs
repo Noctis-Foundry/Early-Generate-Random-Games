@@ -13,12 +13,12 @@ public class AppContext
 }
 public class AppFilterResult
 {
-    public AppContext AppContext { get; private set; }
+    public AppData AppData { get; private set; }
     public bool IsValid { get; private set; }
 
-    public AppFilterResult(AppContext appContext, bool isValid)
+    public AppFilterResult(AppData appData, bool isValid)
     {
-        AppContext = appContext;
+        AppData = appData;
         IsValid = isValid;
     }
 }
