@@ -15,17 +15,17 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = GameRandom
-build_property.ProjectDir = E:\CPBRRG\Early-Generate-Random-Games\Project\GameRandom\
+build_property.ProjectDir = D:\Repositor\GenerateRandomGames\Early-Generate-Random-Games\Project\GameRandom\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.EffectiveAnalysisLevelStyle = 9.0
 build_property.EnableCodeStyleSeverity = 
 
-[E:/CPBRRG/Early-Generate-Random-Games/Project/GameRandom/App.axaml]
+[D:/Repositor/GenerateRandomGames/Early-Generate-Random-Games/Project/GameRandom/App.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[E:/CPBRRG/Early-Generate-Random-Games/Project/GameRandom/Style/Button.axaml]
+[D:/Repositor/GenerateRandomGames/Early-Generate-Random-Games/Project/GameRandom/Style/Button.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[E:/CPBRRG/Early-Generate-Random-Games/Project/GameRandom/Views/MainWindow.axaml]
+[D:/Repositor/GenerateRandomGames/Early-Generate-Random-Games/Project/GameRandom/Views/MainWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
