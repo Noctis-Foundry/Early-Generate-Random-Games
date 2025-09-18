@@ -4,6 +4,8 @@
     <option name="projectPerEditor">
       <map>
         <entry key="GameRandom/App.axaml" value="GameRandom/GameRandom.csproj" />
+        <entry key="GameRandom/ModalExample/ModalWindowRightButton.axaml" value="GameRandom/GameRandom.csproj" />
+        <entry key="GameRandom/ModalExample/ModalWindowRightClick.axaml" value="GameRandom/GameRandom.csproj" />
         <entry key="GameRandom/Style/BackGroundClick.axaml" value="GameRandom/GameRandom.csproj" />
         <entry key="GameRandom/Style/Button.axaml" value="GameRandom/GameRandom.csproj" />
         <entry key="GameRandom/Views/MainWindow.axaml" value="GameRandom/GameRandom.csproj" />
