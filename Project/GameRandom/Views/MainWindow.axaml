@@ -8,7 +8,7 @@
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="GameRandom"
-        MaxWidth="960" 
+        MaxWidth="1250" 
         MaxHeight="540" 
         >
 
@@ -37,12 +37,21 @@
                    VerticalAlignment="Top" Classes="BackGroundImage">
             </Image>
             <Label x:Name="AccName" Content="Ar0cka" HorizontalAlignment="Right" VerticalAlignment="Top" Background="Black"></Label>
-            <Grid RowDefinitions="Auto" ColumnDefinitions="Auto, Auto, Auto" HorizontalAlignment="Center">
-                <Image Grid.Column="0" Classes="GameImages" x:Name="AppImage1" Source="../Assets/avalonia-logo.ico"></Image>
-                <Image Grid.Column="1" Classes="GameImages" x:Name="AppImage2" Source="../Assets/avalonia-logo.ico"></Image>
-                <Image Grid.Column="2" Classes="GameImages" x:Name="AppImage3" Source="../Assets/avalonia-logo.ico"></Image>
+            <Grid RowDefinitions="Auto" x:Name="GamesGrid" ColumnDefinitions="Auto, Auto, Auto" HorizontalAlignment="Center">
+                <Button Grid.Column="0" Classes="RandomButton" x:Name="AppButton1">
+                     <Image  Classes="GameImages" x:Name="AppImage1" Source="../Assets/avalonia-logo.ico"></Image>
+                </Button>
+                <Button Grid.Column="1" Classes="RandomButton" x:Name="AppButton2">
+                    <Image  Classes="GameImages" x:Name="AppImage2" Source="../Assets/avalonia-logo.ico"></Image>
+                </Button>
+                <Button Grid.Column="2" Classes="RandomButton" x:Name="AppButton3">
+                    <Image  Classes="GameImages" x:Name="AppImage3" Source="../Assets/avalonia-logo.ico"></Image>
+                </Button>
             </Grid>
-            <Button Content="Generate app" HorizontalAlignment="Center" Click="GenerateGames" Background="Black"></Button>
+            <Grid RowDefinitions="Auto" ColumnDefinitions="Auto, Auto" HorizontalAlignment="Center">
+                <Button Grid.Column="0" Content="Generate app" Click="GenerateGames" Background="Black"></Button>
+                <MaskedTextBox Grid.Column="1" Mask="0" x:Name="CountApp"></MaskedTextBox>
+            </Grid>
         </StackPanel>
     </Grid>
 

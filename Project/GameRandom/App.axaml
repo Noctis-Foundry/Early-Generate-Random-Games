@@ -8,10 +8,10 @@
     <Application.DataTemplates>
         <local:ViewLocator />
     </Application.DataTemplates>
-
+    
     <Application.Styles>
         <FluentTheme />
         <StyleInclude Source="Style/Button.axaml"></StyleInclude>
-        <StyleInclude Source="Style/Image.axaml"></StyleInclude>
+        <StyleInclude Source="Style/RandomGameButtonStyle.axaml"></StyleInclude>
     </Application.Styles>
 </Application>

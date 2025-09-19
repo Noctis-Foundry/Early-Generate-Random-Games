@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,173 +12,91 @@ using GameRandom.SteamSDK;
 
 namespace GameRandom.CoreApp;
 
-public class GenerateRandomApps
+public class GenerateRandomApps : IGenApp
 {
-    private readonly Random _random = new();
-    private readonly int _maxParallel = 2;
+    private Dictionary<int, List<AppSavedContext>> _apps = new();
+    private string _localPath = Path.Combine(System.AppContext.BaseDirectory, "Assets", "Jsons", "temp_apps.json");
+    private readonly Random _rng = new();
+
+    public bool IsInitialized { get; private set; } = false;
     
-    public async Task<List<AppFilterResult>> GenerateApps(AppFilterSend filterSend)
+    public GenerateRandomApps()
     {
-        SteamManager steamManager = SteamManager.Instance;
-
-        if (steamManager == null)
+        Console.WriteLine($"Path to json file: {_localPath}");
+        
+        if (!File.Exists(_localPath))
         {
-            Console.WriteLine("SteamManager dont initialize. Await app initialize");
-            return new List<AppFilterResult>();
+            throw new FileNotFoundException("The apps file was not found.");
         }
+        
+        GetAppList();
+        
+        IsInitialized = true;
+    }
 
-        string jsonFile = await steamManager.GetAppList();
+    private void GetAppList()
+    {
+        string json = File.ReadAllText(_localPath);
+        
+        if (string.IsNullOrEmpty(json))
+            throw new FileNotFoundException("The apps.json file was not found.");
 
-        if (jsonFile == " ")
+        var options = new JsonSerializerOptions
         {
-            Console.WriteLine("No app list found. Await app list");
-            return new List<AppFilterResult>();
-        }
-
-        List<AppFilterResult> appFiltersData = new();
-
-        var jsonDoc = JsonDocument.Parse(jsonFile);
-        var root = jsonDoc.RootElement.GetProperty("applist").GetProperty("apps");
-
-        var rootArray = root.EnumerateArray().ToArray();
-        SemaphoreSlim throttler = new SemaphoreSlim(_maxParallel);
-
-        while (appFiltersData.Count < filterSend.CountGenerate)
+            PropertyNameCaseInsensitive = true,
+        };
+        
+        var apps = JsonSerializer.Deserialize<List<AppSavedContext>>(json, options);
+        
+        if (apps == null)
+            throw new FileNotFoundException("The apps saved context was not found.");
+        
+        try
         {
-            var appIdsBatch = Enumerable.Range(0, _maxParallel)
-                .Select(_ => AvaloniaService.ConvertApp(rootArray[_random.Next(0, rootArray.Length)]).Item1).ToList();
-
-            var tasks = appIdsBatch.Select(async appId =>
+            foreach (var app in apps)
             {
-                await throttler.WaitAsync();
-                try
-                {
-                    return await CheckAppFilter(appId, filterSend);
-                }
-                finally
-                {
-                    throttler.Release();
-                }
-            }).ToList();
-
-            while (tasks.Any())
-            {
-                var completed = await Task.WhenAny(tasks);
-                tasks.Remove(completed);
+                Console.WriteLine($"year = {app.AppReleaseYear} and name = {app.AppName}");
                 
-                var result = await completed;
-
-                if (result != null && result.IsValid)
+                if (_apps.ContainsKey(app.AppReleaseYear))
+                    _apps[app.AppReleaseYear].Add(app);
+                else
                 {
-                    appFiltersData.Add(result);
-                    Console.WriteLine($"App selected: {result.AppData.Name} ({result.AppData.Genre})");
-                    
-                    if (appFiltersData.Count >= filterSend.CountGenerate)
-                        break;
+                    _apps.Add(app.AppReleaseYear, new List<AppSavedContext>());
+                    _apps[app.AppReleaseYear].Add(app);
                 }
             }
         }
-        
-        return appFiltersData;
-    }
-
-    private async Task<AppFilterResult?> CheckAppFilter(int appId, AppFilterSend appFilterSend)
-    {
-        using var httpClient = new HttpClient();
-        httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
-        httpClient.DefaultRequestHeaders.Add("Accept-Language", "en-US,en;q=0.9");
-        
-        string url = $"https://store.steampowered.com/api/appdetails?appids={appId}&l=english&cc=US\n";
-
-        try
-        {
-            var response = await httpClient.GetAsync(url);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                Console.WriteLine("AppFilter returned error code: " + response.StatusCode);
-                Task.Delay(5000).Wait();
-                return null;
-            }
-
-            var appData = await ParseJsonData(response, appId);
-
-            if (appData == null || appData.Genre != appFilterSend.AppGenres)
-            {
-                Console.WriteLine("Parse returned null app data");
-                Task.Delay(1000).Wait();
-                return null;
-            }
-
-            return new AppFilterResult(appData, true);
-        }
         catch (Exception e)
         {
-            Console.WriteLine("Error check app filter");
-            Task.Delay(1000).Wait();
-            return null;
+            throw new Exception("Problems with convert json file to dictionary: " + e.Message);
         }
-        
-        return new AppFilterResult(new AppData("unknown", "unknown", "unknown"), false);
     }
-
-    private async Task<AppData?> ParseJsonData(HttpResponseMessage response, int appID)
+    public AppSavedContext? GetRandomGame(int year)
     {
-        try
+        if (_apps.TryGetValue(year, out var apps))
         {
-            var json = await response.Content.ReadAsStringAsync();
-            using var doc = JsonDocument.Parse(json);
-            
-            var root = doc.RootElement.GetProperty(appID.ToString());
-            
-            var data = root.GetProperty("data");
-            
-            string type = data.GetProperty("type").GetString() ?? "Unknown";
-            string name = data.GetProperty("name").GetString() ?? "Unknown";
-            string imageUrl = data.GetProperty("header_image").GetString() ?? "Unknown";
-            string genreDescription = "";
-            
-            if (data.TryGetProperty("genres", out var genres))
-            {
-                foreach (var genre in genres.EnumerateArray())
-                {
-                    genreDescription = genre.GetProperty("description").GetString() ?? "Unknown";
-                }
-            }
-            
-            Console.WriteLine($"type: {type}, name: {name}, imageUrl: {imageUrl}");
-            
-            if (type != "game" || imageUrl == "Unknown" || name == "Unknown")
-            {
-                Console.WriteLine("App not success to filter");
-                return null;
-            }
-            
-            return new AppData(type, imageUrl, name, genreDescription);
+            return apps[_rng.Next(0, apps.Count)];
         }
-        catch (Exception e)
+
+        return null;
+    }
+    public AppSavedContext? GetRandomGame(int year, int indexCategory)
+    {
+        if (_apps.TryGetValue(year, out var apps))
         {
-            Console.WriteLine($"Error parsing app data: {e.Message}");
-            return null;
+            AppSavedContext? app = apps.Find(a => a.AppCategoris.ContainsKey(indexCategory));
+            return app;
         }
+
+        return null;
     }
 }
 
-public class AppData
+public interface IGenApp
 {
-    public string ImageUrl { get; private set; }
-    public string Type { get; private set; }
-
-    public string Name { get; private set; }
+    bool IsInitialized { get; }
     
-    public string Genre { get; private set; }
-
-    public AppData(string type, string imageUrl,  string name, string genre = "")
-    {
-        ImageUrl = imageUrl;
-        Type = type;
-        Name = name;
-        Genre = genre;
-    }
+    AppSavedContext? GetRandomGame(int year);
+    AppSavedContext? GetRandomGame(int year, int indexCategory);
 }
 

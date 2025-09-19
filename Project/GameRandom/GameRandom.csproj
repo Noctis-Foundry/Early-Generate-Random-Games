@@ -9,7 +9,11 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Folder Include="Assets\Jsons\" />
         <Folder Include="Models\"/>
+        <None Include="Assets\avalonia-logo.ico">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <AvaloniaResource Include="Assets\**"/>
     </ItemGroup>
 
