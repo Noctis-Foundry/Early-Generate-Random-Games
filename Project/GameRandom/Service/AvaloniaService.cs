@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Text.Json;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using GameRandom.CoreApp;
 
 namespace GameRandom.Service;
 
@@ -32,17 +36,31 @@ public static class AvaloniaService
 
         return bitmap;
     }
-    public static (int, string) ConvertApp(JsonElement app)
-    {
-        int appId = app.GetProperty("appid").GetInt32();
-        string appName = app.GetProperty("name").GetString() ?? "Unknown";
 
-        if (appId == 0 || appName == "Unknown")
+    public static void ConvertListToJson(List<AppSavedContext>? list, string path)
+    {
+        if (list == null || list.Count == 0)
         {
-            Console.WriteLine("Dont find app");
-            return (0, "Unknown");
+            Console.WriteLine("List is empty or null. Nothing to save.");
+            return;
         }
 
-        return (appId, appName);
+        try
+        {
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                IgnoreNullValues = true
+            };
+
+            string json = JsonSerializer.Serialize(list, options);
+            File.WriteAllText(path, json);
+            Console.WriteLine($"Saved {list.Count} items to {path}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error saving JSON: {ex.Message}");
+        }
     }
 }

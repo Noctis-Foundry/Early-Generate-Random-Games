@@ -7,23 +7,27 @@ using GameRandom.CoreApp;
 using GameRandom.Service;
 using GameRandom.SteamSDK;
 using Steamworks;
-using AppContext = GameRandom.CoreApp.AppContext;
 
 namespace GameRandom.Views;
 
 public partial class MainWindow : Window
 {
-    private readonly GenerateRandomApps _generateRandomApps = new GenerateRandomApps();
-    private Dictionary<int, Image> _imageData = new();
-    public MainWindow()
+    private readonly IGenApp _generateRandomApps;
+    private readonly Dictionary<Button, AppSavedContext?> _appData = new ();
+    private readonly Dictionary<int, Image> _imageData = new Dictionary<int, Image>();
+    private readonly MainWindowFactory _mainWindowFactory;
+    
+    private readonly Random _random = new();
+    
+    private const int MaxCountItem = 5;
+    public MainWindow(IGenApp generateRandomApps)
     {
         InitializeComponent();
-        
+        _mainWindowFactory = new MainWindowFactory();
+        TextBoxEventsInit();
         InitializePlayerProfile();
         
-        _imageData.Add(1, AppImage1);
-        _imageData.Add(2, AppImage2);
-        _imageData.Add(3, AppImage3);
+        _generateRandomApps = generateRandomApps;
     }
 
     private void InitializePlayerProfile()
@@ -48,35 +52,123 @@ public partial class MainWindow : Window
     
     private async void GenerateGames(object sender, RoutedEventArgs e)
     {
-        List<AppFilterResult> apps = await _generateRandomApps.GenerateApps(new AppFilterSend("RPG", 3));
-
-        if (apps.Count <= 0)
+        if (!_generateRandomApps.IsInitialized)
         {
-            Console.WriteLine("No apps found");
+            Console.WriteLine("Generating random games not initialized.");
             return;
         }
-
-        int imageCount = 1;
         
-        foreach (var app in apps)
+        int countGames = int.Parse(CountApp.Text ?? "1");
+        
+        List<AppSavedContext?> apps = new List<AppSavedContext?>();
+
+        while (apps.Count < countGames)
         {
-            Bitmap? bitmap = await SteamService.Instance.GetImage(app.AppData.ImageUrl);
+            var game = _generateRandomApps.GetRandomGame(_random.Next(2000, 2025));
 
-            if (bitmap == null)
+            if (!apps.Contains(game) && game != null)
             {
-                Console.WriteLine("No image found");
+                apps.Add(game);
+            }
+        }
+        
+        countGames = apps.Count;
+
+        if (countGames == 0)
+        {
+            Console.WriteLine("No games found");
+            return;
+        }
+        
+        _mainWindowFactory.ChangeGrid(countGames, GamesGrid);
+        (List<Button> buttons, List<Image> images) = _mainWindowFactory.CreateButtonInGrid(countGames, GamesGrid);
+        
+        AddListenerOnButtonClick(buttons);
+        InitDictionaryWithComponents(buttons, images);
+        
+        for (int i = 0; i < apps.Count; i++)
+        {
+            if (apps[i] == null)
                 continue;
+            
+            Bitmap? bitmap = await SteamService.Instance.GetImage(apps[i].HeaderImage);
+
+            if (bitmap is null)
+                continue;
+            
+            if (_appData.ContainsKey(buttons[i]))
+            {
+                _appData[buttons[i]] = apps[i];
             }
 
-            if (_imageData.TryGetValue(imageCount, out Image? image))
-            {
-                image.Source = bitmap;
-            }
-            
-            imageCount++;
+            _imageData[i].Source = bitmap;
         }
     }
 
+    private void AddListenerOnButtonClick(List<Button> buttons)
+    {
+        foreach (var button in buttons)
+        {
+            button.Click += (sender, e) =>
+            {
+                var btn = sender as Button;
+                TakeGame(btn, e);
+            };
+        }
+    }
+
+    private void InitDictionaryWithComponents(List<Button> buttons, List<Image> images)
+    {
+        _appData.Clear();
+        _imageData.Clear();
+        
+        foreach (var button in buttons)
+        {
+            _appData[button] = null;
+        }
+
+        for (var i = 0; i < images.Count; i++)
+        {
+            _imageData.Add(i, images[i]);
+        }
+    }
+    
+    private async void TakeGame(object? sender, RoutedEventArgs e)
+    {
+        Button? button = (Button?)sender;
+
+        if (button != null)
+        {
+            if (_appData.TryGetValue(button, out AppSavedContext? appData))
+            {
+                if (appData != null)
+                {
+                    Console.WriteLine($"App name {appData.AppName}");
+                }
+                else
+                {
+                    Console.WriteLine($"App error");
+                }
+            }
+        }
+    }
+    private void TextBoxEventsInit()
+    {
+        CountApp.PropertyChanged += (sender, e) =>
+        {
+            if (e.Property == TextBox.TextProperty)
+            {
+                var text = CountApp.Text;
+
+                if (int.TryParse(text, out var count))
+                {
+                    var num = Math.Clamp(count, 1, 5);
+                    if (num.ToString() != CountApp.Text)
+                        CountApp.Text = num.ToString();
+                }
+            }
+        };
+    }
     private void ClickBackButton(object? sender, RoutedEventArgs e)
     {
         

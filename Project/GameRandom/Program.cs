@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using System;
+using GameRandom.Service;
 using GameRandom.SteamSDK;
 
 namespace GameRandom;
@@ -21,8 +22,6 @@ sealed class Program
             
             var steamId = _steamManager.GetSteamID();
             Console.WriteLine("SteamID: " + steamId);
-
-            _ = _steamManager.GetAppList();
         }
         catch (Exception e)
         {
