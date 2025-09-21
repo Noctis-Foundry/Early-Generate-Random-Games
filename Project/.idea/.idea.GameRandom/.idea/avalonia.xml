@@ -8,6 +8,7 @@
         <entry key="GameRandom/ModalExample/ModalWindowRightClick.axaml" value="GameRandom/GameRandom.csproj" />
         <entry key="GameRandom/Style/BackGroundClick.axaml" value="GameRandom/GameRandom.csproj" />
         <entry key="GameRandom/Style/Button.axaml" value="GameRandom/GameRandom.csproj" />
+        <entry key="GameRandom/Style/Image.axaml" value="GameRandom/GameRandom.csproj" />
         <entry key="GameRandom/Views/MainWindow.axaml" value="GameRandom/GameRandom.csproj" />
       </map>
     </option>
