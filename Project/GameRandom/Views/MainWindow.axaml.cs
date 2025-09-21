@@ -64,7 +64,7 @@ public partial class MainWindow : Window
 
         while (apps.Count < countGames)
         {
-            var game = _generateRandomApps.GetRandomGame(_random.Next(2000, 2011));
+            var game = _generateRandomApps.GetRandomGame(_random.Next(2000, 2025));
 
             if (!apps.Contains(game) && game != null)
             {

@@ -24,7 +24,7 @@ public class GenerateRandomApps : IGenApp
     {
         Console.WriteLine($"Path to json file: {_localPath}");
         
-        if (!File.Exists(_localPath))
+        if (!File.Exists(_localPath))   
         {
             throw new FileNotFoundException("The apps file was not found.");
         }
@@ -73,6 +73,9 @@ public class GenerateRandomApps : IGenApp
     }
     public AppSavedContext? GetRandomGame(int year)
     {
+        if (!_apps.ContainsKey(year))
+            return null;
+        
         if (_apps.TryGetValue(year, out var apps))
         {
             return apps[_rng.Next(0, apps.Count)];
