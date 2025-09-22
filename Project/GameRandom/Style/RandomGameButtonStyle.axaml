@@ -12,6 +12,22 @@
     <Style Selector="Button.RandomButton">
         <Setter Property="Width" Value="200"></Setter>
         <Setter Property="Height" Value="200"></Setter>
+        <Setter Property="VerticalAlignment" Value="Bottom"></Setter>
+    </Style>
+    
+    <Style Selector="Button.RandomButton:pointerover /template/ContentPresenter">
+        <Setter Property="RenderTransform">
+            <ScaleTransform ScaleX="1.05" ScaleY="1.05"> </ScaleTransform>
+        </Setter>
+    </Style>
+    
+    <Style Selector="Image.RandomButton /template/ContentPresenter">
+        <Setter Property="Transitions">
+            <Transitions>
+                <ThicknessTransition Property="Margin" Duration="0:0:0.2"> </ThicknessTransition>
+                <BrushTransition Property="Background" Duration="0:0:0.2"> </BrushTransition>
+            </Transitions>
+        </Setter>
     </Style>
     
     <Style Selector="Image.GameImages">

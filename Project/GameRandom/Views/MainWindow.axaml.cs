@@ -7,6 +7,7 @@ using GameRandom.CoreApp;
 using GameRandom.Service;
 using GameRandom.SteamSDK;
 using Steamworks;
+using Avalonia.Animation;
 
 namespace GameRandom.Views;
 
@@ -172,5 +173,26 @@ public partial class MainWindow : Window
     private void ClickBackButton(object? sender, RoutedEventArgs e)
     {
         
+    }
+
+
+    private async void ClickBackButtonRandom(object? sender, RoutedEventArgs e)
+    {
+        MainPanel.IsVisible = !MainPanel.IsVisible;
+    }
+
+    private void ClickBackButtonRandomFalse(object? sender, RoutedEventArgs e)
+    {
+        MainPanel.IsVisible = false;
+    }
+
+    private void ClickBackButtonProfile(object? sender, RoutedEventArgs e)
+    {
+        ProfileMain.IsVisible = !MainPanel.IsVisible;
+    }
+    
+    private void ClickBackButtonProfileFalse(object? sender, RoutedEventArgs e)
+    {
+        ProfileMain.IsVisible = false;
     }
 }
