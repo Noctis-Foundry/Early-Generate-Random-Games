@@ -13,7 +13,7 @@ namespace GameRandom.Views;
 
 public partial class MainWindow : Window
 {
-    private readonly IGenApp _generateRandomApps;
+    private readonly IGenApp _generateRandomApps = new GenerateRandomApps();
     private readonly Dictionary<Button, AppSavedContext?> _appData = new ();
     private readonly Dictionary<int, Image> _imageData = new Dictionary<int, Image>();
     private readonly MainWindowFactory _mainWindowFactory;
@@ -21,14 +21,16 @@ public partial class MainWindow : Window
     private readonly Random _random = new();
     
     private const int MaxCountItem = 5;
-    public MainWindow(IGenApp generateRandomApps)
+    public MainWindow()
     {
         InitializeComponent();
+
+        if (Design.IsDesignMode)
+            return;
+        
         _mainWindowFactory = new MainWindowFactory();
         TextBoxEventsInit();
         InitializePlayerProfile();
-        
-        _generateRandomApps = generateRandomApps;
     }
 
     private void InitializePlayerProfile()
