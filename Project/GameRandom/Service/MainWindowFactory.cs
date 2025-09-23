@@ -38,6 +38,8 @@ public class MainWindowFactory
                 Name = $"AppButton{i}"
             };
             
+            button.Classes.Add("RandomButton");
+            
             Grid.SetColumn(button, i);
             grid.Children.Add(button);
             

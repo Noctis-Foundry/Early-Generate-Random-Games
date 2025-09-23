@@ -50,7 +50,7 @@
                 <Button Grid.Column="0" Click="GenerateGames" Background="Black" Classes="GameImages">
                     <Image Source="../Assets/ButtonRandomGame.png"  ></Image>
                 </Button>
-                <MaskedTextBox Grid.Column="1" Mask="0" x:Name="CountApp"></MaskedTextBox>
+                <MaskedTextBox Grid.Column="1" Mask="0" x:Name="CountApp">1</MaskedTextBox>
             </Grid>
         </StackPanel>
             <Button Content="X" Width="75" Height="75" VerticalAlignment="Top" HorizontalAlignment="Right"  Background="Black" Click="ClickBackButtonRandomFalse"></Button>
