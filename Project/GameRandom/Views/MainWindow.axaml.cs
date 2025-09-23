@@ -8,43 +8,35 @@ using GameRandom.Service;
 using GameRandom.SteamSDK;
 using Steamworks;
 using Avalonia.Animation;
+using GameRandom.ViewModels;
 
 namespace GameRandom.Views;
 
 public partial class MainWindow : Window
 {
-    private Action<bool> _changeOnRollContent;
-    
+    private readonly Register<string, UserControl> _userControlRegister = new();
+    private readonly Action<string> _changeContent;
     public MainWindow()
     {
         InitializeComponent();
-        _changeOnRollContent += ChangeOnRollContent;
-        InitializeContents();
-    }
-
-    private void InitializeContents()
-    {
-        var mainWind = new MainWindowContent();
-        mainWind.InitializeMainContent(_changeOnRollContent);
-        MainWindowContent.Content = mainWind;
         
-        var rollContent = new RollGame();
-        rollContent.InitializeRollGameContent(_changeOnRollContent);
-        RollContent.Content = rollContent;
-        RollContent.IsVisible = false;
-    }
+        _changeContent = Navigate;
+        
+        _userControlRegister.RegisterNewObject("Roll", new RollGame(_changeContent));
+        _userControlRegister.RegisterNewObject("Profile", new ProfileContent(_changeContent));
+        _userControlRegister.RegisterNewObject("Main", new MainWindowContent(_changeContent));
 
-    private void ChangeOnRollContent(bool isActiveRollContent)
-    {
-        if (isActiveRollContent)
+        if (DataContext is MainWindowViewModel vm)
         {
-            MainWindowContent.IsVisible = false;
-            RollContent.IsVisible = true;
+            vm.CurrentContent = _userControlRegister.GetObjectFromRegister("Main");
         }
-        else
+    }
+    
+    private void Navigate(string nameControl)
+    {
+        if (DataContext is MainWindowViewModel vm)
         {
-            MainWindowContent.IsVisible = true;
-            RollContent.IsVisible = false;
+            vm.CurrentContent = _userControlRegister.GetObjectFromRegister(nameControl);
         }
     }
 }

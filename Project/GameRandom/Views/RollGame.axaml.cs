@@ -22,10 +22,10 @@ public partial class RollGame : UserControl
     private readonly IGenApp _generateRandomApps;
     private readonly MainWindowFactory _mainWindowFactory;
 
-    private Action<bool> _onShowContent;
+    private readonly Action<string> _onShowContent;
     private bool _isRolling = false;
     
-    public RollGame()
+    public RollGame(Action<string> changeContent)
     {
         InitializeComponent();
 
@@ -36,11 +36,8 @@ public partial class RollGame : UserControl
         
         _generateRandomApps = new GenerateRandomApps();
         _mainWindowFactory = new MainWindowFactory();
-    }
 
-    public void InitializeRollGameContent(Action<bool> onShowContent)
-    {
-        _onShowContent = onShowContent;
+        _onShowContent = changeContent;
     }
     
      private async void GenerateGames(object sender, RoutedEventArgs e)
@@ -181,6 +178,6 @@ public partial class RollGame : UserControl
 
     private void Close(Object? sender, RoutedEventArgs e)
     {
-        _onShowContent?.Invoke(false);
+        _onShowContent?.Invoke("Main");
     }
 }

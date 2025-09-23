@@ -12,61 +12,30 @@ namespace GameRandom.Views;
 public partial class MainWindowContent : UserControl
 {
     private ContentControl _rollContent;
-    private Action<bool> _changeRollContent;
+    private readonly Action<string> _changeContent;
     
-    public MainWindowContent()
+    public MainWindowContent(Action<string> changeContent)
     {
         InitializeComponent();
-        InitializePlayerProfile();
-    }
 
-    public void InitializeMainContent(Action<bool> changeRollContent)
-    {
-        _changeRollContent = changeRollContent;
-    }
-    
-    private void InitializePlayerProfile()
-    {
-        var clientID = SteamManager.Instance.GetSteamID();
-
-        string accName = SteamFriends.GetPersonaName();
+        if (Design.IsDesignMode)
+            return;
         
-        int imageId = SteamFriends.GetLargeFriendAvatar(clientID);
-
-        uint width, height;
-        SteamUtils.GetImageSize(imageId, out width, out height);
-        
-        byte[] image = new byte[width * height * 4];
-        SteamUtils.GetImageRGBA(imageId, image, (int)(width * height * 4));
-
-        var bitmap = AvaloniaService.CreateBitmap(image, (int)width, (int)height);
-        
-        AvatarImage.Source = bitmap;
-        AccName.Content = accName;
+        _changeContent = changeContent;
     }
     
     private void GoToRollContent(object? sender, RoutedEventArgs e)
     {
-        _changeRollContent?.Invoke(true);
-    }
-   
-    private void ClickBackButton(object? sender, RoutedEventArgs e)
-    {
-       
-    }
-
-    private void ClickBackButtonRandomFalse(object? sender, RoutedEventArgs e)
-    {
-        MainPanel.IsVisible = false;
-    }
-
-    private void ClickBackButtonProfile(object? sender, RoutedEventArgs e)
-    {
-        ProfileMain.IsVisible = !MainPanel.IsVisible;
+        _changeContent?.Invoke("Roll");
     }
     
-    private void ClickBackButtonProfileFalse(object? sender, RoutedEventArgs e)
+    private void GoToTable(object? sender, RoutedEventArgs e)
     {
-        ProfileMain.IsVisible = false;
+        _changeContent?.Invoke("Table");
+    }
+
+    private void GoToProfile(object? sender, RoutedEventArgs e)
+    {
+        _changeContent?.Invoke("Profile");
     }
 }

@@ -17,8 +17,6 @@
         <vm:MainWindowViewModel />
     </Design.DataContext>
     <Grid x:Name="MainWindowGrid">
-        <ContentControl x:Name="MainWindowContent"></ContentControl>
-        <ContentControl x:Name="RollContent"></ContentControl>
-        <ContentControl x:Name="ProfileContent"></ContentControl>
+        <ContentControl x:Name="ControlMain" Content="{Binding CurrentContent}"></ContentControl>
     </Grid>
 </Window>
