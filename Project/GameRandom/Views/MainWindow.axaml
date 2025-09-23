@@ -9,61 +9,16 @@
         Icon="/Assets/avalonia-logo.ico"
         Title="GameRandom"
         MaxWidth="963" 
-        MaxHeight="540" 
-        >
+        MaxHeight="540" >
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainWindowViewModel />
     </Design.DataContext>
-    <Grid>
-        <Label Background="AntiqueWhite"></Label>
-        <Button Classes="ButtonLeftUpGround" Grid.Column="0" Margin="0,0" Click="ClickBackButton" 
-                HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" BorderBrush="Transparent" BorderThickness="0">
-            <Image Source="../Assets/LeftUpClick.png"  Width="360" Stretch="Uniform" > </Image>
-        </Button>
-        <Button Classes="ButtonLeftDownGround" Grid.Column="0" Margin="0,0" Click="ClickBackButtonProfile" 
-                HorizontalAlignment="Left" VerticalAlignment="Bottom" Background="Transparent" BorderBrush="Transparent" BorderThickness="0">
-            <Image Source="../Assets/LeftDownClick.png" Width="360" Stretch="Uniform"> </Image>
-        </Button>
-        <Button Classes="ButtonRightGround" Grid.Column="0" Margin="0,0" Click="ClickBackButtonRandom" 
-                HorizontalAlignment="Right"  Background="Transparent" BorderBrush="Transparent" BorderThickness="0">
-            <Image Source="../Assets/RightClick.png" Width="580" Stretch="UniformToFill" > </Image>
-        </Button>
-        <Grid x:Name="MainPanel" IsVisible="False">
-            <Image Source="../Assets/RandomeGame.png" Stretch="UniformToFill" 
-                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-        <StackPanel Spacing="5">
-            <Grid RowDefinitions="Auto" x:Name="GamesGrid" ColumnDefinitions="Auto, Auto, Auto" HorizontalAlignment="Center">
-                <Button Grid.Column="0" Classes="RandomButton" x:Name="AppButton1">
-                     <Image  Classes="GameImages" x:Name="AppImage1" Source="../Assets/avalonia-logo.ico" ></Image>
-                </Button>
-                <Button Grid.Column="1" Classes="RandomButton" x:Name="AppButton2">
-                    <Image  Classes="GameImages" x:Name="AppImage2" Source="../Assets/avalonia-logo.ico" ></Image>
-                </Button>
-                <Button Grid.Column="2" Classes="RandomButton" x:Name="AppButton3" >
-                    <Image  Classes="GameImages" x:Name="AppImage3" Source="../Assets/avalonia-logo.ico" ></Image>
-                </Button>
-            </Grid>
-            <Grid RowDefinitions="Auto" ColumnDefinitions="Auto, Auto" HorizontalAlignment="Center">
-                <Button Grid.Column="0" Click="GenerateGames" Background="Black" Classes="GameImages">
-                    <Image Source="../Assets/ButtonRandomGame.png"  ></Image>
-                </Button>
-                <MaskedTextBox Grid.Column="1" Mask="0" x:Name="CountApp">1</MaskedTextBox>
-            </Grid>
-        </StackPanel>
-            <Button Content="X" Width="75" Height="75" VerticalAlignment="Top" HorizontalAlignment="Right"  Background="Black" Click="ClickBackButtonRandomFalse"></Button>
-        </Grid>
-        <Grid x:Name="ProfileMain" IsVisible="False">
-            <Grid>
-                <Image Source="../Assets/RandomeGame.png" Stretch="UniformToFill" 
-                       HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-            </Grid>
-            <Label x:Name="AccName" Width="200" Height="50" Content="Ar0cka" HorizontalAlignment="Left" VerticalAlignment="Bottom" 
-                   Foreground="Black" FontSize="22" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="80 0 0 100"></Label>
-            <Image x:Name="AvatarImage" Width="200" Height="200" HorizontalAlignment="Left" VerticalAlignment="Center" Classes="BackGroundImage" Margin="80 0 0 0 "> </Image>
-            <Button Content="X" Width="75" Height="75" VerticalAlignment="Top" HorizontalAlignment="Right"  Background="Black" Click="ClickBackButtonProfileFalse"></Button>
-        </Grid>
+    <Grid x:Name="MainWindowGrid">
+        <ContentControl x:Name="MainWindowContent"></ContentControl>
+        <ContentControl x:Name="RollContent"></ContentControl>
+        <ContentControl x:Name="ProfileContent"></ContentControl>
     </Grid>
 </Window>

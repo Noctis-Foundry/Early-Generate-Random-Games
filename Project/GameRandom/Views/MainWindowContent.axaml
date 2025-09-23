@@ -1,0 +1,38 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="GameRandom.Views.MainWindowContent">
+    
+    <Grid>
+        <Label Background="AntiqueWhite"></Label>
+        <Button Classes="ButtonLeftUpGround" Grid.Column="0" Margin="0,0" Click="ClickBackButton" 
+                HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" BorderBrush="Transparent" BorderThickness="0">
+            <Image Source="../Assets/LeftUpClick.png"  Width="360" Stretch="Uniform" > </Image>
+        </Button>
+        <Button Classes="ButtonLeftDownGround" Grid.Column="0" Margin="0,0" Click="ClickBackButtonProfile" 
+                HorizontalAlignment="Left" VerticalAlignment="Bottom" Background="Transparent" BorderBrush="Transparent" BorderThickness="0">
+            <Image Source="../Assets/LeftDownClick.png" Width="360" Stretch="Uniform"> </Image>
+        </Button>
+        <Button Classes="ButtonRightGround" Grid.Column="0" Margin="0,0" Click="GoToRollContent" 
+                HorizontalAlignment="Right"  Background="Transparent" BorderBrush="Transparent" BorderThickness="0">
+            <Image Source="../Assets/RightClick.png" Width="580" Stretch="UniformToFill" > </Image>
+        </Button>
+        <Grid x:Name="MainPanel" IsVisible="False">
+            <Image Source="../Assets/RandomeGame.png" Stretch="UniformToFill" 
+                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+            <Button Content="X" Width="75" Height="75" VerticalAlignment="Top" HorizontalAlignment="Right"  Background="Black" Click="ClickBackButtonRandomFalse"></Button>
+        </Grid>
+        <Grid x:Name="ProfileMain" IsVisible="False" HorizontalAlignment="Center">
+            <Grid>
+                <Image Source="../Assets/RandomeGame.png" Stretch="UniformToFill" 
+                       HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+            </Grid>
+            <Label x:Name="AccName" Width="200" Height="50" Content="Ar0cka" HorizontalAlignment="Left" VerticalAlignment="Bottom" 
+                   Foreground="Black" FontSize="22" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="80 0 0 100"></Label>
+            <Image x:Name="AvatarImage" Width="200" Height="200" HorizontalAlignment="Left" VerticalAlignment="Center" Classes="BackGroundImage" Margin="80 0 0 0 "> </Image>
+            <Button Content="X" Width="75" Height="75" VerticalAlignment="Top" HorizontalAlignment="Right"  Background="Black" Click="ClickBackButtonProfileFalse"></Button>
+        </Grid>
+    </Grid>
+</UserControl>

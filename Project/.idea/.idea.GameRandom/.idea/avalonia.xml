@@ -11,6 +11,9 @@
         <entry key="GameRandom/Style/Image.axaml" value="GameRandom/GameRandom.csproj" />
         <entry key="GameRandom/Style/RandomGameButtonStyle.axaml" value="GameRandom/GameRandom.csproj" />
         <entry key="GameRandom/Views/MainWindow.axaml" value="GameRandom/GameRandom.csproj" />
+        <entry key="GameRandom/Views/MainWindowContent.axaml" value="GameRandom/GameRandom.csproj" />
+        <entry key="GameRandom/Views/ProfileWindow.axaml" value="GameRandom/GameRandom.csproj" />
+        <entry key="GameRandom/Views/RollGame.axaml" value="GameRandom/GameRandom.csproj" />
       </map>
     </option>
   </component>
