@@ -19,24 +19,34 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+
+        DataContext = new MainWindowViewModel();
         
         _changeContent = Navigate;
         
-        _userControlRegister.RegisterNewObject("Roll", new RollGame(_changeContent));
-        _userControlRegister.RegisterNewObject("Profile", new ProfileContent(_changeContent));
-        _userControlRegister.RegisterNewObject("Main", new MainWindowContent(_changeContent));
+        InitializeUserControlRegister();
+        
+        Navigate("Main");
+    }
 
-        if (DataContext is MainWindowViewModel vm)
-        {
-            vm.CurrentContent = _userControlRegister.GetObjectFromRegister("Main");
-        }
+    private void InitializeUserControlRegister()
+    {
+        var mainContent = new MainWindowContent();
+        mainContent.AddListener(_changeContent);
+
+        var rollContent = new RollGame();
+        rollContent.AddListener(_changeContent);
+
+        var profileContent = new ProfileContent();
+        profileContent.AddListener(_changeContent);
+        
+        _userControlRegister.RegisterNewObject("Main", mainContent);
+        _userControlRegister.RegisterNewObject("Roll", rollContent);
+        _userControlRegister.RegisterNewObject("Profile", profileContent);
     }
     
     private void Navigate(string nameControl)
     {
-        if (DataContext is MainWindowViewModel vm)
-        {
-            vm.CurrentContent = _userControlRegister.GetObjectFromRegister(nameControl);
-        }
+        ControlMain.Content = _userControlRegister.GetObjectFromRegister(nameControl);
     }
 }

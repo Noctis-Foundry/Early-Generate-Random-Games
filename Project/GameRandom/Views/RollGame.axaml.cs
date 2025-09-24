@@ -22,10 +22,10 @@ public partial class RollGame : UserControl
     private readonly IGenApp _generateRandomApps;
     private readonly MainWindowFactory _mainWindowFactory;
 
-    private readonly Action<string> _onShowContent;
+    private Action<string> _onShowContent;
     private bool _isRolling = false;
     
-    public RollGame(Action<string> changeContent)
+    public RollGame()
     {
         InitializeComponent();
 
@@ -36,9 +36,9 @@ public partial class RollGame : UserControl
         
         _generateRandomApps = new GenerateRandomApps();
         _mainWindowFactory = new MainWindowFactory();
-
-        _onShowContent = changeContent;
     }
+
+    public void AddListener(Action<string> _onChangeContent) => _onShowContent = _onChangeContent;
     
      private async void GenerateGames(object sender, RoutedEventArgs e)
     {

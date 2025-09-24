@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="GameRandom.Views.ProfileContent">
-    <Grid x:Name="ProfileMain" IsVisible="False" HorizontalAlignment="Center">
+    
+    <Grid x:Name="ProfileMain" HorizontalAlignment="Center">
         <Grid>
             <Image Source="../Assets/RandomeGame.png" Stretch="UniformToFill" 
                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>

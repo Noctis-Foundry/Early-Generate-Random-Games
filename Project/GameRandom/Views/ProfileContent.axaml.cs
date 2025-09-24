@@ -11,14 +11,19 @@ namespace GameRandom.Views;
 
 public partial class ProfileContent : UserControl
 {
-    private readonly Action<string> _changeContent;
+    private Action<string> _changeContent;
     
-    public ProfileContent(Action<string> changeContent)
+    public ProfileContent()
     {
         InitializeComponent();
+        
+        if (Design.IsDesignMode)
+            return;
+        
         InitializePlayerProfile();
-        _changeContent = changeContent;
     }
+    
+    public void AddListener(Action<string> _onChangeContent) => _changeContent = _onChangeContent;
     
     private void InitializePlayerProfile()
     {

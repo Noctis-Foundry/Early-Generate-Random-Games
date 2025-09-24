@@ -6,7 +6,6 @@
              x:Class="GameRandom.Views.MainWindowContent">
     
     <Grid>
-        <Label Background="AntiqueWhite"></Label>
         <Button Classes="ButtonLeftUpGround" Grid.Column="0" Margin="0,0" Click="GoToTable"
                 HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" BorderBrush="Transparent" BorderThickness="0">
             <Image Source="../Assets/LeftUpClick.png"  Width="360" Stretch="Uniform" > </Image>

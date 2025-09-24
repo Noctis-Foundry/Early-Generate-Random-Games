@@ -12,17 +12,14 @@ namespace GameRandom.Views;
 public partial class MainWindowContent : UserControl
 {
     private ContentControl _rollContent;
-    private readonly Action<string> _changeContent;
+    private Action<string> _changeContent;
     
-    public MainWindowContent(Action<string> changeContent)
+    public MainWindowContent()
     {
         InitializeComponent();
-
-        if (Design.IsDesignMode)
-            return;
-        
-        _changeContent = changeContent;
     }
+    
+    public void AddListener(Action<string> _onChangeContent) => _changeContent = _onChangeContent;
     
     private void GoToRollContent(object? sender, RoutedEventArgs e)
     {

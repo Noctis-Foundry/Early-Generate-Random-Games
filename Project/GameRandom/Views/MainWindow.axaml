@@ -17,6 +17,7 @@
         <vm:MainWindowViewModel />
     </Design.DataContext>
     <Grid x:Name="MainWindowGrid">
-        <ContentControl x:Name="ControlMain" Content="{Binding CurrentContent}"></ContentControl>
+        <Grid.Background>Aquamarine</Grid.Background>
+        <ContentControl x:Name="ControlMain"></ContentControl>
     </Grid>
 </Window>

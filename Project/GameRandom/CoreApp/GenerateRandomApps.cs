@@ -55,8 +55,6 @@ public class GenerateRandomApps : IGenApp
         {
             foreach (var app in apps)
             {
-                Console.WriteLine($"year = {app.AppReleaseYear} and name = {app.AppName}");
-                
                 if (_apps.ContainsKey(app.AppReleaseYear))
                     _apps[app.AppReleaseYear].Add(app);
                 else
