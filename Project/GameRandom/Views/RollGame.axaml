@@ -8,7 +8,7 @@
     <StackPanel>
         
         <StackPanel.Background>
-            <ImageBrush Source="../Assets/RandomeGame.png" Stretch="UniformToFill"></ImageBrush>
+            <ImageBrush Source="../Assets/RandomGame.png" Stretch="UniformToFill"></ImageBrush>
         </StackPanel.Background>
         
         <Button VerticalAlignment="Top" HorizontalAlignment="Right" Click="Close"

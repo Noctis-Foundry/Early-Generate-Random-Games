@@ -13,5 +13,6 @@
         <FluentTheme />
         <StyleInclude Source="Style/Button.axaml"></StyleInclude>
         <StyleInclude Source="Style/RandomGameButtonStyle.axaml"></StyleInclude>
+        <StyleInclude Source="Style/ProfileStyle.axaml"></StyleInclude>
     </Application.Styles>
 </Application>

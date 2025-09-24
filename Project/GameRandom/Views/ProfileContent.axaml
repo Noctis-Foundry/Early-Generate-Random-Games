@@ -5,14 +5,24 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="GameRandom.Views.ProfileContent">
     
-    <Grid x:Name="ProfileMain" HorizontalAlignment="Center">
-        <Grid>
-            <Image Source="../Assets/RandomeGame.png" Stretch="UniformToFill" 
-                   HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+    <StackPanel Spacing="5">
+        <StackPanel.Background>
+            <ImageBrush Source="../Assets/RandomGame.png" Stretch="UniformToFill"></ImageBrush>
+        </StackPanel.Background>
+        
+        <Button Content="Close" Classes="CloseProfile"
+                HorizontalAlignment="Right" Margin="0, 0, 10, 0"
+                Click="ExitFromProfile"></Button>
+        
+        <Grid RowDefinitions="Auto, Auto" 
+              HorizontalAlignment="Right" Margin="0, 50, 70, 0">
+            <Image Grid.Row="0" x:Name="AvatarImage"
+                   Source="../Assets/avalonia-logo.ico"
+                   Width="150" Height="150"></Image>
+            <Label Grid.Row="1" x:Name="AccName"
+                   Content="Ar0cka" Margin="40, 0, 0, 0"
+                   FontSize="24" Foreground="Black"></Label>
         </Grid>
-        <Label x:Name="AccName" Width="200" Height="50" Content="Ar0cka" HorizontalAlignment="Left" VerticalAlignment="Bottom" 
-               Foreground="Black" FontSize="22" FontWeight="Bold" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="80 0 0 100"></Label>
-        <Image x:Name="AvatarImage" Width="200" Height="200" HorizontalAlignment="Left" VerticalAlignment="Center" Classes="BackGroundImage" Margin="80 0 0 0 "> </Image>
-        <Button Content="X" Width="75" Height="75" VerticalAlignment="Top" HorizontalAlignment="Right"  Background="Black" Click="ExitFromProfile"></Button>
-    </Grid>
+        
+    </StackPanel>
 </UserControl>

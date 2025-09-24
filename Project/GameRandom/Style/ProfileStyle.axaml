@@ -1,0 +1,23 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <Button Classes="CloseProfile">Close</Button>
+        </Border>
+    </Design.PreviewWith>
+
+    <Style Selector="Button.CloseProfile">
+        <Setter Property="Background" Value="MediumAquamarine"></Setter>
+        <Setter Property="Foreground" Value="Black"></Setter>
+        <Setter Property="FontSize" Value="24"></Setter>
+        <Setter Property="BorderBrush" Value="Black"></Setter>
+        <Setter Property="BorderThickness" Value="1.5"></Setter>
+    </Style>
+    
+    <Style Selector="Button.CloseProfile:pointerover /template/ContentPresenter">
+        <Setter Property="Background" Value="MediumAquamarine"></Setter>
+        <Setter Property="Foreground" Value="Gray"></Setter>
+        <Setter Property="BorderBrush" Value="Black"></Setter>
+    </Style>
+        
+</Styles>
