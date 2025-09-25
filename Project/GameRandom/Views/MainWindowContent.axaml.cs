@@ -35,4 +35,9 @@ public partial class MainWindowContent : UserControl
     {
         _changeContent?.Invoke("Profile");
     }
+
+    private void GoToRules(object? sender, RoutedEventArgs e)
+    {
+        _changeContent?.Invoke("Rules");
+    }
 }

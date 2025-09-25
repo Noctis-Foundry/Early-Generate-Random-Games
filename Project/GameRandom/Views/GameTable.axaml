@@ -1,0 +1,37 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="GameRandom.Views.GameTable">
+    <StackPanel Spacing="1">
+        <StackPanel.Background>
+            <ImageBrush Source="../Assets/RandomGame.png" Stretch="UniformToFill"></ImageBrush>
+        </StackPanel.Background>
+        <Button VerticalAlignment="Top" HorizontalAlignment="Right" Click="Close"
+                Background="Black" Foreground="White"
+                Margin="0, 0, 10, 0">Close</Button>
+    <StackPanel Spacing="0" Orientation="Horizontal">
+        <Label Content="Player" Margin="80, 0, 0, 0"
+               FontSize="24" Foreground="Black"
+               FontWeight="Bold" VerticalAlignment="Bottom">
+        </Label>
+        <Label Content="Game" Margin="20, 0, 0, 0"
+               FontSize="24" Foreground="Black"
+               FontWeight="Bold" >
+        </Label>
+        <Label Content="Status" Margin="20, 0, 0, 0"
+               FontSize="24" Foreground="Black"
+               FontWeight="Bold" >
+        </Label>
+        <Label Content="Start Date" Margin="20, 0, 0, 0"
+               FontSize="24" Foreground="Black"
+               FontWeight="Bold" >
+        </Label>
+        <Label Content="End Date" Margin="20, 0, 0, 0"
+               FontSize="24" Foreground="Black"
+               FontWeight="Bold" >
+        </Label>
+    </StackPanel>
+    </StackPanel>
+</UserControl>

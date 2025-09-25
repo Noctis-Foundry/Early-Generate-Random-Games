@@ -4,25 +4,58 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="GameRandom.Views.ProfileContent">
-    
-    <StackPanel Spacing="5">
+    <StackPanel>
         <StackPanel.Background>
             <ImageBrush Source="../Assets/RandomGame.png" Stretch="UniformToFill"></ImageBrush>
         </StackPanel.Background>
-        
+
         <Button Content="Close" Classes="CloseProfile"
                 HorizontalAlignment="Right" Margin="0, 0, 10, 0"
-                Click="ExitFromProfile"></Button>
-        
-        <Grid RowDefinitions="Auto, Auto" 
+                Click="ExitFromProfile">
+        </Button>
+
+        <Grid RowDefinitions="Auto, Auto"
               HorizontalAlignment="Right" Margin="0, 50, 70, 0">
             <Image Grid.Row="0" x:Name="AvatarImage"
                    Source="../Assets/avalonia-logo.ico"
-                   Width="150" Height="150"></Image>
+                   Width="150" Height="150">
+            </Image>
             <Label Grid.Row="1" x:Name="AccName"
                    Content="Ar0cka" Margin="40, 0, 0, 0"
-                   FontSize="24" Foreground="Black"></Label>
+                   FontSize="24" Foreground="Black">
+            </Label>
         </Grid>
-        
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="50, -225, 0, 0">
+            <Label Content="Game"
+                   FontSize="24" Foreground="Black"
+                   FontWeight="Bold"
+                   VerticalAlignment="Top"
+                   Margin="0">
+            </Label>
+            <Label Content="Comment"
+                   FontSize="24" Foreground="Black"
+                   FontWeight="Bold"
+                   VerticalAlignment="Top"
+                   Margin="10 0 0 0">
+            </Label>
+            <Label Content="Difficulty assessment"
+                   FontSize="24" Foreground="Black"
+                   FontWeight="Bold"
+                   VerticalAlignment="Top"
+                   Margin="10 0 0 0">
+            </Label>
+               <Label Content="Game evaluation"
+                      FontSize="24" Foreground="Black"
+                      FontWeight="Bold"
+                      VerticalAlignment="Top"
+                      Margin="10 0 0 0">
+               </Label>
+                
+            </StackPanel>
+           <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="50, -290, 0, 0">
+                  <Image Source="../Assets/avalonia-logo.ico"
+                         Width="50" Height="50">
+                  </Image>
+           </StackPanel>
     </StackPanel>
 </UserControl>

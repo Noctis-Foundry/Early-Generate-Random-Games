@@ -40,9 +40,17 @@ public partial class MainWindow : Window
         var profileContent = new ProfileContent();
         profileContent.AddListener(_changeContent);
         
+        var tableContent = new GameTable();
+        tableContent.AddListener(_changeContent);
+        
+        var rulesContent = new Rules();
+        rulesContent.AddListener(_changeContent);
+        
         _userControlRegister.RegisterNewObject("Main", mainContent);
         _userControlRegister.RegisterNewObject("Roll", rollContent);
         _userControlRegister.RegisterNewObject("Profile", profileContent);
+        _userControlRegister.RegisterNewObject("Table", tableContent);
+        _userControlRegister.RegisterNewObject("Rules", rulesContent);
     }
     
     private void Navigate(string nameControl)
