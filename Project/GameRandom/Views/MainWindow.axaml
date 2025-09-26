@@ -17,7 +17,9 @@
         <vm:MainWindowViewModel />
     </Design.DataContext>
     <Grid x:Name="MainWindowGrid">
-        <Grid.Background>Aquamarine</Grid.Background>
+        <Grid.Background>
+            Gray
+        </Grid.Background>
         <ContentControl x:Name="ControlMain"></ContentControl>
     </Grid>
 </Window>

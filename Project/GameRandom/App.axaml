@@ -15,5 +15,6 @@
         <StyleInclude Source="Style/RandomGameButtonStyle.axaml"></StyleInclude>
         <StyleInclude Source="Style/ProfileStyle.axaml"></StyleInclude>
         <StyleInclude Source="Style/GameTableStyle.axaml"></StyleInclude>
+        <StyleInclude Source="Style/TableStyle.axaml"></StyleInclude>
     </Application.Styles>
 </Application>

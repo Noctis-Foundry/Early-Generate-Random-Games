@@ -12,6 +12,7 @@
         <entry key="GameRandom/Style/Image.axaml" value="GameRandom/GameRandom.csproj" />
         <entry key="GameRandom/Style/ProfileStyle.axaml" value="GameRandom/GameRandom.csproj" />
         <entry key="GameRandom/Style/RandomGameButtonStyle.axaml" value="GameRandom/GameRandom.csproj" />
+        <entry key="GameRandom/Style/TableStyle.axaml" value="GameRandom/GameRandom.csproj" />
         <entry key="GameRandom/Views/GameTable.axaml" value="GameRandom/GameRandom.csproj" />
         <entry key="GameRandom/Views/MainWindow.axaml" value="GameRandom/GameRandom.csproj" />
         <entry key="GameRandom/Views/MainWindowContent.axaml" value="GameRandom/GameRandom.csproj" />
