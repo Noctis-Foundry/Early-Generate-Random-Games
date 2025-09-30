@@ -1,7 +1,9 @@
 ﻿using Avalonia;
 using System;
+using GameRandom.DataBaseContexts;
 using GameRandom.Service;
 using GameRandom.SteamSDK;
+using GameRandom.UserSystem;
 
 namespace GameRandom;
 
@@ -25,7 +27,7 @@ sealed class Program
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            Console.WriteLine("Error initialize " + e);
             throw;
         }
         

@@ -31,9 +31,14 @@ public class SteamManager
         if (_isInitialized)
             return;
 
-        if (!SteamAPI.Init())
+        try
         {
-            throw new Exception("SteamAPI.Init() failed");
+            SteamAPI.Init();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Steam init failed " + e);
+            throw;
         }
         
         _isInitialized = true;

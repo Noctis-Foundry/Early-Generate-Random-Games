@@ -15,7 +15,7 @@ namespace GameRandom.CoreApp;
 public class GenerateRandomApps : IGenApp
 {
     private Dictionary<int, List<AppSavedContext>> _apps = new();
-    private string _localPath = Path.Combine(System.AppContext.BaseDirectory, "Assets", "Jsons", "temp_apps.json");
+    private string _localPath = Path.Combine(AppContext.BaseDirectory, "Assets", "Jsons", "temp_apps.json");
     private readonly Random _rng = new();
 
     public bool IsInitialized { get; private set; } = false;

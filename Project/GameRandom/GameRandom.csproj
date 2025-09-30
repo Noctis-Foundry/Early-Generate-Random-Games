@@ -10,7 +10,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Folder Include="Assets\Jsons\" />
+        <Folder Include="Assets\" />
         <Folder Include="Models\" />
         <None Include="Assets\avalonia-logo.ico">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -29,6 +29,11 @@
         <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.6" />
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.0-rc.1.25451.107" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.0-rc.1.25451.107">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0-rc.1" />
         <PackageReference Include="Steamworks.NET" Version="2024.8.0" />
     </ItemGroup>
 </Project>
