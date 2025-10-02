@@ -27,6 +27,8 @@ public partial class MainWindow : Window
         InitializeUserControlRegister();
         
         Navigate("Main");
+
+        this.Closing += MainWindow_OnClosed;
     }
 
     private void InitializeUserControlRegister()
@@ -56,5 +58,10 @@ public partial class MainWindow : Window
     private void Navigate(string nameControl)
     {
         ControlMain.Content = _userControlRegister.GetObjectFromRegister(nameControl);
+    }
+
+    private void MainWindow_OnClosed(object? sender, EventArgs e)
+    {
+        SteamManager.Instance.ShutdownSteam();
     }
 }

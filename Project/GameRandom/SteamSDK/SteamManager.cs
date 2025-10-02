@@ -11,7 +11,6 @@ namespace GameRandom.SteamSDK;
 
 public class SteamManager
 {
-    private const string ErrorConvertAppText = "Unknown";
     private const string AppList = "https://api.steampowered.com/ISteamApps/GetAppList/v2/";
     
     public static SteamManager Instance { get; private set; }
@@ -20,7 +19,7 @@ public class SteamManager
     private bool _isInitialized = false;
     Dictionary<int, string> _appList = new Dictionary<int, string>();
     
-    private Timer _steamCallbackTimer;
+    private Timer? _steamCallbackTimer;
     
     public SteamManager()
     {
@@ -57,12 +56,13 @@ public class SteamManager
 
     public void ShutdownSteam()
     {
-        if (!_isInitialized)
-        {
-            SteamAPI.Shutdown();
-            _isInitialized = false;
-            Console.WriteLine("SteamAPI.Shutdown() finished");
-        }
+        if (!_isInitialized) return;
+        
+        _steamCallbackTimer?.Stop();
+        SteamAPI.Shutdown();
+        _isInitialized = false;
+        
+        Console.WriteLine("SteamAPI.Shutdown() finished");
     }
 
     public CSteamID GetSteamId()
