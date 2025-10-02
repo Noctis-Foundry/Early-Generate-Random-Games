@@ -4,6 +4,7 @@ using System.IO;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Timers;
 using Steamworks;
 
 namespace GameRandom.SteamSDK;
@@ -18,6 +19,8 @@ public class SteamManager
     
     private bool _isInitialized = false;
     Dictionary<int, string> _appList = new Dictionary<int, string>();
+    
+    private Timer _steamCallbackTimer;
     
     public SteamManager()
     {
@@ -41,6 +44,13 @@ public class SteamManager
             throw;
         }
         
+        _steamCallbackTimer = new Timer(100);
+        _steamCallbackTimer.Elapsed += (s, e) =>
+        {
+            SteamAPI.RunCallbacks();
+        };
+        _steamCallbackTimer.Start();
+        
         _isInitialized = true;
         Console.WriteLine("SteamAPI.Init() finished");
     }
@@ -55,7 +65,7 @@ public class SteamManager
         }
     }
 
-    public CSteamID GetSteamID()
+    public CSteamID GetSteamId()
     {
         if (!_isInitialized)
             throw new Exception("SteamAPI.Init() failed");

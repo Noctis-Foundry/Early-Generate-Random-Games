@@ -22,7 +22,7 @@ sealed class Program
             _steamManager = new SteamManager();
             _steamManager.InitSteam();
             
-            var steamId = _steamManager.GetSteamID();
+            var steamId = _steamManager.GetSteamId();
             Console.WriteLine("SteamID: " + steamId);
         }
         catch (Exception e)

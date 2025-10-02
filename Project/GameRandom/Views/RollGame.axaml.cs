@@ -40,7 +40,7 @@ public partial class RollGame : UserControl
 
     public void AddListener(Action<string> _onChangeContent) => _onShowContent = _onChangeContent;
     
-     private async void GenerateGames(object sender, RoutedEventArgs e)
+    private async void GenerateGames(object sender, RoutedEventArgs e)
     {
         if (!_generateRandomApps.IsInitialized || _isRolling)
         {

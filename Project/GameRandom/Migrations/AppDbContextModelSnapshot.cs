@@ -21,6 +21,29 @@ namespace GameRandom.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("GameRandom.DataBaseContexts.LobbyContext", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("LobbyID")
+                        .HasColumnType("numeric(20,0)");
+
+                    b.Property<decimal>("MemberID")
+                        .HasColumnType("numeric(20,0)");
+
+                    b.Property<string>("NickName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LobbyContexts");
+                });
+
             modelBuilder.Entity("GameRandom.DataBaseContexts.Users", b =>
                 {
                     b.Property<int>("Id")
@@ -29,8 +52,8 @@ namespace GameRandom.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ClientID")
-                        .HasColumnType("integer");
+                    b.Property<decimal>("ClientID")
+                        .HasColumnType("numeric(20,0)");
 
                     b.Property<string>("Username")
                         .IsRequired()

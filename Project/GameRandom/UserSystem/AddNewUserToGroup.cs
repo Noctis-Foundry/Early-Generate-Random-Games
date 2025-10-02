@@ -9,8 +9,6 @@ namespace GameRandom.UserSystem;
 
 public class AddNewUserToGroup
 {
-    private AppDbContext _appDbContext;
-    
     public async Task AddNewUser(Users user)
     {
         try
