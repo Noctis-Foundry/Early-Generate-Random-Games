@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
@@ -7,6 +8,7 @@ using Avalonia.Markup.Xaml;
 using GameRandom.DataBaseContexts;
 using GameRandom.Service;
 using GameRandom.SteamSDK;
+using Microsoft.EntityFrameworkCore;
 using Steamworks;
 
 namespace GameRandom.Views;
@@ -34,16 +36,24 @@ public partial class ProfileContent : UserControl
         {
             try
             {
-                Console.WriteLine("Stating create lobby...");
-              
-                var list = await _lobbySystem.CreateLobby();
+                await using(var db = new AppDbContext())
+                {
+                    var list = await db.LobbyContexts.ToListAsync();
 
-                foreach (var item in list)
+                    foreach (var item in list)
+                    {
+                        Console.WriteLine($"Remove {item.MemberID} from {item.LobbyID}");
+                        db.LobbyContexts.Remove(item);
+                    }
+                
+                    await db.SaveChangesAsync();
+                }
+                
+                var membersList = await _lobbySystem.CreateLobby();
+
+                foreach (var item in membersList)
                 {
                     Console.WriteLine($"Lobby = {item.LobbyID} and NickName = {item.NickName}");
-                    await using var db = new AppDbContext();
-                    db.Remove(item);
-                    await db.SaveChangesAsync();
                 }
             }
             catch (Exception exception)
@@ -52,6 +62,11 @@ public partial class ProfileContent : UserControl
                 throw;
             }
         });
+    }
+
+    public void InviteToLobby(object? sender, RoutedEventArgs e)
+    {
+        _lobbySystem.InviteToLobby();
     }
     
     private void InitializePlayerProfile()

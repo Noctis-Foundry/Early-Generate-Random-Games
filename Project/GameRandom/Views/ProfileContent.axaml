@@ -14,9 +14,13 @@
                 Click="ExitFromProfile">
         </Button>
         
-        <Button Content="Create lobby" Classes="CloseProfile"
-                HorizontalAlignment="Left" Margin="15, 0,0,30"
-                Click="CreateLobby"></Button>
+        <Grid RowDefinitions="Auto, Auto" 
+              HorizontalAlignment="Left" Margin="15, 0,0,30">
+            <Button Content="Create lobby" Classes="CloseProfile"
+                    Click="CreateLobby"></Button>
+            <Button Grid.Row="1" Content="Invite" Click="InviteToLobby"></Button>
+        </Grid>
+       
         
         <Grid RowDefinitions="*, *, *" ColumnDefinitions="Auto, Auto, Auto, Auto" 
               Margin="50, 0, 0,0">
