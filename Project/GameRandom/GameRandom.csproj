@@ -10,14 +10,21 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Folder Include="Assets\" />
+         <Content Include="Assets\**\*.*">
+         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+         </Content>
         <Folder Include="Models\" />
+        <None Include="Assets\Jsons\temp_apps.json" CopyToOutputDirectory="Always"></None>
         <None Include="Assets\avalonia-logo.ico">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
         <AvaloniaResource Include="Assets\**" />
-        <None Include="libs\steam_api64.dll" CopyToOutputDirectory="Always">
-        <None Include="libs\steam_appid.txt" CopyToOutputDirectory="Always">
+        <None Include="Libs/steam_api64.dll" CopyToOutputDirectory="Always"> 
+        <Link>steam_api64.dll</Link>
+        </None>
+        <None Include="Libs/steam_appid.txt" CopyToOutputDirectory="Always"> 
+        <Link>steam_appid.txt</Link>
+        </None>
     </ItemGroup>
 
     <ItemGroup>
