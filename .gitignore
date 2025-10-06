@@ -1,6 +1,9 @@
 ### Build artifacts
-/obj
+bin/
+obj/
 *.exe
+*.dll
+*.pdb
 *.cache
 *.log
 
@@ -11,14 +14,17 @@
 *.sln.docstates
 launchSettings.json
 
-### Rider
-.idea/
-*.sln.iml
-
 ### Visual Studio
 .vs/
 *.VC.db
 *.VC.VC.opendb
+
+### Rider / Resharper
+.idea/
+*.sln.iml
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
 
 ### VS Code
 .vscode/
@@ -33,12 +39,7 @@ packages/
 project.lock.json
 project.fragment.lock.json
 
-### Resharper / Rider caches
-_ReSharper*/
-*.[Rr]e[Ss]harper
-*.DotSettings.user
-
-### Others
+### Temporary / Backup / Misc
 *.dbmdl
 *.bak
 *.swp
@@ -49,5 +50,13 @@ _ReSharper*/
 .DS_Store
 Thumbs.db
 ehthumbs.db
-Project/GameRandom/bin/Debug/net10.0/GameRandom.dll
-Project/GameRandom/bin/Debug/net10.0/GameRandom.pdb
+
+### Ignore any Debug/Release binaries (universal rule)
+**/[Dd]ebug/
+**/[Rr]elease/
+**/[Bb]uild/
+
+### Explicitly ignore build outputs of GameRandom
+Project/GameRandom/bin/
+Project/GameRandom/obj/
+
