@@ -1,6 +1,11 @@
 ### Build artifacts
-bin/
-obj/
+
+[Bb]uild/
+[Ll]og/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
 *.exe
 *.dll
 *.pdb
@@ -59,4 +64,3 @@ ehthumbs.db
 ### Explicitly ignore build outputs of GameRandom
 Project/GameRandom/bin/
 Project/GameRandom/obj/
-
