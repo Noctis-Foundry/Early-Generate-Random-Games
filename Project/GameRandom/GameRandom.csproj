@@ -16,6 +16,8 @@
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
         <AvaloniaResource Include="Assets\**" />
+        <None Include="libs\steam_api64.dll" CopyToOutputDirectory="Always">
+        <None Include="libs\steam_appid.txt" CopyToOutputDirectory="Always">
     </ItemGroup>
 
     <ItemGroup>
