@@ -66,4 +66,5 @@ Project/GameRandom/bin/
 Project/GameRandom/obj/
 
 !Libs/
-!Libs/*.dll
+!Libs/**/*.dll
+!Libs/**/*.txt
