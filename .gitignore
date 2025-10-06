@@ -1,3 +1,5 @@
+!Libs/
+
 ### Build artifacts
 
 [Bb]uild/
@@ -8,6 +10,7 @@ x64/
 x86/
 *.exe
 *.dll
+!Libs/**/*.dll
 *.pdb
 *.cache
 *.log
@@ -65,6 +68,5 @@ ehthumbs.db
 Project/GameRandom/bin/
 Project/GameRandom/obj/
 
-!Libs/
-!Libs/**/*.dll
+
 !Libs/**/*.txt
