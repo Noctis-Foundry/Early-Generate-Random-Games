@@ -1,0 +1,8 @@
+D:\Repositor\GenerateRandomGames\Early-Generate-Random-Games\Project\GameRandom\obj\Debug\net9.0\GameRandom.csproj.AssemblyReference.cache
+D:\Repositor\GenerateRandomGames\Early-Generate-Random-Games\Project\GameRandom\obj\Debug\net9.0\Avalonia\Resources.Inputs.cache
+D:\Repositor\GenerateRandomGames\Early-Generate-Random-Games\Project\GameRandom\obj\Debug\net9.0\Avalonia\resources
+D:\Repositor\GenerateRandomGames\Early-Generate-Random-Games\Project\GameRandom\obj\Debug\net9.0\GameRandom.GeneratedMSBuildEditorConfig.editorconfig
+D:\Repositor\GenerateRandomGames\Early-Generate-Random-Games\Project\GameRandom\obj\Debug\net9.0\GameRandom.AssemblyInfoInputs.cache
+D:\Repositor\GenerateRandomGames\Early-Generate-Random-Games\Project\GameRandom\obj\Debug\net9.0\GameRandom.AssemblyInfo.cs
+D:\Repositor\GenerateRandomGames\Early-Generate-Random-Games\Project\GameRandom\obj\Debug\net9.0\GameRandom.csproj.CoreCompileInputs.cache
+D:\Repositor\GenerateRandomGames\Early-Generate-Random-Games\Project\GameRandom\obj\Debug\net9.0\GameRandom.sourcelink.json

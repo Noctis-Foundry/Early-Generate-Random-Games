@@ -1,0 +1,68 @@
+is_global = true
+build_property.AvaloniaNameGeneratorIsEnabled = true
+build_property.AvaloniaNameGeneratorBehavior = InitializeComponent
+build_property.AvaloniaNameGeneratorDefaultFieldModifier = internal
+build_property.AvaloniaNameGeneratorFilterByPath = *
+build_property.AvaloniaNameGeneratorFilterByNamespace = *
+build_property.AvaloniaNameGeneratorViewFileNamingStrategy = NamespaceAndClassName
+build_property.AvaloniaNameGeneratorAttachDevTools = true
+build_property.TargetFramework = net10.0
+build_property.TargetFramework = net10.0
+build_property.TargetPlatformMinVersion = 
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.TargetFrameworkIdentifier = .NETCoreApp
+build_property.TargetFrameworkVersion = v10.0
+build_property.RootNamespace = GameRandom
+build_property.ProjectDir = D:\Repositor\GenerateRandomGames\Early-Generate-Random-Games\Project\GameRandom\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.EffectiveAnalysisLevelStyle = 10.0
+build_property.EnableCodeStyleSeverity = 
+
+[D:/Repositor/GenerateRandomGames/Early-Generate-Random-Games/Project/GameRandom/App.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/Repositor/GenerateRandomGames/Early-Generate-Random-Games/Project/GameRandom/Style/Button.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/Repositor/GenerateRandomGames/Early-Generate-Random-Games/Project/GameRandom/Style/GameTableStyle.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/Repositor/GenerateRandomGames/Early-Generate-Random-Games/Project/GameRandom/Style/ProfileStyle.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/Repositor/GenerateRandomGames/Early-Generate-Random-Games/Project/GameRandom/Style/RandomGameButtonStyle.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/Repositor/GenerateRandomGames/Early-Generate-Random-Games/Project/GameRandom/Style/TableStyle.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/Repositor/GenerateRandomGames/Early-Generate-Random-Games/Project/GameRandom/Views/GameTable.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/Repositor/GenerateRandomGames/Early-Generate-Random-Games/Project/GameRandom/Views/MainWindow.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/Repositor/GenerateRandomGames/Early-Generate-Random-Games/Project/GameRandom/Views/MainWindowContent.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/Repositor/GenerateRandomGames/Early-Generate-Random-Games/Project/GameRandom/Views/ProfileContent.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/Repositor/GenerateRandomGames/Early-Generate-Random-Games/Project/GameRandom/Views/RollGame.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/Repositor/GenerateRandomGames/Early-Generate-Random-Games/Project/GameRandom/Views/Rules.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml

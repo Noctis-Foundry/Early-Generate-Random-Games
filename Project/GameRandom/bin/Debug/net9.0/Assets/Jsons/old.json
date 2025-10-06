@@ -1,0 +1,217 @@
+[
+  {
+    "appId": 20,
+    "appReleaseYear": 1999,
+    "appName": "Team Fortress Classic",
+    "appDescription": "One of the most popular online action games of all time, Team Fortress Classic features over nine character classes -- from Medic to Spy to Demolition Man -- enlisted in a unique style of online team warfare. Each character class possesses unique weapons, items, and abilities, as teams compete online in a variety of game play modes.",
+    "appGenres": {
+      "1": "Action"
+    },
+    "appCategoris": {
+      "1": "Multi-player",
+      "49": "PvP",
+      "36": "Online PvP",
+      "37": "Shared/Split Screen PvP",
+      "68": "Custom Volume Controls",
+      "75": "Keyboard Only Option",
+      "69": "Stereo Sound",
+      "8": "Valve Anti-Cheat enabled",
+      "44": "Remote Play Together",
+      "62": "Family Sharing"
+    }
+  },
+  {
+    "appId": 30,
+    "appReleaseYear": 2003,
+    "appName": "Day of Defeat",
+    "appDescription": "Enlist in an intense brand of Axis vs. Allied teamplay set in the WWII European Theatre of Operations. Players assume the role of light/assault/heavy infantry, sniper or machine-gunner class, each with a unique arsenal of historical weaponry at their disposal. Missions are based on key historical operations.",
+    "appGenres": {
+      "1": "Action"
+    },
+    "appCategoris": {
+      "1": "Multi-player",
+      "67": "Camera Comfort",
+      "66": "Color Alternatives",
+      "68": "Custom Volume Controls",
+      "69": "Stereo Sound",
+      "8": "Valve Anti-Cheat enabled",
+      "62": "Family Sharing"
+    }
+  },
+  {
+    "appId": 40,
+    "appReleaseYear": 2001,
+    "appName": "Deathmatch Classic",
+    "appDescription": "Enjoy fast-paced multiplayer gaming with Deathmatch Classic (a.k.a. DMC). Valve\u0027s tribute to the work of id software, DMC invites players to grab their rocket launchers and put their reflexes to the test in a collection of futuristic settings.",
+    "appGenres": {
+      "1": "Action"
+    },
+    "appCategoris": {
+      "1": "Multi-player",
+      "49": "PvP",
+      "36": "Online PvP",
+      "37": "Shared/Split Screen PvP",
+      "66": "Color Alternatives",
+      "68": "Custom Volume Controls",
+      "75": "Keyboard Only Option",
+      "69": "Stereo Sound",
+      "8": "Valve Anti-Cheat enabled",
+      "44": "Remote Play Together",
+      "62": "Family Sharing"
+    }
+  },
+  {
+    "appId": 50,
+    "appReleaseYear": 1999,
+    "appName": "Half-Life: Opposing Force",
+    "appDescription": "Return to the Black Mesa Research Facility as one of the military specialists assigned to eliminate Gordon Freeman. Experience an entirely new episode of single player action. Meet fierce alien opponents, and experiment with new weaponry. Named \u0027Game of the Year\u0027 by the Academy of Interactive Arts and Sciences.",
+    "appGenres": {
+      "1": "Action"
+    },
+    "appCategoris": {
+      "2": "Single-player",
+      "1": "Multi-player",
+      "68": "Custom Volume Controls",
+      "78": "Adjustable Difficulty",
+      "74": "Playable without Timed Input",
+      "79": "Save Anytime",
+      "8": "Valve Anti-Cheat enabled",
+      "62": "Family Sharing"
+    }
+  },
+  {
+    "appId": 60,
+    "appReleaseYear": 2000,
+    "appName": "Ricochet",
+    "appDescription": "A futuristic action game that challenges your agility as well as your aim, Ricochet features one-on-one and team matches played in a variety of futuristic battle arenas.",
+    "appGenres": {
+      "1": "Action"
+    },
+    "appCategoris": {
+      "1": "Multi-player",
+      "49": "PvP",
+      "36": "Online PvP",
+      "68": "Custom Volume Controls",
+      "75": "Keyboard Only Option",
+      "69": "Stereo Sound",
+      "8": "Valve Anti-Cheat enabled",
+      "62": "Family Sharing"
+    }
+  },
+  {
+    "appId": 70,
+    "appReleaseYear": 1998,
+    "appName": "Half-Life",
+    "appDescription": "Named Game of the Year by over 50 publications, Valve\u0027s debut title blends action and adventure with award-winning technology to create a frighteningly realistic world where players must think to survive. Also includes an exciting multiplayer mode that allows you to play against friends and enemies around the world.",
+    "appGenres": {
+      "1": "Action"
+    },
+    "appCategoris": {
+      "2": "Single-player",
+      "1": "Multi-player",
+      "49": "PvP",
+      "36": "Online PvP",
+      "28": "Full controller support",
+      "66": "Color Alternatives",
+      "68": "Custom Volume Controls",
+      "78": "Adjustable Difficulty",
+      "75": "Keyboard Only Option",
+      "74": "Playable without Timed Input",
+      "79": "Save Anytime",
+      "69": "Stereo Sound",
+      "23": "Steam Cloud",
+      "8": "Valve Anti-Cheat enabled",
+      "41": "Remote Play on Phone",
+      "42": "Remote Play on Tablet",
+      "62": "Family Sharing"
+    }
+  },
+  {
+    "appId": 80,
+    "appReleaseYear": 2004,
+    "appName": "Counter-Strike: Condition Zero",
+    "appDescription": "With its extensive Tour of Duty campaign, a near-limitless number of skirmish modes, updates and new content for Counter-Strike\u0027s award-winning multiplayer game play, plus over 12 bonus single player missions, Counter-Strike: Condition Zero is a tremendous offering of single and multiplayer content.",
+    "appGenres": {
+      "1": "Action"
+    },
+    "appCategoris": {
+      "2": "Single-player",
+      "1": "Multi-player",
+      "66": "Color Alternatives",
+      "68": "Custom Volume Controls",
+      "78": "Adjustable Difficulty",
+      "69": "Stereo Sound",
+      "8": "Valve Anti-Cheat enabled",
+      "62": "Family Sharing"
+    }
+  },
+  {
+    "appId": 100,
+    "appReleaseYear": 2004,
+    "appName": "Counter-Strike: Condition Zero",
+    "appDescription": "With its extensive Tour of Duty campaign, a near-limitless number of skirmish modes, updates and new content for Counter-Strike\u0027s award-winning multiplayer game play, plus over 12 bonus single player missions, Counter-Strike: Condition Zero is a tremendous offering of single and multiplayer content.",
+    "appGenres": {
+      "1": "Action"
+    },
+    "appCategoris": {
+      "2": "Single-player",
+      "1": "Multi-player",
+      "66": "Color Alternatives",
+      "68": "Custom Volume Controls",
+      "78": "Adjustable Difficulty",
+      "69": "Stereo Sound",
+      "8": "Valve Anti-Cheat enabled",
+      "62": "Family Sharing"
+    }
+  },
+  {
+    "appId": 130,
+    "appReleaseYear": 2001,
+    "appName": "Half-Life: Blue Shift",
+    "appDescription": "Made by Gearbox Software and originally released in 2001 as an add-on to Half-Life, Blue Shift is a return to the Black Mesa Research Facility in which you play as Barney Calhoun, the security guard sidekick who helped Gordon out of so many sticky situations.",
+    "appGenres": {
+      "1": "Action"
+    },
+    "appCategoris": {
+      "2": "Single-player",
+      "68": "Custom Volume Controls",
+      "78": "Adjustable Difficulty",
+      "74": "Playable without Timed Input",
+      "79": "Save Anytime",
+      "62": "Family Sharing"
+    }
+  },
+  {
+    "appId": 220,
+    "appReleaseYear": 2004,
+    "appName": "Half-Life 2",
+    "appDescription": "Reawakened from stasis in the occupied metropolis of City 17, Gordon Freeman is joined by Alyx Vance as he leads a desperate human resistance. Experience the landmark first-person shooter packed with immersive world-building, boundary-pushing physics, and exhilarating combat.",
+    "appGenres": {
+      "1": "Action"
+    },
+    "appCategoris": {
+      "2": "Single-player",
+      "22": "Steam Achievements",
+      "28": "Full controller support",
+      "29": "Steam Trading Cards",
+      "13": "Captions available",
+      "30": "Steam Workshop",
+      "67": "Camera Comfort",
+      "68": "Custom Volume Controls",
+      "78": "Adjustable Difficulty",
+      "74": "Playable without Timed Input",
+      "79": "Save Anytime",
+      "69": "Stereo Sound",
+      "65": "Subtitle Options",
+      "70": "Surround Sound",
+      "23": "Steam Cloud",
+      "16": "Includes Source SDK",
+      "14": "Commentary available",
+      "41": "Remote Play on Phone",
+      "42": "Remote Play on Tablet",
+      "44": "Remote Play Together",
+      "62": "Family Sharing",
+      "63": "Steam Timeline"
+    }
+  }
+]

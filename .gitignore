@@ -1,15 +1,5 @@
 ### Build artifacts
-bin/
-obj/
-[Bb]uild/
-[Ll]og/
-[Dd]ebug/
-[Rr]elease/
-x64/
-x86/
 *.exe
-*.dll
-*.pdb
 *.cache
 *.log
 
@@ -58,3 +48,5 @@ _ReSharper*/
 .DS_Store
 Thumbs.db
 ehthumbs.db
+Project/GameRandom/bin/Debug/net10.0/GameRandom.dll
+Project/GameRandom/bin/Debug/net10.0/GameRandom.pdb
