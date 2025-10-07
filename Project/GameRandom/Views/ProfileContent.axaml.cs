@@ -15,8 +15,8 @@ namespace GameRandom.Views;
 
 public partial class ProfileContent : UserControl
 {
-    private Action<string> _changeContent;
-    private LobbySystem _lobbySystem = new LobbySystem();
+    private Action<string>? _changeContent;
+    private readonly LobbySystem _lobbySystem = new LobbySystem();
     
     public ProfileContent()
     {
@@ -36,19 +36,6 @@ public partial class ProfileContent : UserControl
         {
             try
             {
-                await using(var db = new AppDbContext())
-                {
-                    var list = await db.LobbyContexts.ToListAsync();
-
-                    foreach (var item in list)
-                    {
-                        Console.WriteLine($"Remove {item.MemberID} from {item.LobbyID}");
-                        db.LobbyContexts.Remove(item);
-                    }
-                
-                    await db.SaveChangesAsync();
-                }
-                
                 var membersList = await _lobbySystem.CreateLobby();
 
                 foreach (var item in membersList)
@@ -63,19 +50,14 @@ public partial class ProfileContent : UserControl
             }
         });
     }
-
-    public void InviteToLobby(object? sender, RoutedEventArgs e)
-    {
-        _lobbySystem.InviteToLobby();
-    }
     
     private void InitializePlayerProfile()
     {
-        var clientID = SteamManager.Instance.GetSteamId();
+        CSteamID steamId = SteamManager.Instance.GetSteamId();
 
         string accName = SteamFriends.GetPersonaName();
         
-        int imageId = SteamFriends.GetLargeFriendAvatar(clientID);
+        int imageId = SteamFriends.GetLargeFriendAvatar(steamId);
 
         uint width, height;
         SteamUtils.GetImageSize(imageId, out width, out height);

@@ -11,47 +11,57 @@ namespace GameRandom.SteamSDK;
 
 public class SteamManager
 {
-    private const string AppList = "https://api.steampowered.com/ISteamApps/GetAppList/v2/";
-    
-    public static SteamManager Instance { get; private set; }
-    private string listPath;
-    
+    private const int MaxTryToConnect = 6;
+    public static SteamManager? Instance;
     private bool _isInitialized = false;
-    Dictionary<int, string> _appList = new Dictionary<int, string>();
     
     private Timer? _steamCallbackTimer;
-    
+
     public SteamManager()
     {
         Instance = this;
-
-        listPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SteamApps.json");
     }
-
+    
     public void InitSteam()
     {
         if (_isInitialized)
             return;
 
-        try
+        int connectCount = 0;
+        
+        while (true)
         {
-            SteamAPI.Init();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine("Steam init failed " + e);
-            throw;
+            try
+            {
+                SteamAPI.Init();
+                break;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                Task.Delay(10000).Wait();
+                connectCount++;
+
+                if (connectCount == MaxTryToConnect)
+                {
+                    throw new Exception("Failed to initialize Steam API");
+                }
+            }
         }
         
+        
+        StartEventTimer();
+        _isInitialized = true;
+    }
+
+    private void StartEventTimer()
+    {
         _steamCallbackTimer = new Timer(100);
         _steamCallbackTimer.Elapsed += (s, e) =>
         {
             SteamAPI.RunCallbacks();
         };
         _steamCallbackTimer.Start();
-        
-        _isInitialized = true;
-        Console.WriteLine("SteamAPI.Init() finished");
     }
 
     public void ShutdownSteam()
@@ -71,50 +81,5 @@ public class SteamManager
             throw new Exception("SteamAPI.Init() failed");
         
         return SteamUser.GetSteamID();
-    }
-
-    public async Task<string> GetAppList()
-    {
-        string jsonContent = "";
-        
-        if (File.Exists(listPath))
-        {
-            using (var wr = new StreamReader(listPath))
-            {
-                jsonContent = await wr.ReadToEndAsync();
-            }
-        }
-        else
-        {
-            jsonContent = await CreateNewAppList();
-        }
-        
-        return jsonContent;
-    }
-
-    private async Task<string> CreateNewAppList()
-    {
-        using HttpClient client = new HttpClient();
-
-        string response = "";
-
-        try
-        {
-            string url = AppList;
-            response = await client.GetStringAsync(url);
-            
-            await using (StreamWriter sw = new StreamWriter(listPath, false, new System.Text.UTF8Encoding(false)))
-            {
-                await sw.WriteAsync(response);
-            }
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine($"Ошибка: {e.Message}");
-        }
-        
-        StreamReader sr = new StreamReader(listPath);
-
-        return response;
     }
 }

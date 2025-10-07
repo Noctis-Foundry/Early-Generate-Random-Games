@@ -58,27 +58,28 @@ public class LobbySystem
                             .Where(x => x.MemberID == data.MemberID)
                             .ExecuteUpdateAsync(s => s.SetProperty(x => x.LobbyID, newLobbyId.m_SteamID));
                     }
+                    
+                    await db.SaveChangesAsync();
                 }
-
-                await db.SaveChangesAsync();
+                
                 _lobbyCreatedTcs.SetResult(await db.LobbyContexts.ToListAsync());
             });
         }
     }
-    public bool MemberToJoin(ulong lobbyId)
+    public string MemberToJoin(ulong lobbyId)
     {
-        CSteamID steamLobbyId = new CSteamID(lobbyId);
-        
-        int members = SteamMatchmaking.GetNumLobbyMembers(steamLobbyId);
-
-        if (members <= 0)
+        try
         {
-            return false;
+            CSteamID steamLobbyId = new CSteamID(lobbyId);
+            SteamMatchmaking.JoinLobby(steamLobbyId);
+            
+            return "Connected to lobby";
         }
-        
-        SteamMatchmaking.JoinLobby(steamLobbyId);
-
-        return true;
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return e.Message;
+        }
     }
     private void OnLobbyEntered(LobbyEnter_t callback)
     {
@@ -111,29 +112,6 @@ public class LobbySystem
             await db.SaveChangesAsync();
         });
     }
-    public void InviteToLobby()
-    {
-        CSteamID lobbyId;
-        
-        using (var db = new AppDbContext())
-        {
-            var hostData = db.LobbyContexts.First(x => x.MemberID == SteamManager.Instance.GetSteamId().m_SteamID);
-            lobbyId = new CSteamID(hostData.LobbyID);
-        }
-        
-        var members = SteamMatchmaking.GetNumLobbyMembers(lobbyId);
-        Console.WriteLine($"Start invite to lobby {lobbyId.m_SteamID} members to lobby {members}");
-        
-        try
-        {
-            SteamFriends.ActivateGameOverlayInviteDialog(lobbyId);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine("Failed to invite to lobby: " + e.Message);
-        }
-    }
-    
     void OnLobbyJoin(GameLobbyJoinRequested_t callback)
     {
         SteamMatchmaking.JoinLobby(callback.m_steamIDLobby);

@@ -36,31 +36,4 @@ public static class AvaloniaService
 
         return bitmap;
     }
-
-    public static void ConvertListToJson(List<AppSavedContext>? list, string path)
-    {
-        if (list == null || list.Count == 0)
-        {
-            Console.WriteLine("List is empty or null. Nothing to save.");
-            return;
-        }
-
-        try
-        {
-            var options = new JsonSerializerOptions
-            {
-                WriteIndented = true,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                IgnoreNullValues = true
-            };
-
-            string json = JsonSerializer.Serialize(list, options);
-            File.WriteAllText(path, json);
-            Console.WriteLine($"Saved {list.Count} items to {path}");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error saving JSON: {ex.Message}");
-        }
-    }
 }
