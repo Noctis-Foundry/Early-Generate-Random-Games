@@ -6,6 +6,7 @@
 [Ll]og/
 [Dd]ebug/
 [Rr]elease/
+obj/
 x64/
 x86/
 *.exe
