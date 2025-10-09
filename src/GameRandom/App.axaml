@@ -14,6 +14,7 @@
         <StyleInclude Source="Style/MainContentStyle.axaml"></StyleInclude>
         <StyleInclude Source="Style/RollContentStyle.axaml"></StyleInclude>
         <StyleInclude Source="Style/ProfileStyle.axaml"></StyleInclude>
+        <StyleInclude Source="Style/MenuItemsStyle.axaml"></StyleInclude>
         <StyleInclude Source="Style/LobbyStyle.axaml"></StyleInclude>
         <StyleInclude Source="Style/TableStyle.axaml"></StyleInclude>
     </Application.Styles>

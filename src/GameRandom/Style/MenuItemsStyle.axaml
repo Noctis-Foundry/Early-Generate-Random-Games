@@ -1,0 +1,63 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20" Background="#1e1e1e">
+            <Menu Classes="MainWindowMenu">
+                <MenuItem Classes="MainWindowMenuItem" Header="File">
+                    <MenuItem Header="New"/>
+                    <MenuItem Header="Open"/>
+                    <MenuItem Header="Exit"/>
+                </MenuItem>
+                <MenuItem Classes="MainWindowMenuItem" Header="Options"/>
+                <MenuItem Classes="MainWindowMenuItem" Header="Lobby"/>
+            </Menu>
+        </Border>
+    </Design.PreviewWith>
+
+    <!-- Основное меню -->
+    <Style Selector="Menu.MainWindowMenu">
+        <Setter Property="Background" Value="CadetBlue"/>
+        <Setter Property="Foreground" Value="#f0f0f0"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Padding" Value="6,4"/>
+    </Style>
+
+    <!-- Общие стили пунктов -->
+    <Style Selector="MenuItem.MainWindowMenuItem">
+        <Setter Property="Foreground" Value="#e0e0e0"/>
+        <Setter Property="Padding" Value="10,4"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Property="Opacity" Duration="0:0:0.15"/>
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <!-- Hover эффект -->
+    <Style Selector="MenuItem.MainWindowMenuItem:pointerover">
+        <Setter Property="Background" Value="#333333"/>
+        <Setter Property="Foreground" Value="#ffffff"/>
+        <Setter Property="Opacity" Value="0.95"/>
+        <Setter Property="CornerRadius" Value="6"/>
+    </Style>
+
+    <!-- Подменю (выпадающие элементы) -->
+    <Style Selector="MenuItem /template/ Border">
+        <Setter Property="Background" Value="#2a2a2a"/>
+        <Setter Property="CornerRadius" Value="6"/>
+        <Setter Property="BorderBrush" Value="#3a3a3a"/>
+        <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+
+    <Style Selector="MenuItem:submenuitem">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="#dcdcdc"/>
+        <Setter Property="Padding" Value="10,4"/>
+    </Style>
+
+    <Style Selector="MenuItem:submenuitem:pointerover">
+        <Setter Property="Background" Value="#444444"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+</Styles>

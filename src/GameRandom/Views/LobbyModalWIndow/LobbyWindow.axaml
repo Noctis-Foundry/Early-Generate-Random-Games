@@ -12,20 +12,18 @@
                         Gray
                 </DockPanel.Background>
                 
-                <Button DockPanel.Dock="Top" HorizontalAlignment="Right">
-                        Exit
-                </Button>
-                
-                <Grid RowDefinitions="Auto, Auto" RowSpacing="10">
+                <Grid RowDefinitions="Auto, Auto" RowSpacing="10" 
+                      VerticalAlignment="Center" HorizontalAlignment="Center"
+                      Margin="0,0,0,30">
                         <Label Content="Write lobby id for connect to group"
                                Classes="LobbyLabel"
                                HorizontalAlignment="Center"
                                Grid.Row="0"></Label> 
                         <TextBox Grid.Row="1" Classes="LobbyTextBox"
-                                 Width="250" x:Name="IdBox"
+                                 Width="400" x:Name="IdBox"
                                  MaxLength="18"
                                  TextChanged="OnLobbyIdChanging"
-                                 Text="Write..."></TextBox>
+                                 Text="..."></TextBox>
                 </Grid>
                 
         </DockPanel>

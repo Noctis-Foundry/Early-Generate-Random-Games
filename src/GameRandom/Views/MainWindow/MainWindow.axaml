@@ -10,26 +10,13 @@
         Title="GameRandom"
         MaxWidth="963" 
         MaxHeight="540" >
-
-    <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:MainWindowViewModel />
-    </Design.DataContext>
     
-    <Grid x:Name="MainWindowGrid">
-        <Grid.Background>
-            Gray
-        </Grid.Background>
-        
-        <UserControl>
-            <ContextMenu>
-                <MenuItem Header="Lobby" Click="ShowToLobbyWindow"></MenuItem>
-            </ContextMenu>
-        </UserControl>
-        
+    <DockPanel VerticalSpacing="5">
+        <DockPanel.Background> Gray </DockPanel.Background>
+        <Menu DockPanel.Dock="Top" Classes="MainWindowMenu">
+            <MenuItem Classes="MainWindowMenuItem" Header="Lobby"
+                      Command="{Binding OpenLobby}"></MenuItem>
+        </Menu>
         <ContentControl x:Name="ControlMain"></ContentControl>
-        
-        
-    </Grid>
+    </DockPanel>
 </Window>

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
@@ -19,8 +20,13 @@ public class MainWindowViewModel : ViewModelBase
         OpenLobbyCommand = new RelayCommand(OpenLobby);
     }
 
-    private async void OpenLobby()
+    public async void OpenLobby()
     {
         await _windowService.ShowDialogAsync<LobbyWindow>();
+    }
+
+    public async Task OpenFile()
+    {
+        await _windowService.ShowDialogAsync<MainWindow>();
     }
 }

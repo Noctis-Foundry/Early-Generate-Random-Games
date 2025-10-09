@@ -21,7 +21,8 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
 
-        DataContext = new MainWindowViewModel(new WindowService(this));
+        var vm = new MainWindowViewModel(new WindowService(this));
+        DataContext = vm;
         
         _changeContent = Navigate;
         
@@ -69,6 +70,6 @@ public partial class MainWindow : Window
 
     private void ShowToLobbyWindow(object? sender, RoutedEventArgs e)
     {
-        throw new NotImplementedException();
+        
     }
 }
