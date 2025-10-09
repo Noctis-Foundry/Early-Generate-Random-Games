@@ -10,11 +10,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-         <Content Include="Assets\**\*.*">
-         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-         </Content>
         <Folder Include="Models\" />
-        <Folder Include="Scr\" />
         <None Include="Assets\Jsons\temp_apps.json" CopyToOutputDirectory="Always"></None>
         <None Include="Assets\avalonia-logo.ico">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -46,5 +42,32 @@
         <PackageReference Include="Newtonsoft.Json.Bson" Version="1.0.3" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0-rc.1" />
         <PackageReference Include="Steamworks.NET" Version="2024.8.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Views\MainWindow\GameTable.axaml.cs">
+        <DependentUpon>GameTable.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\MainWindow\MainWindow.axaml.cs">
+        <DependentUpon>MainWindow.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\MainWindow\MainWindowContent.axaml.cs">
+        <DependentUpon>MainWindowContent.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\MainWindow\ProfileContent.axaml.cs">
+        <DependentUpon>ProfileContent.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\MainWindow\RollGame.axaml.cs">
+        <DependentUpon>RollGame.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Views\MainWindow\Rules.axaml.cs">
+        <DependentUpon>Rules.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
     </ItemGroup>
 </Project>

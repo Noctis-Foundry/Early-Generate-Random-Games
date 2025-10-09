@@ -11,10 +11,10 @@
     
     <Application.Styles>
         <FluentTheme />
-        <StyleInclude Source="Style/Button.axaml"></StyleInclude>
-        <StyleInclude Source="Style/RandomGameButtonStyle.axaml"></StyleInclude>
+        <StyleInclude Source="Style/MainContentStyle.axaml"></StyleInclude>
+        <StyleInclude Source="Style/RollContentStyle.axaml"></StyleInclude>
         <StyleInclude Source="Style/ProfileStyle.axaml"></StyleInclude>
-        <StyleInclude Source="Style/GameTableStyle.axaml"></StyleInclude>
+        <StyleInclude Source="Style/LobbyStyle.axaml"></StyleInclude>
         <StyleInclude Source="Style/TableStyle.axaml"></StyleInclude>
     </Application.Styles>
 </Application>

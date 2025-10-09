@@ -7,6 +7,7 @@ using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using GameRandom.CoreApp;
+using GameRandom.Scr.WindowScr;
 using GameRandom.SteamSDK;
 using GameRandom.ViewModels;
 using GameRandom.Views;
@@ -29,7 +30,6 @@ public partial class App : Application
             DisableAvaloniaDataAnnotationValidation();
             desktop.MainWindow = new MainWindow()
             {
-                DataContext = new MainWindowViewModel(),
             };
         }
         

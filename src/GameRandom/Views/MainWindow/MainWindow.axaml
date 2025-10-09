@@ -16,10 +16,18 @@
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainWindowViewModel />
     </Design.DataContext>
+    
     <Grid x:Name="MainWindowGrid">
         <Grid.Background>
             Gray
         </Grid.Background>
+        
+        <UserControl>
+            <ContextMenu>
+                <MenuItem Header="Lobby" Click="ShowToLobbyWindow"></MenuItem>
+            </ContextMenu>
+        </UserControl>
+        
         <ContentControl x:Name="ControlMain"></ContentControl>
         
         

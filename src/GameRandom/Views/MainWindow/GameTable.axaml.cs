@@ -33,21 +33,6 @@ public partial class GameTable : UserControl
         _onShowContent?.Invoke("Main");
     }
 
-    private void CreateLobby_Click(object? sender, RoutedEventArgs e)
-    {
-        Console.WriteLine("Create Lobby clicked!");
-        
-        var newGame = new GameRecord 
-        { 
-            Player = "New Player", 
-            Game = "New Game", 
-            Status = "Waiting", 
-            StartDate = DateTime.Now.ToString("yyyy-MM-dd"),
-            EndDate = "-"
-        };
-        Games.Add(newGame);
-    }
-
     private void LoadSampleData()
     {
         // Тестовые данные для демонстрации

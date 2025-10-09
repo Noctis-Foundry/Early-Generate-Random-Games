@@ -8,7 +8,7 @@
     <StackPanel>
         
         <StackPanel.Background>
-            <ImageBrush Source="../Assets/RandomGame.png" Stretch="UniformToFill"></ImageBrush>
+            <ImageBrush Source="avares://GameRandom/Assets/RandomGame.png" Stretch="UniformToFill"></ImageBrush>
         </StackPanel.Background>
         
         <Button VerticalAlignment="Top" HorizontalAlignment="Right" Click="Close"
@@ -18,19 +18,19 @@
               HorizontalAlignment="Center"
               Margin="0, 50, 0, 50">
             <Button Grid.Column="0" Classes="RandomButton" x:Name="AppButton1">
-                <Image  Classes="GameImages" x:Name="AppImage1" Source="../Assets/avalonia-logo.ico" ></Image>
+                <Image  Classes="GameImages" x:Name="AppImage1" Source="avares://GameRandom/Assets/avalonia-logo.ico" ></Image>
             </Button>
             <Button Grid.Column="1" Classes="RandomButton" x:Name="AppButton2">
-                <Image  Classes="GameImages" x:Name="AppImage2" Source="../Assets/avalonia-logo.ico" ></Image>
+                <Image  Classes="GameImages" x:Name="AppImage2" Source="avares://GameRandom/Assets/avalonia-logo.ico" ></Image>
             </Button>
             <Button Grid.Column="2" Classes="RandomButton" x:Name="AppButton3" >
-                <Image  Classes="GameImages" x:Name="AppImage3" Source="../Assets/avalonia-logo.ico" ></Image>
+                <Image  Classes="GameImages" x:Name="AppImage3" Source="avares://GameRandom/Assets/avalonia-logo.ico" ></Image>
             </Button>
         </Grid>
         <Grid RowDefinitions="Auto" ColumnDefinitions="Auto, Auto" 
               HorizontalAlignment="Center" VerticalAlignment="Bottom">
             <Button Grid.Column="0" Click="GenerateGames" Background="Black" Classes="GameImages">
-                <Image Source="../Assets/ButtonRandomGame.png"  ></Image>
+                <Image Source="avares://GameRandom/Assets/ButtonRandomGame.png"  ></Image>
             </Button>
             <MaskedTextBox Grid.Column="1" Mask="0" x:Name="CountApp" Width="50" Height="50"
                            HorizontalContentAlignment="Center" VerticalContentAlignment="Center"

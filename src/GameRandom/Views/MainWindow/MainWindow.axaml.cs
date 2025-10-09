@@ -8,6 +8,7 @@ using GameRandom.Service;
 using GameRandom.SteamSDK;
 using Steamworks;
 using Avalonia.Animation;
+using GameRandom.Scr.WindowScr;
 using GameRandom.ViewModels;
 
 namespace GameRandom.Views;
@@ -20,7 +21,7 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
 
-        DataContext = new MainWindowViewModel();
+        DataContext = new MainWindowViewModel(new WindowService(this));
         
         _changeContent = Navigate;
         
@@ -62,6 +63,12 @@ public partial class MainWindow : Window
 
     private void MainWindow_OnClosed(object? sender, EventArgs e)
     {
-        SteamManager.Instance.ShutdownSteam();
+        if (SteamManager.Instance != null) 
+            SteamManager.Instance.ShutdownSteam();
+    }
+
+    private void ShowToLobbyWindow(object? sender, RoutedEventArgs e)
+    {
+        throw new NotImplementedException();
     }
 }

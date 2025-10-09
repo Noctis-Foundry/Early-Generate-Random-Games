@@ -1,0 +1,33 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="250"
+        x:Class="GameRandom.Views.LobbyModalWindow.LobbyWindow"
+        Width="500" Height="250"
+        Title="LobbyWindow">
+    
+        <DockPanel>
+                <DockPanel.Background>
+                        Gray
+                </DockPanel.Background>
+                
+                <Button DockPanel.Dock="Top" HorizontalAlignment="Right">
+                        Exit
+                </Button>
+                
+                <Grid RowDefinitions="Auto, Auto" RowSpacing="10">
+                        <Label Content="Write lobby id for connect to group"
+                               Classes="LobbyLabel"
+                               HorizontalAlignment="Center"
+                               Grid.Row="0"></Label> 
+                        <TextBox Grid.Row="1" Classes="LobbyTextBox"
+                                 Width="250" x:Name="IdBox"
+                                 MaxLength="18"
+                                 TextChanged="OnLobbyIdChanging"
+                                 Text="Write..."></TextBox>
+                </Grid>
+                
+        </DockPanel>
+        
+</Window>

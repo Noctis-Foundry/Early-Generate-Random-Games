@@ -5,16 +5,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="GameRandom.Views.GameTable">
-    
-    <UserControl.ContextMenu>
-        <ContextMenu>
-            <MenuItem Header="Create Lobby" Click="CreateLobby_Click"/>
-        </ContextMenu>
-    </UserControl.ContextMenu>
        
     <StackPanel Spacing="1">
         <StackPanel.Background>
-            <ImageBrush Source="../Assets/RandomGame.png" Stretch="UniformToFill"></ImageBrush>
+            <ImageBrush Source="avares://GameRandom/Assets/RandomGame.png" Stretch="UniformToFill"></ImageBrush>
         </StackPanel.Background>
         
         <Button VerticalAlignment="Top" HorizontalAlignment="Right" Click="Close"

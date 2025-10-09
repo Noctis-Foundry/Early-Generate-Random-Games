@@ -3,7 +3,7 @@
     <Design.PreviewWith>
         <Border Padding="20">
             <Button Classes="RandomButton">
-                <Image Source="D:\Repositor\GenerateRandomGames\Early-Generate-Random-Games\Project\GameRandom\Assets\10.jpg"
+                <Image Source="../Assets/10.jpg"
                        Classes="GameImages"></Image>
             </Button>
         </Border>

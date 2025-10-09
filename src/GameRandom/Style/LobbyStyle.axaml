@@ -1,0 +1,23 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20" Background="Gray">
+            <TextBox Text="Write lobby id" Classes="LobbyTextBox"></TextBox>
+        </Border>
+    </Design.PreviewWith>
+
+    <Style Selector="Label.LobbyLabel">
+        <Setter Property="FontSize" Value="24"></Setter>
+        <Setter Property="Foreground" Value="CadetBlue"></Setter>
+        <Setter Property="BorderBrush" Value="Black"></Setter>
+        <Setter Property="BorderThickness" Value="2"></Setter>
+        <Setter Property="Background" Value="AliceBlue"></Setter>
+    </Style>
+    
+    <Style Selector="TextBox.LobbyTextBox">
+        <Setter Property="FontSize" Value="24"></Setter>
+        <Setter Property="Background" Value="CadetBlue"></Setter>
+        <Setter Property="Foreground" Value="AntiqueWhite"></Setter>
+        <Setter Property="FontWeight" Value="Regular"></Setter>
+    </Style>
+</Styles>

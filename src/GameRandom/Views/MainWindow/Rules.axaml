@@ -9,7 +9,7 @@
                 Background="Black" Foreground="White"
                 Margin="0, 0, 10, 0">Close</Button>
         <StackPanel.Background>
-            <ImageBrush Source="../Assets/RandomGame.png" Stretch="UniformToFill"></ImageBrush>
+            <ImageBrush Source="avares://GameRandom/Assets/RandomGame.png" Stretch="UniformToFill"></ImageBrush>
         </StackPanel.Background>
         </StackPanel>
 </UserControl>
