@@ -19,11 +19,18 @@
                                Classes="LobbyLabel"
                                HorizontalAlignment="Center"
                                Grid.Row="0"></Label> 
-                        <TextBox Grid.Row="1" Classes="LobbyTextBox"
-                                 Width="400" x:Name="IdBox"
-                                 MaxLength="18"
-                                 TextChanged="OnLobbyIdChanging"
-                                 Text="..."></TextBox>
+                        <Grid Grid.ColumnDefinitions="Auto, Auto"  Grid.Row="1"
+                              ColumnSpacing="5">
+                                <TextBox Classes="LobbyTextBox"
+                                         Width="300" x:Name="IdBox"
+                                         MaxLength="18"
+                                         TextChanged="OnLobbyIdChanging"
+                                         Text="..."></TextBox>
+                                <Button Classes="CloseProfile" Grid.Column="1"
+                                        Content="Connect"
+                                        Click="ConnectToLobby"></Button>
+                        </Grid>
+                        
                 </Grid>
                 
         </DockPanel>

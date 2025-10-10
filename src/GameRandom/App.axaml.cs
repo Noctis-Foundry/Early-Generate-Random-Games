@@ -9,6 +9,7 @@ using Avalonia.Markup.Xaml;
 using GameRandom.CoreApp;
 using GameRandom.Scr.WindowScr;
 using GameRandom.SteamSDK;
+using GameRandom.SteamSDK.DI;
 using GameRandom.ViewModels;
 using GameRandom.Views;
 
@@ -31,6 +32,8 @@ public partial class App : Application
             desktop.MainWindow = new MainWindow()
             {
             };
+            
+            RegisterUiService(desktop.MainWindow);
         }
         
         base.OnFrameworkInitializationCompleted();
@@ -47,5 +50,18 @@ public partial class App : Application
         {
             BindingPlugins.DataValidators.Remove(plugin);
         }
+    }
+
+    private void RegisterUiService(Window window)
+    {
+        var factory = Di.Container.GetInstance(typeof(DiFactory)) as DiFactory;
+        
+        if (factory == null)
+            throw new Exception("DiFactory not found");
+        
+        if (window is MainWindow mainWindow) 
+            factory.Create(new ErrorService(), mainWindow);
+        else
+            throw new Exception("Window not found");
     }
 }

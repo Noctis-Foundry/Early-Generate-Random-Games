@@ -28,3 +28,14 @@ public class LobbyContext
     public ulong MemberID { get; set; }
     public string NickName { get; set; }
 }
+
+public class GameProgress
+{
+    public int Id { get; set; }
+    public uint ClientId { get; set; }
+    public uint LobbyId { get; set; }
+    public string GameName { get; set; }
+    public string DataBegin { get; set; }
+    public string DataEnd { get; set; }
+    public bool IsFinished { get; set; }
+}
