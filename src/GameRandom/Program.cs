@@ -3,6 +3,7 @@ using System;
 using GameRandom.DataBaseContexts;
 using GameRandom.Service;
 using GameRandom.SteamSDK;
+using GameRandom.SteamSDK.DI;
 using GameRandom.UserSystem;
 
 namespace GameRandom;
@@ -19,6 +20,8 @@ sealed class Program
     {
         try
         {
+            Di.Container.RegisterSingleInstance(new DiFactory());
+            
             _steamManager = new SteamManager();
             _steamManager.InitSteam();
             

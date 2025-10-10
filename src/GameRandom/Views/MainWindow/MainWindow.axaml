@@ -16,6 +16,8 @@
         <Menu DockPanel.Dock="Top" Classes="MainWindowMenu">
             <MenuItem Classes="MainWindowMenuItem" Header="Lobby"
                       Command="{Binding OpenLobby}"></MenuItem>
+            <MenuItem Classes="MainWindowMenuItem" Header="Show Error"
+                      Command="{Binding ShowError}"></MenuItem>
         </Menu>
         <ContentControl x:Name="ControlMain"></ContentControl>
     </DockPanel>

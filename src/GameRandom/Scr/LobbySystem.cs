@@ -4,13 +4,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using GameRandom.DataBaseContexts;
+using GameRandom.SteamSDK.DI;
 using Microsoft.EntityFrameworkCore;
 using Steamworks;
 
 namespace GameRandom.SteamSDK;
 
-public class LobbySystem
+public class LobbySystem : ILobbyService
 {
+    public ILobbyService Instance { get; set; }
+    
     private const int MemberToGroup = 6;
     
     private Callback<LobbyCreated_t>? _lobbyCreated;
@@ -23,8 +26,8 @@ public class LobbySystem
     {
         _lobbyEntered = Callback<LobbyEnter_t>.Create(OnLobbyEntered);
         _gameLobbyJoinRequested = Callback<GameLobbyJoinRequested_t>.Create(OnLobbyJoin);
+        Instance = this;
     }
-    
     public async Task<List<LobbyContext>> CreateLobby(List<LobbyContext>? lobbiesData = null)
     {
         _lobbyCreatedTcs = new TaskCompletionSource<List<LobbyContext>>();
@@ -66,26 +69,18 @@ public class LobbySystem
             });
         }
     }
-    public string MemberToJoin(ulong lobbyId)
+
+    public void ConnectToLobby(uint lobbyId)
     {
-        try
-        {
-            CSteamID steamLobbyId = new CSteamID(lobbyId);
-            SteamMatchmaking.JoinLobby(steamLobbyId);
-            
-            return "Connected to lobby";
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            return e.Message;
-        }
+        SteamMatchmaking.JoinLobby(new CSteamID(lobbyId));
     }
     private void OnLobbyEntered(LobbyEnter_t callback)
     {
-        if (callback.m_EChatRoomEnterResponse != (uint)EChatRoomEnterResponse.k_EChatRoomEnterResponseSuccess)
+        if (callback.m_EChatRoomEnterResponse != (uint)EChatRoomEnterResponse.k_EChatRoomEnterResponseSuccess ||
+            SteamManager.Instance == null)
         {
-            Console.WriteLine("Failed to join lobby");
+            var error = Di.Container.GetInstance(typeof(IError)) as IError;
+            error?.ShowErrorWindow("Not found room");
             return;
         }
         
@@ -116,4 +111,26 @@ public class LobbySystem
     {
         SteamMatchmaking.JoinLobby(callback.m_steamIDLobby);
     }
+    public async Task<List<Users>> GetPartyMembers(uint lobbyId)
+    {
+        var users = new List<Users>();
+        
+        await using (var db = new AppDbContext())
+        {
+            var list = db.LobbyContexts.Where(x => x.LobbyID == lobbyId).ToList();
+
+            foreach (var item in list)
+            {
+                Users user = db.Users.First(a => a.ClientID == item.MemberID);
+                users.Add(user);
+            }
+        }
+
+        return users;
+    }
+}
+
+public interface ILobbyService
+{
+    Task<List<Users>> GetPartyMembers(uint lobbyId);
 }
