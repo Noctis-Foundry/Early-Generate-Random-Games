@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GameRandom.SteamSDK.DI;
+namespace GameRandom.Scr.DI;
 
 public class DiContainer
 {
@@ -18,8 +18,10 @@ public class DiContainer
         
         _instanceService.Add(typeof(TInterface), instance);
     }
-    public object GetInstance(Type type)
+    public object GetInstance<TType>()
     {
+        var type = typeof(TType);
+        
         if (!_instanceService.ContainsKey(type))
             throw new Exception($"Not founded object with type {type}");
 
@@ -27,8 +29,10 @@ public class DiContainer
         
         return instance;
     }
-    public object? TryGetInstance(Type type)
+    public object? TryGetInstance<TType>()
     {
+        var type = typeof(TType);
+        
         if (_instanceService.TryGetValue(type, out var instance))
         {
             return instance;

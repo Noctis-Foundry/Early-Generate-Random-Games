@@ -1,6 +1,6 @@
 ﻿using System;
 using Avalonia.Controls;
-using GameRandom.SteamSDK.DI;
+using GameRandom.Scr.DI;
 using GameRandom.Views;
 
 namespace GameRandom.SteamSDK;

@@ -1,14 +1,9 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using Avalonia;
-using Avalonia.Controls;
 using CommunityToolkit.Mvvm.Input;
+using GameRandom.Scr.DI;
 using GameRandom.Scr.WindowScr;
 using GameRandom.SteamSDK;
-using GameRandom.SteamSDK.DI;
-using GameRandom.Views;
 using GameRandom.Views.LobbyModalWindow;
 
 namespace GameRandom.ViewModels;
@@ -30,7 +25,7 @@ public class MainWindowViewModel : ViewModelBase
 
     public void ShowError()
     {
-        IError? error = Di.Container.TryGetInstance(typeof(ErrorService)) as ErrorService;
+        IError? error = Di.Container.TryGetInstance<IError>() as ErrorService;
 
         if (error != null)
         {

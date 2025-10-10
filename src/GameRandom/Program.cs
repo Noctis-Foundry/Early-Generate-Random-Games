@@ -1,10 +1,7 @@
 ﻿using Avalonia;
 using System;
-using GameRandom.DataBaseContexts;
-using GameRandom.Service;
+using GameRandom.Scr.DI;
 using GameRandom.SteamSDK;
-using GameRandom.SteamSDK.DI;
-using GameRandom.UserSystem;
 
 namespace GameRandom;
 

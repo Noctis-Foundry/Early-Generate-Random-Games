@@ -1,15 +1,8 @@
 using System;
-using System.Collections.Generic;
 using Avalonia.Controls;
-using Avalonia.Interactivity;
-using Avalonia.Media.Imaging;
-using GameRandom.CoreApp;
 using GameRandom.Service;
 using GameRandom.SteamSDK;
-using Steamworks;
-using Avalonia.Animation;
 using GameRandom.Scr.WindowScr;
-using GameRandom.SteamSDK.DI;
 using GameRandom.ViewModels;
 
 namespace GameRandom.Views;
