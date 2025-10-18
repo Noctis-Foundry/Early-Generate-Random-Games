@@ -6,6 +6,8 @@ public class AppDbContext : DbContext
 {
     public DbSet<Users> Users { get; set; }
     public DbSet<LobbyContext> LobbyContexts { get; set; }
+    public DbSet<GameProgress> GameTables { get; set; }
+    
     public const string HostPath = "Host=217.11.167.137;Database=rdb;Username=ara;Password=m7a4k5s9i2m";
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -28,7 +30,6 @@ public class LobbyContext
     public ulong MemberID { get; set; }
     public string NickName { get; set; }
 }
-
 public class GameProgress
 {
     public int Id { get; set; }

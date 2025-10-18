@@ -139,7 +139,7 @@ public partial class RollGame : UserControl
         }
     }
     
-    private async void TakeGame(object? sender, RoutedEventArgs e)
+    private void TakeGame(object? sender, RoutedEventArgs e)
     {
         Button? button = (Button?)sender;
 
@@ -175,7 +175,6 @@ public partial class RollGame : UserControl
             }
         };
     }
-
     private void Close(Object? sender, RoutedEventArgs e)
     {
         _onShowContent?.Invoke("Main");

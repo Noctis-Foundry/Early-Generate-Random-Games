@@ -57,7 +57,6 @@ public partial class MainWindow : Window
 
     private void MainWindow_OnClosed(object? sender, EventArgs e)
     {
-        if (SteamManager.Instance != null) 
-            SteamManager.Instance.ShutdownSteam();
+        SteamManager.GetSteamManager().ShutdownSteam();
     }
 }
