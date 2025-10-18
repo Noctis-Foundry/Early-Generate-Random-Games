@@ -33,8 +33,7 @@ public class LobbyContext
 public class GameProgress
 {
     public int Id { get; set; }
-    public uint ClientId { get; set; }
-    public uint LobbyId { get; set; }
+    public ulong ClientId { get; set; }
     public string GameName { get; set; }
     public string DataBegin { get; set; }
     public string DataEnd { get; set; }

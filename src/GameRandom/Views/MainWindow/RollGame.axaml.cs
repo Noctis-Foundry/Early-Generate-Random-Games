@@ -1,21 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
 using Avalonia.VisualTree;
+using CommunityToolkit.Mvvm.Input;
 using GameRandom.CoreApp;
 using GameRandom.Service;
 using GameRandom.SteamSDK;
+using GameRandom.ViewModels;
 
 namespace GameRandom.Views;
 
 public partial class RollGame : UserControl
 {
-    private readonly Dictionary<Button, AppSavedContext?> _appData = new ();
-    private readonly Dictionary<int, Image> _imageData = new Dictionary<int, Image>();
+    private readonly Dictionary<ButtonContext, AppSavedContext?> _appData = new ();
     
     private readonly Random _random = new();
     
@@ -24,10 +26,13 @@ public partial class RollGame : UserControl
 
     private Action<string> _onShowContent;
     private bool _isRolling = false;
+
+    private int _lastYear = 0;
     
     public RollGame()
     {
         InitializeComponent();
+        DataContext = new RollGameViewModel();
 
         if (Design.IsDesignMode)
             return;
@@ -53,111 +58,77 @@ public partial class RollGame : UserControl
         int countGames = int.Parse(CountApp.Text ?? "1");
         
         List<AppSavedContext?> apps = new List<AppSavedContext?>();
-
-        int lastYear = 0;
         
         while (apps.Count < countGames)
         {
             int year = _random.Next(2000, 2025);
 
-            if (lastYear == year)
+            if (_lastYear == year)
             {
                 continue;
             }
-
-            lastYear = year;
+            _lastYear = year;
             
             var game = _generateRandomApps.GetRandomGame(year);
-
             if (!apps.Contains(game) && game != null)
             {
                 apps.Add(game);
             }
         }
-        
-        countGames = apps.Count;
 
-        if (countGames == 0)
+        if (apps.Count <= 0)
         {
             Console.WriteLine("No games found");
             _isRolling = false;
             return;
         }
         
-        _mainWindowFactory.ChangeGrid(countGames, GamesGrid);
-        (List<Button> buttons, List<Image> images) = _mainWindowFactory.CreateButtonInGrid(countGames, GamesGrid);
+        _mainWindowFactory.ChangeGrid(apps.Count, GamesGrid);
+        (List<Button> buttons, List<Image> images) = _mainWindowFactory.CreateButtonInGrid(apps.Count, GamesGrid);
         
-        AddListenerOnButtonClick(buttons);
-        InitDictionaryWithComponents(buttons, images);
-        
-        for (int i = 0; i < apps.Count; i++)
-        {
-            if (apps[i] is null)
-                continue;
-            
-            Bitmap? bitmap = await SteamService.Instance.GetImage(apps[i].HeaderImage);
-
-            if (bitmap is null)
-                continue;
-            
-            if (_appData.ContainsKey(buttons[i]))
-            {
-                _appData[buttons[i]] = apps[i];
-            }
-
-            _imageData[i].Source = bitmap;
-        }
+        await InitDictionaryWithComponents(buttons, images, apps);
+        InitializeButtonListeners();
 
         _isRolling = false;
     }
-
-    private void AddListenerOnButtonClick(List<Button> buttons)
-    {
-        foreach (var button in buttons)
-        {
-            button.Click += (sender, e) =>
-            {
-                var btn = sender as Button;
-                TakeGame(btn, e);
-            };
-        }
-    }
-
-    private void InitDictionaryWithComponents(List<Button> buttons, List<Image> images)
-    {
-        _appData.Clear();
-        _imageData.Clear();
-        
-        foreach (var button in buttons)
-        {
-            _appData[button] = null;
-        }
-
-        for (var i = 0; i < images.Count; i++)
-        {
-            _imageData.Add(i, images[i]);
-        }
-    }
     
-    private void TakeGame(object? sender, RoutedEventArgs e)
+    private async Task InitDictionaryWithComponents(List<Button> buttons, List<Image> images, List<AppSavedContext?> apps)
     {
-        Button? button = (Button?)sender;
-
-        if (button != null)
+        for (int i = 0; i < apps.Count; i++)
         {
-            if (_appData.TryGetValue(button, out AppSavedContext? appData))
+            ButtonContext buttonContext = new ButtonContext(buttons[i], images[i]);
+
+            Bitmap imageBitmap = await SteamService.Instance.GetImage(apps[i].HeaderImage);
+            buttonContext.ButtonImage.Source = imageBitmap;
+            
+            if (!_appData.TryAdd(buttonContext, apps[i]))
             {
-                if (appData != null)
-                {
-                    Console.WriteLine($"App name {appData.AppName}");
-                }
-                else
-                {
-                    Console.WriteLine($"App error");
-                }
+                throw new Exception(
+                    $"Dictionary contains duplicated app button with hash code {Equals(buttonContext)}");
             }
         }
     }
+
+    private void InitializeButtonListeners()
+    {
+        foreach (var item in _appData)
+        {
+            var button = item.Key.Button;
+            
+            if (DataContext is RollGameViewModel vm)
+            {
+                if (item.Value != null)
+                    button.Command = new RelayCommand(async () => await vm.ChooseGame(item.Value));
+                else
+                    throw new Exception("Not find game");
+            }
+            else
+            {
+                Console.WriteLine("Not find data context");
+            }
+        }
+    }
+    
     private void TextBoxEventsInit()
     {
         CountApp.PropertyChanged += (sender, e) =>

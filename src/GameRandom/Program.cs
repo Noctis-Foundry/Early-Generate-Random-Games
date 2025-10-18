@@ -1,6 +1,8 @@
 ﻿using Avalonia;
 using System;
 using GameRandom.Scr.DI;
+using GameRandom.Scr.Events;
+using GameRandom.Scr.Service;
 using GameRandom.SteamSDK;
 
 namespace GameRandom;
@@ -18,6 +20,8 @@ sealed class Program
         try
         {
             Di.Container.RegisterSingleInstance(new DiFactory());
+            Di.Container.RegisterSingleInstance(new EventBus());
+            Di.Container.RegisterSingleInstance(new ObservableConverter());
             
             _steamManager = new SteamManager();
             _steamManager.InitSteam();

@@ -49,3 +49,15 @@ public class MainWindowFactory
         return (buttons, images);
     }
 }
+
+public class ButtonContext
+{
+    public Button Button { get; private set; }
+    public Image ButtonImage { get; private set; }
+    
+    public ButtonContext(Button button, Image buttonImage)
+    {
+        Button = button;
+        ButtonImage = buttonImage;
+    }
+}

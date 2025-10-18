@@ -1,31 +1,53 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using Avalonia.Threading;
+using GameRandom.DataBaseContexts;
+using GameRandom.Scr.DI;
+using GameRandom.Scr.Events;
+using GameRandom.Scr.Service;
+using GameRandom.SteamSDK.Events;
+using GameRandom.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace GameRandom.Views;
 
 public partial class GameTable : UserControl
 {
+    private ObservableConverter _converter;
     private Action<string> _onShowContent;
-    public ObservableCollection<GameRecord> Games { get; set; }
 
     public GameTable()
     {
         InitializeComponent();
+        DataContext = new GameTableViewModel();
         
         if (Design.IsDesignMode)
             return;
         
-        Games = new ObservableCollection<GameRecord>();
-        GamesItemsControl.ItemsSource = Games;
-        
-        LoadSampleData(); 
+        var eventBus = Di.Container.GetInstance<EventBus>() as EventBus;
+        eventBus?.Subscribe<UpdateTableEvent>(e => UpdateTable(e.GameProgress));
+
+        if (Di.Container.GetInstance<ObservableConverter>() is ObservableConverter converter)
+        {
+            _converter = converter;
+        }
+
+        Task.Run(async () => await InitializeTable());
     }
 
+    private async Task InitializeTable()
+    {
+        await using var db = new AppDbContext();
+        var gameProgresses = await db.GameTables.ToListAsync();
+        await Dispatcher.UIThread.InvokeAsync(() => UpdateTable(gameProgresses));
+    }
+    
     public void AddListener(Action<string> onChangeContent) => _onShowContent = onChangeContent;
 
     private void Close(object? sender, RoutedEventArgs e)
@@ -33,34 +55,20 @@ public partial class GameTable : UserControl
         _onShowContent?.Invoke("Main");
     }
 
-    private void LoadSampleData()
+    private void UpdateTable(List<GameProgress> gameProgress)
     {
-        // Тестовые данные для демонстрации
-        var sampleGames = new List<GameRecord>
+        foreach (var item in gameProgress)
         {
-            new GameRecord { Player = "Player1", Game = "Chess", Status = "Active", 
-                           StartDate = "2024-01-15", EndDate = "2024-01-15" },
-            new GameRecord { Player = "Player2", Game = "Checkers", Status = "Finished", 
-                           StartDate = "2024-01-14", EndDate = "2024-01-14" },
-            new GameRecord { Player = "Player3", Game = "Backgammon", Status = "Waiting", 
-                           StartDate = "2024-01-16", EndDate = "-" },
-            new GameRecord { Player = "Player4", Game = "Chess", Status = "Active", 
-                           StartDate = "2024-01-15", EndDate = "-" }
-        };
-
-        foreach (var game in sampleGames)
+            Console.WriteLine($"item = {item.GameName}");
+        }
+        
+        if (DataContext is GameTableViewModel viewModel)
         {
-            Games.Add(game);
+            viewModel.GameProgress = _converter.ToObservableCollection(gameProgress);
+        }
+        else
+        {
+            Console.WriteLine("DataContext is not GameTableViewModel");
         }
     }
-}
-
-// Модель данных для записей в таблице
-public class GameRecord
-{
-    public string Player { get; set; } = string.Empty;
-    public string Game { get; set; } = string.Empty;
-    public string Status { get; set; } = string.Empty;
-    public string StartDate { get; set; } = string.Empty;
-    public string EndDate { get; set; } = string.Empty;
 }
