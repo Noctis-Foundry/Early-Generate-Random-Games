@@ -68,7 +68,6 @@ ehthumbs.db
 Project/GameRandom/bin/
 Project/GameRandom/obj/
 
-!Libs/
-!Libs/*.dll
-!Libs/**/*.dll
-!Libs/**/*.txt
+!src/GameRandom/Libs/
+!src/GameRandom/Libs/**/*.dll
+!src/GameRandom/Libs/**/*.txt
