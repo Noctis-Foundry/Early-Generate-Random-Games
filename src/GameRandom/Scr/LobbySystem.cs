@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Threading;
 using GameRandom.DataBaseContexts;
-using GameRandom.SteamSDK.DI;
+using GameRandom.Scr.DI;
 using Microsoft.EntityFrameworkCore;
 using Steamworks;
 
@@ -76,16 +76,15 @@ public class LobbySystem : ILobbyService
     }
     private void OnLobbyEntered(LobbyEnter_t callback)
     {
-        if (callback.m_EChatRoomEnterResponse != (uint)EChatRoomEnterResponse.k_EChatRoomEnterResponseSuccess ||
-            SteamManager.Instance == null)
+        if (callback.m_EChatRoomEnterResponse != (uint)EChatRoomEnterResponse.k_EChatRoomEnterResponseSuccess)
         {
-            var error = Di.Container.GetInstance(typeof(IError)) as IError;
+            var error = Di.Container.GetInstance<IError>() as ErrorService;
             error?.ShowErrorWindow("Not found room");
             return;
         }
         
         CSteamID steamLobbyId = new CSteamID(callback.m_ulSteamIDLobby);
-        CSteamID userId = SteamManager.Instance.GetSteamId();
+        CSteamID userId = SteamManager.GetSteamManager().GetSteamId();
         string userName = SteamFriends.GetPersonaName();
         
         Dispatcher.UIThread.Post(async () =>

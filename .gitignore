@@ -11,7 +11,6 @@ x64/
 x86/
 *.exe
 *.dll
-!Libs/**/*.dll
 *.pdb
 *.cache
 *.log
@@ -69,5 +68,6 @@ ehthumbs.db
 Project/GameRandom/bin/
 Project/GameRandom/obj/
 
-
-!Libs/**/*.txt
+!src/GameRandom/Libs/
+!src/GameRandom/Libs/**/*.dll
+!src/GameRandom/Libs/**/*.txt

@@ -1,67 +1,79 @@
-﻿
-    <UserControl xmlns="https://github.com/avaloniaui"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vm="using:GameRandom.ViewModels"
+             xmlns:converters="using:GameRandom.AvaloniaConverters"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="GameRandom.Views.GameTable">
-       
+             x:Class="GameRandom.Views.GameTable"
+             x:DataType="vm:GameTableViewModel">
+    
+    <UserControl.Resources>
+        <converters:BoolConverter x:Key="BoolConverter"></converters:BoolConverter>
+    </UserControl.Resources>
+    
     <StackPanel Spacing="1">
         <StackPanel.Background>
-            <ImageBrush Source="avares://GameRandom/Assets/RandomGame.png" Stretch="UniformToFill"></ImageBrush>
+            <ImageBrush Source="avares://GameRandom/Assets/RandomGame.png" Stretch="UniformToFill"/>
         </StackPanel.Background>
         
         <Button VerticalAlignment="Top" HorizontalAlignment="Right" Click="Close"
                 Background="Black" Foreground="White"
-                Margin="0, 0, 10, 0">Close</Button>
+                Margin="0,0,10,0">Close</Button>
         
+        <!-- Заголовки колонок -->
         <StackPanel Spacing="0" Orientation="Horizontal" Margin="0,20,0,10">
             <Label Width="150" Content="Player"
                    FontSize="24" Foreground="Black"
-                   FontWeight="Bold" HorizontalContentAlignment="Center"/>
+                   FontWeight="Bold"
+                   HorizontalContentAlignment="Center"/>
             <Label Width="150" Content="Game"
                    FontSize="24" Foreground="Black"
-                   FontWeight="Bold" HorizontalContentAlignment="Center"/>
+                   FontWeight="Bold"
+                   HorizontalContentAlignment="Center"/>
             <Label Width="150" Content="Status"
                    FontSize="24" Foreground="Black"
-                   FontWeight="Bold" HorizontalContentAlignment="Center"/>
+                   FontWeight="Bold"
+                   HorizontalContentAlignment="Center"/>
             <Label Width="150" Content="Start Date"
                    FontSize="24" Foreground="Black"
-                   FontWeight="Bold" HorizontalContentAlignment="Center"/>
+                   FontWeight="Bold"
+                   HorizontalContentAlignment="Center"/>
             <Label Width="150" Content="End Date"
                    FontSize="24" Foreground="Black"
-                   FontWeight="Bold" HorizontalContentAlignment="Center"/>
+                   FontWeight="Bold"
+                   HorizontalContentAlignment="Center"/>
         </StackPanel>
         
         <ScrollViewer VerticalScrollBarVisibility="Auto" 
                       HorizontalScrollBarVisibility="Disabled"
                       Height="345"
                       Margin="20,15,20,0">
-        <ItemsControl x:Name="GamesItemsControl" Margin="0,10,0,0">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Border BorderBrush="Gray" BorderThickness="0,0,0,1" Padding="0,5">
-                        <StackPanel Spacing="0" Orientation="Horizontal">
-                            <TextBlock Width="150" Text="Player"
-                                      FontSize="18" Foreground="Black"
-                                      HorizontalAlignment="Center" TextAlignment="Center"/>
-                            <TextBlock Width="150" Text="Game"
-                                      FontSize="18" Foreground="Black"
-                                      HorizontalAlignment="Center" TextAlignment="Center"/>
-                            <TextBlock Width="150" Text="Status"
-                                      FontSize="18" Foreground="Black"
-                                      HorizontalAlignment="Center" TextAlignment="Center"/>
-                            <TextBlock Width="150" Text="Start Date"
-                                      FontSize="18" Foreground="Black"
-                                      HorizontalAlignment="Center" TextAlignment="Center"/>
-                            <TextBlock Width="150" Text="End Date"
-                                      FontSize="18" Foreground="Black"
-                                      HorizontalAlignment="Center" TextAlignment="Center"/>
-                        </StackPanel>
-                    </Border>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+            <ListBox ItemsSource="{Binding GameProgress}" Background="AntiqueWhite">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="Gray" BorderThickness="0,0,0,1" Padding="0,5">
+                            <StackPanel Spacing="0" Orientation="Horizontal">
+                                <TextBlock Width="150" Text="{Binding ClientId}"
+                                           FontSize="18" Foreground="Black"
+                                           HorizontalAlignment="Center" TextAlignment="Center"/>
+                                <TextBlock Width="150" Text="{Binding GameName}"
+                                           FontSize="18" Foreground="Black"
+                                           HorizontalAlignment="Center" TextAlignment="Center"/>
+                                <TextBlock Width="150" Text="{Binding IsFinished, Converter={StaticResource BoolConverter}}"
+                                           FontSize="18" Foreground="Black"
+                                           HorizontalAlignment="Center" TextAlignment="Center"/>
+                                <TextBlock Width="150" Text="{Binding DataBegin}"
+                                           FontSize="18" Foreground="Black"
+                                           HorizontalAlignment="Center" TextAlignment="Center"/>
+                                <TextBlock Width="150" Text="{Binding DataEnd}"
+                                           FontSize="18" Foreground="Black"
+                                           HorizontalAlignment="Center" TextAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </ScrollViewer>
     </StackPanel>
 </UserControl>

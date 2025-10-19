@@ -12,14 +12,14 @@ namespace GameRandom.SteamSDK;
 public class SteamManager
 {
     private const int MaxTryToConnect = 6;
-    public static SteamManager? Instance;
+    private static SteamManager? _instance;
     private bool _isInitialized = false;
     
     private Timer? _steamCallbackTimer;
 
     public SteamManager()
     {
-        Instance = this;
+        _instance = this;
     }
     
     public void InitSteam()
@@ -81,5 +81,13 @@ public class SteamManager
             throw new Exception("SteamAPI.Init() failed");
         
         return SteamUser.GetSteamID();
+    }
+    
+    public static SteamManager GetSteamManager()
+    {
+        if (_instance == null)
+            throw new Exception("failed to get SteamManager");
+
+        return _instance;
     }
 }
