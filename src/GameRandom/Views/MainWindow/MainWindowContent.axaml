@@ -8,20 +8,20 @@
     <Grid>
         <Button Classes="ButtonLeftUpGround" Grid.Column="0" Margin="0,0" Click="GoToTable"
                 HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" BorderBrush="Transparent" BorderThickness="0">
-            <Image Source="../Assets/LeftUpClick.png"  Width="360" Stretch="Uniform" > </Image>
+            <Image Source="avares://GameRandom/Assets/LeftUpClick.png"  Width="360" Stretch="Uniform" > </Image>
         </Button>
         <Button Classes="ButtonLeftDownGround" Grid.Column="0" Margin="0,0" Click="GoToProfile"
                 HorizontalAlignment="Left" VerticalAlignment="Bottom" Background="Transparent" BorderBrush="Transparent" BorderThickness="0">
-            <Image Source="../Assets/LeftDownClick.png" Width="360" Stretch="Uniform"> </Image>
+            <Image Source="avares://GameRandom/Assets/LeftDownClick.png" Width="360" Stretch="Uniform"> </Image>
         </Button>
         <Button Classes="ButtonRightGround" Grid.Column="0" Margin="0,0" Click="GoToRollContent" 
                 HorizontalAlignment="Right"  Background="Transparent" BorderBrush="Transparent" BorderThickness="0">
-            <Image Source="../Assets/RightClick.png" Width="580" Stretch="UniformToFill" > </Image>
+            <Image Source="avares://GameRandom/Assets/RightClick.png" Width="580" Stretch="UniformToFill" > </Image>
         </Button>
         <Grid >
             <Button Classes="ButtonRightGround" Grid.Column="0" Margin="-5,-5" Click="GoToRules" 
                     HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" BorderBrush="Transparent" BorderThickness="0">
-                <Image Source="../Assets/Rules.jpg" Width="50" Height="50" Stretch="UniformToFill" > </Image>
+                <Image Source="avares://GameRandom/Assets/Rules.jpg" Width="50" Height="50" Stretch="UniformToFill" > </Image>
             </Button>
         </Grid>
     </Grid>

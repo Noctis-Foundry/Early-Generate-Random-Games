@@ -1,13 +1,8 @@
 using System;
-using System.Collections.Generic;
 using Avalonia.Controls;
-using Avalonia.Interactivity;
-using Avalonia.Media.Imaging;
-using GameRandom.CoreApp;
 using GameRandom.Service;
 using GameRandom.SteamSDK;
-using Steamworks;
-using Avalonia.Animation;
+using GameRandom.Scr.WindowScr;
 using GameRandom.ViewModels;
 
 namespace GameRandom.Views;
@@ -19,16 +14,16 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-
-        DataContext = new MainWindowViewModel();
+        
+        var vm = new MainWindowViewModel(new WindowService(this));
+        DataContext = vm;
         
         _changeContent = Navigate;
         
         InitializeUserControlRegister();
-        
         Navigate("Main");
-
-        this.Closing += MainWindow_OnClosed;
+        
+        Closing += MainWindow_OnClosed;
     }
 
     private void InitializeUserControlRegister()
@@ -62,6 +57,6 @@ public partial class MainWindow : Window
 
     private void MainWindow_OnClosed(object? sender, EventArgs e)
     {
-        SteamManager.Instance.ShutdownSteam();
+        SteamManager.GetSteamManager().ShutdownSteam();
     }
 }

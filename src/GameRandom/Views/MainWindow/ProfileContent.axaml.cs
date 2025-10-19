@@ -53,7 +53,7 @@ public partial class ProfileContent : UserControl
     
     private void InitializePlayerProfile()
     {
-        CSteamID steamId = SteamManager.Instance.GetSteamId();
+        CSteamID steamId = SteamManager.GetSteamManager().GetSteamId();
 
         string accName = SteamFriends.GetPersonaName();
         

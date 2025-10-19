@@ -1,14 +1,12 @@
 using System;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using GameRandom.CoreApp;
+using GameRandom.Scr.DI;
 using GameRandom.SteamSDK;
-using GameRandom.ViewModels;
 using GameRandom.Views;
 
 namespace GameRandom;
@@ -29,8 +27,9 @@ public partial class App : Application
             DisableAvaloniaDataAnnotationValidation();
             desktop.MainWindow = new MainWindow()
             {
-                DataContext = new MainWindowViewModel(),
             };
+            
+            RegisterUiService(desktop.MainWindow);
         }
         
         base.OnFrameworkInitializationCompleted();
@@ -47,5 +46,18 @@ public partial class App : Application
         {
             BindingPlugins.DataValidators.Remove(plugin);
         }
+    }
+
+    private void RegisterUiService(Window window)
+    {
+        var factory = Di.Container.GetInstance<DiFactory>() as DiFactory;
+        
+        if (factory == null)
+            throw new Exception("DiFactory not found");
+
+        if (window is MainWindow mainWindow)
+            factory.Create<IError, ErrorService, MainWindow>(new ErrorService(), mainWindow);
+        else
+            throw new Exception("Window not found");
     }
 }

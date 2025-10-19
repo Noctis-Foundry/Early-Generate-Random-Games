@@ -6,20 +6,13 @@
              x:Class="GameRandom.Views.ProfileContent">
     <StackPanel>
         <StackPanel.Background>
-            <ImageBrush Source="../Assets/RandomGame.png" Stretch="UniformToFill"></ImageBrush>
+            <ImageBrush Source="avares://GameRandom/Assets/RandomGame.png" Stretch="UniformToFill"></ImageBrush>
         </StackPanel.Background>
         
         <Button Content="Close" Classes="CloseProfile"
                 HorizontalAlignment="Right" Margin="0, 0, 10, 0"
                 Click="ExitFromProfile">
         </Button>
-        
-        <Grid RowDefinitions="Auto, Auto" 
-              HorizontalAlignment="Left" Margin="15, 0,0,30">
-            <Button Content="Create lobby" Classes="CloseProfile"
-                    Click="CreateLobby"></Button>
-            <Button Grid.Row="1" Content="Connect to lobby"></Button>
-        </Grid>
        
         
         <Grid RowDefinitions="*, *, *" ColumnDefinitions="Auto, Auto, Auto, Auto" 
@@ -45,7 +38,7 @@
         <Grid RowDefinitions="Auto, Auto"
               HorizontalAlignment="Right" Margin="0, 0, 50, 0">
             <Image Grid.Row="0" x:Name="AvatarImage"
-                   Source="../Assets/avalonia-logo.ico"
+                   Source="avares://GameRandom/Assets/avalonia-logo.ico"
                    Width="150" Height="150">
             </Image>
             <Label Grid.Row="1" x:Name="AccName"
