@@ -12,6 +12,7 @@ public class MainWindowViewModel : ViewModelBase
 {
     private readonly IWindowService _windowService;
     public ICommand OpenLobbyCommand { get; }
+
     public MainWindowViewModel(IWindowService windowService)
     {
         _windowService = windowService;
@@ -23,6 +24,11 @@ public class MainWindowViewModel : ViewModelBase
         await _windowService.ShowDialogAsync<LobbyWindow>();
     }
 
+    public async void ShowRules()
+    {
+        await _windowService.ShowDialogAsync<LobbyWindow>();
+    }
+    
     public void ShowError()
     {
         IError? error = Di.Container.TryGetInstance<IError>() as ErrorService;

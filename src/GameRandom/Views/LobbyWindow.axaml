@@ -5,34 +5,102 @@
         mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="250"
         x:Class="GameRandom.Views.LobbyModalWindow.LobbyWindow"
         Width="500" Height="250"
-        Title="LobbyWindow">
+        Title="LOBBY CONNECTION"
+        WindowStartupLocation="CenterScreen">
     
-        <DockPanel>
-                <DockPanel.Background>
-                        Gray
-                </DockPanel.Background>
+    <Grid>
+        <!-- Manga background with texture -->
+        <Grid.Background>
+            <ImageBrush Source="avares://GameRandom/Assets/RandomGame.png" Stretch="UniformToFill" Opacity="0.9"/>
+        </Grid.Background>
+        <Rectangle Fill="Black" Opacity="0.7"/>
+        
+        <!-- Main content -->
+        <Border Background="#99000000" 
+                BorderBrush="White" 
+                BorderThickness="4"
+                CornerRadius="0"
+                Margin="30"
+                Padding="0">
+            
+            <DockPanel>
+                <!-- Header -->
+                <Border DockPanel.Dock="Top"
+                        Background="Black" 
+                        BorderBrush="White" 
+                        BorderThickness="0,0,0,3"
+                        CornerRadius="0"
+                        Padding="20,15">
+                    <TextBlock Text="CONNECT TO LOBBY" 
+                               FontSize="20" 
+                               FontWeight="Bold"
+                               Foreground="White"
+                               HorizontalAlignment="Center"
+                               FontFamily="Arial"/>
+                </Border>
                 
-                <Grid RowDefinitions="Auto, Auto" RowSpacing="10" 
-                      VerticalAlignment="Center" HorizontalAlignment="Center"
-                      Margin="0,0,0,30">
+                <!-- Content -->
+                <Grid RowDefinitions="Auto, Auto" 
+                      RowSpacing="20"
+                      VerticalAlignment="Center" 
+                      HorizontalAlignment="Center"
+                      Margin="20">
+                    
+                    <!-- Instruction label -->
+              
                         <Label Content="Write lobby id for connect to group"
                                Classes="LobbyLabel"
+                               FontSize="14"
+                               FontWeight="SemiBold"
                                HorizontalAlignment="Center"
-                               Grid.Row="0"></Label> 
-                        <Grid Grid.ColumnDefinitions="Auto, Auto"  Grid.Row="1"
-                              ColumnSpacing="5">
-                                <TextBox Classes="LobbyTextBox"
-                                         Width="300" x:Name="IdBox"
-                                         MaxLength="18"
-                                         TextChanged="OnLobbyIdChanging"
-                                         Text="..."></TextBox>
-                                <Button Classes="CloseProfile" Grid.Column="1"
-                                        Content="Connect"
-                                        Click="ConnectToLobby"></Button>
-                        </Grid>
+                               VerticalAlignment="Center"/>
+              
+                    
+                    <!-- Input and button -->
+                    <Grid Grid.Row="1" 
+                          ColumnDefinitions="Auto, Auto" 
+                          ColumnSpacing="10"
+                          HorizontalAlignment="Center">
                         
+                        <!-- TextBox -->
+                        <Border Grid.Column="0"
+                                BorderBrush="White" 
+                                BorderThickness="2"
+                                Background="Black"
+                                Padding="2">
+                            <TextBox Classes="LobbyTextBox"
+                                     Width="250" 
+                                     x:Name="IdBox"
+                                     MaxLength="18"
+                                     TextChanged="OnLobbyIdChanging"
+                                     Text="..."
+                                     Background="Transparent"
+                                     Foreground="White"
+                                     FontSize="14"
+                                     FontWeight="SemiBold"
+                                     BorderThickness="0"
+                                     Padding="10,8"
+                                     CaretBrush="White"/>
+                        </Border>
+                        
+                        <!-- Connect button -->
+                        <Button Grid.Column="1"
+                                Classes="CloseProfile" 
+                                Content="CONNECT"
+                                Click="ConnectToLobby"
+                                Background="Black"
+                                Foreground="White"
+                                BorderBrush="White"
+                                BorderThickness="2"
+                                FontWeight="Bold"
+                                FontSize="14"
+                                Width="100"
+                                Height="40"
+                                CornerRadius="0"
+                                Cursor="Hand"/>
+                    </Grid>
                 </Grid>
-                
-        </DockPanel>
-        
+            </DockPanel>
+        </Border>
+    </Grid>
 </Window>
