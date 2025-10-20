@@ -16,7 +16,7 @@
 
     <!-- Основное меню -->
     <Style Selector="Menu.MainWindowMenu">
-        <Setter Property="Background" Value="CadetBlue"/>
+        <Setter Property="Background" Value="black"/>
         <Setter Property="Foreground" Value="#f0f0f0"/>
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="Padding" Value="6,4"/>

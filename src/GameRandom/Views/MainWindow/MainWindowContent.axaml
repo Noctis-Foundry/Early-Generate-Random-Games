@@ -2,15 +2,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="963" d:DesignHeight="540"
              x:Class="GameRandom.Views.MainWindowContent">
     
     <Grid>
         <Button Classes="ButtonLeftUpGround" Grid.Column="0" Margin="0,0" Click="GoToTable"
                 HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" BorderBrush="Transparent" BorderThickness="0">
-            <Image Source="avares://GameRandom/Assets/LeftUpClick.png"  Width="360" Stretch="Uniform" > </Image>
+            <Image Source="avares://GameRandom/Assets/LeftUpClick.png"  Width="360" Height="" Stretch="Uniform" > </Image>
         </Button>
-        <Button Classes="ButtonLeftDownGround" Grid.Column="0" Margin="0,0" Click="GoToProfile"
+        <Button Classes="ButtonLeftDownGround" Grid.Column="0" Margin="0 0 0 0" Click="GoToProfile"
                 HorizontalAlignment="Left" VerticalAlignment="Bottom" Background="Transparent" BorderBrush="Transparent" BorderThickness="0">
             <Image Source="avares://GameRandom/Assets/LeftDownClick.png" Width="360" Stretch="Uniform"> </Image>
         </Button>
