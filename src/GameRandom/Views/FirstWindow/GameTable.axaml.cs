@@ -30,8 +30,8 @@ public partial class GameTable : UserControl
         if (Design.IsDesignMode)
             return;
         
-        var eventBus = Di.Container.GetInstance<EventBus>() as EventBus;
-        eventBus?.Subscribe<UpdateTableEvent>(e => UpdateTable(e.GameProgress));
+        if(Di.Container.TryGetInstance<EventBus>() is EventBus eventBus) 
+            eventBus?.Subscribe<UpdateTableEvent>(e => UpdateTable(e.GameProgress));
 
         if (Di.Container.GetInstance<ObservableConverter>() is ObservableConverter converter)
         {

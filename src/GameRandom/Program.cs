@@ -3,6 +3,7 @@ using System;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Events;
 using GameRandom.Scr.Service;
+using GameRandom.Service;
 using GameRandom.SteamSDK;
 
 namespace GameRandom;
@@ -22,6 +23,8 @@ sealed class Program
             Di.Container.RegisterSingleInstance(new DiFactory());
             Di.Container.RegisterSingleInstance(new EventBus());
             Di.Container.RegisterSingleInstance(new ObservableConverter());
+            Di.Container.RegisterSingleInstance(new MainWindowFactory());
+            Di.Container.RegisterSingleInstance(new LobbySystem());
             
             _steamManager = new SteamManager();
             _steamManager.InitSteam();

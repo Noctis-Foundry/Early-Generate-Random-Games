@@ -2,6 +2,7 @@
 using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using GameRandom.Scr.DI;
 using GameRandom.SteamSDK;
 
 namespace GameRandom.Views.LobbyModalWindow;
@@ -14,7 +15,11 @@ public partial class LobbyWindow : Window
     public LobbyWindow()
     {
         InitializeComponent();
-        _lobbySystem = new LobbySystem();
+        
+        if (Di.Container.TryGetInstance<LobbySystem>() is LobbySystem system)
+        {
+            _lobbySystem = system;
+        }
     }
     
     private void OnLobbyIdChanging(object sender, TextChangedEventArgs e)

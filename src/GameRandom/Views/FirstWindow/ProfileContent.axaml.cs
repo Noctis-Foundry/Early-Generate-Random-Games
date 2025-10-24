@@ -29,27 +29,6 @@ public partial class ProfileContent : UserControl
     }
     
     public void AddListener(Action<string> _onChangeContent) => _changeContent = _onChangeContent;
-
-    public void CreateLobby(object? sender, RoutedEventArgs e)
-    {
-        Task.Run(async () =>
-        {
-            try
-            {
-                var membersList = await _lobbySystem.CreateLobby();
-
-                foreach (var item in membersList)
-                {
-                    Console.WriteLine($"Lobby = {item.LobbyID} and NickName = {item.NickName}");
-                }
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine("Lobby create failed: " + exception.Message);
-                throw;
-            }
-        });
-    }
     
     private void InitializePlayerProfile()
     {
@@ -59,13 +38,7 @@ public partial class ProfileContent : UserControl
         
         int imageId = SteamFriends.GetLargeFriendAvatar(steamId);
 
-        uint width, height;
-        SteamUtils.GetImageSize(imageId, out width, out height);
-        
-        byte[] image = new byte[width * height * 4];
-        SteamUtils.GetImageRGBA(imageId, image, (int)(width * height * 4));
-
-        var bitmap = AvaloniaService.CreateBitmap(image, (int)width, (int)height);
+        var bitmap = AvaloniaService.CreateSteamImage(imageId);
         
         AvatarImage.Source = bitmap;
         AccName.Content = accName;
