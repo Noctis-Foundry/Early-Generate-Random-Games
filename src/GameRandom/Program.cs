@@ -20,11 +20,7 @@ sealed class Program
     {
         try
         {
-            Di.Container.RegisterSingleInstance(new DiFactory());
-            Di.Container.RegisterSingleInstance(new EventBus());
-            Di.Container.RegisterSingleInstance(new ObservableConverter());
-            Di.Container.RegisterSingleInstance(new MainWindowFactory());
-            Di.Container.RegisterSingleInstance(new LobbySystem());
+            
             
             _steamManager = new SteamManager();
             _steamManager.InitSteam();
@@ -48,4 +44,14 @@ sealed class Program
             .UsePlatformDetect()
             .WithInterFont()
             .LogToTrace();
+
+    private static void InitializeDependenceInjection()
+    {
+        Di.Container.RegisterSingleInstance(new DiFactory());
+        Di.Container.RegisterSingleInstance(new EventBus());
+        Di.Container.RegisterSingleInstance(new ObservableConverter());
+        Di.Container.RegisterSingleInstance(new MainWindowFactory());
+        Di.Container.RegisterSingleInstance(new LobbySystem());
+        Di.Container.RegisterSingleInstance(new DatabaseService());
+    }
 }
