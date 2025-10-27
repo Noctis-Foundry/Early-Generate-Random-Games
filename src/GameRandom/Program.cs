@@ -2,9 +2,11 @@
 using System;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Events;
+using GameRandom.Scr.LobbySystem;
 using GameRandom.Scr.Service;
 using GameRandom.Service;
 using GameRandom.SteamSDK;
+using GameRandom.Views;
 
 namespace GameRandom;
 
@@ -20,7 +22,7 @@ sealed class Program
     {
         try
         {
-            
+            InitializeDependenceInjection();
             
             _steamManager = new SteamManager();
             _steamManager.InitSteam();
@@ -51,7 +53,8 @@ sealed class Program
         Di.Container.RegisterSingleInstance(new EventBus());
         Di.Container.RegisterSingleInstance(new ObservableConverter());
         Di.Container.RegisterSingleInstance(new MainWindowFactory());
-        Di.Container.RegisterSingleInstance(new LobbySystem());
+        Di.Container.RegisterSingleInstance(LobbyService.Instance);
+        Di.Container.RegisterSingleInstance(CreateLobbyService.Instance);
         Di.Container.RegisterSingleInstance(new DatabaseService());
     }
 }

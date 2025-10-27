@@ -32,8 +32,12 @@ public partial class GameTable : UserControl
         
         if(Di.Container.TryGetInstance<EventBus>() is EventBus eventBus) 
             eventBus?.Subscribe<UpdateTableEvent>(e => UpdateTable(e.GameProgress));
+        else
+        {
+            Logger.Error("No EventBus found in game table");
+        }
 
-        if (Di.Container.GetInstance<ObservableConverter>() is ObservableConverter converter)
+        if (Di.Container.TryGetInstance<ObservableConverter>() is ObservableConverter converter)
         {
             _converter = converter;
         }

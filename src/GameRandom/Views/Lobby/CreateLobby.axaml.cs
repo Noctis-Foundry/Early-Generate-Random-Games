@@ -7,6 +7,8 @@ using Avalonia.Threading;
 using GameRandom.DataBaseContexts;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Events;
+using GameRandom.Scr.LobbySystem;
+using GameRandom.Scr.Service;
 using GameRandom.SteamSDK;
 using GameRandom.SteamSDK.Events;
 using GameRandom.ViewModels;
@@ -16,41 +18,33 @@ namespace GameRandom.Views;
 
 public partial class CreateLobby : Window
 {
-    private LobbySystem _system;
+    [Inject] private CreateLobbyService? _service;
+    [Inject] private EventBus? _eventBus;
     public CreateLobby()
     {
+        Console.WriteLine("Initialize Create Lobby");
+        
         InitializeComponent();
 
-        DataContext = new CreateLobbyViewModel();
-
-        if (Design.IsDesignMode)
-            return;
+        var viewModel = new CreateLobbyViewModel();
+        DataContext = viewModel;
         
-        if (Di.Container.TryGetInstance<LobbySystem>() is LobbySystem system)
-        {
-            _system = system;
-        }
-        else
-        {
-            throw new Exception("Unable to find LobbySystem");
-        }
+        Di.Container.RegisterSingleInstance(viewModel);
     }
 
-    private async void CreateNewLobby(object? sender, RoutedEventArgs e)
+    private void CreateNewLobby(object? sender, RoutedEventArgs e)
     {
-        await using (var db = new AppDbContext())
-        {
-            var memberList = await db.LobbyContexts.ToListAsync();
+        if (_service == null)
+            throw new Exception("Failed to create new lobby. Create lobby service is null");
+        
+        _service.CreateLobby();
 
-            if (memberList.Count <= 0)
-                await _system.CreateLobby();
-            else
-                await _system.CreateLobby(memberList);
-        }
-
-        if (Di.Container.TryGetInstance<EventBus>() is EventBus bus)
+        if (_eventBus == null)
         {
-            bus.Publish(new LobbyUpdate());
+            Logger.Error("CreateLobby: EventBus is null");
+            return;
         }
+            
+        _eventBus.Publish(new LobbyUpdate());
     }
 }

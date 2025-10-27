@@ -6,6 +6,7 @@ using Avalonia.Threading;
 using GameRandom.DataBaseContexts;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Events;
+using GameRandom.Scr.LobbySystem;
 using GameRandom.Scr.Service;
 using GameRandom.SteamSDK.Events;
 using Microsoft.EntityFrameworkCore;
@@ -13,92 +14,41 @@ using Steamworks;
 
 namespace GameRandom.SteamSDK;
 
-public class LobbySystem : ILobbyService
+public class LobbyService
 {
+    #region Singleton
+    private static LobbyService _instance;
+    private static readonly object _lock = new object();
+    
+    public static LobbyService Instance
+    {
+        get
+        {
+            lock (_lock)
+            {
+                return _instance ??= new LobbyService();
+            }
+        }
+    }
+    #endregion
+    
     #region Params
-
-    public ILobbyService Instance { get; set; }
-    private IDatabaseService _databaseService;
-
-    private const int MemberToGroup = 6;
-
-    private Callback<LobbyCreated_t>? _lobbyCreated;
+    
     private Callback<LobbyEnter_t> _lobbyEntered;
     private Callback<GameLobbyJoinRequested_t>? _gameLobbyJoinRequested;
-
-    private bool _isCreatingLobby = false;
-    private EventBus? _eventBus;
-    public ulong CurrentLobbyId { get; private set; } = 0;
+    
+    [Inject] private EventBus? _eventBus;
+    [Inject] private DatabaseService? _databaseService;
+    [Inject] private CreateLobbyService? _createLobby;
 
     #endregion
     
-    public LobbySystem()
+    public LobbyService()
     {
         _lobbyEntered = Callback<LobbyEnter_t>.Create(OnLobbyEntered);
         _gameLobbyJoinRequested = Callback<GameLobbyJoinRequested_t>.Create(OnLobbyJoin);
-        Instance = this;
-
-        if (Di.Container.TryGetInstance<EventBus>() is EventBus eventBus)
-        {
-            _eventBus = eventBus;
-        }
-        if (Di.Container.TryGetInstance<DatabaseService>() is IDatabaseService databaseService)
-        {
-            _databaseService = databaseService;
-        }
     }
-
-    public async Task CreateLobby(List<LobbyContext>? lobbiesData = null)
-    {
-        if (CurrentLobbyId != 0)
-            return; // TO:DO Add accept from user, if true - clear latest lobby and creat new, else skip command
-            
-        if (_isCreatingLobby)
-            return;
-        
-        _isCreatingLobby = true;
-
-        _lobbyCreated?.Unregister();
-        _lobbyCreated = new Callback<LobbyCreated_t>(OnLobbyCreated);
-        SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypeFriendsOnly, MemberToGroup);
-
-        return;
-
-        void OnLobbyCreated(LobbyCreated_t pCallback)
-        {
-            if (pCallback.m_eResult != EResult.k_EResultOK)
-            {
-                return;
-            }
-
-            CSteamID newLobbyId = new CSteamID(pCallback.m_ulSteamIDLobby);
-            CurrentLobbyId = newLobbyId.m_SteamID;
-
-            if (_eventBus != null)
-                _eventBus.Publish(new LobbyIdUpdate());
-
-            Dispatcher.UIThread.Post(async () =>
-            {
-                await using var db = new AppDbContext();
-
-                if (lobbiesData != null)
-                {
-                    Console.WriteLine("Starting load data to new lobby...");
-
-                    foreach (var data in lobbiesData)
-                    {
-                        await db.LobbyContexts
-                            .Where(x => x.MemberID == data.MemberID)
-                            .ExecuteUpdateAsync(s => s.SetProperty(x => x.LobbyID, newLobbyId.m_SteamID));
-                    }
-
-                    await db.SaveChangesAsync();
-                }
-
-                _isCreatingLobby = false;
-            });
-        }
-    }
+       
 
     #region Connect
 
@@ -109,9 +59,6 @@ public class LobbySystem : ILobbyService
 
     private void OnLobbyEntered(LobbyEnter_t callback)
     {
-        if (CurrentLobbyId == callback.m_ulSteamIDLobby)
-            return;
-        
         if (callback.m_EChatRoomEnterResponse != (uint)EChatRoomEnterResponse.k_EChatRoomEnterResponseSuccess)
         {
             var error = Di.Container.GetInstance<IError>() as ErrorService;
@@ -119,7 +66,7 @@ public class LobbySystem : ILobbyService
             return;
         }
 
-        CSteamID steamLobbyId = new CSteamID(callback.m_ulSteamIDLobby);
+        CSteamID steamLobbyId = new CSteamID(callback.m_ulSteamIDLobby); ;
         CSteamID userId = SteamManager.GetSteamManager().GetSteamId();
         string userName = SteamFriends.GetPersonaName();
 
@@ -150,12 +97,12 @@ public class LobbySystem : ILobbyService
                     }
 
                     Logger.Debug($"{userName} joined to lobby {steamLobbyId.m_SteamID}");
-            
-                    // Сохраняем изменения через сервис (уже сделано в AddItemAsync)
-                    // await db.SaveChangesAsync(); // ⚠️ УБЕРИ ЭТУ СТРОКУ - дублирование!
+                    
             
                     if (_eventBus != null)
                         _eventBus.Publish(new LobbyUpdate());
+                    else 
+                        Logger.Error("Event bus to Lobby entered = null");
                 }
                 else
                 {
@@ -164,7 +111,7 @@ public class LobbySystem : ILobbyService
             }
             catch (Exception ex)
             {
-                Logger.Error($"Error in UI thread operation: {ex.Message}");
+                Logger.Error($"Error in UI thread operation: {ex}");
             }
         });
     }
@@ -181,16 +128,16 @@ public class LobbySystem : ILobbyService
     void LeaveFromLobby()
     {
         // TO:DO logic for leave from party. Get list members, find current user with current lobby id and delete from table and after leave from steam lobby.
-
-        if (CurrentLobbyId == 0)
+        
+        if (_createLobby == null || _createLobby.CurrentLobbyId == 0)
         {
             Logger.Warning("No lobbies found");
             return;
         }
         
-        CSteamID currentSteamLobby = new CSteamID(CurrentLobbyId);
+        CSteamID currentSteamLobby = new CSteamID(_createLobby.CurrentLobbyId);
         SteamMatchmaking.LeaveLobby(currentSteamLobby);
-        OnLeaving(CurrentLobbyId, SteamManager.GetSteamManager().GetSteamId());
+        OnLeaving(_createLobby.CurrentLobbyId, SteamManager.GetSteamManager().GetSteamId());
     }
 
     private void OnLeaving(ulong lobbyId, CSteamID memberId)

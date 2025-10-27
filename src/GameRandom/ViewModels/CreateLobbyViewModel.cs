@@ -1,6 +1,7 @@
 ﻿using System;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Events;
+using GameRandom.Scr.LobbySystem;
 using GameRandom.SteamSDK;
 using GameRandom.SteamSDK.Events;
 
@@ -9,7 +10,7 @@ namespace GameRandom.ViewModels;
 public class CreateLobbyViewModel : ViewModelBase
 {
     private const string DefaultIdMessage = "No find lobby id";
-    private LobbySystem? _system;
+    [Inject] private CreateLobbyService? _system;
 
     private string _currentLobbyId = DefaultIdMessage;
     
@@ -21,9 +22,6 @@ public class CreateLobbyViewModel : ViewModelBase
 
     public CreateLobbyViewModel()
     {
-        if (Di.Container.TryGetInstance<LobbySystem>() is LobbySystem system)
-            _system = system;
-        
         if (Di.Container.TryGetInstance<EventBus>() is EventBus eventBus)
             eventBus.Subscribe<LobbyIdUpdate>(e => GetCurrentId());
         
