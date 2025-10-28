@@ -91,7 +91,7 @@ public class CreateLobbyService
         else
             Logger.Error("Not  found _eventBus");
 
-        UpdateLobbyDataInDatabase(newLobbyId);
+        UpdateLobbyDataInDatabase(newLobbyId); //TO:DO Problems with creating lobby. App stoping and cant unlagging.
     }
 
     private void OnLobbyEntered(LobbyEnter_t callback)
