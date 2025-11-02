@@ -18,11 +18,5 @@
                 HorizontalAlignment="Right"  Background="Transparent" BorderBrush="Transparent" BorderThickness="0">
             <Image Source="avares://GameRandom/Assets/RightClick.png" Width="580" Stretch="UniformToFill" > </Image>
         </Button>
-        <Grid >
-            <Button Classes="ButtonRightGround" Grid.Column="0" Margin="-5,-5" Click="GoToRules" 
-                    HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" BorderBrush="Transparent" BorderThickness="0">
-                <Image Source="avares://GameRandom/Assets/Rules.jpg" Width="50" Height="50" Stretch="UniformToFill" > </Image>
-            </Button>
-        </Grid>
     </Grid>
 </UserControl>

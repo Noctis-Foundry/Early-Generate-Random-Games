@@ -19,7 +19,7 @@
                           Command="{Binding OpenLobby}"></MenuItem>
                 <MenuItem Classes="MainWindowMenuItem" Header="Show Error"
                           Command="{Binding ShowError}"></MenuItem>
-                <MenuItem Classes="MainWindowMenuItem" Header="Create Lobby"
+                <MenuItem Classes="MainWindowMenuItem" Header="Rules"
                           Command="{Binding OpenCreateLobbyWindow}"></MenuItem>
                 <!--<MenuItem Classes="MainWindowMenuItem" Header="Rules"
                       Command="{Binding ShowRules}"></MenuItem>!-->

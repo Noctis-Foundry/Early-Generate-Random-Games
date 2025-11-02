@@ -1,10 +1,12 @@
 ﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:GameRandom.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="250"
         x:Class="GameRandom.Views.LobbyModalWindow.LobbyWindow"
-        Width="500" Height="250"
+        x:DataType="vm:CreateLobbyViewModel"
+        Width="1000" Height="550"
         Title="LOBBY CONNECTION"
         WindowStartupLocation="CenterScreen">
     
@@ -31,8 +33,8 @@
                         BorderThickness="0,0,0,3"
                         CornerRadius="0"
                         Padding="20,15">
-                    <TextBlock Text="CONNECT TO LOBBY" 
-                               FontSize="20" 
+                    <TextBlock Text="LOBBY MANAGER" 
+                               FontSize="24" 
                                FontWeight="Bold"
                                Foreground="White"
                                HorizontalAlignment="Center"
@@ -40,24 +42,94 @@
                 </Border>
                 
                 <!-- Content -->
-                <Grid RowDefinitions="Auto, Auto" 
+                <Grid RowDefinitions="Auto, Auto, Auto, Auto" 
                       RowSpacing="20"
                       VerticalAlignment="Center" 
                       HorizontalAlignment="Center"
                       Margin="20">
                     
-                    <!-- Instruction label -->
-              
-                        <Label Content="Write lobby id for connect to group"
-                               Classes="LobbyLabel"
-                               FontSize="14"
-                               FontWeight="SemiBold"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"/>
-              
-                    
+                    <!-- Create Lobby Section -->
+                    <Border Grid.Row="0"
+                            Background="Black"
+                            BorderBrush="White"
+                            BorderThickness="2"
+                            CornerRadius="0"
+                            Padding="20,15"
+                            HorizontalAlignment="Center">
+                        <StackPanel Orientation="Vertical" Spacing="15">
+                            <TextBlock Text="CREATE NEW LOBBY"
+                                       FontSize="18"
+                                       FontWeight="Bold"
+                                       Foreground="White"
+                                       HorizontalAlignment="Center"/>
+                            
+                            <!-- Lobby ID display -->
+                            <Border Background="Black"
+                                    BorderBrush="White" 
+                                    BorderThickness="1"
+                                    CornerRadius="0"
+                                    Padding="15,10"
+                                    Width="300"
+                                    Height="50">
+                                <Label Content="{Binding CurrentLobbyID}" 
+                                       FontSize="20" 
+                                       FontWeight="Bold"
+                                       Foreground="White"
+                                       HorizontalContentAlignment="Center"
+                                       VerticalContentAlignment="Center"
+                                       Background="Transparent"/>
+                            </Border>
+                            
+                            <!-- Create Lobby button -->
+                            <Button Content="CREATE LOBBY"
+                                    Click="CreateNewLobby"
+                                    Background="Black"
+                                    Foreground="White"
+                                    BorderBrush="White"
+                                    BorderThickness="2"
+                                    FontSize="16"
+                                    FontWeight="Bold"
+                                    Width="200"
+                                    Height="45"
+                                    CornerRadius="0"
+                                    Cursor="Hand"
+                                    HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Separator -->
+                    <Border Grid.Row="1"
+                            Background="White"
+                            Height="2"
+                            Margin="50,0"
+                            HorizontalAlignment="Stretch"/>
+
+                    <!-- Connect to Lobby Section -->
+                    <Border Grid.Row="2"
+                            Background="Black"
+                            BorderBrush="White"
+                            BorderThickness="2"
+                            CornerRadius="0"
+                            Padding="20,15"
+                            HorizontalAlignment="Center">
+                        <StackPanel Orientation="Vertical" Spacing="15">
+                            <TextBlock Text="CONNECT TO EXISTING LOBBY"
+                                       FontSize="18"
+                                       FontWeight="Bold"
+                                       Foreground="White"
+                                       HorizontalAlignment="Center"/>
+                            
+                            <!-- Instruction label -->
+                            <TextBlock Text="Write lobby id for connect to group"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Foreground="White"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
                     <!-- Input and button -->
-                    <Grid Grid.Row="1" 
+                    <Grid Grid.Row="3" 
                           ColumnDefinitions="Auto, Auto" 
                           ColumnSpacing="10"
                           HorizontalAlignment="Center">
@@ -85,7 +157,6 @@
                         
                         <!-- Connect button -->
                         <Button Grid.Column="1"
-                                Classes="CloseProfile" 
                                 Content="CONNECT"
                                 Click="ConnectToLobby"
                                 Background="Black"
@@ -102,5 +173,6 @@
                 </Grid>
             </DockPanel>
         </Border>
+        
     </Grid>
 </Window>
