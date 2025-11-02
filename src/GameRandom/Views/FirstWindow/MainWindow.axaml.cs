@@ -77,7 +77,6 @@ public partial class MainWindow : Window
     {
         SteamManager.GetSteamManager().ShutdownSteam();
     }
-
     private void EventsConnecting()
     {
         var eventBus = Di.Container.TryGetInstance<EventBus>() as EventBus;
@@ -87,9 +86,9 @@ public partial class MainWindow : Window
         
         if (DataContext is MainWindowViewModel vm)
         {
-            eventBus.Subscribe<LobbyUpdate>(async e =>
+            eventBus.Subscribe<LobbyUpdate>(e =>
             {
-                await Dispatcher.UIThread.InvokeAsync(() => vm.UpdateLobby(LobbyImages));
+                Dispatcher.UIThread.InvokeAsync(() => vm.UpdateLobby(LobbyImages));
             });
             
             eventBus.Publish(new LobbyUpdate());

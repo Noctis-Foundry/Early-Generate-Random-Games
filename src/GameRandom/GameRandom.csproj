@@ -74,5 +74,9 @@
         <DependentUpon>LobbyWindow.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+      <Compile Update="Views\Lobby\CreateLobby.axaml.cs">
+        <DependentUpon>CreateLobby.axaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
     </ItemGroup>
 </Project>

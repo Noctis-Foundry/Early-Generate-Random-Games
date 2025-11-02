@@ -13,6 +13,7 @@ namespace GameRandom;
 
 public partial class App : Application
 {
+    
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -20,17 +21,22 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        InitializeOtherWindow();
+        
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
             // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
             DisableAvaloniaDataAnnotationValidation();
+            
             desktop.MainWindow = new MainWindow()
             {
             };
             
             RegisterUiService(desktop.MainWindow);
         }
+        
+        Di.Container.InjectDependenciesAcrossAssembly();
         
         base.OnFrameworkInitializationCompleted();
     }
@@ -59,5 +65,11 @@ public partial class App : Application
             factory.Create<IError, ErrorService, MainWindow>(new ErrorService(), mainWindow);
         else
             throw new Exception("Window not found");
+    }
+
+    private void InitializeOtherWindow()
+    {
+        var createLobbyInstance = new CreateLobby() { IsVisible = false };
+        Di.Container.RegisterSingleInstance(createLobbyInstance);
     }
 }

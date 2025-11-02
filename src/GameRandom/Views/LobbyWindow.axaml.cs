@@ -10,15 +10,15 @@ namespace GameRandom.Views.LobbyModalWindow;
 public partial class LobbyWindow : Window
 {
     private const int MaxLenghtId = 18;
-    private readonly LobbySystem _lobbySystem;
+    private readonly LobbyService _lobbyService;
     
     public LobbyWindow()
     {
         InitializeComponent();
         
-        if (Di.Container.TryGetInstance<LobbySystem>() is LobbySystem system)
+        if (Di.Container.TryGetInstance<LobbyService>() is LobbyService system)
         {
-            _lobbySystem = system;
+            _lobbyService = system;
         }
     }
     
@@ -46,7 +46,7 @@ public partial class LobbyWindow : Window
 
         if (uint.TryParse(IdBox.Text, out var id))
         {
-            _lobbySystem.ConnectToLobby(id);
+            _lobbyService.ConnectToLobby(id);
         }
     }
 }
