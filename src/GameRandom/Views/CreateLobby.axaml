@@ -1,0 +1,30 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:GameRandom.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="GameRandom.Views.CreateLobby"
+             x:DataType="vm:CreateLobbyViewModel"
+             MaxHeight="150" MaxWidth="400">
+    <DockPanel>
+        <DockPanel.Background>
+            Black
+        </DockPanel.Background>
+        <Grid RowDefinitions="Auto, Auto" HorizontalAlignment="Center" VerticalAlignment="Center" RowSpacing="10">
+            
+            <Label FontSize="25" Height="40" Width="300" HorizontalContentAlignment="Center"
+                   Content="{Binding CurrentLobbyID}" 
+                   BorderBrush="Aquamarine" BorderThickness="2"
+                   Background="DarkSlateGray">
+            </Label>
+            
+            <Button Grid.Row="1" Foreground="White" HorizontalAlignment="Center" FontSize="20"
+                    BorderBrush="WhiteSmoke" BorderThickness="2" 
+                    Background="MediumAquamarine" Content="Create Lobby"
+                    Click="CreateNewLobby">
+            </Button>
+        </Grid>
+        
+    </DockPanel>
+</UserControl>
