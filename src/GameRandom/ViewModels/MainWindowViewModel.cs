@@ -1,24 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Controls;
-using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.Input;
-using GameRandom.DataBaseContexts;
 using GameRandom.Scr.DI;
+using GameRandom.Scr.Service;
 using GameRandom.Scr.WindowScr;
 using GameRandom.Service;
 using GameRandom.SteamSDK;
+using GameRandom.SteamSDK.UserSystem;
 using GameRandom.Views;
 using GameRandom.Views.LobbyModalWindow;
-using Microsoft.EntityFrameworkCore;
-using Steamworks;
 
 namespace GameRandom.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase
 {
+    [Inject] private DatabaseService? _databaseService;
+    [Inject] private MainWindowFactory? _mainWindowFactory;
+    [Inject] private UserData?  _userData;
+    [Inject] private ErrorService? _error;
+    
     private readonly IWindowService _windowService;
     public ICommand OpenLobbyCommand { get; }
     public ICommand CreateLobbyCommand { get; }
@@ -28,54 +30,26 @@ public class MainWindowViewModel : ViewModelBase
         _windowService = windowService;
         OpenLobbyCommand = new RelayCommand(OpenLobby);
         CreateLobbyCommand = new RelayCommand(OpenCreateLobbyWindow);
+        
+        Di.Container.ResolveFieldsFromClassInstance(this);
     }
 
     public async Task UpdateLobby(Grid lobbyGrid)
     {
         lobbyGrid.Children.Clear();
-        
-        IError? error = Di.Container.TryGetInstance<IError>() as ErrorService;
 
-        List<LobbyContext> lobbyList;
+        if (_databaseService == null || _mainWindowFactory == null || _userData == null)
+            throw new NullReferenceException();
         
-        await using (var db = new AppDbContext())
-        {
-            lobbyList = db.LobbyContexts.ToListAsync().Result;
-
-            if (lobbyList.Count <= 0 || lobbyList == null)
-            {
-                return;
-            }
-        }
+        //List<Image>? imageList = _mainWindowFactory.CreateImageInGrid(currentLobbyList.Count, lobbyGrid);
         
-        var factory = Di.Container.GetInstance<MainWindowFactory>() as MainWindowFactory;
-        
-        if (factory == null)
-            throw new Exception("No main window factory found");
-        
-        var imageList = factory.CreateImageInGrid(lobbyList.Count, lobbyGrid);
-        
-        Console.WriteLine($"imageList count {imageList?.Count}");
-        
-        if (imageList == null || imageList.Count <= 0)
-        {
-            if (error != null)
-            {
-                error.ShowErrorWindow("Failed to update lobbies. No loaded member images");
-            }
-                
-            return;
-        }
-        
-        for (int i = 0; i < lobbyList.Count; i++)
-        {
-            CSteamID memberId = new CSteamID(lobbyList[i].MemberID);
-            int imageUrl = SteamFriends.GetLargeFriendAvatar(memberId);
-                
-            Bitmap bitmap = AvaloniaService.CreateSteamImage(imageUrl);
-
-            imageList[i].Source = bitmap;   
-        }
+        //for (int i = 0; i < currentLobbyList.Count; i++)
+        //{
+            //CSteamID memberId = new CSteamID(currentLobbyList[i].ClientID);
+            //int imageUrl = SteamFriends.GetLargeFriendAvatar(memberId);
+            //Bitmap bitmap = AvaloniaService.CreateSteamImage(imageUrl);
+            //imageList[i].Source = bitmap;   
+        //}
     }
     
     public async void OpenLobby()

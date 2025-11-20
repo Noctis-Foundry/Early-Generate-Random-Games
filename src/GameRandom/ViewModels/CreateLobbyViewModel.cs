@@ -1,18 +1,15 @@
 ﻿using System;
 using GameRandom.Scr.DI;
-using GameRandom.Scr.Events;
-using GameRandom.Scr.LobbySystem;
-using GameRandom.SteamSDK;
-using GameRandom.SteamSDK.Events;
+using GameRandom.SteamSDK.UserSystem;
 
 namespace GameRandom.ViewModels;
 
 public class CreateLobbyViewModel : ViewModelBase
 {
+    [Inject] private UserData? _userData;
     private const string DefaultIdMessage = "No find lobby id";
-    [Inject] private CreateLobbyService? _system;
 
-    private string _currentLobbyId = DefaultIdMessage;
+    private string _currentLobbyId;
     
     public string CurrentLobbyID
     {
@@ -22,20 +19,23 @@ public class CreateLobbyViewModel : ViewModelBase
 
     public CreateLobbyViewModel()
     {
-        if (Di.Container.TryGetInstance<EventBus>() is EventBus eventBus)
-            eventBus.Subscribe<LobbyIdUpdate>(e => GetCurrentId());
+        Di.Container.ResolveFieldsFromClassInstance(this);
+
+        if (_userData == null)
+            throw new Exception("UserData is null");
         
+        _userData?.LobbyIdUpdated += GetCurrentId;
         GetCurrentId();
     }
-
+    
     private void GetCurrentId()
     {
-        if (_system == null || _system.CurrentLobbyId == 0)
+        if (_userData == null || _userData.LobbyId == 0)
         {
             CurrentLobbyID = DefaultIdMessage;
             return;
         }
-            
-        CurrentLobbyID = _system.CurrentLobbyId.ToString();
+
+        CurrentLobbyID = _userData.LobbyId.ToString();
     }
 }

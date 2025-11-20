@@ -5,6 +5,8 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Timers;
+using GameRandom.Scr.DI;
+using GameRandom.SteamSDK.UserSystem;
 using Steamworks;
 
 namespace GameRandom.SteamSDK;
@@ -52,8 +54,9 @@ public class SteamManager
         
         StartEventTimer();
         _isInitialized = true;
+        
+        InitializeUser();
     }
-
     private void StartEventTimer()
     {
         _steamCallbackTimer = new Timer(100);
@@ -64,6 +67,14 @@ public class SteamManager
         _steamCallbackTimer.Start();
     }
 
+    private void InitializeUser()
+    {
+        var playerId = GetSteamId();
+
+        var userData = new UserData(playerId);
+        Di.Container.RegisterSingleInstance(userData);
+    }
+    
     public void ShutdownSteam()
     {
         if (!_isInitialized) return;

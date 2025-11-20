@@ -13,7 +13,6 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-            
             <TextBlock Text="CHALLENGE RULES" 
                        FontSize="24" 
                        FontWeight="Bold" 

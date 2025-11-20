@@ -1,17 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using GameRandom.DataBaseContexts;
 using GameRandom.Scr.DI;
-using GameRandom.Scr.Events;
 using GameRandom.Scr.Service;
-using GameRandom.SteamSDK.Events;
 using GameRandom.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,12 +25,12 @@ public partial class GameTable : UserControl
         if (Design.IsDesignMode)
             return;
         
-        if(Di.Container.TryGetInstance<EventBus>() is EventBus eventBus) 
-            eventBus?.Subscribe<UpdateTableEvent>(e => UpdateTable(e.GameProgress));
-        else
-        {
-            Logger.Error("No EventBus found in game table");
-        }
+        //if(Di.Container.TryGetInstance<EventBus>() is EventBus eventBus) 
+            //eventBus?.Subscribe<UpdateTableEvent>(e => UpdateTable(e.GameProgress));
+        //else
+       // {
+           // Logger.Error("No EventBus found in game table");
+       // }
 
         if (Di.Container.TryGetInstance<ObservableConverter>() is ObservableConverter converter)
         {
