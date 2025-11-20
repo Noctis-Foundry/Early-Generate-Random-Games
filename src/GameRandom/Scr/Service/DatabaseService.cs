@@ -38,14 +38,10 @@ public class DatabaseService : IDatabaseService
     public async Task<List<TEntity>?> GetTableListAsync<TEntity>() 
         where TEntity : class 
     {
-        await using var context = new AppDbContext();
-
         try
         {
-            var db = context.Set<TEntity>();
-
-            List<TEntity> result = await db.ToListAsync();
-            return result;
+            await using var context = new AppDbContext();
+            return await context.Set<TEntity>().AsNoTracking().ToListAsync();
         }
         catch (Exception e)
         {
@@ -54,6 +50,24 @@ public class DatabaseService : IDatabaseService
         }
     }
 
+    public async Task<bool> AddNewLobby(Lobbies item)
+    {
+        try
+        {
+            await using var db = new AppDbContext();
+        
+            await db.Lobbies.AddAsync(item);
+            await db.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+            Logger.Error("Failed to add new lobby " + e.Message);
+            return false;
+        }
+       
+        return true;
+    }
+    
     public async Task<bool>  DeleteItemAsync<TEntity>(TEntity item) where TEntity : class
     {
         await using var context = new AppDbContext();
@@ -70,6 +84,14 @@ public class DatabaseService : IDatabaseService
             return false;
         }
 
+        return true;
+    }
+
+    public async Task<bool> UpdateAsync<TEntity>(TEntity item) where TEntity : class
+    {
+        await using var context = new AppDbContext();
+        context.Set<TEntity>().Update(item);
+        await context.SaveChangesAsync();
         return true;
     }
 }

@@ -32,6 +32,10 @@ namespace GameRandom.Migrations
                     b.Property<decimal>("ClientId")
                         .HasColumnType("numeric(20,0)");
 
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("DataBegin")
                         .IsRequired()
                         .HasColumnType("text");
@@ -44,12 +48,34 @@ namespace GameRandom.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("Grade")
+                        .HasColumnType("integer");
+
                     b.Property<bool>("IsFinished")
                         .HasColumnType("boolean");
 
                     b.HasKey("Id");
 
                     b.ToTable("GameTables");
+                });
+
+            modelBuilder.Entity("GameRandom.DataBaseContexts.Lobbies", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<long>("LobbyID")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("MemberCount")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Lobbies");
                 });
 
             modelBuilder.Entity("GameRandom.DataBaseContexts.LobbyContext", b =>

@@ -16,7 +16,6 @@ namespace GameRandom.Views;
 public partial class ProfileContent : UserControl
 {
     private Action<string>? _changeContent;
-    private readonly LobbyService _lobbyService = new LobbyService();
     
     public ProfileContent()
     {

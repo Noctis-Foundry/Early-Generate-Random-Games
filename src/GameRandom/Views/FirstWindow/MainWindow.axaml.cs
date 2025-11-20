@@ -1,22 +1,21 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
-using Avalonia.Threading;
 using GameRandom.DataBaseContexts;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Events;
 using GameRandom.Service;
 using GameRandom.SteamSDK;
 using GameRandom.Scr.WindowScr;
-using GameRandom.SteamSDK.Events;
 using GameRandom.ViewModels;
 
 namespace GameRandom.Views;
 
 public partial class MainWindow : Window
 {
+    [Inject] private EventBus? _eventBus;
+    
     private readonly Register<string, UserControl> _userControlRegister = new();
     private readonly Action<string> _changeContent;
     public MainWindow()
@@ -31,9 +30,14 @@ public partial class MainWindow : Window
         InitializeUserControlRegister();
         Navigate("Main");
         
-        InitializeLobby();
-        
         Closing += MainWindow_OnClosed;
+        
+        Di.Container.ResolveFieldsFromClassInstance(this);
+        
+        if (_eventBus == null)
+            throw new Exception("EventBus not initialized");
+        
+        EventsConnecting();
     }
 
     private void InitializeUserControlRegister()
@@ -59,16 +63,6 @@ public partial class MainWindow : Window
         _userControlRegister.RegisterNewObject("Table", tableContent);
         _userControlRegister.RegisterNewObject("Rules", rulesContent);
     }
-    private void InitializeLobby()
-    {
-        Task.Run(async () =>
-        {
-            await using var db = new AppDbContext();
-            await TestingDeleteLobbyMembers(db);
-        });
-        
-        EventsConnecting();
-    }
     private void Navigate(string nameControl)
     {
         ControlMain.Content = _userControlRegister.GetObjectFromRegister(nameControl);
@@ -84,15 +78,13 @@ public partial class MainWindow : Window
         if (eventBus == null)
             throw new Exception("EventBus not found");
         
-        if (DataContext is MainWindowViewModel vm)
-        {
-            eventBus.Subscribe<LobbyUpdate>(e =>
-            {
-                Dispatcher.UIThread.InvokeAsync(() => vm.UpdateLobby(LobbyImages));
-            });
-            
-            eventBus.Publish(new LobbyUpdate());
-        }
+        //if (DataContext is MainWindowViewModel vm)
+       //{
+           // eventBus.Subscribe<LobbyUpdate>(e =>
+            //{
+                //Dispatcher.UIThread.InvokeAsync(() => vm.UpdateLobby(LobbyImages));
+            //});
+        //}
     }
     private async Task TestingDeleteLobbyMembers(AppDbContext dbContext)
     {
@@ -103,4 +95,5 @@ public partial class MainWindow : Window
         
         await dbContext.SaveChangesAsync();
     }
+    
 }

@@ -1,199 +1,148 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Avalonia.Threading;
 using GameRandom.DataBaseContexts;
 using GameRandom.Scr.DI;
-using GameRandom.Scr.Events;
-using GameRandom.Scr.LobbySystem;
 using GameRandom.Scr.Service;
-using GameRandom.SteamSDK.Events;
-using Microsoft.EntityFrameworkCore;
+using GameRandom.SteamSDK.UserSystem;
 using Steamworks;
 
-namespace GameRandom.SteamSDK;
+namespace GameRandom.SteamSDK.LobbySystem;
 
 public class LobbyService
 {
-    #region Singleton
-    private static LobbyService _instance;
-    private static readonly object _lock = new object();
-    
-    public static LobbyService Instance
-    {
-        get
-        {
-            lock (_lock)
-            {
-                return _instance ??= new LobbyService();
-            }
-        }
-    }
-    #endregion
-    
-    #region Params
-    
-    private Callback<LobbyEnter_t> _lobbyEntered;
-    private Callback<GameLobbyJoinRequested_t>? _gameLobbyJoinRequested;
-    
-    [Inject] private EventBus? _eventBus;
+    [Inject] private UserData? _userData;
     [Inject] private DatabaseService? _databaseService;
-    [Inject] private CreateLobbyService? _createLobby;
 
-    #endregion
-    
+    private const ulong Max = long.MaxValue;
+
+    private bool _isCreating;
+
     public LobbyService()
     {
-        _lobbyEntered = Callback<LobbyEnter_t>.Create(OnLobbyEntered);
-        _gameLobbyJoinRequested = Callback<GameLobbyJoinRequested_t>.Create(OnLobbyJoin);
-    }
-       
-
-    #region Connect
-
-    public void ConnectToLobby(uint lobbyId)
-    {
-        SteamMatchmaking.JoinLobby(new CSteamID(lobbyId));
+        Di.Container.ResolveFieldsFromClassInstance(this);
+        
+        if (_userData == null || _databaseService == null)
+            throw new NullReferenceException();
     }
 
-    private void OnLobbyEntered(LobbyEnter_t callback)
+    public async Task StartApp()
     {
-        if (callback.m_EChatRoomEnterResponse != (uint)EChatRoomEnterResponse.k_EChatRoomEnterResponseSuccess)
+        if (_databaseService == null)
+            throw new NullReferenceException();
+
+        var lobbyContexts = await _databaseService.GetTableListAsync<LobbyContext>();
+
+        if (lobbyContexts == null || lobbyContexts.Count == 0)
         {
-            var error = Di.Container.GetInstance<IError>() as ErrorService;
-            error?.ShowErrorWindow("Not found room");
+            Logger.Error("Not found any lobby context");
+            return;
+        }
+        
+        foreach (var lobbyContext in lobbyContexts)
+        {
+            if (lobbyContext.MemberID == SteamManager.GetSteamManager().GetSteamId().m_SteamID)
+            {
+                //Вызов ивента с обновлением UI составляющей программы, начиная от обновление объектов групп, заканчивая обновлением таблицы, внесением всех игроков.
+            }
+        }
+    }
+    public async Task CreateLobby()
+    {
+        //To:Do делать предупреждение если Lobby уже созданно
+        
+        if (_databaseService == null)
+            throw new NullReferenceException();
+        
+        if (_isCreating)
+        {
+            //Show window with creating warning
             return;
         }
 
-        CSteamID steamLobbyId = new CSteamID(callback.m_ulSteamIDLobby); ;
-        CSteamID userId = SteamManager.GetSteamManager().GetSteamId();
-        string userName = SteamFriends.GetPersonaName();
+        Random rnd = new Random();
+        long lobbyId = rnd.NextInt64(0, long.MaxValue);
 
-        Dispatcher.UIThread.Post(async () =>
+        var isAddNewLobby = await _databaseService.AddItemAsync(new Lobbies
         {
-            try
-            {
-                await using var db = new AppDbContext();
-                
-                bool exists = await db.LobbyContexts
-                    .AnyAsync(x => x.MemberID == userId.m_SteamID);
-            
-                if (!exists)
-                {
-                    var newLobbyContext = new LobbyContext
-                    {
-                        LobbyID = steamLobbyId.m_SteamID,
-                        MemberID = userId.m_SteamID,
-                        NickName = userName
-                    };
-
-                    bool result = await _databaseService.AddItemAsync(newLobbyContext);
-            
-                    if (!result)
-                    {
-                        Logger.Error("Failed to add context to database");
-                        return;
-                    }
-
-                    Logger.Debug($"{userName} joined to lobby {steamLobbyId.m_SteamID}");
-                    
-            
-                    if (_eventBus != null)
-                        _eventBus.Publish(new LobbyUpdate());
-                    else 
-                        Logger.Error("Event bus to Lobby entered = null");
-                }
-                else
-                {
-                    Logger.Debug($"{userName} already exists in database");
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Error($"Error in UI thread operation: {ex}");
-            }
+            LobbyID = lobbyId,
+            MemberCount = 1
         });
-    }
 
-    void OnLobbyJoin(GameLobbyJoinRequested_t callback)
-    {
-        SteamMatchmaking.JoinLobby(callback.m_steamIDLobby);
-    }
-
-    #endregion
-    
-    #region Leave
-
-    void LeaveFromLobby()
-    {
-        // TO:DO logic for leave from party. Get list members, find current user with current lobby id and delete from table and after leave from steam lobby.
-        
-        if (_createLobby == null || _createLobby.CurrentLobbyId == 0)
+        if (!isAddNewLobby)
         {
-            Logger.Warning("No lobbies found");
+            Logger.Error("Failed to create lobbies");
             return;
         }
         
-        CSteamID currentSteamLobby = new CSteamID(_createLobby.CurrentLobbyId);
-        SteamMatchmaking.LeaveLobby(currentSteamLobby);
-        OnLeaving(_createLobby.CurrentLobbyId, SteamManager.GetSteamManager().GetSteamId());
-    }
+        var cSteamId = SteamManager.GetSteamManager().GetSteamId();
+        
+        var isAddCurrentUserToLobby = await _databaseService.AddItemAsync(new LobbyContext
+        {
+            LobbyID = lobbyId,
+            MemberID = cSteamId.m_SteamID,
+            NickName = SteamFriends.GetPlayerNickname(cSteamId)
+        });
 
-    private void OnLeaving(ulong lobbyId, CSteamID memberId)
+        if (!isAddCurrentUserToLobby)
+        {
+            Logger.Error($"Failed to add new member to lobby {lobbyId}");
+        }
+    }
+    public async Task ConnectToLobby(long lobbyId)
     {
-        if (lobbyId == 0 || memberId == CSteamID.Nil)
+        if (lobbyId == 0 || _databaseService == null) //To:Do show warning
+            return;
+
+        var lobbyList = await _databaseService.GetTableListAsync<Lobbies>();
+
+        if (lobbyList == null) //Ошибка: не найдено лобби в списке
             return;
         
-        List<LobbyContext>? lobbiesData = _databaseService.GetTableListAsync<LobbyContext>().Result;
+        Lobbies? lobby = CheckLobby(lobbyList, lobbyId);
 
-        if (lobbiesData == null || lobbiesData.Count == 0)
+        if (lobby == null)
+        {
+            Logger.Error($"Failed to connect to {lobbyId}. Lobby not found");
             return;
+        }
         
-        var memberData = lobbiesData.FirstOrDefault(e => e.LobbyID == lobbyId && e.MemberID == memberId.m_SteamID);
+        var cSteamId = SteamManager.GetSteamManager().GetSteamId();
 
-        if (memberData == null)
+        var isAdded = await AddNewUser(lobbyId, cSteamId);
+
+        if (isAdded)
         {
-            Logger.Error($"Not find lobby with member {memberId.m_SteamID}");
-            return;
+            lobby.MemberCount++;
+            await _databaseService.UpdateAsync(lobby);
+            Logger.Debug($"User {cSteamId.m_SteamID} joined the lobby {lobbyId}");
+        }
+        
+    }
+    private async Task<bool> AddNewUser(long lobbyId, CSteamID cSteamId)
+    {
+        if (_databaseService == null)
+        {
+            throw new NullReferenceException();
+        }
+        
+        bool isAddNewUserToLobby = await _databaseService.AddItemAsync(new LobbyContext
+        {
+            LobbyID = lobbyId,
+            MemberID = cSteamId.m_SteamID,
+            NickName = SteamFriends.GetPlayerNickname(cSteamId)
+        });
+
+        return true;
+    }
+    private Lobbies? CheckLobby(List<Lobbies> lobbies, long lobbyId)
+    {
+        foreach (var lobby in lobbies)
+        {
+            if (lobby.LobbyID == lobbyId)
+                return lobby;
         }
 
-        _databaseService.DeleteItemAsync(memberData);
+        return null;
     }
-
-    #endregion
-
-    #region DeleteLobby
-
-    public void DeleteLobby()
-    {
-        //TO:DO If user have leader to lobby and he want delete lobby, we clear database and steam lobby from other player and after delete lobby
-    }
-    
-    private void OnDeleteLobby(){} //Action after deleted lobby
-
-    #endregion
-    
-    public async Task<List<Users>> GetPartyMembers(uint lobbyId)
-    {
-        var users = new List<Users>();
-
-        await using (var db = new AppDbContext())
-        {
-            var list = db.LobbyContexts.Where(x => x.LobbyID == lobbyId).ToList();
-
-            foreach (var item in list)
-            {
-                Users user = db.Users.First(a => a.ClientID == item.MemberID);
-                users.Add(user);
-            }
-        }
-
-        return users;
-    }
-}
-
-public interface ILobbyService
-{
-    Task<List<Users>> GetPartyMembers(uint lobbyId);
 }

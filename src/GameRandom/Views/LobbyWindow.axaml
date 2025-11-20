@@ -3,7 +3,7 @@
         xmlns:vm="using:GameRandom.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="250"
+        mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="550"
         x:Class="GameRandom.Views.LobbyModalWindow.LobbyWindow"
         x:DataType="vm:CreateLobbyViewModel"
         Width="1000" Height="550"
@@ -82,7 +82,6 @@
                             
                             <!-- Create Lobby button -->
                             <Button Content="CREATE LOBBY"
-                                    Click="CreateNewLobby"
                                     Background="Black"
                                     Foreground="White"
                                     BorderBrush="White"
@@ -158,7 +157,6 @@
                         <!-- Connect button -->
                         <Button Grid.Column="1"
                                 Content="CONNECT"
-                                Click="ConnectToLobby"
                                 Background="Black"
                                 Foreground="White"
                                 BorderBrush="White"
