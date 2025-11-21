@@ -82,6 +82,7 @@
                             
                             <!-- Create Lobby button -->
                             <Button Content="CREATE LOBBY"
+                                    Click="Create"
                                     Background="Black"
                                     Foreground="White"
                                     BorderBrush="White"
@@ -157,6 +158,7 @@
                         <!-- Connect button -->
                         <Button Grid.Column="1"
                                 Content="CONNECT"
+                                Click="Connect"
                                 Background="Black"
                                 Foreground="White"
                                 BorderBrush="White"

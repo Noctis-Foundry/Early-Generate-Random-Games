@@ -21,8 +21,6 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        InitializeOtherWindow();
-        
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
@@ -65,11 +63,5 @@ public partial class App : Application
             factory.Create<IError, ErrorService, MainWindow>(new ErrorService(), mainWindow);
         else
             throw new Exception("Window not found");
-    }
-
-    private void InitializeOtherWindow()
-    {
-        var createLobbyInstance = new CreateLobby() { IsVisible = false };
-        Di.Container.RegisterSingleInstance(createLobbyInstance);
     }
 }
