@@ -77,7 +77,7 @@ public partial class MainWindow : Window
     }
     private void EventsConnecting()
     {
-        Task.Run(async () => await TestingDeleteLobbyMembers());
+        //Task.Run(async () => await TestingDeleteLobbyMembers());
         
         LobbyImages.Children.Clear();
         

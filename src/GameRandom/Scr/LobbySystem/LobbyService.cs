@@ -43,6 +43,8 @@ public class LobbyService
             return;
         }
         
+        Logger.Debug($"User enter to lobby with {userLobbyCtx.LobbyID}");
+        
         _userData.SetLobbyId(userLobbyCtx.LobbyID, userLobbyCtx);
         
         SendLobbyEvent(lobbyContexts);
