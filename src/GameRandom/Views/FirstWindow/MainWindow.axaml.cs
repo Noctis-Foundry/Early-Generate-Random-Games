@@ -3,11 +3,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using GameRandom.DataBaseContexts;
+using GameRandom.Events;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Events;
 using GameRandom.Service;
 using GameRandom.SteamSDK;
 using GameRandom.Scr.WindowScr;
+using GameRandom.SteamSDK.LobbySystem;
 using GameRandom.ViewModels;
 
 namespace GameRandom.Views;
@@ -15,6 +17,7 @@ namespace GameRandom.Views;
 public partial class MainWindow : Window
 {
     [Inject] private EventBus? _eventBus;
+    [Inject] private LobbyService? _lobby;
     
     private readonly Register<string, UserControl> _userControlRegister = new();
     private readonly Action<string> _changeContent;
@@ -73,24 +76,39 @@ public partial class MainWindow : Window
     }
     private void EventsConnecting()
     {
+        //Task.Run(async () => await TestingDeleteLobbyMembers());
+        
+        LobbyImages.Children.Clear();
+        
         var eventBus = Di.Container.TryGetInstance<EventBus>() as EventBus;
         
         if (eventBus == null)
             throw new Exception("EventBus not found");
         
-        //if (DataContext is MainWindowViewModel vm)
-       //{
-           // eventBus.Subscribe<LobbyUpdate>(e =>
-            //{
-                //Dispatcher.UIThread.InvokeAsync(() => vm.UpdateLobby(LobbyImages));
-            //});
-        //}
+        if (DataContext is MainWindowViewModel vm) 
+        {
+           eventBus.Subscribe<LobbyUpdate>(e =>
+            {
+                vm.UpdateLobby(LobbyImages, e.LobbyMembers);
+            }); 
+        }
+
+        if (_lobby == null)
+            throw new Exception("Lobby service not found");
+        
+        Dispatcher.UIThread.InvokeAsync(() => _lobby.StartApp());
     }
-    private async Task TestingDeleteLobbyMembers(AppDbContext dbContext)
+    private async Task TestingDeleteLobbyMembers()
     {
+        var dbContext = new AppDbContext();
+        
         foreach (var item in dbContext.LobbyContexts.ToList())
         {
             dbContext.LobbyContexts.Remove(item);
+        }
+        foreach (var item in dbContext.Lobbies.ToList())
+        {
+            dbContext.Lobbies.Remove(item);
         }
         
         await dbContext.SaveChangesAsync();

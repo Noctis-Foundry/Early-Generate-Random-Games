@@ -25,6 +25,8 @@ public class DatabaseService : IDatabaseService
             var dbContext = db.Set<TEntity>();
             await dbContext.AddAsync(item);
             await db.SaveChangesAsync();
+            
+            Logger.Debug($"Added {item} to db");
         }
         catch (Exception e)
         {
@@ -86,12 +88,51 @@ public class DatabaseService : IDatabaseService
 
         return true;
     }
-
+    
     public async Task<bool> UpdateAsync<TEntity>(TEntity item) where TEntity : class
     {
         await using var context = new AppDbContext();
         context.Set<TEntity>().Update(item);
         await context.SaveChangesAsync();
         return true;
+    }
+    
+    public async Task<List<TEntity>?> Where<TEntity>(Func<TEntity,bool> predicate)
+        where TEntity : class
+    {
+        await using var context = new AppDbContext();
+        var list = await context.Set<TEntity>().AsNoTracking().ToListAsync();
+
+        if (list.Count <= 0)
+        {
+            Logger.Error($"List with name {typeof(TEntity).Name} not found");
+            return null;
+        }
+        
+        List<TEntity>? result = new();
+
+        for (int i = 0; i < list.Count; i++)
+        {
+            if (predicate(list[i]))
+            {
+                result.Add(list[i]);
+            }
+        }
+        
+        return result;
+    }
+
+    public async Task<TResult?> ExecuteDbOperation<TResult>(Func<DatabaseService, Task<TResult>> operation,
+        string errorMessage) where TResult : class
+    {
+        try
+        {
+            return await operation(this);
+        }
+        catch (Exception e)
+        {
+            Logger.Error($"{errorMessage}, {e.Message}");
+            return null;
+        }
     }
 }

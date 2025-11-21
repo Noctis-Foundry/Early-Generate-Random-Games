@@ -5,6 +5,7 @@ using GameRandom.Scr.Events;
 using GameRandom.Scr.Service;
 using GameRandom.Service;
 using GameRandom.SteamSDK;
+using GameRandom.SteamSDK.LobbySystem;
 
 namespace GameRandom;
 
@@ -20,13 +21,13 @@ sealed class Program
     {
         try
         {
-            InitializeDependenceInjection();
-            
             _steamManager = new SteamManager();
             _steamManager.InitSteam();
             
             var steamId = _steamManager.GetSteamId();
             Console.WriteLine("SteamID: " + steamId);
+            
+            InitializeDependenceInjection();
         }
         catch (Exception e)
         {
@@ -50,7 +51,8 @@ sealed class Program
         Di.Container.RegisterSingleInstance(new DiFactory());
         Di.Container.RegisterSingleInstance(new EventBus());
         Di.Container.RegisterSingleInstance(new ObservableConverter());
-        Di.Container.RegisterSingleInstance(new MainWindowFactory());
         Di.Container.RegisterSingleInstance(new DatabaseService());
+        Di.Container.RegisterSingleInstance(new LobbyService());
+        Di.Container.RegisterSingleInstance(new MainWindowFactory());
     }
 }

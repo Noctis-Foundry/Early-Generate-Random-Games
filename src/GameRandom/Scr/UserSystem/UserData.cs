@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using GameRandom.DataBaseContexts;
 using Steamworks;
 
 namespace GameRandom.SteamSDK.UserSystem;
 
 public class UserData 
 {
-    private ulong _lobbyId;
+    private long _lobbyId;
     public CSteamID ClientId { get; private set; }
-    public ulong LobbyId
+    public LobbyContext? CurrentLobbyContext { get; private set; }
+    public long LobbyId
     {
         get => _lobbyId;
         private set
@@ -28,9 +30,10 @@ public class UserData
         ClientId = clientId;
     }
 
-    public void SetLobbyId(ulong lobbyId)
+    public void SetLobbyId(long lobbyId, LobbyContext lobbyContext)
     {
         LobbyId = lobbyId;
+        CurrentLobbyContext = lobbyContext;
     }
 }
 

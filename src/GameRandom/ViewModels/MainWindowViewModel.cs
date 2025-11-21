@@ -3,14 +3,19 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.Input;
+using GameRandom.DataBaseContexts;
+using GameRandom.Events;
 using GameRandom.Scr.DI;
+using GameRandom.Scr.Events;
 using GameRandom.Scr.Service;
 using GameRandom.Scr.WindowScr;
 using GameRandom.Service;
 using GameRandom.SteamSDK;
+using GameRandom.SteamSDK.LobbySystem;
 using GameRandom.SteamSDK.UserSystem;
 using GameRandom.Views;
 using GameRandom.Views.LobbyModalWindow;
+using Steamworks;
 
 namespace GameRandom.ViewModels;
 
@@ -30,26 +35,32 @@ public class MainWindowViewModel : ViewModelBase
         _windowService = windowService;
         OpenLobbyCommand = new RelayCommand(OpenLobby);
         CreateLobbyCommand = new RelayCommand(OpenCreateLobbyWindow);
-        
+
         Di.Container.ResolveFieldsFromClassInstance(this);
     }
 
-    public async Task UpdateLobby(Grid lobbyGrid)
+    public void UpdateLobby(Grid lobbyGrid, List<LobbyContext>? lobbyContext)
     {
         lobbyGrid.Children.Clear();
 
         if (_databaseService == null || _mainWindowFactory == null || _userData == null)
             throw new NullReferenceException();
         
-        //List<Image>? imageList = _mainWindowFactory.CreateImageInGrid(currentLobbyList.Count, lobbyGrid);
+        if (lobbyContext == null || lobbyContext.Count == 0)
+        {
+            Logger.Warning($"No find lobby with id {_userData.LobbyId}");
+            return;
+        }
         
-        //for (int i = 0; i < currentLobbyList.Count; i++)
-        //{
-            //CSteamID memberId = new CSteamID(currentLobbyList[i].ClientID);
-            //int imageUrl = SteamFriends.GetLargeFriendAvatar(memberId);
-            //Bitmap bitmap = AvaloniaService.CreateSteamImage(imageUrl);
-            //imageList[i].Source = bitmap;   
-        //}
+        List<Image>? imageList = _mainWindowFactory.CreateImageInGrid(lobbyContext.Count, lobbyGrid);
+        
+        for (int i = 0; i < lobbyContext.Count; i++)
+        {
+            CSteamID memberId = new CSteamID(lobbyContext[i].MemberID);
+            int imageUrl = SteamFriends.GetLargeFriendAvatar(memberId);
+            Bitmap bitmap = AvaloniaService.CreateSteamImage(imageUrl);
+            imageList[i].Source = bitmap;   
+        }
     }
     
     public async void OpenLobby()
