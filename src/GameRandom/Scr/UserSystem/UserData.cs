@@ -35,6 +35,12 @@ public class UserData
         LobbyId = lobbyId;
         CurrentLobbyContext = lobbyContext;
     }
+
+    public void UnsetLobby()
+    {
+        LobbyId = 0;
+        CurrentLobbyContext = null;
+    }
 }
 
 public class UserCtx

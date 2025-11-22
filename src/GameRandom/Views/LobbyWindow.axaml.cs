@@ -42,19 +42,21 @@ public partial class LobbyWindow : Window
             
             var filtered = new string(textBox.Text.Where(char.IsDigit).ToArray());
             
-            if (filtered.Length > 18)
-                filtered = filtered.Substring(0, 18);
+           // if (filtered.Length > 19)
+             //   filtered = filtered.Substring(0, 19);
             
             if (filtered != textBox.Text)
                 textBox.Text = filtered;
         }
     }
-    private void Connect(object? sender, RoutedEventArgs e)
+    private async void Connect(object? sender, RoutedEventArgs e)
     {
         if (DataContext is CreateLobbyViewModel viewModel)
         {
-            if (long.TryParse(viewModel.CurrentLobbyID, out var lobbyId)) 
-                Dispatcher.UIThread.InvokeAsync(() => _lobbyService.ConnectToLobby(lobbyId));
+            if (long.TryParse(IdBox.Text, out var lobbyId))
+            {
+                await _lobbyService.ConnectToLobby(lobbyId);
+            }
             else
                 Logger.Error("Failed connect to the lobby");
         }

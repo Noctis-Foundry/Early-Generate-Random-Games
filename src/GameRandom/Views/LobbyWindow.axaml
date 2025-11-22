@@ -73,6 +73,7 @@
                                     Height="50">
                                 <Label Content="{Binding CurrentLobbyID}" 
                                        FontSize="20" 
+                                       x:Name="LobbyId"
                                        FontWeight="Bold"
                                        Foreground="White"
                                        HorizontalContentAlignment="Center"
@@ -143,8 +144,7 @@
                             <TextBox Classes="LobbyTextBox"
                                      Width="250" 
                                      x:Name="IdBox"
-                                     MaxLength="18"
-                                     TextChanged="OnLobbyIdChanging"
+                                     MaxLength="20"
                                      Text="..."
                                      Background="Transparent"
                                      Foreground="White"
