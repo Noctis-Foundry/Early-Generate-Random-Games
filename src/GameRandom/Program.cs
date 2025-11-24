@@ -11,29 +11,13 @@ namespace GameRandom;
 
 sealed class Program
 {
-    private static SteamManager _steamManager;
-    
     // Initialization code. Don't use any Avalonia, third-party APIs or any
     // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
     // yet and stuff might break.
     [STAThread]
     public static void Main(string[] args)
-    {
-        try
-        {
-            _steamManager = new SteamManager();
-            _steamManager.InitSteam();
-            
-            var steamId = _steamManager.GetSteamId();
-            Console.WriteLine("SteamID: " + steamId);
-            
-            InitializeDependenceInjection();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine("Error initialize " + e);
-            throw;
-        }
+    { 
+        InitializeDependenceInjection();
         
         BuildAvaloniaApp()
             .StartWithClassicDesktopLifetime(args);
@@ -52,7 +36,6 @@ sealed class Program
         Di.Container.RegisterSingleInstance(new EventBus());
         Di.Container.RegisterSingleInstance(new ObservableConverter());
         Di.Container.RegisterSingleInstance(new DatabaseService());
-        Di.Container.RegisterSingleInstance(new LobbyService());
         Di.Container.RegisterSingleInstance(new MainWindowFactory());
     }
 }

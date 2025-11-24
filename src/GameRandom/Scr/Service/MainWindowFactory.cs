@@ -48,7 +48,7 @@ public class MainWindowFactory
         
         return (buttons, images);
     }
-    public List<Image> CreateImageInGrid(int countImage, Grid grid)
+    public List<Image> CreateImagesInGrid(int countImage, Grid grid)
     {
         grid.Children.Clear();
 
@@ -56,20 +56,23 @@ public class MainWindowFactory
 
         for (int i = 0; i < countImage; i++)
         {
-            Image image = new Image
-            {
-                Source = new Bitmap("Assets\\avalonia-logo.ico"),
-                Name = $"LobbyImage{i}"
-            };
-            
-            // Класс для Image
-            images.Add(image);
-            
-            Grid.SetColumn(image, i);
-            grid.Children.Add(image);
+            images.Add(CreateImageInGrid(grid, i));
         }
         
         return images;
+    }
+
+    public Image CreateImageInGrid(Grid grid, int imageColum)
+    {
+        Image image = new Image
+        {
+            Source = new Bitmap("Assets\\avalonia-logo.ico"),
+        };
+            
+        Grid.SetColumn(image, imageColum);
+        grid.Children.Add(image);
+        
+        return image;
     }
 }
 

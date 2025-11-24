@@ -38,8 +38,11 @@ public static class AvaloniaService
         return bitmap;
     }
 
-    public static Bitmap CreateSteamImage(int image)
+    public static Bitmap? CreateSteamImage(int image)
     {
+        if (image == 0)
+            return null;
+        
         uint width, height;
         SteamUtils.GetImageSize(image, out width, out height);
 
