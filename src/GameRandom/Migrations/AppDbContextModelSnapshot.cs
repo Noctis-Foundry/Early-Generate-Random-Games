@@ -78,7 +78,7 @@ namespace GameRandom.Migrations
                     b.ToTable("Lobbies");
                 });
 
-            modelBuilder.Entity("GameRandom.DataBaseContexts.LobbyContext", b =>
+            modelBuilder.Entity("GameRandom.DataBaseContexts.LobbyUserContext", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -86,8 +86,8 @@ namespace GameRandom.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("LobbyID")
-                        .HasColumnType("numeric(20,0)");
+                    b.Property<long>("LobbyID")
+                        .HasColumnType("bigint");
 
                     b.Property<decimal>("MemberID")
                         .HasColumnType("numeric(20,0)");
@@ -95,6 +95,9 @@ namespace GameRandom.Migrations
                     b.Property<string>("NickName")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("PlayerIcon")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 

@@ -5,7 +5,7 @@ namespace GameRandom.DataBaseContexts;
 public class AppDbContext : DbContext
 {
     public DbSet<Users> Users { get; set; }
-    public DbSet<LobbyContext> LobbyContexts { get; set; }
+    public DbSet<LobbyUserContext> LobbyContexts { get; set; }
     public DbSet<GameProgress> GameTables { get; set; }
     public DbSet<Lobbies> Lobbies { get; set; }
     
@@ -24,12 +24,14 @@ public class Users
     public string Username { get; set; }
 }
 
-public class LobbyContext
+public class LobbyUserContext
 {
     public int Id { get; set; }
     public long LobbyID { get; set; }
     public ulong MemberID { get; set; }
     public string NickName { get; set; }
+    
+    public int PlayerIcon { get; set; }
 }
 
 public class Lobbies

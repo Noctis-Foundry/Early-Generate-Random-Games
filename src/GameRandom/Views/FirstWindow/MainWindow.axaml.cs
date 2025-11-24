@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Threading;
 using GameRandom.DataBaseContexts;
 using GameRandom.Events;
 using GameRandom.Scr.DI;
@@ -24,6 +25,8 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+
+        //Task.Run(async () => await TestingDeleteLobbyMembers());
         
         var vm = new MainWindowViewModel(new WindowService(this));
         DataContext = vm;

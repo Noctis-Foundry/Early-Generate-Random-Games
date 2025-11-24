@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Timers;
+using Avalonia.Threading;
 using GameRandom.Scr.DI;
 using GameRandom.SteamSDK.UserSystem;
 using Steamworks;
@@ -17,7 +18,7 @@ public class SteamManager
     private static SteamManager? _instance;
     private bool _isInitialized = false;
     
-    private Timer? _steamCallbackTimer;
+    private DispatcherTimer? _steamCallbackTimer;
 
     public SteamManager()
     {
@@ -59,11 +60,9 @@ public class SteamManager
     }
     private void StartEventTimer()
     {
-        _steamCallbackTimer = new Timer(100);
-        _steamCallbackTimer.Elapsed += (s, e) =>
-        {
-            SteamAPI.RunCallbacks();
-        };
+        _steamCallbackTimer = new DispatcherTimer();
+        _steamCallbackTimer.Interval = TimeSpan.FromMilliseconds(10);
+        _steamCallbackTimer.Tick += (sender, args) =>  SteamAPI.RunCallbacks();
         _steamCallbackTimer.Start();
     }
 

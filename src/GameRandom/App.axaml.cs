@@ -7,12 +7,14 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using GameRandom.Scr.DI;
 using GameRandom.SteamSDK;
+using GameRandom.SteamSDK.LobbySystem;
 using GameRandom.Views;
 
 namespace GameRandom;
 
 public partial class App : Application
 {
+    private SteamManager _steamManager;
     
     public override void Initialize()
     {
@@ -21,6 +23,8 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        InitializeSteam();
+        
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
@@ -63,5 +67,24 @@ public partial class App : Application
             factory.Create<IError, ErrorService, MainWindow>(new ErrorService(), mainWindow);
         else
             throw new Exception("Window not found");
+    }
+
+    private void InitializeSteam()
+    {
+        try
+        {
+            _steamManager = new SteamManager();
+            _steamManager.InitSteam();
+            
+            var steamId = _steamManager.GetSteamId();
+            Console.WriteLine("SteamID: " + steamId);
+            
+            Di.Container.RegisterSingleInstance(new LobbyService());
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Error initialize " + e);
+            throw;
+        }
     }
 }

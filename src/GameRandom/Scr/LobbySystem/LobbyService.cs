@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using GameRandom.DataBaseContexts;
 using GameRandom.Events;
@@ -48,7 +49,7 @@ public class LobbyService
         
         _userData.SetLobbyId(userLobbyCtx.LobbyID, userLobbyCtx);
         
-        SendLobbyEvent(lobbyContexts);
+        SendLobbyEvent(await _databaseService.Where<LobbyUserContext>(e => e.LobbyID == userLobbyCtx.LobbyID));
     }
     public async Task CreateLobby()
     {
@@ -57,7 +58,6 @@ public class LobbyService
             //Show window with creating warning
             return;
         }
-
         if (_userData.LobbyId > 0)
         {
             //To:Do делать предупреждение если Lobby уже созданно
@@ -82,22 +82,10 @@ public class LobbyService
             _isCreating = false;
             return;
         }
-        
-        var cSteamId = _userData.ClientId;
 
-        string nickname = SteamFriends.GetPersonaName(); //Next time added to documentation error from steamFriends
-                                                         //where developer try get personal name with methonds GetPersonalNickname throw new memory allocate Exception
-        
-        var lobbyContext = new LobbyContext
-        {
-            LobbyID = lobbyId,
-            MemberID = cSteamId.m_SteamID,
-            NickName = nickname
-        };
-        
-        var isAddCurrentUserToLobby = await _databaseService.AddItemAsync(lobbyContext);
+        (bool isAdded, LobbyUserContext lobbyContext) = await AddNewUser(lobbyId, _userData.ClientId);
 
-        if (!isAddCurrentUserToLobby)
+        if (!isAdded)
         {
             Logger.Error($"Failed to add new member to lobby {lobbyId}");
             _isCreating = false;
@@ -105,7 +93,7 @@ public class LobbyService
         }
         
         _userData.SetLobbyId(lobbyId, lobbyContext);
-        _eventBus.Publish(new LobbyUpdate(new List<LobbyContext>
+        _eventBus.Publish(new LobbyUpdate(new List<LobbyUserContext>
         {
             lobbyContext
         }));
@@ -137,7 +125,7 @@ public class LobbyService
         
         var cSteamId = SteamManager.GetSteamManager().GetSteamId();
 
-        (bool isAdded, LobbyContext lobbyContext) = await AddNewUser(lobbyId, cSteamId);
+        (bool isAdded, LobbyUserContext lobbyContext) = await AddNewUser(lobbyId, cSteamId);
 
         if (isAdded)
         {
@@ -148,7 +136,7 @@ public class LobbyService
             _userData.SetLobbyId(lobbyId, lobbyContext);
         }
         
-        SendLobbyEvent(await _databaseService.GetTableListAsync<LobbyContext>());
+        SendLobbyEvent(await _databaseService.GetTableListAsync<LobbyUserContext>());
     }
     public async Task DisconnectFromLobby()
     {
@@ -165,7 +153,7 @@ public class LobbyService
             return;
         }
 
-        var isDeleted = await _databaseService.DeleteItemAsync<LobbyContext>(_userData.CurrentLobbyContext);
+        var isDeleted = await _databaseService.DeleteItemAsync<LobbyUserContext>(_userData.CurrentLobbyContext);
 
         if (isDeleted)
         {
@@ -196,13 +184,14 @@ public class LobbyService
             Logger.Debug($"Item lobby {item.LobbyID} and member count: {item.MemberCount}");
         }
     }
-    private async Task<(bool, LobbyContext)> AddNewUser(long lobbyId, CSteamID cSteamId)
+    private async Task<(bool, LobbyUserContext)> AddNewUser(long lobbyId, CSteamID cSteamId)
     {
-        var lobbyContext = new LobbyContext
+        var lobbyContext = new LobbyUserContext
         {
             LobbyID = lobbyId,
             MemberID = cSteamId.m_SteamID,
-            NickName = SteamFriends.GetPersonaName()
+            NickName = SteamFriends.GetPersonaName(),
+            PlayerIcon = SteamFriends.GetLargeFriendAvatar(cSteamId)
         };
 
         bool isAddNewUserToLobby = await _databaseService.AddItemAsync(lobbyContext);
@@ -219,9 +208,9 @@ public class LobbyService
         
         return null;
     }
-    public async Task<List<LobbyContext>?> GetLobbies(long lobbyId)
+    public async Task<List<LobbyUserContext>?> GetLobbies(long lobbyId)
     {
-        var allLobby = await _databaseService.GetTableListAsync<LobbyContext>();
+        var allLobby = await _databaseService.GetTableListAsync<LobbyUserContext>();
 
         if (allLobby == null || allLobby.Count == 0)
         {
@@ -231,7 +220,7 @@ public class LobbyService
         
         return allLobby.Where(e => e.LobbyID == lobbyId).ToList();
     }
-    private void SendLobbyEvent(List<LobbyContext>? lobbies)
+    private void SendLobbyEvent(List<LobbyUserContext>? lobbies)
     {
         if (lobbies == null || lobbies.Count == 0)
         {
@@ -241,12 +230,11 @@ public class LobbyService
         
         _eventBus.Publish(new LobbyUpdate(lobbies));
     }
-    private async Task<List<LobbyContext>?> CheckCurrentConnectionOnLobby()
+    private async Task<List<LobbyUserContext>?> CheckCurrentConnectionOnLobby()
     {
-        ulong clientId = SteamManager.GetSteamManager().GetSteamId().m_SteamID;
+        ulong clientId = _userData.ClientId.m_SteamID;
 
-        var lobbyContext = await _databaseService.Where<LobbyContext>(e => e.MemberID == clientId);
-        
+        var lobbyContext = await _databaseService.Where<LobbyUserContext>(e => e.MemberID == clientId);
         return lobbyContext;
     }
     private void EnsureDependenciesInitialized()
