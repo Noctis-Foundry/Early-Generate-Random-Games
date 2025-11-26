@@ -37,5 +37,6 @@ sealed class Program
         Di.Container.RegisterSingleInstance(new ObservableConverter());
         Di.Container.RegisterSingleInstance(new DatabaseService());
         Di.Container.RegisterSingleInstance(new MainWindowFactory());
+        Di.Container.RegisterSingleInstance(new SteamWebApi());
     }
 }

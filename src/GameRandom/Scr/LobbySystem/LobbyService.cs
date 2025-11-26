@@ -61,7 +61,6 @@ public class LobbyService
         if (_userData.LobbyId > 0)
         {
             //To:Do делать предупреждение если Lobby уже созданно
-            
             await DisconnectFromLobby();
         }
         
@@ -164,12 +163,12 @@ public class LobbyService
             {
                 Logger.Debug("No member in lobby. Deleted");
                 await _databaseService.DeleteItemAsync(ctx);
+                return;
             }
             
             await _databaseService.UpdateAsync(ctx);
         }
     }
-
     private async Task Testing()
     {
         var lobbies = await _databaseService.GetTableListAsync<Lobbies>();
@@ -247,4 +246,5 @@ public class LobbyService
     {
         return list == null || list.Count == 0;
     }
+    
 }
