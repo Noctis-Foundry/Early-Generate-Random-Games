@@ -7,6 +7,7 @@ using GameRandom.DataBaseContexts;
 using GameRandom.Events;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Events;
+using GameRandom.Scr.Service;
 using GameRandom.Service;
 using GameRandom.SteamSDK;
 using GameRandom.Scr.WindowScr;
@@ -17,14 +18,18 @@ namespace GameRandom.Views;
 
 public partial class MainWindow : Window
 {
-    [Inject] private EventBus? _eventBus;
     [Inject] private LobbyService? _lobby;
+    [Inject] private PostgresListener?  _postgres;
     
     private readonly Register<string, UserControl> _userControlRegister = new();
     private readonly Action<string> _changeContent;
     public MainWindow()
     {
         InitializeComponent();
+        Di.Container.ResolveFieldsFromClassInstance(this);
+
+        if (_lobby == null || _postgres == null)
+            throw new InvalidOperationException("Failed connect _lobby || _postgres from DI container in MainWindow.cs");
 
         //Task.Run(async () => await TestingDeleteLobbyMembers());
         
@@ -34,14 +39,10 @@ public partial class MainWindow : Window
         _changeContent = Navigate;
         
         InitializeUserControlRegister();
+        
         Navigate("Main");
         
         Closing += MainWindow_OnClosed;
-        
-        Di.Container.ResolveFieldsFromClassInstance(this);
-        
-        if (_eventBus == null)
-            throw new Exception("EventBus not initialized");
         
         EventsConnecting();
     }
@@ -80,20 +81,13 @@ public partial class MainWindow : Window
     private void EventsConnecting()
     {
         //Task.Run(async () => await TestingDeleteLobbyMembers());
-        
+
         LobbyImages.Children.Clear();
         
-        var eventBus = Di.Container.TryGetInstance<EventBus>() as EventBus;
-        
-        if (eventBus == null)
-            throw new Exception("EventBus not found");
-        
-        if (DataContext is MainWindowViewModel vm) 
+        if (DataContext is MainWindowViewModel vm)
         {
-           eventBus.Subscribe<LobbyUpdate>(e =>
-            {
-                vm.UpdateLobby(LobbyImages, e.LobbyMembers);
-            }); 
+            _postgres.Subscribe(TableEnum.LobbyContext,
+                e => Dispatcher.UIThread.InvokeAsync(() => vm.UpdateLobby(LobbyImages, e)));
         }
 
         if (_lobby == null)

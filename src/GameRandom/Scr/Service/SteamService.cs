@@ -3,6 +3,7 @@ using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
+using GameRandom.Scr.Service;
 
 namespace GameRandom.SteamSDK;
 
@@ -16,6 +17,7 @@ public class SteamService
 
         try
         {
+            Logger.Debug($"Current image url: {imageUrl}");
             var response = await imageClient.GetAsync(imageUrl);
 
             var imageBytes = await response.Content.ReadAsByteArrayAsync();

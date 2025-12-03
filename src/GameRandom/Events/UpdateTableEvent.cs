@@ -1,12 +1,13 @@
-﻿using GameRandom.DataBaseContexts;
+﻿using System.Collections.Generic;
+using GameRandom.DataBaseContexts;
 
 namespace GameRandom.Events;
 
 public class UpdateTableEvent
 {
-    public GameProgress GameProgress;
+    public List<GameProgress> GameProgress;
     
-    public UpdateTableEvent(GameProgress gameProgress)
+    public UpdateTableEvent( List<GameProgress> gameProgress)
     {
         GameProgress = gameProgress;
     }

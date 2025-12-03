@@ -28,6 +28,8 @@ public class MainWindowViewModel : ViewModelBase
 {
     [Inject] private MainWindowFactory? _mainWindowFactory;
     [Inject] private SteamWebApi? _steamWebApi;
+    [Inject] private UserData? _userData;
+    [Inject] private DatabaseService? _databaseService;
 
     private readonly IWindowService _windowService;
     public ICommand OpenLobbyCommand { get; }
@@ -47,20 +49,37 @@ public class MainWindowViewModel : ViewModelBase
             throw new NotImplementedException("_steamWebApi is not implemented");
         if (_mainWindowFactory == null)
             throw new NotImplementedException("_mainWindowFactory is not implemented");
+        if (_userData == null)
+            throw new NotImplementedException("_userData is not implemented");
+        if (_databaseService == null)
+            throw new NotImplementedException("_databaseService is not implemented");
     }
 
-    public async void UpdateLobby(Grid lobbyGrid, List<LobbyUserContext>? lobbyContext)
+    public async Task UpdateLobby(Grid lobbyGrid, PayloadStructure payloadStructure)
     {
+        if (_userData.LobbyId == 0)
+        {
+            Logger.Debug("Player lobby not found");
+            return;
+        }
+        
         lobbyGrid.Children.Clear();
         _avatars.Clear();
 
-        if (lobbyContext == null || lobbyContext.Count == 0)
+        if ((TableEnum)payloadStructure.TableCode != TableEnum.LobbyContext)
         {
-            Logger.Warning("No lobby context found");
+            Logger.Debug($"Table code {payloadStructure.TableCode} not correct for this method");
             return;
         }
 
-        await CreateAvatarsUi(lobbyContext, lobbyGrid);
+        List<LobbyUserContext> lobbyContexts =
+            await _databaseService.Where<LobbyUserContext>(e => e.LobbyID == _userData.LobbyId);
+
+        if (lobbyContexts.Count == 0)
+        {
+            Logger.Debug($"No lobby context found with {_userData.LobbyId}");
+            return;
+        }
     }
 
     public async void OpenLobby()

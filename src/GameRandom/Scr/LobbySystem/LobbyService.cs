@@ -72,7 +72,10 @@ public class LobbyService
         var isAddNewLobby = await _databaseService.AddItemAsync(new Lobbies
         {
             LobbyID = lobbyId,
-            MemberCount = 1
+            MemberCount = new List<ulong>
+            {
+                _userData.ClientId.m_SteamID
+            }
         });
 
         if (!isAddNewLobby)
@@ -92,10 +95,6 @@ public class LobbyService
         }
         
         _userData.SetLobbyId(lobbyId, lobbyContext);
-        _eventBus.Publish(new LobbyUpdate(new List<LobbyUserContext>
-        {
-            lobbyContext
-        }));
 
         _isCreating = false;
     }
@@ -128,14 +127,12 @@ public class LobbyService
 
         if (isAdded)
         {
-            lobby.MemberCount++;
+            lobby.MemberCount.Add(cSteamId.m_SteamID);
             await _databaseService.UpdateAsync(lobby);
             Logger.Debug($"User {cSteamId.m_SteamID} joined the lobby {lobbyId}");
             
             _userData.SetLobbyId(lobbyId, lobbyContext);
         }
-        
-        SendLobbyEvent(await _databaseService.GetTableListAsync<LobbyUserContext>());
     }
     public async Task DisconnectFromLobby()
     {
@@ -157,9 +154,13 @@ public class LobbyService
         if (isDeleted)
         {
             var ctx = currentLobbyData.FirstOrDefault(e => e.LobbyID == _userData.LobbyId);
-            ctx.MemberCount--;
 
-            if (ctx.MemberCount <= 0)
+            if (ctx == null)
+                return;
+
+            ctx.MemberCount.Remove(_userData.ClientId.m_SteamID);
+
+            if (ctx.MemberCount.Count <= 0)
             {
                 Logger.Debug("No member in lobby. Deleted");
                 await _databaseService.DeleteItemAsync(ctx);
@@ -207,18 +208,6 @@ public class LobbyService
         
         return null;
     }
-    public async Task<List<LobbyUserContext>?> GetLobbies(long lobbyId)
-    {
-        var allLobby = await _databaseService.GetTableListAsync<LobbyUserContext>();
-
-        if (allLobby == null || allLobby.Count == 0)
-        {
-            Logger.Debug("Not lobbies found");
-            return null;
-        }
-        
-        return allLobby.Where(e => e.LobbyID == lobbyId).ToList();
-    }
     private void SendLobbyEvent(List<LobbyUserContext>? lobbies)
     {
         if (lobbies == null || lobbies.Count == 0)
@@ -246,5 +235,4 @@ public class LobbyService
     {
         return list == null || list.Count == 0;
     }
-    
 }
