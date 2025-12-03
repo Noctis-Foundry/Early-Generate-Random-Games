@@ -18,8 +18,9 @@ namespace GameRandom.Views;
 
 public partial class MainWindow : Window
 {
-    [Inject] private LobbyService? _lobby;
-    [Inject] private PostgresListener?  _postgres;
+    [Inject] private readonly LobbyService _lobby = null!;
+    [Inject] private readonly PostgresListener  _postgres = null!;
+    [Inject] private readonly EventBus _eventBus = null!;
     
     private readonly Register<string, UserControl> _userControlRegister = new();
     private readonly Action<string> _changeContent;
@@ -27,11 +28,6 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         Di.Container.ResolveFieldsFromClassInstance(this);
-
-        if (_lobby == null || _postgres == null)
-            throw new InvalidOperationException("Failed connect _lobby || _postgres from DI container in MainWindow.cs");
-
-        //Task.Run(async () => await TestingDeleteLobbyMembers());
         
         var vm = new MainWindowViewModel(new WindowService(this));
         DataContext = vm;
@@ -45,6 +41,11 @@ public partial class MainWindow : Window
         Closing += MainWindow_OnClosed;
         
         EventsConnecting();
+        
+        _eventBus.Subscribe<LobbyUpdate>(_ =>
+        {
+            Dispatcher.UIThread.InvokeAsync(() => vm.UpdateLobby(LobbyImages, (int)TableEnum.LobbyContext));
+        });
     }
 
     private void InitializeUserControlRegister()
@@ -61,14 +62,10 @@ public partial class MainWindow : Window
         var tableContent = new GameTable();
         tableContent.AddListener(_changeContent);
         
-        var rulesContent = new Rules();
-        rulesContent.AddListener(_changeContent);
-        
         _userControlRegister.RegisterNewObject("Main", mainContent);
         _userControlRegister.RegisterNewObject("Roll", rollContent);
         _userControlRegister.RegisterNewObject("Profile", profileContent);
         _userControlRegister.RegisterNewObject("Table", tableContent);
-        _userControlRegister.RegisterNewObject("Rules", rulesContent);
     }
     private void Navigate(string nameControl)
     {
@@ -87,7 +84,7 @@ public partial class MainWindow : Window
         if (DataContext is MainWindowViewModel vm)
         {
             _postgres.Subscribe(TableEnum.LobbyContext,
-                e => Dispatcher.UIThread.InvokeAsync(() => vm.UpdateLobby(LobbyImages, e)));
+                e => Dispatcher.UIThread.InvokeAsync(() => vm.UpdateLobby(LobbyImages, e.TableCode)));
         }
 
         if (_lobby == null)
@@ -99,9 +96,9 @@ public partial class MainWindow : Window
     {
         var dbContext = new AppDbContext();
         
-        foreach (var item in dbContext.LobbyContexts.ToList())
+        foreach (var item in dbContext.LobbyUserContext.ToList())
         {
-            dbContext.LobbyContexts.Remove(item);
+            dbContext.LobbyUserContext.Remove(item);
         }
         foreach (var item in dbContext.Lobbies.ToList())
         {

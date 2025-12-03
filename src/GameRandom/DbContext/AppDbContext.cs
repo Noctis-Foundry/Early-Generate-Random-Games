@@ -6,8 +6,8 @@ namespace GameRandom.DataBaseContexts;
 public class AppDbContext : DbContext
 {
     public DbSet<Users> Users { get; set; }
-    public DbSet<LobbyUserContext> LobbyContexts { get; set; }
-    public DbSet<GameProgress> GameTables { get; set; }
+    public DbSet<LobbyUserContext> LobbyUserContext { get; set; }
+    public DbSet<GameProgress> GameProgress { get; set; }
     public DbSet<Lobbies> Lobbies { get; set; }
     
     public const string HostPath = "Host=80.93.62.153;Database=steamdata;Username=users;Password=ninokuriko212410";
@@ -39,8 +39,9 @@ public class Lobbies
 {
     public int Id { get; set; }
     public long LobbyID { get; set; }
-    public List<ulong> MemberCount { get; set; }
+    public int MemberCount { get; set; }
 }
+
 public class GameProgress
 {
     public int Id { get; set; }

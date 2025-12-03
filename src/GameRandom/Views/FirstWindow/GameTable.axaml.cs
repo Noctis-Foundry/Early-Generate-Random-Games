@@ -17,12 +17,9 @@ namespace GameRandom.Views;
 
 public partial class GameTable : UserControl
 {
-    [Inject] private DatabaseService _databaseService;
-    [Inject] private EventBus _eventBus;
-    
-    private ObservableConverter _converter;
-    private Action<string> _onShowContent;
-    private const int GameTableId = 2;
+    [Inject] private readonly DatabaseService _databaseService = null!;
+    [Inject] private readonly ObservableConverter _converter = null!;
+    private Action<string>? _onShowContent;
 
     public GameTable()
     {
@@ -33,26 +30,28 @@ public partial class GameTable : UserControl
         if (Design.IsDesignMode)
             return;
 
-        if (Di.Container.TryGetInstance<ObservableConverter>() is ObservableConverter converter)
-        {
-            _converter = converter;
-        }
-
         Task.Run(async () => await InitializeTable());
 
         if (Di.Container.TryGetInstance<PostgresListener>() is PostgresListener listener)
         {
             listener.Subscribe(TableEnum.GameTable, 
-                e => Dispatcher.UIThread.InvokeAsync(() => SubscribeToUpdateTable(e)));
+                e => Dispatcher.UIThread.InvokeAsync(() => SubscribeToUpdateTable(e.TableCode)));
         }
+        
+        Dispatcher.UIThread.InvokeAsync(() => SubscribeToUpdateTable((int)TableEnum.GameTable));
     }
 
     private async Task InitializeTable()
     {
-        await using var db = new AppDbContext();
-        var gameProgresses = await db.GameTables.ToListAsync();
-        
-        await Dispatcher.UIThread.InvokeAsync(() => UpdateTable(gameProgresses));
+        try
+        {
+            var gameProgresses = await _databaseService.GetTableListAsync<GameProgress>();
+            await Dispatcher.UIThread.InvokeAsync(() => UpdateTable(gameProgresses));
+        }
+        catch (Exception e)
+        {
+            Logger.Error($"An error occured while loading GameTable + {e.Message}");
+        }
     }
     
     public void AddListener(Action<string> onChangeContent) => _onShowContent = onChangeContent;
@@ -62,39 +61,29 @@ public partial class GameTable : UserControl
         _onShowContent?.Invoke("Main");
     }
 
-    private async Task SubscribeToUpdateTable(PayloadStructure payloadStructure)
+    private async Task SubscribeToUpdateTable(int tableCode)
     {
-        if (payloadStructure.TableCode != GameTableId)
-        {
-            Logger.Debug($"TableCode: {payloadStructure.TableCode} not correct");
-            return;
-        }
         
-        List<GameProgress>? gameProgresses = await _databaseService.GetTableListAsync<GameProgress>();
-
-        if (gameProgresses == null || gameProgresses.Count == 0)
+        if (tableCode != (int)TableEnum.GameTable)
         {
-            Logger.Debug($"No data found in GameTable.axaml.cs");
+            Logger.Debug($"TableCode: {tableCode} not correct");
             return;
         }
 
-        UpdateTable(gameProgresses);
+        try
+        {
+            var gameProgresses = await _databaseService.GetTableListAsync<GameProgress>();
+            UpdateTable(gameProgresses);
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(ex + " Failed to load GameTable");
+        }
     }
     
     private void UpdateTable(List<GameProgress> gameProgress)
     {
-        foreach (var item in gameProgress)
-        {
-            Console.WriteLine($"item = {item.GameName}");
-        }
-        
         if (DataContext is GameTableViewModel viewModel)
-        {
             viewModel.GameProgress = _converter.ToObservableCollection(gameProgress);
-        }
-        else
-        {
-            Console.WriteLine("DataContext is not GameTableViewModel");
-        }
     }
 }

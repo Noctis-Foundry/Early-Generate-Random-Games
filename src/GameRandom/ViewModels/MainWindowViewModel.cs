@@ -26,10 +26,10 @@ namespace GameRandom.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase
 {
-    [Inject] private MainWindowFactory? _mainWindowFactory;
-    [Inject] private SteamWebApi? _steamWebApi;
-    [Inject] private UserData? _userData;
-    [Inject] private DatabaseService? _databaseService;
+    [Inject] private readonly MainWindowFactory _mainWindowFactory= null!;
+    [Inject] private readonly SteamWebApi _steamWebApi= null!;
+    [Inject] private readonly UserData _userData= null!;
+    [Inject] private readonly DatabaseService _databaseService= null!;
 
     private readonly IWindowService _windowService;
     public ICommand OpenLobbyCommand { get; }
@@ -55,7 +55,7 @@ public class MainWindowViewModel : ViewModelBase
             throw new NotImplementedException("_databaseService is not implemented");
     }
 
-    public async Task UpdateLobby(Grid lobbyGrid, PayloadStructure payloadStructure)
+    public async Task UpdateLobby(Grid lobbyGrid, int tableCode)
     {
         if (_userData.LobbyId == 0)
         {
@@ -66,19 +66,40 @@ public class MainWindowViewModel : ViewModelBase
         lobbyGrid.Children.Clear();
         _avatars.Clear();
 
-        if ((TableEnum)payloadStructure.TableCode != TableEnum.LobbyContext)
+        if ((TableEnum)tableCode != TableEnum.LobbyContext)
         {
-            Logger.Debug($"Table code {payloadStructure.TableCode} not correct for this method");
+            Logger.Debug($"Table code {tableCode} not correct for this method");
             return;
         }
 
-        List<LobbyUserContext> lobbyContexts =
+        var lobbyContexts =
             await _databaseService.Where<LobbyUserContext>(e => e.LobbyID == _userData.LobbyId);
 
-        if (lobbyContexts.Count == 0)
+        if (lobbyContexts == null || lobbyContexts.Count == 0)
         {
             Logger.Debug($"No lobby context found with {_userData.LobbyId}");
             return;
+        }
+        
+        var images = _mainWindowFactory.CreateImagesInGrid(lobbyContexts.Count, lobbyGrid);
+
+        for (int i = 0; i < lobbyContexts.Count; i++)
+        {
+            try
+            {
+                var profileContext = await _steamWebApi.GetUserData(lobbyContexts[i].MemberID);
+
+                if (profileContext == null)
+                    throw new NullReferenceException("Profile context not found");
+                
+                var bitmap = await SteamService.Instance.GetImage(profileContext.avatarUrl);
+                images[i].Source = bitmap;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return;
+            }
         }
     }
 
@@ -89,7 +110,7 @@ public class MainWindowViewModel : ViewModelBase
 
     public async void OpenCreateLobbyWindow()
     {
-        await _windowService.ShowDialogAsync<CreateLobby>();
+        await _windowService.ShowDialogAsync<Rules>();
     }
 
     public async void ShowRules()
@@ -143,7 +164,7 @@ public class MainWindowViewModel : ViewModelBase
                 return;
             }
             
-            Bitmap? avatar = await SteamService.Instance.GetImage(userData.avatarId);
+            Bitmap? avatar = await SteamService.Instance.GetImage(userData.avatarUrl);
             image.Source = avatar;
         }
     }

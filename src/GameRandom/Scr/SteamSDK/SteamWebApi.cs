@@ -44,11 +44,11 @@ public class SteamWebApi
         
             var profileCtx = new ProfilerContext
             {
-                avatarId = avatar,
+                avatarUrl = avatar,
                 MemberID = userId,
             };
 
-            Logger.Debug($"profile json with id {userId} == {profileCtx == null}");
+            Logger.Debug($"profile json with id {userId} is null {profileCtx is null}");
         
             return profileCtx;
         }

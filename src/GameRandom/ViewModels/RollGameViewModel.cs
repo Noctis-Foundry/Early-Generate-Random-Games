@@ -34,7 +34,7 @@ public class RollGameViewModel : ViewModelBase
                 IsFinished = false,
             };
             
-            db.GameTables.Add(gameProgress);
+            db.GameProgress.Add(gameProgress);
             await db.SaveChangesAsync();
 
             Process.Start(new ProcessStartInfo

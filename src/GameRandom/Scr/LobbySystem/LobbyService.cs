@@ -14,29 +14,17 @@ namespace GameRandom.SteamSDK.LobbySystem;
 
 public class LobbyService
 {
-    [Inject] private UserData? _userData;
-    [Inject] private DatabaseService? _databaseService;
-    [Inject] private EventBus? _eventBus;
-
     private bool _isCreating = false;
-
-    public LobbyService()
-    {
-        Di.Container.ResolveFieldsFromClassInstance(this);
-        EnsureDependenciesInitialized();
-    }
+    
+    [Inject] private readonly UserData _userData = null!;
+    [Inject] private readonly DatabaseService _databaseService = null!;
+    [Inject] private readonly EventBus _eventBus = null!;
+    
     public async Task StartApp()
     {
         await Testing();
         
         var lobbyContexts = await CheckCurrentConnectionOnLobby();
-        
-        if (lobbyContexts == null || lobbyContexts.Count == 0)
-        {
-            Logger.Error("Not found any lobby context");
-            return;
-        }
-
         var userLobbyCtx = lobbyContexts.FirstOrDefault(e => e.MemberID == _userData.ClientId.m_SteamID);
 
         if (userLobbyCtx == null)
@@ -58,6 +46,7 @@ public class LobbyService
             //Show window with creating warning
             return;
         }
+        
         if (_userData.LobbyId > 0)
         {
             //To:Do делать предупреждение если Lobby уже созданно
@@ -72,10 +61,7 @@ public class LobbyService
         var isAddNewLobby = await _databaseService.AddItemAsync(new Lobbies
         {
             LobbyID = lobbyId,
-            MemberCount = new List<ulong>
-            {
-                _userData.ClientId.m_SteamID
-            }
+            MemberCount = 1
         });
 
         if (!isAddNewLobby)
@@ -127,7 +113,7 @@ public class LobbyService
 
         if (isAdded)
         {
-            lobby.MemberCount.Add(cSteamId.m_SteamID);
+            lobby.MemberCount++;
             await _databaseService.UpdateAsync(lobby);
             Logger.Debug($"User {cSteamId.m_SteamID} joined the lobby {lobbyId}");
             
@@ -153,14 +139,13 @@ public class LobbyService
 
         if (isDeleted)
         {
-            var ctx = currentLobbyData.FirstOrDefault(e => e.LobbyID == _userData.LobbyId);
+            var ctx = currentLobbyData?.FirstOrDefault(e => e.LobbyID == _userData.LobbyId);
 
-            if (ctx == null)
-                return;
+            if (ctx == null) return;
 
-            ctx.MemberCount.Remove(_userData.ClientId.m_SteamID);
+            ctx.MemberCount--;
 
-            if (ctx.MemberCount.Count <= 0)
+            if (ctx.MemberCount <= 0)
             {
                 Logger.Debug("No member in lobby. Deleted");
                 await _databaseService.DeleteItemAsync(ctx);
@@ -224,12 +209,6 @@ public class LobbyService
 
         var lobbyContext = await _databaseService.Where<LobbyUserContext>(e => e.MemberID == clientId);
         return lobbyContext;
-    }
-    private void EnsureDependenciesInitialized()
-    {
-        _userData = _userData ?? throw new InvalidOperationException("UserData not initialized");
-        _databaseService = _databaseService ?? throw new InvalidOperationException("DatabaseService not initialized");
-        _eventBus = _eventBus ?? throw new InvalidOperationException("EventBus not initialized");
     }
     private bool IsEmpty<T>(List<T>? list)
     {

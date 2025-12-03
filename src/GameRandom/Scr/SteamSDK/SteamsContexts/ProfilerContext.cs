@@ -3,5 +3,5 @@
 public class ProfilerContext
 {
     public ulong MemberID;
-    public string avatarId;
+    public string avatarUrl;
 }
