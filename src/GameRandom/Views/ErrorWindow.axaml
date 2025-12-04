@@ -4,15 +4,23 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="300"
         x:Class="GameRandom.Views.ErrorWindow"
-        Width="400" Height="300"
+        Width="500" Height="150"
+        MaxWidth="500" MaxHeight="150"
         Title="ErrorWindow">
+    
     <DockPanel>
         <DockPanel.Background>Gray</DockPanel.Background>
         
-        <Grid RowDefinitions="Auto, Auto" RowSpacing="10"
+        <Grid RowDefinitions="Auto, Auto" RowSpacing="40"
               HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Label Content="Error" Classes="LobbyLabel" x:Name="ErrorLabel"></Label>
-            <Button Grid.Row="1" Content="Ok" HorizontalAlignment="Center"></Button>
+            <Label Classes="LobbyLabel"
+                   FontSize="16">
+                <TextBlock TextWrapping="Wrap" x:Name="ErrorLabel" Foreground="White" Text="Error"></TextBlock>
+            </Label>
+            <Button Grid.Row="1" Click="MessageBoxButtonAction" 
+                    x:Name="ErrorButton" Content="Ok" HorizontalAlignment="Center"
+                    Background="Black" Foreground="White" FontSize="16"
+                    Width="100" HorizontalContentAlignment="Center"></Button>
         </Grid>
     </DockPanel>
 </Window>

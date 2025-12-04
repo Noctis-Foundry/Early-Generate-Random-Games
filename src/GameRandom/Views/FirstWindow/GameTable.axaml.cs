@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -10,6 +11,9 @@ using GameRandom.Events;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Events;
 using GameRandom.Scr.Service;
+using GameRandom.SteamSDK;
+using GameRandom.SteamSDK.Enums;
+using GameRandom.SteamSDK.UserSystem;
 using GameRandom.ViewModels;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,6 +23,8 @@ public partial class GameTable : UserControl
 {
     [Inject] private readonly DatabaseService _databaseService = null!;
     [Inject] private readonly ObservableConverter _converter = null!;
+    [Inject] private readonly ErrorService _errorService = null!;
+    [Inject] private readonly UserData _userData = null!;
     private Action<string>? _onShowContent;
 
     public GameTable()
@@ -50,7 +56,7 @@ public partial class GameTable : UserControl
         }
         catch (Exception e)
         {
-            Logger.Error($"An error occured while loading GameTable + {e.Message}");
+            _errorService.ShowErrorWindow($"An error occured while loading GameTable + {e.Message}", ErrorEnum.Error);
         }
     }
     
@@ -63,21 +69,41 @@ public partial class GameTable : UserControl
 
     private async Task SubscribeToUpdateTable(int tableCode)
     {
-        
         if (tableCode != (int)TableEnum.GameTable)
         {
-            Logger.Debug($"TableCode: {tableCode} not correct");
+            _errorService.ShowErrorWindow($"TableCode: {tableCode} not correct", ErrorEnum.Error);
             return;
         }
 
+        var finalyTable = new List<GameProgress>();
+        
         try
         {
+            var lobbyContexts = await _databaseService.Where<LobbyUserContext>(e => e.LobbyID == _userData.LobbyId);
             var gameProgresses = await _databaseService.GetTableListAsync<GameProgress>();
-            UpdateTable(gameProgresses);
+            
+            if (lobbyContexts == null || lobbyContexts.Count <= 0)
+            {
+                _errorService.ShowErrorWindow($"Not founded lobby members with lobby id {_userData.LobbyId}", ErrorEnum.Error);
+                return;
+            }
+
+            if (gameProgresses == null || gameProgresses.Count <= 0)
+            {
+                _errorService.ShowErrorWindow($"Not founded started game with lobby id {_userData.LobbyId}", ErrorEnum.Error);
+                return;
+            }
+            
+            foreach (var lobbyContext in lobbyContexts)
+            {
+                finalyTable.AddRange(gameProgresses.Where(e => e.ClientId == lobbyContext.MemberID));
+            }
+            
+            UpdateTable(finalyTable);
         }
         catch (Exception ex)
         {
-            Logger.Error(ex + " Failed to load GameTable");
+            _errorService.ShowErrorWindow(ex + " Failed to load GameTable", ErrorEnum.Error);
         }
     }
     

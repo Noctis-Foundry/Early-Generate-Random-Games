@@ -1,10 +1,14 @@
 ﻿using Avalonia;
 using System;
+using System.Runtime.InteropServices.JavaScript;
+using System.Threading;
+using System.Threading.Tasks;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Events;
 using GameRandom.Scr.Service;
 using GameRandom.Service;
 using GameRandom.SteamSDK;
+using GameRandom.SteamSDK.Enums;
 using GameRandom.SteamSDK.LobbySystem;
 
 namespace GameRandom;
@@ -14,13 +18,25 @@ sealed class Program
     // Initialization code. Don't use any Avalonia, third-party APIs or any
     // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
     // yet and stuff might break.
+    
     [STAThread]
     public static void Main(string[] args)
     { 
         InitializeDependenceInjection();
         
-        BuildAvaloniaApp()
-            .StartWithClassicDesktopLifetime(args);
+        try
+        {
+            BuildAvaloniaApp()
+                .StartWithClassicDesktopLifetime(args);
+        }
+        catch (Exception e)
+        {
+            System.Diagnostics.Process.Start("MessageBox.exe", new []
+            {
+                e.Message,
+                nameof(ErrorEnum.Critical)
+            });
+        }
     }
     
     // Avalonia configuration, don't remove; also used by visual designer.

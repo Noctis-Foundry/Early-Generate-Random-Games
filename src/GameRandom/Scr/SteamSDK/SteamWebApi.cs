@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using GameRandom.Scr.DI;
 using GameRandom.Scr.Service;
 using GameRandom.SteamSDK.SteamsContexts;
 
@@ -12,7 +13,7 @@ public class SteamWebApi
 {
     private const string ApiKey = "74FCA50C2D6D2C3ACF641458D135AA3A";
     private readonly HttpClient _client = new HttpClient();
-
+    
     public async Task<ProfilerContext?> GetUserData(ulong userId)
     {
         try
@@ -47,15 +48,12 @@ public class SteamWebApi
                 avatarUrl = avatar,
                 MemberID = userId,
             };
-
-            Logger.Debug($"profile json with id {userId} is null {profileCtx is null}");
         
             return profileCtx;
         }
         catch (Exception e)
         {
-            Console.WriteLine(e.Message);
-            throw;
+            throw new Exception("GetUserData error", e);
         }
     }
 }

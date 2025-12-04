@@ -1,41 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Controls;
 using Avalonia.Media.Imaging;
-using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using GameRandom.DataBaseContexts;
-using GameRandom.Events;
 using GameRandom.Scr.DI;
-using GameRandom.Scr.Events;
 using GameRandom.Scr.Service;
 using GameRandom.Scr.WindowScr;
 using GameRandom.Service;
 using GameRandom.SteamSDK;
-using GameRandom.SteamSDK.LobbySystem;
+using GameRandom.SteamSDK.Enums;
 using GameRandom.SteamSDK.UserSystem;
 using GameRandom.Views;
 using GameRandom.Views.LobbyModalWindow;
-using Microsoft.Extensions.Logging;
-using Steamworks;
 
 namespace GameRandom.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase
 {
-    [Inject] private readonly MainWindowFactory _mainWindowFactory= null!;
-    [Inject] private readonly SteamWebApi _steamWebApi= null!;
-    [Inject] private readonly UserData _userData= null!;
-    [Inject] private readonly DatabaseService _databaseService= null!;
+    [Inject] private readonly MainWindowFactory _mainWindowFactory = null!;
+    [Inject] private readonly SteamWebApi _steamWebApi = null!;
+    [Inject] private readonly UserData _userData = null!;
+    [Inject] private readonly DatabaseService _databaseService = null!;
+    [Inject] private readonly ErrorService _errorService = null!;
 
     private readonly IWindowService _windowService;
     public ICommand OpenLobbyCommand { get; }
     public ICommand CreateLobbyCommand { get; }
-    
+
     private Dictionary<ulong, Image> _avatars = new();
+    private bool _isInitialized;
 
     public MainWindowViewModel(IWindowService windowService)
     {
@@ -44,31 +40,30 @@ public class MainWindowViewModel : ViewModelBase
         CreateLobbyCommand = new RelayCommand(OpenCreateLobbyWindow);
 
         Di.Container.ResolveFieldsFromClassInstance(this);
-        
-        if (_steamWebApi == null)
-            throw new NotImplementedException("_steamWebApi is not implemented");
-        if (_mainWindowFactory == null)
-            throw new NotImplementedException("_mainWindowFactory is not implemented");
-        if (_userData == null)
-            throw new NotImplementedException("_userData is not implemented");
-        if (_databaseService == null)
-            throw new NotImplementedException("_databaseService is not implemented");
+
+        _isInitialized = true;
     }
 
     public async Task UpdateLobby(Grid lobbyGrid, int tableCode)
     {
-        if (_userData.LobbyId == 0)
+        if (!_isInitialized)
         {
-            Logger.Debug("Player lobby not found");
+            _errorService.ShowErrorWindow("Not initialized MainWindowViewModel, Cant update lobby", ErrorEnum.Error);
             return;
         }
-        
+
+        if (_userData.LobbyId == 0)
+        {
+            _errorService.ShowErrorWindow("Not fount user data", ErrorEnum.Warning);
+            return;
+        }
+
         lobbyGrid.Children.Clear();
         _avatars.Clear();
 
         if ((TableEnum)tableCode != TableEnum.LobbyContext)
         {
-            Logger.Debug($"Table code {tableCode} not correct for this method");
+            _errorService.ShowErrorWindow($"Table code {tableCode} not correct for this method", ErrorEnum.Error);
             return;
         }
 
@@ -77,10 +72,10 @@ public class MainWindowViewModel : ViewModelBase
 
         if (lobbyContexts == null || lobbyContexts.Count == 0)
         {
-            Logger.Debug($"No lobby context found with {_userData.LobbyId}");
+            _errorService.ShowErrorWindow($"No lobby context found with {_userData.LobbyId}", ErrorEnum.Error);
             return;
         }
-        
+
         var images = _mainWindowFactory.CreateImagesInGrid(lobbyContexts.Count, lobbyGrid);
 
         for (int i = 0; i < lobbyContexts.Count; i++)
@@ -90,7 +85,10 @@ public class MainWindowViewModel : ViewModelBase
                 var profileContext = await _steamWebApi.GetUserData(lobbyContexts[i].MemberID);
 
                 if (profileContext == null)
-                    throw new NullReferenceException("Profile context not found");
+                {
+                    _errorService.ShowErrorWindow("Not found profile context", ErrorEnum.Error);
+                    return;
+                }
                 
                 var bitmap = await SteamService.Instance.GetImage(profileContext.avatarUrl);
                 images[i].Source = bitmap;
@@ -113,34 +111,20 @@ public class MainWindowViewModel : ViewModelBase
         await _windowService.ShowDialogAsync<Rules>();
     }
 
-    public async void ShowRules()
-    {
-        await _windowService.ShowDialogAsync<LobbyWindow>();
-    }
-
     public void ShowError()
     {
-        IError? error = Di.Container.TryGetInstance<IError>() as ErrorService;
-
-        if (error != null)
-        {
-            error.ShowErrorWindow("Open error modal");
-        }
-        else
-        {
-            throw new Exception("Not fount error modal");
-        }
+        _errorService.ShowErrorWindow("Open error modal", ErrorEnum.Warning);
     }
-    
+
     private async Task CreateAvatarsUi(List<LobbyUserContext> usersContext, Grid lobbyGrid)
     {
         for (int i = 0; i < usersContext.Count; i++)
         {
             ulong memberId = usersContext[i].MemberID;
-            
+
             Image avatar = _mainWindowFactory.CreateImageInGrid(lobbyGrid, i);
             Logger.Debug($"Current request user id {memberId}");
-            
+
             if (!_avatars.TryAdd(memberId, avatar))
             {
                 Logger.Error($"Failed to add avatar {memberId}. Avatar already exists");
@@ -153,7 +137,7 @@ public class MainWindowViewModel : ViewModelBase
     private async Task LoadAvatars(ulong id)
     {
         Logger.Debug("Current on persona state: " + id);
-        
+
         if (_avatars.TryGetValue(id, out var image))
         {
             var userData = await _steamWebApi.GetUserData(id);
@@ -163,7 +147,7 @@ public class MainWindowViewModel : ViewModelBase
                 Logger.Error("Steam not callback player data");
                 return;
             }
-            
+
             Bitmap? avatar = await SteamService.Instance.GetImage(userData.avatarUrl);
             image.Source = avatar;
         }

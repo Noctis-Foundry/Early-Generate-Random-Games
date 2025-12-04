@@ -11,6 +11,7 @@ using GameRandom.Scr.Service;
 using GameRandom.Service;
 using GameRandom.SteamSDK;
 using GameRandom.Scr.WindowScr;
+using GameRandom.SteamSDK.Enums;
 using GameRandom.SteamSDK.LobbySystem;
 using GameRandom.ViewModels;
 
@@ -19,6 +20,7 @@ namespace GameRandom.Views;
 public partial class MainWindow : Window
 {
     [Inject] private readonly LobbyService _lobby = null!;
+    [Inject] private readonly DiFactory _diFactory = null!;
     [Inject] private readonly PostgresListener  _postgres = null!;
     [Inject] private readonly EventBus _eventBus = null!;
     
@@ -28,6 +30,7 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         Di.Container.ResolveFieldsFromClassInstance(this);
+        RegisterUiService(this);
         
         var vm = new MainWindowViewModel(new WindowService(this));
         DataContext = vm;
@@ -77,21 +80,33 @@ public partial class MainWindow : Window
     }
     private void EventsConnecting()
     {
-        //Task.Run(async () => await TestingDeleteLobbyMembers());
+        //Task.Run(async () => await TestingDeleteLobbyMembers()); //Deleted all position on Lobby and LobbyUserContext tables
 
         LobbyImages.Children.Clear();
         
         if (DataContext is MainWindowViewModel vm)
         {
             _postgres.Subscribe(TableEnum.LobbyContext,
-                e => Dispatcher.UIThread.InvokeAsync(() => vm.UpdateLobby(LobbyImages, e.TableCode)));
+                e => Dispatcher.UIThread.InvokeAsync(async () => await vm.UpdateLobby(LobbyImages, e.TableCode)));
         }
 
         if (_lobby == null)
             throw new Exception("Lobby service not found");
         
-        Dispatcher.UIThread.InvokeAsync(() => _lobby.StartApp());
+        Dispatcher.UIThread.InvokeAsync(async () =>
+        {
+            await _lobby.StartApp();
+        });
     }
+    
+    private void RegisterUiService(Window window)
+    {
+        if (window is MainWindow mainWindow)
+            _diFactory.Create(new ErrorService(), mainWindow);
+        else
+            throw new Exception("Window not found");
+    }
+    
     private async Task TestingDeleteLobbyMembers()
     {
         var dbContext = new AppDbContext();

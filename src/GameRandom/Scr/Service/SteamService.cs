@@ -17,7 +17,6 @@ public class SteamService
 
         try
         {
-            Logger.Debug($"Current image url: {imageUrl}");
             var response = await imageClient.GetAsync(imageUrl);
 
             var imageBytes = await response.Content.ReadAsByteArrayAsync();

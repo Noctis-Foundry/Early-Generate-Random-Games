@@ -9,14 +9,18 @@ using Avalonia.Media.Imaging;
 using Avalonia.VisualTree;
 using CommunityToolkit.Mvvm.Input;
 using GameRandom.CoreApp;
+using GameRandom.Scr.DI;
 using GameRandom.Service;
 using GameRandom.SteamSDK;
+using GameRandom.SteamSDK.Enums;
 using GameRandom.ViewModels;
 
 namespace GameRandom.Views;
 
 public partial class RollGame : UserControl
 {
+    [Inject] private readonly ErrorService _errorService = null!;
+    
     private readonly Dictionary<ButtonContext, AppSavedContext?> _appData = new ();
     
     private readonly Random _random = new();
@@ -49,7 +53,7 @@ public partial class RollGame : UserControl
     {
         if (!_generateRandomApps.IsInitialized || _isRolling)
         {
-            Console.WriteLine("Generating random games not initialized.");
+            _errorService.ShowErrorWindow("Generating random games not initialized.", ErrorEnum.Error);
             return;
         }
 
@@ -78,7 +82,7 @@ public partial class RollGame : UserControl
 
         if (apps.Count <= 0)
         {
-            Console.WriteLine("No games found");
+            _errorService.ShowErrorWindow("No games found", ErrorEnum.Error);
             _isRolling = false;
             return;
         }
@@ -103,8 +107,8 @@ public partial class RollGame : UserControl
             
             if (!_appData.TryAdd(buttonContext, apps[i]))
             {
-                throw new Exception(
-                    $"Dictionary contains duplicated app button with hash code {Equals(buttonContext)}");
+                _errorService.ShowErrorWindow($"Dictionary contains duplicated app button with hash code {Equals(buttonContext)}",
+                    ErrorEnum.Error);
             }
         }
     }
@@ -124,7 +128,7 @@ public partial class RollGame : UserControl
             }
             else
             {
-                Console.WriteLine("Not find data context");
+                _errorService.ShowErrorWindow("Not find roll game view model for RollGame.axaml", ErrorEnum.Error);
             }
         }
     }
