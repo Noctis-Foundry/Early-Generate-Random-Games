@@ -7,6 +7,7 @@ using GameRandom.Events;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Events;
 using GameRandom.Scr.Service;
+using GameRandom.SteamSDK.Enums;
 using GameRandom.SteamSDK.UserSystem;
 using Steamworks;
 
@@ -14,40 +15,26 @@ namespace GameRandom.SteamSDK.LobbySystem;
 
 public class LobbyService
 {
-    [Inject] private UserData? _userData;
-    [Inject] private DatabaseService? _databaseService;
-    [Inject] private EventBus? _eventBus;
-
     private bool _isCreating = false;
-
-    public LobbyService()
-    {
-        Di.Container.ResolveFieldsFromClassInstance(this);
-        EnsureDependenciesInitialized();
-    }
+    
+    [Inject] private readonly UserData _userData = null!;
+    [Inject] private readonly DatabaseService _databaseService = null!;
+    [Inject] private readonly EventBus _eventBus = null!;
+    [Inject] private readonly ErrorService _errorService = null!;
+    
     public async Task StartApp()
     {
-        await Testing();
-        
         var lobbyContexts = await CheckCurrentConnectionOnLobby();
-        
-        if (lobbyContexts == null || lobbyContexts.Count == 0)
-        {
-            Logger.Error("Not found any lobby context");
-            return;
-        }
-
         var userLobbyCtx = lobbyContexts.FirstOrDefault(e => e.MemberID == _userData.ClientId.m_SteamID);
 
         if (userLobbyCtx == null)
         {
-            Logger.Error("Not found any lobby context");
+            _errorService.ShowErrorWindow("not find user in database", ErrorEnum.Error);
             return;
         }
         
-        Logger.Debug($"User enter to lobby with {userLobbyCtx.LobbyID}");
-        
-        _userData.SetLobbyId(userLobbyCtx.LobbyID, userLobbyCtx);
+        _userData.SetLobbyId(userLobbyCtx.LobbyID);
+        _userData.SetLobbyContext(userLobbyCtx);
         
         SendLobbyEvent(await _databaseService.Where<LobbyUserContext>(e => e.LobbyID == userLobbyCtx.LobbyID));
     }
@@ -55,13 +42,13 @@ public class LobbyService
     {
         if (_isCreating)
         {
-            //Show window with creating warning
+            _errorService.ShowErrorWindow("Lobby is creating", ErrorEnum.Message);
             return;
         }
+        
         if (_userData.LobbyId > 0)
         {
             //To:Do делать предупреждение если Lobby уже созданно
-            
             await DisconnectFromLobby();
         }
         
@@ -78,53 +65,56 @@ public class LobbyService
 
         if (!isAddNewLobby)
         {
-            Logger.Error("Failed to create lobbies");
-            _isCreating = false;
-            return;
-        }
-
-        (bool isAdded, LobbyUserContext lobbyContext) = await AddNewUser(lobbyId, _userData.ClientId);
-
-        if (!isAdded)
-        {
-            Logger.Error($"Failed to add new member to lobby {lobbyId}");
+            _errorService.ShowErrorWindow("Failed to create lobbies", ErrorEnum.Error);
             _isCreating = false;
             return;
         }
         
-        _userData.SetLobbyId(lobbyId, lobbyContext);
-        _eventBus.Publish(new LobbyUpdate(new List<LobbyUserContext>
+        _userData.SetLobbyId(lobbyId);
+        (bool isAdded, LobbyUserContext lobbyContext) = await AddNewUser(lobbyId, _userData.ClientId);
+        
+        if (!isAdded)
         {
-            lobbyContext
-        }));
-
+            _errorService.ShowErrorWindow("Failed to add new lobby context", ErrorEnum.Error);
+            _isCreating = false;
+            return;
+        }
+        
+        _userData.SetLobbyContext(lobbyContext);
         _isCreating = false;
     }
     public async Task ConnectToLobby(long lobbyId)
     {
-        if (lobbyId == 0) //To:Do show warning
-            return;
+        if (lobbyId == 0)
+        {
+            _errorService.ShowErrorWindow("Player don't have a lobby", ErrorEnum.Warning);
+        }
 
         if (_userData.LobbyId > 0)
         {
+            //To:Do add accept window
             await DisconnectFromLobby();
         }
         
         var lobbyList = await _databaseService.GetTableListAsync<Lobbies>();
 
-        if (lobbyList == null) //Добавить ошибку: не найдено лобби в списке
+        if (lobbyList == null)
+        {
+            _errorService.ShowErrorWindow("Cannot find lobbies data to database", ErrorEnum.Error);
             return;
+        }
         
         Lobbies? lobby = CheckLobby(lobbyList, lobbyId);
 
         if (lobby == null)
         {
-            Logger.Error($"Failed to connect to {lobbyId}. Lobby not found");
+            _errorService.ShowErrorWindow($"Failed to connect to {lobbyId}. Lobby not found", ErrorEnum.Error);
             return;
         }
         
         var cSteamId = SteamManager.GetSteamManager().GetSteamId();
 
+        _userData.SetLobbyId(lobbyId);
         (bool isAdded, LobbyUserContext lobbyContext) = await AddNewUser(lobbyId, cSteamId);
 
         if (isAdded)
@@ -132,16 +122,11 @@ public class LobbyService
             lobby.MemberCount++;
             await _databaseService.UpdateAsync(lobby);
             Logger.Debug($"User {cSteamId.m_SteamID} joined the lobby {lobbyId}");
-            
-            _userData.SetLobbyId(lobbyId, lobbyContext);
+            _userData.SetLobbyContext(lobbyContext);
         }
-        
-        SendLobbyEvent(await _databaseService.GetTableListAsync<LobbyUserContext>());
     }
     public async Task DisconnectFromLobby()
     {
-        await Testing();
-        
         if (_userData.LobbyId == 0 || _userData.CurrentLobbyContext == null)
             return;
         
@@ -149,7 +134,7 @@ public class LobbyService
 
         if (IsEmpty(currentLobbyData))
         {
-            Logger.Error($"Failed to disconnect from {_userData.LobbyId}");
+            _errorService.ShowErrorWindow($"Failed to disconnect from {_userData.LobbyId}. Lobby is empty", ErrorEnum.Error);
             return;
         }
 
@@ -157,31 +142,20 @@ public class LobbyService
 
         if (isDeleted)
         {
-            var ctx = currentLobbyData.FirstOrDefault(e => e.LobbyID == _userData.LobbyId);
+            var ctx = currentLobbyData?.FirstOrDefault(e => e.LobbyID == _userData.LobbyId);
+
+            if (ctx == null) return;
+
             ctx.MemberCount--;
 
             if (ctx.MemberCount <= 0)
             {
-                Logger.Debug("No member in lobby. Deleted");
+                _errorService.ShowErrorWindow("No member in lobby. Deleting lobby from database", ErrorEnum.Message);
                 await _databaseService.DeleteItemAsync(ctx);
+                return;
             }
             
             await _databaseService.UpdateAsync(ctx);
-        }
-    }
-
-    private async Task Testing()
-    {
-        var lobbies = await _databaseService.GetTableListAsync<Lobbies>();
-
-        if (lobbies == null || lobbies.Count == 0)
-        {
-            throw new Exception("Lobbys is empty");
-        }
-
-        foreach (var item in lobbies)
-        {
-            Logger.Debug($"Item lobby {item.LobbyID} and member count: {item.MemberCount}");
         }
     }
     private async Task<(bool, LobbyUserContext)> AddNewUser(long lobbyId, CSteamID cSteamId)
@@ -208,23 +182,11 @@ public class LobbyService
         
         return null;
     }
-    public async Task<List<LobbyUserContext>?> GetLobbies(long lobbyId)
-    {
-        var allLobby = await _databaseService.GetTableListAsync<LobbyUserContext>();
-
-        if (allLobby == null || allLobby.Count == 0)
-        {
-            Logger.Debug("Not lobbies found");
-            return null;
-        }
-        
-        return allLobby.Where(e => e.LobbyID == lobbyId).ToList();
-    }
     private void SendLobbyEvent(List<LobbyUserContext>? lobbies)
     {
-        if (lobbies == null || lobbies.Count == 0)
+        if (IsEmpty(lobbies))
         {
-            Logger.Error("SendLobbyEvent: Not lobbies found");
+            _errorService.ShowErrorWindow("SendLobbyEvent: Not lobbies found", ErrorEnum.Error);
             return;
         }
         
@@ -236,12 +198,6 @@ public class LobbyService
 
         var lobbyContext = await _databaseService.Where<LobbyUserContext>(e => e.MemberID == clientId);
         return lobbyContext;
-    }
-    private void EnsureDependenciesInitialized()
-    {
-        _userData = _userData ?? throw new InvalidOperationException("UserData not initialized");
-        _databaseService = _databaseService ?? throw new InvalidOperationException("DatabaseService not initialized");
-        _eventBus = _eventBus ?? throw new InvalidOperationException("EventBus not initialized");
     }
     private bool IsEmpty<T>(List<T>? list)
     {

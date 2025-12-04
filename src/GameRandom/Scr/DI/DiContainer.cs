@@ -135,7 +135,7 @@ namespace GameRandom.Scr.DI
 
             foreach (var type in typesWithInjectFields)
             {
-                var injectFields = type.GetFields(BindingFlags.NonPublic | BindingFlags.Instance);
+                var injectFields = GetInjectFields(type);
 
                 Console.WriteLine($"Found item with type {type.FullName}");
                 var instance = GetInstance(type);
@@ -217,7 +217,7 @@ namespace GameRandom.Scr.DI
             }
 
             var field = type.GetFields(BindingFlags.Instance | BindingFlags.NonPublic)
-                .Where(f => f.GetCustomAttribute<InjectAttribute>() != null).ToList();
+                .Where(f => f.GetCustomAttribute<InjectAttribute>() != null && !f.FieldType.IsValueType).ToList();
 
             return field;
         }
@@ -233,6 +233,10 @@ namespace GameRandom.Scr.DI
                 {
                     field.SetValue(instance, value);
                     Logger.Info($"Injected {value.GetType().Name} into {instance.GetType().Name}.{field.Name}");
+                }
+                else
+                {
+                    throw new InvalidOperationException($"Dependency for {field.FieldType} not found");
                 }
             }
         }

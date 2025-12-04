@@ -30,12 +30,16 @@ public class UserData
         ClientId = clientId;
     }
 
-    public void SetLobbyId(long lobbyId, LobbyUserContext lobbyContext)
+    public void SetLobbyId(long lobbyId)
     {
         LobbyId = lobbyId;
-        CurrentLobbyContext = lobbyContext;
     }
 
+    public void SetLobbyContext(LobbyUserContext lobbyContext)
+    {
+        CurrentLobbyContext = lobbyContext;
+    }
+    
     public void UnsetLobby()
     {
         LobbyId = 0;

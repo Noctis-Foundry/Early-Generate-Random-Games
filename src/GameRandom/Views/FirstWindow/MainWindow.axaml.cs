@@ -7,9 +7,11 @@ using GameRandom.DataBaseContexts;
 using GameRandom.Events;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Events;
+using GameRandom.Scr.Service;
 using GameRandom.Service;
 using GameRandom.SteamSDK;
 using GameRandom.Scr.WindowScr;
+using GameRandom.SteamSDK.Enums;
 using GameRandom.SteamSDK.LobbySystem;
 using GameRandom.ViewModels;
 
@@ -17,16 +19,18 @@ namespace GameRandom.Views;
 
 public partial class MainWindow : Window
 {
-    [Inject] private EventBus? _eventBus;
-    [Inject] private LobbyService? _lobby;
+    [Inject] private readonly LobbyService _lobby = null!;
+    [Inject] private readonly DiFactory _diFactory = null!;
+    [Inject] private readonly PostgresListener  _postgres = null!;
+    [Inject] private readonly EventBus _eventBus = null!;
     
     private readonly Register<string, UserControl> _userControlRegister = new();
     private readonly Action<string> _changeContent;
     public MainWindow()
     {
         InitializeComponent();
-
-        //Task.Run(async () => await TestingDeleteLobbyMembers());
+        Di.Container.ResolveFieldsFromClassInstance(this);
+        RegisterUiService(this);
         
         var vm = new MainWindowViewModel(new WindowService(this));
         DataContext = vm;
@@ -34,16 +38,17 @@ public partial class MainWindow : Window
         _changeContent = Navigate;
         
         InitializeUserControlRegister();
+        
         Navigate("Main");
         
         Closing += MainWindow_OnClosed;
         
-        Di.Container.ResolveFieldsFromClassInstance(this);
-        
-        if (_eventBus == null)
-            throw new Exception("EventBus not initialized");
-        
         EventsConnecting();
+        
+        _eventBus.Subscribe<LobbyUpdate>(_ =>
+        {
+            Dispatcher.UIThread.InvokeAsync(() => vm.UpdateLobby(LobbyImages, (int)TableEnum.LobbyContext));
+        });
     }
 
     private void InitializeUserControlRegister()
@@ -60,14 +65,10 @@ public partial class MainWindow : Window
         var tableContent = new GameTable();
         tableContent.AddListener(_changeContent);
         
-        var rulesContent = new Rules();
-        rulesContent.AddListener(_changeContent);
-        
         _userControlRegister.RegisterNewObject("Main", mainContent);
         _userControlRegister.RegisterNewObject("Roll", rollContent);
         _userControlRegister.RegisterNewObject("Profile", profileContent);
         _userControlRegister.RegisterNewObject("Table", tableContent);
-        _userControlRegister.RegisterNewObject("Rules", rulesContent);
     }
     private void Navigate(string nameControl)
     {
@@ -79,35 +80,40 @@ public partial class MainWindow : Window
     }
     private void EventsConnecting()
     {
-        //Task.Run(async () => await TestingDeleteLobbyMembers());
-        
+        //Task.Run(async () => await TestingDeleteLobbyMembers()); //Deleted all position on Lobby and LobbyUserContext tables
+
         LobbyImages.Children.Clear();
         
-        var eventBus = Di.Container.TryGetInstance<EventBus>() as EventBus;
-        
-        if (eventBus == null)
-            throw new Exception("EventBus not found");
-        
-        if (DataContext is MainWindowViewModel vm) 
+        if (DataContext is MainWindowViewModel vm)
         {
-           eventBus.Subscribe<LobbyUpdate>(e =>
-            {
-                vm.UpdateLobby(LobbyImages, e.LobbyMembers);
-            }); 
+            _postgres.Subscribe(TableEnum.LobbyContext,
+                e => Dispatcher.UIThread.InvokeAsync(async () => await vm.UpdateLobby(LobbyImages, e.TableCode)));
         }
 
         if (_lobby == null)
             throw new Exception("Lobby service not found");
         
-        Dispatcher.UIThread.InvokeAsync(() => _lobby.StartApp());
+        Dispatcher.UIThread.InvokeAsync(async () =>
+        {
+            await _lobby.StartApp();
+        });
     }
+    
+    private void RegisterUiService(Window window)
+    {
+        if (window is MainWindow mainWindow)
+            _diFactory.Create(new ErrorService(), mainWindow);
+        else
+            throw new Exception("Window not found");
+    }
+    
     private async Task TestingDeleteLobbyMembers()
     {
         var dbContext = new AppDbContext();
         
-        foreach (var item in dbContext.LobbyContexts.ToList())
+        foreach (var item in dbContext.LobbyUserContext.ToList())
         {
-            dbContext.LobbyContexts.Remove(item);
+            dbContext.LobbyUserContext.Remove(item);
         }
         foreach (var item in dbContext.Lobbies.ToList())
         {

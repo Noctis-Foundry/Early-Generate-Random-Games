@@ -6,7 +6,7 @@ using Avalonia.Markup.Xaml;
 
 namespace GameRandom.Views;
 
-public partial class Rules : UserControl
+public partial class Rules : Window
 {
     private bool _isEnglish = false;
     public Rules()
