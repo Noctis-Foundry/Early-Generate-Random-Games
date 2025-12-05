@@ -1,0 +1,50 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="963" d:DesignHeight="540"
+             x:Class="GameRandom.Views.ProfileContent">
+    <StackPanel>
+        <StackPanel.Background>
+            <ImageBrush Source="avares://GameRandom/Assets/RandomGame.png" Stretch="UniformToFill"></ImageBrush>
+        </StackPanel.Background>
+        
+        <Button Content="Close" Classes="CloseProfile"
+                HorizontalAlignment="Right" Margin="0, 0, 10, 0"
+                Click="ExitFromProfile">
+        </Button>
+       
+        
+        <Grid RowDefinitions="*, *, *" ColumnDefinitions="Auto, Auto, Auto, Auto" 
+              Margin="50, 0, 0,0">
+            <Label Grid.Row="0" Grid.Column="0" Content="Game" Classes="ProfileTable"/>
+            <Label Grid.Row="0" Grid.Column="1" Content="Comment" Classes="ProfileTable"/>
+            <Label Grid.Row="0" Grid.Column="2" Content="Difficulty assessment" Classes="ProfileTable"/>
+            <Label Grid.Row="0" Grid.Column="3" Content="Game evaluation" Classes="ProfileTable"/>
+
+            <!-- Первая строка -->
+            <Label Grid.Row="1" Grid.Column="0" Content="Ведьмак" Classes="ProfileTable"/>
+            <Label Grid.Row="1" Grid.Column="1" Content="Nice" Classes="ProfileTable"/>
+            <Label Grid.Row="1" Grid.Column="2" Content="Hard" Classes="ProfileTable"/>
+            <Label Grid.Row="1" Grid.Column="3" Content="9/10" Classes="ProfileTable"/>
+
+            <!-- Вторая строка -->
+            <Label Grid.Row="2" Grid.Column="0" Content="Dark Souls" Classes="ProfileTable"/>
+            <Label Grid.Row="2" Grid.Column="1" Content="Painful" Classes="ProfileTable"/>
+            <Label Grid.Row="2" Grid.Column="2" Content="Very Hard" Classes="ProfileTable"/>
+            <Label Grid.Row="2" Grid.Column="3" Content="10/10" Classes="ProfileTable"/>
+        </Grid>
+
+        <Grid RowDefinitions="Auto, Auto"
+              HorizontalAlignment="Right" Margin="0, 0, 50, 0">
+            <Image Grid.Row="0" x:Name="AvatarImage"
+                   Source="avares://GameRandom/Assets/avalonia-logo.ico"
+                   Width="150" Height="150">
+            </Image>
+            <Label Grid.Row="1" x:Name="AccName"
+                   Content="Ar0cka" Margin="40, 0, 0, 0"
+                   FontSize="24" Foreground="Black">
+            </Label>
+        </Grid>
+    </StackPanel>
+</UserControl>
