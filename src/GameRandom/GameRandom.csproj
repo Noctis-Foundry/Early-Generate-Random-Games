@@ -11,6 +11,7 @@
 
     <ItemGroup>
         <Folder Include="Models\" />
+        <Folder Include="Scr\Events\" />
         <None Include="Assets\Jsons\temp_apps.json" CopyToOutputDirectory="Always"></None>
         <None Include="Assets\avalonia-logo.ico">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -22,18 +23,24 @@
         <None Include="Libs/steam_appid.txt" CopyToOutputDirectory="Always"> 
         <Link>steam_appid.txt</Link>
         </None>
+        <None Include="Libs/libsteam_api.so" CopyToOutputDirectory="Always">
+        <TargetPath>runtimes/linux-x64/lib/libsteam_api.so</TargetPath>
+        </None>
+        <None Include="Libs/libsteam_api.so" CopyToOutputDirectory="Always">
+        <TargetPath>runtimes/linux-x64/native/libsteam_api.so</TargetPath>
+        </None>
     </ItemGroup>
 
     <ItemGroup>
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
         <PackageReference Include="Autofac" Version="8.4.0" />
-        <PackageReference Include="Avalonia" Version="11.3.6" />
-        <PackageReference Include="Avalonia.BuildServices" Version="0.0.31" />
-        <PackageReference Include="Avalonia.Desktop" Version="11.3.6" />
-        <PackageReference Include="Avalonia.Diagnostics" Version="11.3.6" />
-        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.6" />
-        <PackageReference Include="Avalonia.Remote.Protocol" Version="11.3.6" />
-        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.6" />
+        <PackageReference Include="Avalonia" Version="11.3.9" />
+        <PackageReference Include="Avalonia.BuildServices" Version="11.3.2" />
+        <PackageReference Include="Avalonia.Desktop" Version="11.3.9" />
+        <PackageReference Include="Avalonia.Diagnostics" Version="11.3.9" />
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.9" />
+        <PackageReference Include="Avalonia.Remote.Protocol" Version="11.3.9" />
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.9" />
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.0-rc.1.25451.107" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.0-rc.1.25451.107">
@@ -74,5 +81,12 @@
         <DependentUpon>LobbyWindow.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+      <Compile Update="Views\ErrorWindow.axaml.cs">
+        <DependentUpon>ErrorWindow.axaml</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\MessageBox\MessageBox.csproj" />
     </ItemGroup>
 </Project>

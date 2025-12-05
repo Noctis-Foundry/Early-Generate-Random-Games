@@ -5,6 +5,11 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Timers;
+using Avalonia.Threading;
+using GameRandom.Scr.DI;
+using GameRandom.Scr.Service;
+using GameRandom.SteamSDK.Enums;
+using GameRandom.SteamSDK.UserSystem;
 using Steamworks;
 
 namespace GameRandom.SteamSDK;
@@ -14,64 +19,59 @@ public class SteamManager
     private const int MaxTryToConnect = 6;
     private static SteamManager? _instance;
     private bool _isInitialized = false;
-    
-    private Timer? _steamCallbackTimer;
+
+    private DispatcherTimer? _steamCallbackTimer;
 
     public SteamManager()
     {
         _instance = this;
     }
-    
+
     public void InitSteam()
     {
         if (_isInitialized)
             return;
-
-        int connectCount = 0;
         
-        while (true)
+        try
         {
-            try
-            {
-                SteamAPI.Init();
-                break;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                Task.Delay(10000).Wait();
-                connectCount++;
-
-                if (connectCount == MaxTryToConnect)
-                {
-                    throw new Exception("Failed to initialize Steam API");
-                }
-            }
+            SteamAPI.Init();
         }
-        
+        catch (Exception e)
+        {
+            Logger.Error($"Error initialize SteamAPI: {e.Message}");
+            throw;
+        }
         
         StartEventTimer();
         _isInitialized = true;
+
+        InitializeUser();
     }
 
     private void StartEventTimer()
     {
-        _steamCallbackTimer = new Timer(100);
-        _steamCallbackTimer.Elapsed += (s, e) =>
-        {
-            SteamAPI.RunCallbacks();
-        };
+        _steamCallbackTimer = new DispatcherTimer();
+        _steamCallbackTimer.Interval = TimeSpan.FromMilliseconds(10);
+        _steamCallbackTimer.Tick += (sender, args) => SteamAPI.RunCallbacks();
         _steamCallbackTimer.Start();
+    }
+
+    private void InitializeUser()
+    {
+        var playerId = GetSteamId();
+
+        var userData = new UserData(playerId);
+        Di.Container.RegisterSingleInstance(userData);
     }
 
     public void ShutdownSteam()
     {
         if (!_isInitialized) return;
-        
+
         _steamCallbackTimer?.Stop();
         SteamAPI.Shutdown();
         _isInitialized = false;
-        
+
         Console.WriteLine("SteamAPI.Shutdown() finished");
     }
 
@@ -79,10 +79,10 @@ public class SteamManager
     {
         if (!_isInitialized)
             throw new Exception("SteamAPI.Init() failed");
-        
+
         return SteamUser.GetSteamID();
     }
-    
+
     public static SteamManager GetSteamManager()
     {
         if (_instance == null)

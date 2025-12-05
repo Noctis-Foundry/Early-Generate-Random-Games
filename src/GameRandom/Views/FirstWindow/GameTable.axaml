@@ -1,0 +1,223 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vm="using:GameRandom.ViewModels"
+             xmlns:converters="using:GameRandom.AvaloniaConverters"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="GameRandom.Views.GameTable"
+             x:DataType="vm:GameTableViewModel">
+    
+    <UserControl.Resources>
+        <converters:BoolConverter x:Key="BoolConverter"></converters:BoolConverter>
+    </UserControl.Resources>
+    
+    <Grid>
+        <!-- Background with manga effect -->
+        <Grid.Background>
+            <ImageBrush Source="avares://GameRandom/Assets/RandomGame.png" Stretch="UniformToFill" Opacity="0.8"/>
+        </Grid.Background>
+        <Rectangle Fill="Black" Opacity="0.6"/>
+        
+        <StackPanel Spacing="0">
+            <!-- Header -->
+            <Border Background="Black" 
+                    BorderBrush="White" 
+                    BorderThickness="3,3,3,1"
+                    CornerRadius="0"
+                    Margin="20,20,20,0"
+                    Padding="15">
+                <Grid>
+                    <TextBlock Text="GAME PROGRESS TABLE" 
+                               FontSize="28" 
+                               FontWeight="Bold"
+                               Foreground="White"
+                               HorizontalAlignment="Center"
+                               FontFamily="Arial"/>
+                    
+                    <!-- Close button -->
+                    <Button Content="✕ CLOSE" 
+                            HorizontalAlignment="Right" 
+                            VerticalAlignment="Center"
+                            Click="Close"
+                            Background="Black"
+                            Foreground="White"
+                            BorderBrush="White"
+                            BorderThickness="2"
+                            FontWeight="Bold"
+                            FontSize="14"
+                            Width="120"
+                            Height="35"
+                            CornerRadius="0"
+                            Cursor="Hand"/>
+                </Grid>
+            </Border>
+
+            <!-- Column headers -->
+            <Border Background="#99000000" 
+                    BorderBrush="White" 
+                    BorderThickness="3,1,3,3"
+                    CornerRadius="0"
+                    Margin="20,0,20,0"
+                    Padding="0">
+                <StackPanel Spacing="0" Orientation="Horizontal" Margin="0">
+                    <Border Width="150" 
+                            BorderBrush="White" 
+                            BorderThickness="1"
+                            Background="Black"
+                            Padding="10">
+                        <TextBlock Text="PLAYER"
+                                   FontSize="16" 
+                                   Foreground="White"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                    </Border>
+                    <Border Width="150" 
+                            BorderBrush="White" 
+                            BorderThickness="1"
+                            Background="Black"
+                            Padding="10">
+                        <TextBlock Text="GAME"
+                                   FontSize="16" 
+                                   Foreground="White"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                    </Border>
+                    <Border Width="150" 
+                            BorderBrush="White" 
+                            BorderThickness="1"
+                            Background="Black"
+                            Padding="10">
+                        <TextBlock Text="STATUS"
+                                   FontSize="16" 
+                                   Foreground="White"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                    </Border>
+                    <Border Width="150" 
+                            BorderBrush="White" 
+                            BorderThickness="1"
+                            Background="Black"
+                            Padding="10">
+                        <TextBlock Text="START DATE"
+                                   FontSize="16" 
+                                   Foreground="White"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                    </Border>
+                    <Border Width="150" 
+                            BorderBrush="White" 
+                            BorderThickness="1"
+                            Background="Black"
+                            Padding="10">
+                        <TextBlock Text="END DATE"
+                                   FontSize="16" 
+                                   Foreground="White"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <!-- Scrollable content -->
+            <Border Background="#99000000" 
+                    BorderBrush="White" 
+                    BorderThickness="3,0,3,3"
+                    CornerRadius="0"
+                    Margin="20,0,20,20"
+                    Height="300">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                              HorizontalScrollBarVisibility="Disabled"
+                              Background="Transparent">
+                    <ListBox ItemsSource="{Binding GameProgress}" 
+                             Background="Transparent"
+                             BorderThickness="0"
+                             Padding="0">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="White" 
+                                        BorderThickness="0,1,0,0" 
+                                        Padding="0"
+                                        Background="#33000000">
+                                    <StackPanel Spacing="0" Orientation="Horizontal">
+                                        <Border Width="150" 
+                                                BorderBrush="White" 
+                                                BorderThickness="0,0,1,0"
+                                                Background="Transparent"
+                                                Padding="10">
+                                            <TextBlock Text="{Binding ClientId}"
+                                                       FontSize="14" 
+                                                       Foreground="White"
+                                                       FontWeight="SemiBold"
+                                                       HorizontalAlignment="Center" 
+                                                       VerticalAlignment="Center"
+                                                       TextAlignment="Center"/>
+                                        </Border>
+                                        <Border Width="150" 
+                                                BorderBrush="White" 
+                                                BorderThickness="0,0,1,0"
+                                                Background="Transparent"
+                                                Padding="10">
+                                            <TextBlock Text="{Binding GameName}"
+                                                       FontSize="14" 
+                                                       Foreground="White"
+                                                       FontWeight="SemiBold"
+                                                       HorizontalAlignment="Center" 
+                                                       VerticalAlignment="Center"
+                                                       TextAlignment="Center"/>
+                                        </Border>
+                                        <Border Width="150" 
+                                                BorderBrush="White" 
+                                                BorderThickness="0,0,1,0"
+                                                Background="Transparent"
+                                                Padding="10">
+                                            <TextBlock Text="{Binding IsFinished, Converter={StaticResource BoolConverter}}"
+                                                       FontSize="14" 
+                                                       Foreground="White"
+                                                       FontWeight="SemiBold"
+                                                       HorizontalAlignment="Center" 
+                                                       VerticalAlignment="Center"
+                                                       TextAlignment="Center"/>
+                                        </Border>
+                                        <Border Width="150" 
+                                                BorderBrush="White" 
+                                                BorderThickness="0,0,1,0"
+                                                Background="Transparent"
+                                                Padding="10">
+                                            <TextBlock Text="{Binding DataBegin}"
+                                                       FontSize="14" 
+                                                       Foreground="White"
+                                                       FontWeight="SemiBold"
+                                                       HorizontalAlignment="Center" 
+                                                       VerticalAlignment="Center"
+                                                       TextAlignment="Center"/>
+                                        </Border>
+                                        <Border Width="150" 
+                                                BorderBrush="White" 
+                                                BorderThickness="0"
+                                                Background="Transparent"
+                                                Padding="10">
+                                            <TextBlock Text="{Binding DataEnd}"
+                                                       FontSize="14" 
+                                                       Foreground="White"
+                                                       FontWeight="SemiBold"
+                                                       HorizontalAlignment="Center" 
+                                                       VerticalAlignment="Center"
+                                                       TextAlignment="Center"/>
+                                        </Border>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </ScrollViewer>
+            </Border>
+        </StackPanel>
+        
+    </Grid>
+</UserControl>

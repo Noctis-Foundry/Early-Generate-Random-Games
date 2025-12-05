@@ -1,38 +1,178 @@
 ﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:GameRandom.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="250"
+        mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="550"
         x:Class="GameRandom.Views.LobbyModalWindow.LobbyWindow"
-        Width="500" Height="250"
-        Title="LobbyWindow">
+        x:DataType="vm:CreateLobbyViewModel"
+        Width="1000" Height="550"
+        Title="LOBBY CONNECTION"
+        WindowStartupLocation="CenterScreen">
     
-        <DockPanel>
-                <DockPanel.Background>
-                        Gray
-                </DockPanel.Background>
-                
-                <Grid RowDefinitions="Auto, Auto" RowSpacing="10" 
-                      VerticalAlignment="Center" HorizontalAlignment="Center"
-                      Margin="0,0,0,30">
-                        <Label Content="Write lobby id for connect to group"
-                               Classes="LobbyLabel"
-                               HorizontalAlignment="Center"
-                               Grid.Row="0"></Label> 
-                        <Grid Grid.ColumnDefinitions="Auto, Auto"  Grid.Row="1"
-                              ColumnSpacing="5">
-                                <TextBox Classes="LobbyTextBox"
-                                         Width="300" x:Name="IdBox"
-                                         MaxLength="18"
-                                         TextChanged="OnLobbyIdChanging"
-                                         Text="..."></TextBox>
-                                <Button Classes="CloseProfile" Grid.Column="1"
-                                        Content="Connect"
-                                        Click="ConnectToLobby"></Button>
-                        </Grid>
-                        
-                </Grid>
-                
-        </DockPanel>
+    <Grid>
+        <!-- Manga background with texture -->
+        <Grid.Background>
+            <ImageBrush Source="avares://GameRandom/Assets/RandomGame.png" Stretch="UniformToFill" Opacity="0.9"/>
+        </Grid.Background>
+        <Rectangle Fill="Black" Opacity="0.7"/>
         
+        <!-- Main content -->
+        <Border Background="#99000000" 
+                BorderBrush="White" 
+                BorderThickness="4"
+                CornerRadius="0"
+                Margin="30"
+                Padding="0">
+            
+            <DockPanel>
+                <!-- Header -->
+                <Border DockPanel.Dock="Top"
+                        Background="Black" 
+                        BorderBrush="White" 
+                        BorderThickness="0,0,0,3"
+                        CornerRadius="0"
+                        Padding="20,15">
+                    <TextBlock Text="LOBBY MANAGER" 
+                               FontSize="24" 
+                               FontWeight="Bold"
+                               Foreground="White"
+                               HorizontalAlignment="Center"
+                               FontFamily="Arial"/>
+                </Border>
+                
+                <!-- Content -->
+                <Grid RowDefinitions="Auto, Auto, Auto, Auto" 
+                      RowSpacing="20"
+                      VerticalAlignment="Center" 
+                      HorizontalAlignment="Center"
+                      Margin="20">
+                    
+                    <!-- Create Lobby Section -->
+                    <Border Grid.Row="0"
+                            Background="Black"
+                            BorderBrush="White"
+                            BorderThickness="2"
+                            CornerRadius="0"
+                            Padding="20,15"
+                            HorizontalAlignment="Center">
+                        <StackPanel Orientation="Vertical" Spacing="15">
+                            <TextBlock Text="CREATE NEW LOBBY"
+                                       FontSize="18"
+                                       FontWeight="Bold"
+                                       Foreground="White"
+                                       HorizontalAlignment="Center"/>
+                            
+                            <!-- Lobby ID display -->
+                            <Border Background="Black"
+                                    BorderBrush="White" 
+                                    BorderThickness="1"
+                                    CornerRadius="0"
+                                    Padding="15,10"
+                                    Width="300"
+                                    Height="50">
+                                <Label Content="{Binding CurrentLobbyID}" 
+                                       FontSize="20" 
+                                       x:Name="LobbyId"
+                                       FontWeight="Bold"
+                                       Foreground="White"
+                                       HorizontalContentAlignment="Center"
+                                       VerticalContentAlignment="Center"
+                                       Background="Transparent"/>
+                            </Border>
+                            
+                            <!-- Create Lobby button -->
+                            <Button Content="CREATE LOBBY"
+                                    Click="Create"
+                                    Background="Black"
+                                    Foreground="White"
+                                    BorderBrush="White"
+                                    BorderThickness="2"
+                                    FontSize="16"
+                                    FontWeight="Bold"
+                                    Width="200"
+                                    Height="45"
+                                    CornerRadius="0"
+                                    Cursor="Hand"
+                                    HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Separator -->
+                    <Border Grid.Row="1"
+                            Background="White"
+                            Height="2"
+                            Margin="50,0"
+                            HorizontalAlignment="Stretch"/>
+
+                    <!-- Connect to Lobby Section -->
+                    <Border Grid.Row="2"
+                            Background="Black"
+                            BorderBrush="White"
+                            BorderThickness="2"
+                            CornerRadius="0"
+                            Padding="20,15"
+                            HorizontalAlignment="Center">
+                        <StackPanel Orientation="Vertical" Spacing="15">
+                            <TextBlock Text="CONNECT TO EXISTING LOBBY"
+                                       FontSize="18"
+                                       FontWeight="Bold"
+                                       Foreground="White"
+                                       HorizontalAlignment="Center"/>
+                            
+                            <!-- Instruction label -->
+                            <TextBlock Text="Write lobby id for connect to group"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Foreground="White"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Input and button -->
+                    <Grid Grid.Row="3" 
+                          ColumnDefinitions="Auto, Auto" 
+                          ColumnSpacing="10"
+                          HorizontalAlignment="Center">
+                        
+                        <!-- TextBox -->
+                        <Border Grid.Column="0"
+                                BorderBrush="White" 
+                                BorderThickness="2"
+                                Background="Black"
+                                Padding="2">
+                            <TextBox Classes="LobbyTextBox"
+                                     Width="250" 
+                                     x:Name="IdBox"
+                                     MaxLength="20"
+                                     Text="..."
+                                     Background="Transparent"
+                                     Foreground="White"
+                                     FontSize="14"
+                                     FontWeight="SemiBold"
+                                     BorderThickness="0"
+                                     Padding="10,8"
+                                     CaretBrush="White"/>
+                        </Border>
+                        
+                        <!-- Connect button -->
+                        <Button Grid.Column="1"
+                                Content="CONNECT"
+                                Click="Connect"
+                                Background="Black"
+                                Foreground="White"
+                                BorderBrush="White"
+                                BorderThickness="2"
+                                FontWeight="Bold"
+                                FontSize="14"
+                                Width="100"
+                                Height="40"
+                                CornerRadius="0"
+                                Cursor="Hand"/>
+                    </Grid>
+                </Grid>
+            </DockPanel>
+        </Border>
+        
+    </Grid>
 </Window>

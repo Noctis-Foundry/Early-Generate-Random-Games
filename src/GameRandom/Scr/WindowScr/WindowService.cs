@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Avalonia.Controls;
+using GameRandom.Scr.DI;
 
 namespace GameRandom.Scr.WindowScr;
 
@@ -14,7 +15,11 @@ public class WindowService : IWindowService
 
     public async Task ShowDialogAsync<TWindow>() where TWindow : Window, new()
     {
-        var window = new TWindow();
+        var window = Di.Container.TryGetInstance<TWindow>() as Window;
+        
+        if (window == null)
+            window = new TWindow();
+        
         await window.ShowDialog(_owner);
     }
 }

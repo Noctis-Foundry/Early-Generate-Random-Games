@@ -32,6 +32,9 @@ namespace GameRandom.Migrations
                     b.Property<decimal>("ClientId")
                         .HasColumnType("numeric(20,0)");
 
+                    b.Property<string>("Comment")
+                        .HasColumnType("text");
+
                     b.Property<string>("DataBegin")
                         .IsRequired()
                         .HasColumnType("text");
@@ -44,15 +47,18 @@ namespace GameRandom.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("Grade")
+                        .HasColumnType("integer");
+
                     b.Property<bool>("IsFinished")
                         .HasColumnType("boolean");
 
                     b.HasKey("Id");
 
-                    b.ToTable("GameTables");
+                    b.ToTable("GameProgress");
                 });
 
-            modelBuilder.Entity("GameRandom.DataBaseContexts.LobbyContext", b =>
+            modelBuilder.Entity("GameRandom.DataBaseContexts.Lobbies", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -60,8 +66,27 @@ namespace GameRandom.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("LobbyID")
-                        .HasColumnType("numeric(20,0)");
+                    b.Property<long>("LobbyID")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("MemberCount")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Lobbies");
+                });
+
+            modelBuilder.Entity("GameRandom.DataBaseContexts.LobbyUserContext", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<long>("LobbyID")
+                        .HasColumnType("bigint");
 
                     b.Property<decimal>("MemberID")
                         .HasColumnType("numeric(20,0)");
@@ -70,9 +95,12 @@ namespace GameRandom.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("PlayerIcon")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
-                    b.ToTable("LobbyContexts");
+                    b.ToTable("LobbyUserContext");
                 });
 
             modelBuilder.Entity("GameRandom.DataBaseContexts.Users", b =>

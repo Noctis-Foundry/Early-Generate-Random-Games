@@ -7,6 +7,7 @@ using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using GameRandom.CoreApp;
+using Steamworks;
 
 namespace GameRandom.Service;
 
@@ -34,6 +35,21 @@ public static class AvaloniaService
             System.Runtime.InteropServices.Marshal.Copy(bgra, 0, fb.Address, bgra.Length);
         }
 
+        return bitmap;
+    }
+
+    public static Bitmap? CreateSteamImage(int image)
+    {
+        if (image == 0)
+            return null;
+        
+        uint width, height;
+        SteamUtils.GetImageSize(image, out width, out height);
+
+        byte[] imageByte = new byte[width * height * 4];
+        SteamUtils.GetImageRGBA(image, imageByte, (int)(width * height * 4));
+
+        var bitmap = CreateBitmap(imageByte, (int)width, (int)height);
         return bitmap;
     }
 }

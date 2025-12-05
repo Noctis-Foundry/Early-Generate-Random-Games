@@ -1,0 +1,46 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:GameRandom.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="963" d:DesignHeight="540"
+        x:Class="GameRandom.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="GameRandom"
+        MaxWidth="963" 
+        MaxHeight="540" >
+    
+    <DockPanel VerticalSpacing="5">
+        <DockPanel.Background> Black </DockPanel.Background>
+        <Grid ColumnDefinitions="Auto, Auto" DockPanel.Dock="Top">
+            <Menu DockPanel.Dock="Top" Classes="MainWindowMenu" Width="600" Height="40" Background="MediumAquamarine">
+                <MenuItem Classes="MainWindowMenuItem" Header="Lobby"
+                          Command="{Binding OpenLobby}"></MenuItem>
+                <MenuItem Classes="MainWindowMenuItem" Header="Show Error"
+                          Command="{Binding ShowError}"></MenuItem>
+                <MenuItem Classes="MainWindowMenuItem" Header="Rules"
+                          Command="{Binding OpenCreateLobbyWindow}"></MenuItem>
+                <!--<MenuItem Classes="MainWindowMenuItem" Header="Rules"
+                      Command="{Binding ShowRules}"></MenuItem>!-->
+            </Menu>
+            
+            <Grid Grid.Column="1" x:Name="LobbyImages" HorizontalAlignment="Right" Width="363" Height="40" ColumnDefinitions="40,40">
+                <Grid.Background>
+                    MediumAquamarine
+                </Grid.Background>
+                <Image Source="avares://GameRandom/Assets/avalonia-logo.ico" 
+                       Width="128" Height="40">
+                </Image>
+                <Image Grid.Column="1" Source="avares://GameRandom/Assets/avalonia-logo.ico" 
+                       Width="40" Height="40">
+                </Image>
+            </Grid>
+        </Grid>
+        
+        
+        
+        
+        <ContentControl x:Name="ControlMain"></ContentControl>
+    </DockPanel>
+</Window>

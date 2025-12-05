@@ -1,6 +1,8 @@
-﻿namespace GameRandom.SteamSDK.DI;
+﻿using System;
 
-public class InjectAttribute
+namespace GameRandom.Scr.DI;
+
+[AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
+public class InjectAttribute : Attribute
 {
-    
 }

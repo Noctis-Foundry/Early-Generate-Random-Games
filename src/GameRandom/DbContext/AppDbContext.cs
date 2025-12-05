@@ -1,14 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace GameRandom.DataBaseContexts;
 
 public class AppDbContext : DbContext
 {
     public DbSet<Users> Users { get; set; }
-    public DbSet<LobbyContext> LobbyContexts { get; set; }
-    public DbSet<GameProgress> GameTables { get; set; }
+    public DbSet<LobbyUserContext> LobbyUserContext { get; set; }
+    public DbSet<GameProgress> GameProgress { get; set; }
+    public DbSet<Lobbies> Lobbies { get; set; }
     
-    public const string HostPath = "Host=217.11.167.137;Database=rdb;Username=ara;Password=m7a4k5s9i2m";
+    public const string HostPath = "Host=80.93.62.153;Database=steamdata;Username=users;Password=ninokuriko212410";
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -23,18 +25,30 @@ public class Users
     public string Username { get; set; }
 }
 
-public class LobbyContext
+public class LobbyUserContext
 {
     public int Id { get; set; }
-    public ulong LobbyID { get; set; }
+    public long LobbyID { get; set; }
     public ulong MemberID { get; set; }
     public string NickName { get; set; }
+    
+    public int PlayerIcon { get; set; }
 }
+
+public class Lobbies
+{
+    public int Id { get; set; }
+    public long LobbyID { get; set; }
+    public int MemberCount { get; set; }
+}
+
 public class GameProgress
 {
     public int Id { get; set; }
     public ulong ClientId { get; set; }
     public string GameName { get; set; }
+    public int Grade {get; set;}
+    public string? Comment { get; set; }
     public string DataBegin { get; set; }
     public string DataEnd { get; set; }
     public bool IsFinished { get; set; }

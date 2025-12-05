@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using GameRandom.CoreApp;
 using GameRandom.DataBaseContexts;
+using GameRandom.Events;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Events;
 using GameRandom.SteamSDK;
-using GameRandom.SteamSDK.Events;
-using Microsoft.EntityFrameworkCore;
 
 namespace GameRandom.ViewModels;
 
@@ -32,22 +30,12 @@ public class RollGameViewModel : ViewModelBase
                 DataBegin = $"{date:yy-MM-dd}",
                 DataEnd = $"{endDate:yy-MM-dd}",
                 GameName = savedContext.AppName,
+                Comment = "Empty",
                 IsFinished = false,
             };
             
-            db.GameTables.Add(gameProgress);
+            db.GameProgress.Add(gameProgress);
             await db.SaveChangesAsync();
-            
-            if (eventBus != null)
-            {
-                eventBus.Publish(new UpdateTableEvent(db.GameTables.ToList()));
-            }
-            else
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("No event buss");
-                Console.ResetColor();
-            }
 
             Process.Start(new ProcessStartInfo
             {

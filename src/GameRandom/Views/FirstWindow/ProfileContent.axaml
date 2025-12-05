@@ -1,0 +1,179 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="963" d:DesignHeight="594"
+             x:Class="GameRandom.Views.ProfileContent">
+    
+    <Grid>
+        <!-- Background with darkening -->
+        <Grid.Background>
+            <ImageBrush Source="avares://GameRandom/Assets/RandomGame.png" Stretch="UniformToFill" Opacity="0.8"/>
+        </Grid.Background>
+        <Rectangle Fill="Black" Opacity="0.6"/>
+        
+        <StackPanel>
+            <!-- Profile header -->
+            <Border Background="Black" 
+                    BorderBrush="White" 
+                    BorderThickness="3,3,3,0"
+                    CornerRadius="0"
+                    Margin="20,20,20,0"
+                    Padding="15">
+                <Grid>
+                <TextBlock Text="PLAYER PROFILE" 
+                           FontSize="28" 
+                           FontWeight="Bold"
+                           Foreground="White"
+                           HorizontalAlignment="Center"
+                           FontFamily="Arial"/>
+            
+            
+            <Button Content="✕ CLOSE"
+                    HorizontalAlignment="Right" 
+                    Margin="0,10,20,20"
+                    Click="ExitFromProfile"
+                    Background="Black"
+                    Foreground="White"
+                    BorderBrush="White"
+                    BorderThickness="2"
+                    FontWeight="Bold"
+                    FontSize="14"
+                    Width="120"
+                    Height="35"
+                    CornerRadius="0">
+            </Button>
+                </Grid>
+            </Border>
+            <!-- Main content -->
+            <Grid Margin="20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Games table with scroll -->
+                <Border Grid.Column="0"
+                        Background="#99000000" 
+                        BorderBrush="White" 
+                        BorderThickness="3"
+                        CornerRadius="0"
+                        Padding="0"
+                        Margin="0,0,20,0"
+                        Height="250">
+                    
+                    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Auto"
+                                  Padding="0 0 0 250 ">
+                        <!-- Table with data -->
+                        <Grid ColumnDefinitions="*, *, *, *"
+                              HorizontalAlignment="Stretch">
+                            
+                            <!-- Table headers -->
+                            <Border Grid.Row="0" Grid.Column="0" 
+                                    BorderBrush="White" 
+                                    BorderThickness="1"
+                                    Background="Black"
+                                    Padding="15"
+                                    Height="50">
+                                <TextBlock Text="GAME" 
+                                           Foreground="White"
+                                           FontWeight="Bold"
+                                           FontSize="14"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                            </Border>
+                            <Border Grid.Row="0" Grid.Column="1" 
+                                    BorderBrush="White" 
+                                    BorderThickness="1"
+                                    Background="Black"
+                                    Padding="15"
+                                    Height="50">
+                                <TextBlock Text="COMMENT" 
+                                           Foreground="White"
+                                           FontWeight="Bold"
+                                           FontSize="14"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                            </Border>
+                            <Border Grid.Row="0" Grid.Column="2" 
+                                    BorderBrush="White" 
+                                    BorderThickness="1"
+                                    Background="Black"
+                                    Padding="15"
+                                    Height="50">
+                                <TextBlock Text="DIFFICULTY" 
+                                           Foreground="White"
+                                           FontWeight="Bold"
+                                           FontSize="14"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                            </Border>
+                            <Border Grid.Row="0" Grid.Column="3" 
+                                    BorderBrush="White" 
+                                    BorderThickness="1"
+                                    Background="Black"
+                                    Padding="15"
+                                    Height="50">
+                                <TextBlock Text="RATING" 
+                                           Foreground="White"
+                                           FontWeight="Bold"
+                                           FontSize="14"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                            </Border>
+
+                            <!-- Data rows will be added dynamically -->
+                            <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4"
+                                        Orientation="Vertical">
+                                
+                            </StackPanel>
+                        </Grid>
+                    </ScrollViewer>
+                </Border>
+
+                <!-- Avatar block -->
+                <Border Grid.Column="1"
+                        Background="#99000000" 
+                        BorderBrush="White" 
+                        BorderThickness="3"
+                        CornerRadius="0"
+                        Padding="20"
+                        HorizontalAlignment="Center"
+                        Height="250">
+                    <StackPanel>
+                        <!-- Avatar -->
+                        <Border BorderBrush="White" 
+                                BorderThickness="3"
+                                Background="Black"
+                                Padding="5"
+                                Margin="0,0,0,15">
+                            <Image x:Name="AvatarImage"
+                                   Source="avares://GameRandom/Assets/avalonia-logo.ico"
+                                   Width="120" 
+                                   Height="120">
+                            </Image>
+                        </Border>
+                        
+                        <!-- Username -->
+                        <Border Background="Black"
+                                BorderBrush="White"
+                                BorderThickness="2"
+                                Padding="10,5"
+                                CornerRadius="0"
+                                Margin="0,0,0,15">
+                            <Label x:Name="AccName"
+                                   Content="Ar0cka" 
+                                   FontSize="20" 
+                                   FontWeight="Bold"
+                                   Foreground="White"
+                                   HorizontalAlignment="Center"/>
+                        </Border>
+                        
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </StackPanel>
+        
+    </Grid>
+</UserControl>
