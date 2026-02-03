@@ -2,21 +2,34 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="963" d:DesignHeight="540"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
+             MaxWidth="1920" MaxHeight="1080"
              x:Class="GameRandom.Views.MainWindowContent">
     
     <Grid>
-        <Button Classes="ButtonLeftUpGround" Grid.Column="0" Margin="0,0" Click="GoToTable"
-                HorizontalAlignment="Left" VerticalAlignment="Top" Background="Transparent" BorderBrush="Transparent" BorderThickness="0">
-            <Image Source="avares://GameRandom/Assets/LeftUpClick.png"  Width="360" Height="" Stretch="Uniform" > </Image>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.Background>
+            #778899
+        </Grid.Background>
+        
+        <Button Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top"
+                Classes="TestClass" x:Name="PlayerTableButton">
+            <Image Source="avares://GameRandom/Assets/LeftUpClick.png" Stretch="UniformToFill"></Image>
         </Button>
-        <Button Classes="ButtonLeftDownGround" Grid.Column="0" Margin="0 0 0 0" Click="GoToProfile"
-                HorizontalAlignment="Left" VerticalAlignment="Bottom" Background="Transparent" BorderBrush="Transparent" BorderThickness="0">
-            <Image Source="avares://GameRandom/Assets/LeftDownClick.png" Width="360" Stretch="Uniform"> </Image>
+        <Button Grid.Column="0" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom"
+                Background="Transparent" Padding="0">
+            <Image Source="avares://GameRandom/Assets/LeftDownClick.png" Stretch="UniformToFill"></Image>
         </Button>
-        <Button Classes="ButtonRightGround" Grid.Column="0" Margin="0,0" Click="GoToRollContent" 
-                HorizontalAlignment="Right"  Background="Transparent" BorderBrush="Transparent" BorderThickness="0">
-            <Image Source="avares://GameRandom/Assets/RightClick.png" Width="580" Stretch="UniformToFill" > </Image>
+        <Button Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top"
+                Background="Transparent" Padding="0">
+            <Image Source="avares://GameRandom/Assets/RightClick.png" Stretch="UniformToFill"></Image>
         </Button>
     </Grid>
 </UserControl>

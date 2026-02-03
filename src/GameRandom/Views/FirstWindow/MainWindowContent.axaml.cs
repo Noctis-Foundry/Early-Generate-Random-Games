@@ -5,6 +5,7 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using GameRandom.Service;
 using GameRandom.SteamSDK;
+using GameRandom.Styles;
 using Steamworks;
 
 namespace GameRandom.Views;
@@ -13,10 +14,13 @@ public partial class MainWindowContent : UserControl
 {
     private ContentControl _rollContent;
     private Action<string> _changeContent;
+    private BorderHoverAnimation _borderHoverAnimation;
     
     public MainWindowContent()
     {
         InitializeComponent();
+        _borderHoverAnimation = 
+            new BorderHoverAnimation(PlayerTableButton, Colors.LightSlateGray, Colors.Teal);
     }
     
     public void AddListener(Action<string> _onChangeContent) => _changeContent = _onChangeContent;

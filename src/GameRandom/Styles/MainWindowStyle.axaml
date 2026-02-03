@@ -1,0 +1,29 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20" MaxHeight="350">
+            <Button MaxWidth="150" Height="" Classes="TestClass">
+                <Image Source="avares://GameRandom/Assets/LeftDownClick.png" Stretch="Uniform"></Image>
+            </Button>
+        </Border>
+    </Design.PreviewWith>
+    
+    <Style Selector="Button.TestClass">
+        <Setter Property="Padding" Value="0"></Setter>
+        <Setter Property="BorderThickness" Value="1.5"></Setter>
+        <Setter Property="Background" Value="Transparent"></Setter>
+        <Setter Property="BorderBrush">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0%, 0%" EndPoint="0%, 100%">
+                    <GradientStop Color="#778899" Offset="0.0"></GradientStop>
+                    <GradientStop Color="#008080" Offset="1.0"></GradientStop>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <Style Selector="Button.TestClass:pointerover:hover-gradient"></Style>
+
+    
+</Styles>
+
