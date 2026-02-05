@@ -13,10 +13,10 @@ using Steamworks;
 
 namespace GameRandom.Views;
 
-public partial class ProfileContent : UserControl
+public partial class ProfileContent : UserControl, IAddListener, IDisposable
 {
     private Action<string>? _changeContent;
-    
+
     public ProfileContent()
     {
         InitializeComponent();
@@ -39,13 +39,18 @@ public partial class ProfileContent : UserControl
 
         var bitmap = AvaloniaService.CreateSteamImage(imageId);
         
-        AvatarImage.Source = bitmap;
-        AccName.Content = accName;
+        // AvatarImage.Source = bitmap;
+        // AccName.Content = accName;
     }
 
     private void ExitFromProfile(object? sender, RoutedEventArgs e)
     {
         _changeContent?.Invoke("Main");
+        Dispose();
     }
-    
+
+    public void Dispose()
+    {
+        _changeContent = null; ;
+    }
 }

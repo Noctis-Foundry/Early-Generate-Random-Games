@@ -1,0 +1,93 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Classes="TopProfileContainer" ClipToBounds="True">
+            <Border.Clip>
+                <RectangleGeometry RadiusX="20" RadiusY="20" Rect="0,0,300,50"/>
+            </Border.Clip>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0"
+                    Text="Top Container" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <Button Grid.Column="1" Content="Current game" Classes="ProfilesButtons"></Button>
+                <Button Grid.Column="2" Content="Close" Classes="ProfilesButtons"></Button>
+            </Grid>
+        </Border>
+    </Design.PreviewWith>
+    
+    <Style Selector="Border.TopProfileContainer">
+        <Setter Property="CornerRadius" Value="20"></Setter>
+        <Setter Property="BorderThickness" Value="2"></Setter>
+        <Setter Property="BorderBrush" Value="Aqua"></Setter>
+    </Style>
+    
+    <Style Selector="Button.ProfilesButtons">
+        
+    </Style>
+    
+    <Style Selector="Border.AvatarBorder">
+        <Setter Property="MinWidth" Value="180"/>
+        <Setter Property="MinHeight" Value="180"/>
+        <Setter Property="MaxWidth" Value="200"/>
+        <Setter Property="MaxHeight" Value="300"/>
+        <Setter Property="Background" Value="#696969"></Setter>
+        <Setter Property="BorderThickness" Value="3"></Setter>
+        <Setter Property="BorderBrush"></Setter>
+        <Style.Animations>
+            <Animation Duration="0:0:1" IterationCount="Infinite">
+                <KeyFrame Cue="0%">
+                    <Setter Property="BorderBrush">
+                        <Setter.Value>
+                            <ConicGradientBrush Angle="0" Center="50%, 50%">
+                                <GradientStop Color="#7B68EE" Offset="0.0"></GradientStop>
+                                <GradientStop Color="SlateGray" Offset="1.0"></GradientStop>
+                            </ConicGradientBrush>
+                        </Setter.Value>
+                    </Setter>
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                    <Setter Property="BorderBrush">
+                        <Setter.Value>
+                            <ConicGradientBrush Angle="360" Center="50%, 50%">
+                                <GradientStop Color="#7B68EE" Offset="0.0"></GradientStop>
+                                <GradientStop Color="SlateGray" Offset="1.0"></GradientStop>
+                            </ConicGradientBrush>
+                        </Setter.Value>
+                    </Setter>
+                </KeyFrame>
+            </Animation>
+        </Style.Animations>
+    </Style>
+    
+    <Style Selector="TextBlock.ProfileNickname">
+        <Setter Property="FontSize" Value="24"></Setter>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontStretch" Value="Condensed"></Setter>
+    </Style>
+    
+    <Style Selector="Border.TextBorder">
+    </Style>
+    
+    <Style Selector="Border.ProfileAvatar">
+        <Setter Property="BorderThickness" Value="2"></Setter>
+        <Setter Property="Margin" Value="0,5,0,0"></Setter>
+        <Setter Property="MinWidth" Value="150"></Setter>
+        <Setter Property="MinHeight" Value="150"></Setter>
+        <Setter Property="MaxWidth" Value="160"></Setter>
+        <Setter Property="MaxHeight" Value="190"></Setter>
+        <Setter Property="BorderBrush">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0%, 0%" EndPoint="100% 100%">
+                    <GradientStop Color="#FF00FF" Offset="0.0"></GradientStop>
+                    <GradientStop Color="#9932CC" Offset="0.5"></GradientStop>
+                    <GradientStop Color="#8A2BE2" Offset="1.0"></GradientStop>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</Styles>

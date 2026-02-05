@@ -18,16 +18,11 @@ public class Register<TKey, TValue>
             Console.WriteLine("Dictionary have this key");
     }
 
-    public TValue GetObjectFromRegister(TKey key)
+    public bool GetObjectFromRegister(TKey key, out TValue? tValue)
     {
         if (key == null)
-            throw new  ArgumentNullException("Key is null");
+            throw new ArgumentNullException();
 
-        if (_registerValues.TryGetValue(key, out var value))
-        {
-            return value;
-        }
-        
-        throw new Exception($"Not find key: {key} on dictionary");
+        return _registerValues.TryGetValue(key, out tValue);
     }
 }

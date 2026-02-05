@@ -13,10 +13,10 @@
         <FluentTheme />
         <StyleInclude Source="TestingStyles/MainContentStyle.axaml"></StyleInclude>
         <StyleInclude Source="TestingStyles/RollContentStyle.axaml"></StyleInclude>
-        <StyleInclude Source="TestingStyles/ProfileStyle.axaml"></StyleInclude>
         <StyleInclude Source="TestingStyles/MenuItemsStyle.axaml"></StyleInclude>
         <StyleInclude Source="TestingStyles/LobbyStyle.axaml"></StyleInclude>
         <StyleInclude Source="TestingStyles/TableStyle.axaml"></StyleInclude>
         <StyleInclude Source="Styles/MainWindowStyle.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/Styles/ProfileStyle.axaml"></StyleInclude>
     </Application.Styles>
 </Application>

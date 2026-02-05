@@ -20,15 +20,15 @@
         </Grid.Background>
         
         <Button Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top"
-                Classes="TestClass" x:Name="PlayerTableButton">
+                Classes="MainWindowButtons" Click="GoToTable">
             <Image Source="avares://GameRandom/Assets/LeftUpClick.png" Stretch="UniformToFill"></Image>
         </Button>
         <Button Grid.Column="0" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom"
-                Background="Transparent" Padding="0">
+                Background="Transparent" Padding="0" Classes="MainWindowButtons" Click="GoToProfile">
             <Image Source="avares://GameRandom/Assets/LeftDownClick.png" Stretch="UniformToFill"></Image>
         </Button>
         <Button Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top"
-                Background="Transparent" Padding="0">
+                Background="Transparent" Padding="0" Classes="MainWindowButtons" Click="GoToRollContent">
             <Image Source="avares://GameRandom/Assets/RightClick.png" Stretch="UniformToFill"></Image>
         </Button>
     </Grid>
