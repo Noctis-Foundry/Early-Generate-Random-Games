@@ -17,18 +17,18 @@ using GameRandom.ViewModels;
 
 namespace GameRandom.Views;
 
-public partial class RollGame : UserControl
+public partial class RollGame : UserControl, IAddListener, IDisposable
 {
-    [Inject] private readonly ErrorService _errorService = null!;
+    [Inject] private ErrorService _errorService = null!;
     
-    private readonly Dictionary<ButtonContext, AppSavedContext?> _appData = new ();
+    private Dictionary<ButtonContext, AppSavedContext?>? _appData = new ();
     
-    private readonly Random _random = new();
+    private Random? _random = new();
     
-    private readonly IGenApp _generateRandomApps;
-    private readonly MainWindowFactory _mainWindowFactory;
+    private IGenApp? _generateRandomApps;
+    private MainWindowFactory? _mainWindowFactory;
 
-    private Action<string> _onShowContent;
+    private Action<string>? _onShowContent;
     private bool _isRolling = false;
 
     private int _lastYear = 0;
@@ -153,5 +153,16 @@ public partial class RollGame : UserControl
     private void Close(Object? sender, RoutedEventArgs e)
     {
         _onShowContent?.Invoke("Main");
+        Dispose();
+    }
+
+    public void Dispose()
+    {
+        _onShowContent = null;
+        _generateRandomApps = null;
+        _errorService = null!;
+        _random = null;
+        _appData = null;
+        _mainWindowFactory = null;
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -24,18 +25,29 @@ public partial class MainWindow : Window
     [Inject] private readonly PostgresListener  _postgres = null!;
     [Inject] private readonly EventBus _eventBus = null!;
     
-    private readonly Register<string, UserControl> _userControlRegister = new();
-    private readonly Action<string> _changeContent;
+    delegate void RefControlDelegate();
+    
+    private readonly Register<string, RefControlDelegate> _lazyRegister = new();
+    private readonly Register<string, UserControl> _preloadRegister = new();
+    private readonly Dictionary<string, int> test;
+    private readonly Action<string> _selectorAction;
+
+    private UserControl? _oldControl = null;
+    
     public MainWindow()
     {
         InitializeComponent();
+
+        ControlMain.Content = new ProfileContent();
+        if (Design.IsDesignMode) return;
+        
         Di.Container.ResolveFieldsFromClassInstance(this);
         RegisterUiService(this);
         
         var vm = new MainWindowViewModel(new WindowService(this));
         DataContext = vm;
         
-        _changeContent = Navigate;
+        _selectorAction = Navigate;
         
         InitializeUserControlRegister();
         
@@ -54,25 +66,33 @@ public partial class MainWindow : Window
     private void InitializeUserControlRegister()
     {
         var mainContent = new MainWindowContent();
-        mainContent.AddListener(_changeContent);
+        mainContent.AddListener(_selectorAction);
 
-        var rollContent = new RollGame();
-        rollContent.AddListener(_changeContent);
-
-        var profileContent = new ProfileContent();
-        profileContent.AddListener(_changeContent);
+        var tableContent = new ProfileContent();
+        tableContent.AddListener(_selectorAction);
         
-        var tableContent = new GameTable();
-        tableContent.AddListener(_changeContent);
+        _preloadRegister.RegisterNewObject("Main", mainContent);
+        _preloadRegister.RegisterNewObject("Profile", tableContent);
         
-        _userControlRegister.RegisterNewObject("Main", mainContent);
-        _userControlRegister.RegisterNewObject("Roll", rollContent);
-        _userControlRegister.RegisterNewObject("Profile", profileContent);
-        _userControlRegister.RegisterNewObject("Table", tableContent);
+        // _lazyRegister.RegisterNewObject("Roll", DelegateSwitchFactory<RollGame>(_selectorAction));
+        // _lazyRegister.RegisterNewObject("Table", DelegateSwitchFactory<GameTable>(_selectorAction));
+        // _lazyRegister.RegisterNewObject("Profile", DelegateSwitchFactory<ProfileContent>(_selectorAction));
     }
+
     private void Navigate(string nameControl)
     {
-        ControlMain.Content = _userControlRegister.GetObjectFromRegister(nameControl);
+        ControlMain.Content = null;
+        
+        if (_preloadRegister.GetObjectFromRegister(nameControl, out var value))
+        {
+            ControlMain.Content = value;
+            return;
+        }
+
+        if (_lazyRegister.GetObjectFromRegister(nameControl, out var @delegate))
+        {
+            @delegate?.Invoke();
+        }
     }
     private void MainWindow_OnClosed(object? sender, EventArgs e)
     {
@@ -122,5 +142,23 @@ public partial class MainWindow : Window
         
         await dbContext.SaveChangesAsync();
     }
-    
+
+    // private RefControlDelegate DelegateSwitchFactory<TUserControl>(Action<string> switchAction) TODO upgrade lifetime for users control 
+    //     where TUserControl : UserControl, IAddListener, new()
+    // {
+    //     RefControlDelegate del = delegate() //Sending ControlMain.Control
+    //     {
+    //         var newClass = new TUserControl();
+    //         newClass.AddListener(switchAction);
+    //         
+    //         _oldControl = newClass;
+    //         
+    //         Console.WriteLine($"Delegate is work. Created class {typeof(TUserControl).Name}." +
+    //                           $" new class name: {newClass.Name}");
+    //         
+    //         ControlMain.Content = newClass;
+    //     };
+    //     
+    //     return del;
+    // }
 }

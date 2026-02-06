@@ -4,18 +4,27 @@
              xmlns:local="using:GameRandom"
              RequestedThemeVariant="Default">
     <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
-
+    
+    <Application.Resources>
+        <FontFamily x:Key="Rye-Font">avares://GameRandom/Assets/Fonts/Rye-Regular.ttf #Rye Regular</FontFamily>
+        <FontFamily x:Key="Anime Ace">avares://GameRandom/Assets/Fonts/AnimeAce.ttf #Anime Ace v05</FontFamily>
+        <FontFamily x:Key="Anime-AceV3">avares://GameRandom/Assets/Fonts/AnimeAcev3.ttf #Anime Ace v3:</FontFamily>
+    </Application.Resources>
+    
     <Application.DataTemplates>
         <local:ViewLocator />
     </Application.DataTemplates>
     
     <Application.Styles>
         <FluentTheme />
-        <StyleInclude Source="Style/MainContentStyle.axaml"></StyleInclude>
-        <StyleInclude Source="Style/RollContentStyle.axaml"></StyleInclude>
-        <StyleInclude Source="Style/ProfileStyle.axaml"></StyleInclude>
-        <StyleInclude Source="Style/MenuItemsStyle.axaml"></StyleInclude>
-        <StyleInclude Source="Style/LobbyStyle.axaml"></StyleInclude>
-        <StyleInclude Source="Style/TableStyle.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/Styles/GlobalStyle.axaml"></StyleInclude>
+        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
+        <StyleInclude Source="TestingStyles/MainContentStyle.axaml"></StyleInclude>
+        <StyleInclude Source="TestingStyles/RollContentStyle.axaml"></StyleInclude>
+        <StyleInclude Source="TestingStyles/MenuItemsStyle.axaml"></StyleInclude>
+        <StyleInclude Source="TestingStyles/LobbyStyle.axaml"></StyleInclude>
+        <StyleInclude Source="TestingStyles/TableStyle.axaml"></StyleInclude>
+        <StyleInclude Source="Styles/MainWindowStyle.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/Styles/ProfileStyle.axaml"></StyleInclude>
     </Application.Styles>
 </Application>

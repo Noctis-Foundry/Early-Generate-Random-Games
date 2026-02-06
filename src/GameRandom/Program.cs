@@ -31,11 +31,13 @@ sealed class Program
         }
         catch (Exception e)
         {
-            System.Diagnostics.Process.Start("MessageBox.exe", new []
-            {
-                e.Message,
-                nameof(ErrorEnum.Critical)
-            });
+            // System.Diagnostics.Process.Start("MessageBox.exe", new []
+            // {
+            //     e.Message,
+            //     nameof(ErrorEnum.Critical)
+            // });
+            
+            throw new Exception(e.Message, e);
         }
     }
     

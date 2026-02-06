@@ -42,8 +42,6 @@ public partial class App : Application
             {
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
             };
-            
-            RegisterUiService(desktop.MainWindow);
         }
         
         if (!Design.IsDesignMode) 

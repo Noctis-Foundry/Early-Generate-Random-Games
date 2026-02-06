@@ -1,18 +1,12 @@
 ﻿using System;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
-using GameRandom.Service;
-using GameRandom.SteamSDK;
-using Steamworks;
 
 namespace GameRandom.Views;
 
 public partial class MainWindowContent : UserControl
 {
-    private ContentControl _rollContent;
-    private Action<string> _changeContent;
+    private Action<string> _changeContent; 
     
     public MainWindowContent()
     {
