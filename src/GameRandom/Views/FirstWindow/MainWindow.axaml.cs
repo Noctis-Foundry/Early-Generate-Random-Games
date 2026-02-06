@@ -37,6 +37,10 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+
+        ControlMain.Content = new ProfileContent();
+        if (Design.IsDesignMode) return;
+        
         Di.Container.ResolveFieldsFromClassInstance(this);
         RegisterUiService(this);
         
@@ -64,11 +68,11 @@ public partial class MainWindow : Window
         var mainContent = new MainWindowContent();
         mainContent.AddListener(_selectorAction);
 
-        var tableContent = new GameTable();
+        var tableContent = new ProfileContent();
         tableContent.AddListener(_selectorAction);
         
         _preloadRegister.RegisterNewObject("Main", mainContent);
-        _preloadRegister.RegisterNewObject("Table", tableContent);
+        _preloadRegister.RegisterNewObject("Profile", tableContent);
         
         // _lazyRegister.RegisterNewObject("Roll", DelegateSwitchFactory<RollGame>(_selectorAction));
         // _lazyRegister.RegisterNewObject("Table", DelegateSwitchFactory<GameTable>(_selectorAction));
