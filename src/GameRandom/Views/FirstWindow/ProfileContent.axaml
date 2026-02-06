@@ -2,34 +2,63 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:GameRandom.ViewModels"
         x:Class="GameRandom.Views.ProfileContent"
-        Width="1000" Height="600"
-        MaxWidth="1920" MaxHeight="1080">
-    <DockPanel LastChildFill="True">
-        <Border DockPanel.Dock="Top" Background="LightGray" Height="100" MaxHeight="120" Classes="TopProfileContainer">
-            <TextBlock Text="Top Container" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        x:DataType="vm:ProfileViewModel"
+        Width="1000" Height="500">
+    <DockPanel>
+        <DockPanel.Background>
+            LightGray
+        </DockPanel.Background>
+        
+        <Border DockPanel.Dock="Top" Classes="TopProfileContainer" 
+                CornerRadius="20" Height="60" Width="500" Margin="0,10,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                
+                <TextBlock Classes="TitleTextBoxStyle" Text="Profile"
+                           HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
+                
+                <Button Grid.Column="1" Classes="ProfileButtons">Activity game</Button>
+                <Button Grid.Column="2" Classes="ProfileButtons" Click="ExitFromProfile">Close</Button>
+            </Grid>
         </Border>
         
         <Grid>
-            <Grid.Background>
-                Gray
-            </Grid.Background>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="300"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-
             
-            <Border Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top"
-                    Margin="0, 20,15,0" Classes="AvatarBorder">
-                <StackPanel Spacing="5" Orientation="Vertical" >
+            <Border DockPanel.Dock="Left" Width="600" Height="400"
+                    Margin="0,0,50,0" Classes="AvatarBorder">
+                <Border.Background>LightSlateGray</Border.Background>
+                
+                <DataGrid GridLinesVisibility="All" BorderThickness="1"
+                          BorderBrush="MediumPurple" ItemsSource="{Binding People}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="First Name"  Binding="{Binding Name}"/>
+                        <DataGridTextColumn Header="Age" Binding="{Binding Age}"/>
+                        <DataGridTextColumn Header="Gender" Binding="{Binding Gender}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
+            
+            <Border Grid.Column="1" Classes="AvatarBorder" 
+                    DockPanel.Dock="Top" HorizontalAlignment="Right" VerticalAlignment="Top"
+                    Margin="0, 45, 30, 0"
+                    Width="200" Height="230" CornerRadius="10">
+                <Grid RowDefinitions="Auto, Auto" RowSpacing="15">
                     <Border Classes="ProfileAvatar">
-                        <Image Source="avares://GameRandom/Assets/steamAwatarWithNight.jpg" Stretch="Uniform"></Image>
+                        <Image Source="avares://GameRandom/Assets/steamAwatarWithNight.jpg"
+                               x:Name="ProfileImage"></Image>
                     </Border>
-                    <Border Classes="TextBorder">
-                        <TextBlock VerticalAlignment="Bottom"  Classes="ProfileNickname"
-                                   HorizontalAlignment="Center">Ar0cka</TextBlock>
-                    </Border>
-                </StackPanel>
+                    
+                    <TextBlock Grid.Row="1" Text="Ar0cka" x:Name="ProfileName"
+                               HorizontalAlignment="Center" Classes="ProfileNickname"></TextBlock>
+                </Grid>
             </Border>
         </Grid>
     </DockPanel>
