@@ -4,13 +4,20 @@
              xmlns:local="using:GameRandom"
              RequestedThemeVariant="Default">
     <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
-
+    
+    <Application.Resources>
+        <FontFamily x:Key="Rye-Font">avares://GameRandom/Assets/Fonts/Rye-Regular.ttf #Rye Regular</FontFamily>
+        <FontFamily x:Key="Anime Ace">avares://GameRandom/Assets/Fonts/AnimeAce.ttf #Anime Ace v05</FontFamily>
+        <FontFamily x:Key="Anime-AceV3">avares://GameRandom/Assets/Fonts/AnimeAcev3.ttf #Anime Ace v3:</FontFamily>
+    </Application.Resources>
+    
     <Application.DataTemplates>
         <local:ViewLocator />
     </Application.DataTemplates>
     
     <Application.Styles>
         <FluentTheme />
+        <StyleInclude Source="avares://GameRandom/Styles/GlobalStyle.axaml"></StyleInclude>
         <StyleInclude Source="TestingStyles/MainContentStyle.axaml"></StyleInclude>
         <StyleInclude Source="TestingStyles/RollContentStyle.axaml"></StyleInclude>
         <StyleInclude Source="TestingStyles/MenuItemsStyle.axaml"></StyleInclude>

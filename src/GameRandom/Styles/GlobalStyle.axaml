@@ -1,0 +1,25 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <Button Content="Ar0cka"></Button>
+        </Border>
+    </Design.PreviewWith>
+    
+    <Style Selector="TextBlock">
+        <Setter Property="FontFamily" Value="{DynamicResource 'Anime Ace'}"></Setter>
+        <Setter Property="Foreground" Value="#1a1c1c"></Setter>
+    </Style>
+    
+    <Style Selector="Button">
+        <Setter Property="FontFamily" Value="{DynamicResource Rye-Font}"></Setter>
+        <Setter Property="FontSize" Value="16"></Setter>
+        <Setter Property="Foreground" Value="#1a1c1c"></Setter>
+        <Setter Property="Background" Value="LightGray"></Setter>
+        <!-- <Setter Property="Background"> -->
+        <!--     <Setter.Value> -->
+        <!--         <ImageBrush Source = "Path to background"></ImageBrush> -->
+        <!--     </Setter.Value> -->
+        <!-- </Setter> -->
+    </Style>
+</Styles>
