@@ -1,25 +1,20 @@
 <Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:GameRandom.ViewModels"
+        x:DataType="vm:ProfileViewModel">
     
     <Design.PreviewWith>
-        <StackPanel Background="Black">
-            <Border Classes="TopProfileContainer" ClipToBounds="True"
-                    BackgroundSizing="InnerBorderEdge">
-                <Border Background="LightGray" CornerRadius="20">
-                    <Grid Background="Transparent">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Classes="TitleTextBoxStyle"
-                                   Text="Top Container" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <Button Grid.Column="1" Content="Current game" Classes="ProfileButtons"></Button>
-                        <Button Grid.Column="2" Content="Close" Classes="ProfileButtons"></Button>
-                    </Grid>
-                </Border>
-            </Border>
-        </StackPanel>
+        <Border Width="600" Height="400" Classes="ProfileTableBorder">
+                
+            <DataGrid GridLinesVisibility="All" BorderThickness="1"
+                      BorderBrush="MediumPurple" ItemsSource="{Binding People}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="First Name"  Binding="{Binding Name}"/>
+                    <DataGridTextColumn Header="Age" Binding="{Binding Age}"/>
+                    <DataGridTextColumn Header="Gender" Binding="{Binding Gender}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
     </Design.PreviewWith>
     
 <!-- =========== Top Profile Container =========== -->
@@ -40,6 +35,18 @@
         </Setter.Value>
     </Setter>
 </Style>
+
+<!-- =========== Profile table container =========== -->    
+<Style Selector="Border.ProfileTableBorder">
+    <Setter Property="BorderThickness" Value="0"></Setter>
+    <Setter Property="Background">
+        <Setter.Value>
+            <ImageBrush Source="avares://GameRandom/Assets/TableBorder.jpg"
+                        Stretch="Fill">
+            </ImageBrush>
+        </Setter.Value>
+    </Setter>
+</Style>  
 
 <!-- =========== Top Profile Container =========== -->
 <Style Selector="TextBlock.TitleTextBoxStyle">
@@ -98,7 +105,9 @@
 
 <!-- =========== Avatar Border =========== -->
 <Style Selector="Border.AvatarBorder">
-    <Setter Property="Background" Value="#696969"/>
+    <Setter Property="ClipToBounds" Value="True"></Setter>
+    <Setter Property="CornerRadius" Value="30"></Setter>
+    <Setter Property="Background" Value="Transparent"></Setter>
     <Setter Property="BorderThickness" Value="3"/>
     <Setter Property="BorderBrush"/>
     <Style.Animations>
@@ -107,7 +116,7 @@
                 <Setter Property="BorderBrush">
                     <Setter.Value>
                         <ConicGradientBrush Angle="0" Center="50%, 50%">
-                            <GradientStop Color="#7B68EE" Offset="0.0"/>
+                            <GradientStop Color="#becdd4" Offset="0.0"/>
                             <GradientStop Color="SlateGray" Offset="1.0"/>
                         </ConicGradientBrush>
                     </Setter.Value>
@@ -117,7 +126,7 @@
                 <Setter Property="BorderBrush">
                     <Setter.Value>
                         <ConicGradientBrush Angle="360" Center="50%, 50%">
-                            <GradientStop Color="#7B68EE" Offset="0.0"/>
+                            <GradientStop Color="#becdd4" Offset="0.0"/>
                             <GradientStop Color="SlateGray" Offset="1.0"/>
                         </ConicGradientBrush>
                     </Setter.Value>
