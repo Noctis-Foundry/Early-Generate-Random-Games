@@ -3,7 +3,9 @@
         xmlns:vm="using:GameRandom.ViewModels"
         x:Class="GameRandom.Views.ProfileContent"
         x:DataType="vm:ProfileViewModel"
-        Width="1000" Height="500">
+        Width="1000" Height="500"
+        MinWidth="1000" MinHeight="500"
+        MaxWidth="1920" MaxHeight="1080">
     <DockPanel>
         <DockPanel.Background>
             LightGray
