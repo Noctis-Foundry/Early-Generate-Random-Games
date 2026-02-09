@@ -2,165 +2,165 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:GameRandom.ViewModels"
         x:DataType="vm:ProfileViewModel">
-    
+
     <Design.PreviewWith>
-        <Border Width="600" Height="400" Classes="ProfileTableBorder">
-                
-            <DataGrid GridLinesVisibility="All" BorderThickness="1"
-                      BorderBrush="MediumPurple" ItemsSource="{Binding People}">
+        <Border Width="600" Height="400">
+            <Border.Background>
+                <ImageBrush Source="avares://GameRandom/Assets/TableBorder1920.png"
+                            Stretch="Fill"></ImageBrush>
+            </Border.Background>
+            <DataGrid Classes="ProfileTableColumn" Width="450" Height="270"
+                      Margin="0,0,40,15"
+                      GridLinesVisibility="Horizontal" ItemsSource="{Binding People}">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="First Name"  Binding="{Binding Name}"/>
-                    <DataGridTextColumn Header="Age" Binding="{Binding Age}"/>
-                    <DataGridTextColumn Header="Gender" Binding="{Binding Gender}"/>
+                    <DataGridTextColumn  Header="Name" Binding="{Binding Name}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Age" Binding="{Binding Age}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Gender" Binding="{Binding Gender}"></DataGridTextColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </Border>
     </Design.PreviewWith>
     
-<!-- =========== Top Profile Container =========== -->
-<Style Selector="Border.TopProfileContainer"> 
-    <Setter Property="CornerRadius" Value="20"/>
-    <Setter Property="BorderThickness" Value="2"/>
-    <Setter Property="BorderBrush">
-        <Setter.Value>
-            <LinearGradientBrush StartPoint="0%, 0%" EndPoint="100%, 0%">
-                <GradientStop Color="#7B68EE" Offset="0.0"/>
-                <GradientStop Color="SlateGray" Offset="1.0"/>
-            </LinearGradientBrush>
-        </Setter.Value>
-    </Setter>
-    <Setter Property="Background">
-        <Setter.Value>
-            
-        </Setter.Value>
-    </Setter>
-</Style>
-
-<!-- =========== Profile table container =========== -->    
-<Style Selector="Border.ProfileTableBorder">
-    <Setter Property="BorderThickness" Value="0"></Setter>
-    <Setter Property="Background">
-        <Setter.Value>
-            <ImageBrush Source="avares://GameRandom/Assets/TableBorder.jpg"
-                        Stretch="Fill">
-            </ImageBrush>
-        </Setter.Value>
-    </Setter>
-</Style>  
-
-<!-- =========== Top Profile Container =========== -->
-<Style Selector="TextBlock.TitleTextBoxStyle">
-    <Setter Property="Margin" Value="10,0,0,0"></Setter>
-    <Setter Property="FontSize" Value="20"></Setter>
-</Style>
-
-<!-- =========== Profile Buttons =========== -->
-<Style Selector="Button.ProfileButtons">
-    <Setter Property="FontSize" Value="16"/>
-    <Setter Property="CornerRadius" Value="30"/>
-    <Setter Property="Margin" Value="5"/>
-    <Setter Property="BorderThickness" Value="2"></Setter>
-    <Setter Property="BorderBrush">
-        <Setter.Value>
-            <LinearGradientBrush StartPoint="0%, 0%" EndPoint="100% 100%">
-                <GradientStop Color="#a068ad" Offset="0.0"/>
-                <GradientStop Color="#688cad" Offset="1.0"/>
-            </LinearGradientBrush>
-        </Setter.Value>
-    </Setter>
-</Style>
-
-<!-- =========== Profile Buttons Hover Animation =========== -->
-<Style Selector="Button.ProfileButtons:pointerover /template/ContentPresenter">
-    <Setter Property="Foreground" Value="#366359"/>
-    <Setter Property="BorderThickness" Value="2"/>
-    <Setter Property="Background" Value="LightGray"/>
+    <!-- =========== Profile table columns =========== -->
+    <Style Selector="DataGrid.ProfileTableColumn">
+        <Setter Property="BorderThickness" Value="1"></Setter>
+        <Setter Property="BorderBrush" Value="HotPink"></Setter>
+        <Setter Property="Background" Value="#30302d"></Setter>
+    </Style>
     
-    <Setter Property="BorderBrush"/>
-    <Style.Animations>
-        <Animation Duration="0:0:2" IterationCount="Infinite">
-            <KeyFrame Cue="0%">
-                <Setter Property="BorderBrush">
-                    <Setter.Value>
-                        <ConicGradientBrush Angle="0" Center="50%, 50%">
-                            <GradientStop Color="#a068ad" Offset="0.0"/>
-                            <GradientStop Color="#688cad" Offset="1.0"/>
-                        </ConicGradientBrush>
-                    </Setter.Value>
-                </Setter>
-            </KeyFrame>
-            <KeyFrame Cue="100%">
-                <Setter Property="BorderBrush">
-                    <Setter.Value>
-                        <ConicGradientBrush Angle="360" Center="50%, 50%">
-                            <GradientStop Color="#a068ad" Offset="0.0"/>
-                            <GradientStop Color="#688cad" Offset="1.0"/>
-                        </ConicGradientBrush>
-                    </Setter.Value>
-                </Setter>
-            </KeyFrame>
-        </Animation>
-    </Style.Animations>
-</Style>
+    <!-- =========== Top Profile Container =========== -->
+    <Style Selector="Border.TopProfileContainer">
+        <Setter Property="CornerRadius" Value="20" />
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="BorderBrush">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0%, 0%" EndPoint="100%, 0%">
+                    <GradientStop Color="#7B68EE" Offset="0.0" />
+                    <GradientStop Color="SlateGray" Offset="1.0" />
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Background">
+            <Setter.Value>
 
-<!-- =========== Avatar Border =========== -->
-<Style Selector="Border.AvatarBorder">
-    <Setter Property="ClipToBounds" Value="True"></Setter>
-    <Setter Property="CornerRadius" Value="30"></Setter>
-    <Setter Property="Background" Value="Transparent"></Setter>
-    <Setter Property="BorderThickness" Value="3"/>
-    <Setter Property="BorderBrush"/>
-    <Style.Animations>
-        <Animation Duration="0:0:1" IterationCount="Infinite">
-            <KeyFrame Cue="0%">
-                <Setter Property="BorderBrush">
-                    <Setter.Value>
-                        <ConicGradientBrush Angle="0" Center="50%, 50%">
-                            <GradientStop Color="#becdd4" Offset="0.0"/>
-                            <GradientStop Color="SlateGray" Offset="1.0"/>
-                        </ConicGradientBrush>
-                    </Setter.Value>
-                </Setter>
-            </KeyFrame>
-            <KeyFrame Cue="100%">
-                <Setter Property="BorderBrush">
-                    <Setter.Value>
-                        <ConicGradientBrush Angle="360" Center="50%, 50%">
-                            <GradientStop Color="#becdd4" Offset="0.0"/>
-                            <GradientStop Color="SlateGray" Offset="1.0"/>
-                        </ConicGradientBrush>
-                    </Setter.Value>
-                </Setter>
-            </KeyFrame>
-        </Animation>
-    </Style.Animations>
-</Style>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
-<!-- =========== Profile Nickname TextBlock =========== -->
-<Style Selector="TextBlock.ProfileNickname">
-    <Setter Property="FontSize" Value="24"/>
-    <Setter Property="Foreground" Value="White"/>
-    <Setter Property="FontStretch" Value="Condensed"/>
-</Style>
 
-<!-- =========== Profile Avatar Border =========== -->
-<Style Selector="Border.ProfileAvatar">
-    <Setter Property="BorderThickness" Value="2"/>
-    <Setter Property="Margin" Value="0,5,0,0"/>
-    <Setter Property="MinWidth" Value="150"/>
-    <Setter Property="MinHeight" Value="150"/>
-    <Setter Property="MaxWidth" Value="160"/>
-    <Setter Property="MaxHeight" Value="190"/>
-    <Setter Property="BorderBrush">
-        <Setter.Value>
-            <LinearGradientBrush StartPoint="0%, 0%" EndPoint="100% 100%">
-                <GradientStop Color="#FF00FF" Offset="0.0"/>
-                <GradientStop Color="#9932CC" Offset="0.5"/>
-                <GradientStop Color="#8A2BE2" Offset="1.0"/>
-            </LinearGradientBrush>
-        </Setter.Value>
-    </Setter>
-</Style>
+    <!-- =========== Top Profile Container =========== -->
+    <Style Selector="TextBlock.TitleTextBoxStyle">
+        <Setter Property="Margin" Value="10,0,0,0"></Setter>
+        <Setter Property="FontSize" Value="20"></Setter>
+    </Style>
+
+    <!-- =========== Profile Buttons =========== -->
+    <Style Selector="Button.ProfileButtons">
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="CornerRadius" Value="30" />
+        <Setter Property="Margin" Value="5" />
+        <Setter Property="BorderThickness" Value="2"></Setter>
+        <Setter Property="BorderBrush">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0%, 0%" EndPoint="100% 100%">
+                    <GradientStop Color="#a068ad" Offset="0.0" />
+                    <GradientStop Color="#688cad" Offset="1.0" />
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- =========== Profile Buttons Hover Animation =========== -->
+    <Style Selector="Button.ProfileButtons:pointerover /template/ContentPresenter">
+        <Setter Property="Foreground" Value="#366359" />
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="Background" Value="LightGray" />
+
+        <Setter Property="BorderBrush" />
+        <Style.Animations>
+            <Animation Duration="0:0:2" IterationCount="Infinite">
+                <KeyFrame Cue="0%">
+                    <Setter Property="BorderBrush">
+                        <Setter.Value>
+                            <ConicGradientBrush Angle="0" Center="50%, 50%">
+                                <GradientStop Color="#a068ad" Offset="0.0" />
+                                <GradientStop Color="#688cad" Offset="1.0" />
+                            </ConicGradientBrush>
+                        </Setter.Value>
+                    </Setter>
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                    <Setter Property="BorderBrush">
+                        <Setter.Value>
+                            <ConicGradientBrush Angle="360" Center="50%, 50%">
+                                <GradientStop Color="#a068ad" Offset="0.0" />
+                                <GradientStop Color="#688cad" Offset="1.0" />
+                            </ConicGradientBrush>
+                        </Setter.Value>
+                    </Setter>
+                </KeyFrame>
+            </Animation>
+        </Style.Animations>
+    </Style>
+
+    <!-- =========== Avatar Border =========== -->
+    <Style Selector="Border.AvatarBorder">
+        <Setter Property="ClipToBounds" Value="True"></Setter>
+        <Setter Property="CornerRadius" Value="30"></Setter>
+        <Setter Property="Background" Value="Transparent"></Setter>
+        <Setter Property="BorderThickness" Value="3" />
+        <Setter Property="BorderBrush" />
+        <Style.Animations>
+            <Animation Duration="0:0:1" IterationCount="Infinite">
+                <KeyFrame Cue="0%">
+                    <Setter Property="BorderBrush">
+                        <Setter.Value>
+                            <ConicGradientBrush Angle="0" Center="50%, 50%">
+                                <GradientStop Color="#becdd4" Offset="0.0" />
+                                <GradientStop Color="SlateGray" Offset="1.0" />
+                            </ConicGradientBrush>
+                        </Setter.Value>
+                    </Setter>
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                    <Setter Property="BorderBrush">
+                        <Setter.Value>
+                            <ConicGradientBrush Angle="360" Center="50%, 50%">
+                                <GradientStop Color="#becdd4" Offset="0.0" />
+                                <GradientStop Color="SlateGray" Offset="1.0" />
+                            </ConicGradientBrush>
+                        </Setter.Value>
+                    </Setter>
+                </KeyFrame>
+            </Animation>
+        </Style.Animations>
+    </Style>
+
+    <!-- =========== Profile Nickname TextBlock =========== -->
+    <Style Selector="TextBlock.ProfileNickname">
+        <Setter Property="FontSize" Value="24" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="FontStretch" Value="Condensed" />
+    </Style>
+
+    <!-- =========== Profile Avatar Border =========== -->
+    <Style Selector="Border.ProfileAvatar">
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="Margin" Value="0,5,0,0" />
+        <Setter Property="MinWidth" Value="150" />
+        <Setter Property="MinHeight" Value="150" />
+        <Setter Property="MaxWidth" Value="160" />
+        <Setter Property="MaxHeight" Value="190" />
+        <Setter Property="BorderBrush">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0%, 0%" EndPoint="100% 100%">
+                    <GradientStop Color="#FF00FF" Offset="0.0" />
+                    <GradientStop Color="#9932CC" Offset="0.5" />
+                    <GradientStop Color="#8A2BE2" Offset="1.0" />
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
 
 </Styles>
