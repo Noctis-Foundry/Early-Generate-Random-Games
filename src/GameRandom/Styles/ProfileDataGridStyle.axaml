@@ -9,34 +9,42 @@
                 <ImageBrush Source="avares://GameRandom/Assets/TableBorder1920.png"
                             Stretch="Fill"></ImageBrush>
             </Border.Background>
-            <DataGrid Width="450" Height="270"
+            <DataGrid Width="450" Height="270" Classes="ProfileDataGrid"
                       Margin="0,0,40,15"
-                      GridLinesVisibility="Horizontal" ItemsSource="{Binding People}">
+                      GridLinesVisibility="Horizontal" 
+                      ItemsSource="{Binding People}">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Name"  Binding="{Binding Name}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="Age" Binding="{Binding Age}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="Gender" Binding="{Binding Gender}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Game" Binding="{Binding Name}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Begin data"></DataGridTextColumn>
+                    <DataGridTextColumn Header="End data"></DataGridTextColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </Border>
     </Design.PreviewWith>
     
-    <Style Selector="DataGrid">
+    <Style Selector="DataGrid.ProfileDataGrid">
         <Setter Property="BorderBrush" Value="AntiqueWhite"></Setter>
         <Setter Property="BorderThickness" Value="2"></Setter>
         <Setter Property="GridLinesVisibility" Value="All"></Setter>
         <Setter Property="Background" Value="#2f2f2d"></Setter>
+        <Setter Property="CanUserResizeColumns" Value="True"></Setter>
     </Style>
     
-    <Style Selector="DataGridColumnHeader">
-        <Setter Property="Background" Value="Gray"></Setter>
+    <Style Selector="DataGrid.ProfileDataGrid DataGridColumnHeader TextBlock">
+        <Setter Property="Foreground" Value="WhiteSmoke"></Setter>
+        <Setter Property="FontSize" Value="15"></Setter>
+        <Setter Property="FontFamily" Value="{DynamicResource 'Anime Ace'}"></Setter>
     </Style>
     
-    <Style Selector="DataGridColumnHeader.Profile TextBlock">
+    <Style Selector="DataGrid.ProfileDataGrid DataGridColumnHeader">
+        <Setter Property="Background" Value="DimGray"></Setter>
+    </Style>
+    
+    <Style Selector="DataGrid.ProfileDataGrid DataGridRow TextBlock">
         <Setter Property="Foreground" Value="White"></Setter>
-        <Setter Property="FontSize" Value="18"></Setter>
     </Style>
     
-    <Style Selector="DataGridRow TextBlock">
+    <Style Selector="DataGrid.ProfileDataGrid DataGridRow">
+        <Setter Property="Background" Value="SlateGray"></Setter>
     </Style>
 </Styles>

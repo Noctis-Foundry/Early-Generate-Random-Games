@@ -8,7 +8,7 @@
         MaxWidth="1920" MaxHeight="1080">
     <DockPanel>
         <DockPanel.Background>
-            LightGray
+            #2f2f2d
         </DockPanel.Background>
         
         <Border DockPanel.Dock="Top" Classes="TopProfileContainer" 
@@ -34,16 +34,19 @@
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             
-            <Border DockPanel.Dock="Left" Width="600" Height="400"
-                    Margin="0,0,50,0" Classes="AvatarBorder">
-                <Border.Background>LightSlateGray</Border.Background>
-                
-                <DataGrid GridLinesVisibility="All" BorderThickness="1"
-                          BorderBrush="MediumPurple" ItemsSource="{Binding People}">
+            <Border Width="600" Height="400">
+                <Border.Background>
+                    <ImageBrush Source="avares://GameRandom/Assets/TableBorder1920.png"
+                                Stretch="Fill"></ImageBrush>
+                </Border.Background>
+                <DataGrid Width="450" Height="270" Classes="ProfileDataGrid"
+                          Margin="0,0,40,15"
+                          GridLinesVisibility="Horizontal" 
+                          ItemsSource="{Binding People}">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="First Name"  Binding="{Binding Name}"/>
-                        <DataGridTextColumn Header="Age" Binding="{Binding Age}"/>
-                        <DataGridTextColumn Header="Gender" Binding="{Binding Gender}"/>
+                        <DataGridTextColumn Header="Game" Binding="{Binding Name}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Begin data"></DataGridTextColumn>
+                        <DataGridTextColumn Header="End data"></DataGridTextColumn>
                     </DataGrid.Columns>
                 </DataGrid>
             </Border>

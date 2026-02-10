@@ -7,7 +7,7 @@
     </Design.PreviewWith>
     
     <Style Selector="TextBlock">
-        <Setter Property="FontFamily" Value="{DynamicResource 'Anime Ace'}"></Setter>
+        <Setter Property="FontFamily" Value="{DynamicResource 'Rye-Font'}"></Setter>
         <Setter Property="Foreground" Value="#1a1c1c"></Setter>
     </Style>
     

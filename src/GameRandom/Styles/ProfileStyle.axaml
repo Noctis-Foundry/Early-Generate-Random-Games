@@ -4,29 +4,7 @@
         x:DataType="vm:ProfileViewModel">
 
     <Design.PreviewWith>
-        <Border Width="600" Height="400">
-            <Border.Background>
-                <ImageBrush Source="avares://GameRandom/Assets/TableBorder1920.png"
-                            Stretch="Fill"></ImageBrush>
-            </Border.Background>
-            <DataGrid Classes="ProfileTableColumn" Width="450" Height="270"
-                      Margin="0,0,40,15"
-                      GridLinesVisibility="Horizontal" ItemsSource="{Binding People}">
-                <DataGrid.Columns>
-                    <DataGridTextColumn  Header="Name" Binding="{Binding Name}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="Age" Binding="{Binding Age}"></DataGridTextColumn>
-                    <DataGridTextColumn Header="Gender" Binding="{Binding Gender}"></DataGridTextColumn>
-                </DataGrid.Columns>
-            </DataGrid>
-        </Border>
     </Design.PreviewWith>
-    
-    <!-- =========== Profile table columns =========== -->
-    <Style Selector="DataGrid.ProfileTableColumn">
-        <Setter Property="BorderThickness" Value="1"></Setter>
-        <Setter Property="BorderBrush" Value="HotPink"></Setter>
-        <Setter Property="Background" Value="#30302d"></Setter>
-    </Style>
     
     <!-- =========== Top Profile Container =========== -->
     <Style Selector="Border.TopProfileContainer">
@@ -46,8 +24,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-
-
+    
     <!-- =========== Top Profile Container =========== -->
     <Style Selector="TextBlock.TitleTextBoxStyle">
         <Setter Property="Margin" Value="10,0,0,0"></Setter>
