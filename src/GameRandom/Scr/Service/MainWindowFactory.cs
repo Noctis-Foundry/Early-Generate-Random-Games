@@ -11,7 +11,7 @@ public class MainWindowFactory
     {
         grid.ColumnDefinitions.Clear();
         
-        for (int i = 1; i <= countImage; i++)
+        for (int i = 1; i <= countImage; i++) //TODO Change to i = 0 and i < countImage
             grid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
     }
 
@@ -25,7 +25,7 @@ public class MainWindowFactory
         {
             Image image = new Image
             {
-                Source = new Bitmap("Assets\\avalonia-logo.ico"),
+                Source = new Bitmap("./Assets/avalonia-logo.ico"),
                 Name = $"AppImage{i}"
             };
             

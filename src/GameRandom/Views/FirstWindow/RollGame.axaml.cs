@@ -32,6 +32,7 @@ public partial class RollGame : UserControl, IAddListener, IDisposable
     private bool _isRolling = false;
 
     private int _lastYear = 0;
+    private int countClick = 0;
     
     public RollGame()
     {
@@ -56,16 +57,17 @@ public partial class RollGame : UserControl, IAddListener, IDisposable
             _errorService.ShowErrorWindow("Generating random games not initialized.", ErrorEnum.Error);
             return;
         }
-
+        
         _isRolling = true;
         
         int countGames = int.Parse(CountApp.Text ?? "1");
         
         List<AppSavedContext?> apps = new List<AppSavedContext?>();
         
+        
         while (apps.Count < countGames)
         {
-            int year = _random.Next(2000, 2025);
+            int year = _random.Next(2010, 2025);
 
             if (_lastYear == year)
             {
@@ -94,6 +96,8 @@ public partial class RollGame : UserControl, IAddListener, IDisposable
         InitializeButtonListeners();
 
         _isRolling = false;
+
+        countClick++;
     }
     
     private async Task InitDictionaryWithComponents(List<Button> buttons, List<Image> images, List<AppSavedContext?> apps)

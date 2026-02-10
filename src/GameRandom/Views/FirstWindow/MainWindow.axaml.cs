@@ -70,9 +70,17 @@ public partial class MainWindow : Window
 
         var tableContent = new ProfileContent();
         tableContent.AddListener(_selectorAction);
+
+        var rollGames = new RollGame();
+        rollGames.AddListener(_selectorAction);
+        
+        var gameTable = new GameTable();
+        gameTable.AddListener(_selectorAction);
         
         _preloadRegister.RegisterNewObject("Main", mainContent);
         _preloadRegister.RegisterNewObject("Profile", tableContent);
+        _preloadRegister.RegisterNewObject("Roll", rollGames);
+        _preloadRegister.RegisterNewObject("Table", gameTable);
         
         // _lazyRegister.RegisterNewObject("Roll", DelegateSwitchFactory<RollGame>(_selectorAction));
         // _lazyRegister.RegisterNewObject("Table", DelegateSwitchFactory<GameTable>(_selectorAction));
@@ -86,13 +94,13 @@ public partial class MainWindow : Window
         if (_preloadRegister.GetObjectFromRegister(nameControl, out var value))
         {
             ControlMain.Content = value;
-            return;
+            // return;
         }
 
-        if (_lazyRegister.GetObjectFromRegister(nameControl, out var @delegate))
-        {
-            @delegate?.Invoke();
-        }
+        // if (_lazyRegister.GetObjectFromRegister(nameControl, out var @delegate))
+        // {
+        //     @delegate?.Invoke();
+        // }
     }
     private void MainWindow_OnClosed(object? sender, EventArgs e)
     {

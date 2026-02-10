@@ -5,7 +5,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="GameRandom.Views.RollGame"
-             x:DataType="vm:RollGameViewModel">
+             x:DataType="vm:RollGameViewModel"
+             Width="1000" Height="800">
    
     <Grid>
         <!-- Манга фон -->
@@ -136,6 +137,7 @@
                             <!-- Кнопка генерации -->
                             <Button Grid.Column="0" 
                                     Click="GenerateGames" 
+                                    x:Name="GenerateButton"
                                     Background="Black"
                                     BorderBrush="White"
                                     BorderThickness="2"
