@@ -1,0 +1,42 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:GameRandom.ViewModels"
+        x:DataType="vm:ProfileViewModel">
+    
+    <Design.PreviewWith>
+        <Border Width="600" Height="400">
+            <Border.Background>
+                <ImageBrush Source="avares://GameRandom/Assets/TableBorder1920.png"
+                            Stretch="Fill"></ImageBrush>
+            </Border.Background>
+            <DataGrid Width="450" Height="270"
+                      Margin="0,0,40,15"
+                      GridLinesVisibility="Horizontal" ItemsSource="{Binding People}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Name"  Binding="{Binding Name}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Age" Binding="{Binding Age}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Gender" Binding="{Binding Gender}"></DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+    </Design.PreviewWith>
+    
+    <Style Selector="DataGrid">
+        <Setter Property="BorderBrush" Value="AntiqueWhite"></Setter>
+        <Setter Property="BorderThickness" Value="2"></Setter>
+        <Setter Property="GridLinesVisibility" Value="All"></Setter>
+        <Setter Property="Background" Value="#2f2f2d"></Setter>
+    </Style>
+    
+    <Style Selector="DataGridColumnHeader">
+        <Setter Property="Background" Value="Gray"></Setter>
+    </Style>
+    
+    <Style Selector="DataGridColumnHeader.Profile TextBlock">
+        <Setter Property="Foreground" Value="White"></Setter>
+        <Setter Property="FontSize" Value="18"></Setter>
+    </Style>
+    
+    <Style Selector="DataGridRow TextBlock">
+    </Style>
+</Styles>
