@@ -9,6 +9,7 @@ using GameRandom.Scr.Service;
 using GameRandom.Service;
 using GameRandom.SteamSDK;
 using GameRandom.SteamSDK.Enums;
+using GameRandom.SteamSDK.Factory;
 using GameRandom.SteamSDK.LobbySystem;
 
 namespace GameRandom;
@@ -57,5 +58,6 @@ sealed class Program
         Di.Container.RegisterSingleInstance(new MainWindowFactory());
         Di.Container.RegisterSingleInstance(new SteamWebApi());
         Di.Container.RegisterSingleInstance(new PostgresListener());
+        Di.Container.RegisterSingleInstance(new UserControlFactory());
     }
 }
