@@ -11,10 +11,9 @@
             </Border.Background>
             <DataGrid Width="450" Height="270" Classes="ProfileDataGrid"
                       Margin="0,0,40,15"
-                      GridLinesVisibility="Horizontal" 
-                      ItemsSource="{Binding People}">
+                      GridLinesVisibility="Horizontal" >
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Game" Binding="{Binding Name}"></DataGridTextColumn>
+                    <DataGridTextColumn Header="Game"></DataGridTextColumn>
                     <DataGridTextColumn Header="Begin data"></DataGridTextColumn>
                     <DataGridTextColumn Header="End data"></DataGridTextColumn>
                 </DataGrid.Columns>
