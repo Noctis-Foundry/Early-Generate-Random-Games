@@ -20,7 +20,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GameRandom.Views;
 
-public partial class GameTable : UserControl, IAddListener, IDisposable
+public partial class GameTable : UserControl, IDisposable
 {
     [Inject] private DatabaseService _databaseService = null!;
     [Inject] private ObservableConverter _converter = null!;

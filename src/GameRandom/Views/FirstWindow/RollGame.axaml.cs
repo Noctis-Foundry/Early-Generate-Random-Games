@@ -17,7 +17,7 @@ using GameRandom.ViewModels;
 
 namespace GameRandom.Views;
 
-public partial class RollGame : UserControl, IAddListener, IDisposable
+public partial class RollGame : UserControl, IUserControl, IDisposable
 {
     [Inject] private ErrorService _errorService = null!;
     
@@ -96,10 +96,20 @@ public partial class RollGame : UserControl, IAddListener, IDisposable
         InitializeButtonListeners();
 
         _isRolling = false;
-
-        countClick++;
     }
-    
+
+    public void Close(object? sender, RoutedEventArgs e)
+    {
+        //TODO
+        _onShowContent?.Invoke("Main");
+        Dispose();
+    }
+
+    public void Open()
+    {
+        //TODO
+    }
+
     private async Task InitDictionaryWithComponents(List<Button> buttons, List<Image> images, List<AppSavedContext?> apps)
     {
         for (int i = 0; i < apps.Count; i++)
@@ -153,11 +163,6 @@ public partial class RollGame : UserControl, IAddListener, IDisposable
                 }
             }
         };
-    }
-    private void Close(Object? sender, RoutedEventArgs e)
-    {
-        _onShowContent?.Invoke("Main");
-        Dispose();
     }
 
     public void Dispose()

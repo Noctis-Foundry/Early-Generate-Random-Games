@@ -1,10 +1,11 @@
 ﻿using System;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using GameRandom.SteamSDK;
 
 namespace GameRandom.Views;
 
-public partial class MainWindowContent : UserControl
+public partial class MainWindowContent : UserControl, IUserControl
 {
     private Action<string> _changeContent; 
     
@@ -14,7 +15,17 @@ public partial class MainWindowContent : UserControl
     }
     
     public void AddListener(Action<string> _onChangeContent) => _changeContent = _onChangeContent;
-    
+
+    public void Open()
+    {
+        
+    }
+
+    public void Close(object? sender, RoutedEventArgs e)
+    {
+        
+    }
+
     private void GoToRollContent(object? sender, RoutedEventArgs e)
     {
         _changeContent?.Invoke("Roll");
