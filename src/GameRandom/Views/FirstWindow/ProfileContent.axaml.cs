@@ -17,45 +17,59 @@ using Steamworks;
 
 namespace GameRandom.Views;
 
-public partial class ProfileContent : UserControl, IAddListener, IDisposable
+public partial class ProfileContent : UserControl, IDisposable, IUserControl
 {
     private Action<string>? _changeContent;
 
     public ProfileContent()
     {
         InitializeComponent();
-        DataContext = new ProfileViewModel();
         
         if (Design.IsDesignMode)
             return;
-        
-        InitializePlayerProfile();
     }
     
     public void AddListener(Action<string> _onChangeContent) => _changeContent = _onChangeContent;
-    
-    private void InitializePlayerProfile()
+
+    public void Open()
     {
-        // CSteamID steamId = SteamManager.GetSteamManager().GetSteamId();
-        //
-        // string accName = SteamFriends.GetPersonaName();
-        //
-        // int imageId = SteamFriends.GetLargeFriendAvatar(steamId);
-        //
-        // var bitmap = AvaloniaService.CreateSteamImage(imageId);
-        //
-        // AvatarImage.Source = bitmap;
-        // AccName.Content = accName;
+        InitProfileAvatar();
+        
+        DataContext = new ProfileViewModel();
+        
+        if (DataContext is ProfileViewModel profileViewModel)
+            Dispatcher.UIThread.InvokeAsync(() => profileViewModel.LoadTable());
     }
 
-    private void ExitFromProfile(object? sender, RoutedEventArgs e)
+    public void Close(object? sender, RoutedEventArgs e)
     {
         _changeContent?.Invoke("Main");
+        
+        if (DataContext is ProfileViewModel profileViewModel)
+            profileViewModel.UnloadTable();
+        
         Dispose();
+    }
+
+    private void InitProfileAvatar()
+    {
+        CSteamID steamId = SteamManager.GetSteamManager().GetSteamId();
+        
+        string accName = SteamFriends.GetPersonaName();
+        
+        int imageId = SteamFriends.GetLargeFriendAvatar(steamId);
+        
+        var bitmap = AvaloniaService.CreateSteamImage(imageId);
+        
+        ProfileImage.Source = bitmap;
+        ProfileName.Text = accName;
     }
 
     public void Dispose()
     {
-        _changeContent = null; ;
+        _changeContent = null;
+        ProfileImage.Source = null;
+        ProfileName.Text = string.Empty;
+        DataContext = null;
     }
 }
