@@ -13,6 +13,7 @@ using GameRandom.Service;
 using GameRandom.SteamSDK;
 using GameRandom.Scr.WindowScr;
 using GameRandom.SteamSDK.Enums;
+using GameRandom.SteamSDK.Factory;
 using GameRandom.SteamSDK.LobbySystem;
 using GameRandom.ViewModels;
 
@@ -24,15 +25,12 @@ public partial class MainWindow : Window
     [Inject] private readonly DiFactory _diFactory = null!;
     [Inject] private readonly PostgresListener  _postgres = null!;
     [Inject] private readonly EventBus _eventBus = null!;
+    [Inject] private readonly UserControlFactory _controlFactory = null!;
     
-    delegate void RefControlDelegate();
-    
-    private readonly Register<string, RefControlDelegate> _lazyRegister = new();
-    private readonly Register<string, UserControl> _preloadRegister = new();
-    private readonly Dictionary<string, int> test;
+    private readonly Register<string, IUserControl> _preloadRegister = new();
     private readonly Action<string> _selectorAction;
 
-    private UserControl? _oldControl = null;
+    private IUserControl? _oldControl = null;
     
     public MainWindow()
     {
@@ -65,42 +63,18 @@ public partial class MainWindow : Window
 
     private void InitializeUserControlRegister()
     {
-        var mainContent = new MainWindowContent();
-        mainContent.AddListener(_selectorAction);
-
-        var tableContent = new ProfileContent();
-        tableContent.AddListener(_selectorAction);
-
-        var rollGames = new RollGame();
-        rollGames.AddListener(_selectorAction);
-        
-        var gameTable = new GameTable();
-        gameTable.AddListener(_selectorAction);
-        
-        _preloadRegister.RegisterNewObject("Main", mainContent);
-        _preloadRegister.RegisterNewObject("Profile", tableContent);
-        _preloadRegister.RegisterNewObject("Roll", rollGames);
-        _preloadRegister.RegisterNewObject("Table", gameTable);
-        
-        // _lazyRegister.RegisterNewObject("Roll", DelegateSwitchFactory<RollGame>(_selectorAction));
-        // _lazyRegister.RegisterNewObject("Table", DelegateSwitchFactory<GameTable>(_selectorAction));
-        // _lazyRegister.RegisterNewObject("Profile", DelegateSwitchFactory<ProfileContent>(_selectorAction));
+        _preloadRegister.RegisterNewObject("Main", _controlFactory.CreateUserControl<MainWindowContent>(_selectorAction));
+        _preloadRegister.RegisterNewObject("Profile", _controlFactory.CreateUserControl<ProfileContent>(_selectorAction));
+        _preloadRegister.RegisterNewObject("Roll", _controlFactory.CreateUserControl<RollGame>(_selectorAction));
+        // _preloadRegister.RegisterNewObject("Table", gameTable);
     }
 
     private void Navigate(string nameControl)
     {
-        ControlMain.Content = null;
-        
         if (_preloadRegister.GetObjectFromRegister(nameControl, out var value))
         {
             ControlMain.Content = value;
-            // return;
         }
-
-        // if (_lazyRegister.GetObjectFromRegister(nameControl, out var @delegate))
-        // {
-        //     @delegate?.Invoke();
-        // }
     }
     private void MainWindow_OnClosed(object? sender, EventArgs e)
     {
@@ -151,22 +125,5 @@ public partial class MainWindow : Window
         await dbContext.SaveChangesAsync();
     }
 
-    // private RefControlDelegate DelegateSwitchFactory<TUserControl>(Action<string> switchAction) TODO upgrade lifetime for users control 
-    //     where TUserControl : UserControl, IAddListener, new()
-    // {
-    //     RefControlDelegate del = delegate() //Sending ControlMain.Control
-    //     {
-    //         var newClass = new TUserControl();
-    //         newClass.AddListener(switchAction);
-    //         
-    //         _oldControl = newClass;
-    //         
-    //         Console.WriteLine($"Delegate is work. Created class {typeof(TUserControl).Name}." +
-    //                           $" new class name: {newClass.Name}");
-    //         
-    //         ControlMain.Content = newClass;
-    //     };
-    //     
-    //     return del;
-    // }
+  
 }
