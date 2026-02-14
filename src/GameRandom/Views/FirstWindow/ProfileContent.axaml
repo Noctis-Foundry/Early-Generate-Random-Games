@@ -24,7 +24,7 @@
                            HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
                 
                 <Button Grid.Column="1" Classes="ProfileButtons">Activity game</Button>
-                <Button Grid.Column="2" Classes="ProfileButtons" Click="ExitFromProfile">Close</Button>
+                <Button Grid.Column="2" Classes="ProfileButtons" Click="Close">Close</Button>
             </Grid>
         </Border>
         
@@ -41,10 +41,9 @@
                 </Border.Background>
                 <DataGrid Width="450" Height="270" Classes="ProfileDataGrid"
                           Margin="0,0,40,15"
-                          GridLinesVisibility="Horizontal" 
-                          ItemsSource="{Binding People}">
+                          GridLinesVisibility="Horizontal" >
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Game" Binding="{Binding Name}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Game"></DataGridTextColumn>
                         <DataGridTextColumn Header="Begin data"></DataGridTextColumn>
                         <DataGridTextColumn Header="End data"></DataGridTextColumn>
                     </DataGrid.Columns>
