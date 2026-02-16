@@ -1,18 +1,10 @@
 ﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
-using GameRandom.DataBaseContexts;
-using GameRandom.Scr.DI;
-using GameRandom.Scr.Service;
 using GameRandom.Service;
 using GameRandom.SteamSDK;
 using GameRandom.ViewModels;
-using Microsoft.EntityFrameworkCore;
 using Steamworks;
 
 namespace GameRandom.Views;

@@ -4,7 +4,96 @@
         x:DataType="vm:ProfileViewModel">
 
     <Design.PreviewWith>
+        <DockPanel Width="1000" Height="600">
+            <DockPanel.Background>
+                <ImageBrush Source="avares://GameRandom/Assets/TableBorder1920.png" 
+                            Stretch="UniformToFill"></ImageBrush>
+            </DockPanel.Background>
+            
+            <Border Classes="StatisticContainer" Height="400" Width="600" DockPanel.Dock="Top">
+                <Grid RowDefinitions="Auto, *" HorizontalAlignment="Center">
+                    <Border Classes="StatisticHeader" Height="50" Width="450">
+                        <Grid ColumnDefinitions="*, Auto">
+                            <TextBlock Text="Player Statistic" 
+                                       Classes="StatisticHeaderText"></TextBlock>
+                            
+                            <Button Grid.Column="1" Classes="ProfileButtons"
+                                    HorizontalAlignment="Right">Games Table</Button>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Border>
+        </DockPanel>
     </Design.PreviewWith>
+    
+    <Style Selector="Grid.CardContainer">
+        
+    </Style>
+    
+    <Style Selector="Border.StatisticPropertyBorder">
+        <Setter Property="Background" Value="Gray"></Setter>
+        <Setter Property="Width" Value="130"></Setter>
+        <Setter Property="Height" Value="100"></Setter>
+        <Setter Property="CornerRadius" Value="10"></Setter>
+    </Style>
+    
+    <Style Selector="Grid.CardBorderGrid">
+        <Setter Property="VerticalAlignment" Value="Center"></Setter>
+        <Setter Property="RowSpacing" Value="10"></Setter>
+    </Style>
+    
+    <Style Selector="TextBlock.StatisticCardText">
+        <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+        <Setter Property="FontFamily" Value="{DynamicResource 'Anime Ace'}"></Setter>
+        <Setter Property="Foreground" Value="White"></Setter>
+    </Style>
+    
+    <Style Selector="Border.StatisticContainer">
+        <Setter Property="BorderBrush" Value="Blue"></Setter>
+        <Setter Property="BorderThickness" Value="2"></Setter>
+        <Setter Property="Background" Value="LightGray"></Setter>
+        <Setter Property="Padding" Value="0,4,0,0"/>
+    </Style>
+    
+    <Style Selector="Border.StatisticHeader">
+        <Setter Property="BorderBrush"> </Setter>
+        <Setter Property="BorderThickness" Value="2"></Setter>
+        <Setter Property="Background" Value="Gray"></Setter>
+        <Setter Property="CornerRadius" Value="20"></Setter>
+        <Setter Property="Padding" Value="20, 0, 20, 0"></Setter>
+        <Style.Animations>
+            <Animation Duration="0:0:3" IterationCount="Infinite">
+                <KeyFrame Cue="0%">
+                    <Setter Property="BorderBrush">
+                        <Setter.Value>
+                            <ConicGradientBrush Angle="0" Center="50%, 50%">
+                                <GradientStop Color="#becdd4" Offset="0.0" />
+                                <GradientStop Color="SlateGray" Offset="1.0" />
+                            </ConicGradientBrush>
+                        </Setter.Value>
+                    </Setter>
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                    <Setter Property="BorderBrush">
+                        <Setter.Value>
+                            <ConicGradientBrush Angle="360" Center="50%, 50%">
+                                <GradientStop Color="#becdd4" Offset="0.0" />
+                                <GradientStop Color="SlateGray" Offset="1.0" />
+                            </ConicGradientBrush>
+                        </Setter.Value>
+                    </Setter>
+                </KeyFrame>
+            </Animation>
+        </Style.Animations>
+    </Style>
+    
+    <Style Selector="TextBlock.StatisticHeaderText">
+        <Setter Property="Foreground" Value="White"></Setter>
+        <Setter Property="LetterSpacing" Value="5"></Setter>
+        <Setter Property="FontSize" Value="18"></Setter>
+        <Setter Property="HorizontalAlignment" Value="Left"></Setter>
+        <Setter Property="VerticalAlignment" Value="Center"></Setter>
+    </Style>
     
     <!-- =========== Top Profile Container =========== -->
     <Style Selector="Border.TopProfileContainer">
@@ -20,15 +109,17 @@
         </Setter>
         <Setter Property="Background">
             <Setter.Value>
-
+                Transparent
             </Setter.Value>
         </Setter>
     </Style>
     
-    <!-- =========== Top Profile Container =========== -->
+    <!-- =========== Top Profile Title style =========== -->
     <Style Selector="TextBlock.TitleTextBoxStyle">
-        <Setter Property="Margin" Value="10,0,0,0"></Setter>
+        <Setter Property="Margin" Value="20,0,0,0"></Setter>
         <Setter Property="FontSize" Value="20"></Setter>
+        <Setter Property="Foreground" Value="WhiteSmoke"></Setter>
+        <Setter Property="LetterSpacing" Value="5"></Setter>
     </Style>
 
     <!-- =========== Profile Buttons =========== -->
@@ -36,6 +127,7 @@
         <Setter Property="FontSize" Value="16" />
         <Setter Property="CornerRadius" Value="30" />
         <Setter Property="Margin" Value="5" />
+        <Setter Property="Background" Value="Transparent"></Setter>
         <Setter Property="BorderThickness" Value="2"></Setter>
         <Setter Property="BorderBrush">
             <Setter.Value>
@@ -45,8 +137,9 @@
                 </LinearGradientBrush>
             </Setter.Value>
         </Setter>
+        <Setter Property="Foreground" Value="WhiteSmoke"></Setter>
     </Style>
-
+    
     <!-- =========== Profile Buttons Hover Animation =========== -->
     <Style Selector="Button.ProfileButtons:pointerover /template/ContentPresenter">
         <Setter Property="Foreground" Value="#366359" />
