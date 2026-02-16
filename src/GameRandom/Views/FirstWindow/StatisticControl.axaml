@@ -2,7 +2,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:GameRandom.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="GameRandom.Views.StatisticControl">
-    Welcome to Avalonia!
+             x:Class="GameRandom.Views.StatisticControl"
+             x:DataType="vm:StatisticViewModel">
+    
+    <Grid RowDefinitions="Auto, Auto">
+        <Grid></Grid>
+    </Grid>
 </UserControl>

@@ -35,8 +35,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-
-        ControlMain.Content = new ProfileContent();
+        
         if (Design.IsDesignMode) return;
         
         Di.Container.ResolveFieldsFromClassInstance(this);
@@ -73,7 +72,10 @@ public partial class MainWindow : Window
     {
         if (_preloadRegister.GetObjectFromRegister(nameControl, out var value))
         {
+            if (value is null) return;
+            
             ControlMain.Content = value;
+            value.Open();
         }
     }
     private void MainWindow_OnClosed(object? sender, EventArgs e)
