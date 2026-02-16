@@ -12,13 +12,18 @@ namespace GameRandom.Views;
 public partial class ProfileContent : UserControl, IDisposable, IUserControl
 {
     private Action<string>? _changeContent;
+    private StatisticControl _statisticContent;
 
     public ProfileContent()
     {
         InitializeComponent();
-        
+
         if (Design.IsDesignMode)
+        {
+            StatisticContent.Content = new StatisticControl();
             return;
+        }
+         
         
         DataContext = new ProfileViewModel();
     }
@@ -28,26 +33,16 @@ public partial class ProfileContent : UserControl, IDisposable, IUserControl
     public void Open()
     {
         InitProfileAvatar();
-
-        if (DataContext is ProfileViewModel profileViewModel)
-        {
-            Dispatcher.UIThread.InvokeAsync(async () =>
-            { 
-                await profileViewModel.LoadTable();
-                ProfileText.Text = profileViewModel.GameProgresses.Count.ToString(); //TODO Delete
-            });
-        }
+        
+        _statisticContent = new StatisticControl();
+        _statisticContent.Open();
+        
+        StatisticContent.Content = _statisticContent;
     }
 
     public void Close(object? sender, RoutedEventArgs e)
     {
         _changeContent?.Invoke("Main");
-        
-        if (DataContext is ProfileViewModel profileViewModel)
-            profileViewModel.UnloadTable();
-        
-        ProfileName.Text = "Profile"; //TODO Delete
-        
         Dispose();
     }
 
