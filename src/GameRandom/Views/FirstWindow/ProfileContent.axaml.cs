@@ -64,7 +64,6 @@ public partial class ProfileContent : UserControl, IDisposable, IUserControl
     {
         _changeContent = null;
         ProfileImage.Source = null;
-        ProfileName.Text = string.Empty;
         DataContext = null;
     }
 }

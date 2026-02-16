@@ -6,8 +6,47 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="GameRandom.Views.StatisticControl"
              x:DataType="vm:StatisticViewModel">
-    
-    <Grid RowDefinitions="Auto, Auto">
-        <Grid></Grid>
-    </Grid>
+
+
+    <Border Classes="StatisticContainer" Height="400" Width="600" Background="Transparent">
+        <Grid RowDefinitions="Auto, *" HorizontalAlignment="Center">
+            <Border Classes="StatisticHeader" Height="50" Width="450">
+                <Grid ColumnDefinitions="*, Auto">
+                    <TextBlock Text="Player Statistic"
+                               Classes="StatisticHeaderText">
+                    </TextBlock>
+
+                    <Button Grid.Column="1" Classes="ProfileButtons"
+                            HorizontalAlignment="Right">
+                        Games Table
+                    </Button>
+                </Grid>
+            </Border>
+
+            <ItemsControl Grid.Row="1" ItemsSource="{Binding StatisticCards}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Grid ColumnDefinitions="*,*" RowDefinitions="Auto, Auto, Auto"></Grid>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Classes="StatisticPropertyBorder">
+                            <Grid RowDefinitions="Auto,Auto,Auto"
+                                  Classes="CardBorderGrid">
+                                <TextBlock Text="{Binding Title}"
+                                           Classes="StatisticCardText" />
+                                <Separator Grid.Row="1" />
+                                <TextBlock Grid.Row="2"
+                                           Text="{Binding Data}"
+                                           Classes="StatisticCardText" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
+    </Border>
+
 </UserControl>
