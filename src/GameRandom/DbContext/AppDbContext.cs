@@ -31,7 +31,6 @@ public class LobbyUserContext
     public long LobbyID { get; set; }
     public ulong MemberID { get; set; }
     public string NickName { get; set; }
-    
     public int PlayerIcon { get; set; }
 }
 

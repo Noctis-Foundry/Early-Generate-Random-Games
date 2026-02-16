@@ -66,7 +66,7 @@ public class MainWindowFactory
     {
         Image image = new Image
         {
-            Source = new Bitmap("Assets\\avalonia-logo.ico"),
+            Source = new Bitmap("Assets/avalonia-logo.ico"),
         };
             
         Grid.SetColumn(image, imageColum);
