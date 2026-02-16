@@ -19,6 +19,8 @@ public partial class ProfileContent : UserControl, IDisposable, IUserControl
         
         if (Design.IsDesignMode)
             return;
+        
+        DataContext = new ProfileViewModel();
     }
     
     public void AddListener(Action<string> _onChangeContent) => _changeContent = _onChangeContent;
@@ -26,11 +28,15 @@ public partial class ProfileContent : UserControl, IDisposable, IUserControl
     public void Open()
     {
         InitProfileAvatar();
-        
-        DataContext = new ProfileViewModel();
-        
+
         if (DataContext is ProfileViewModel profileViewModel)
-            Dispatcher.UIThread.InvokeAsync(() => profileViewModel.LoadTable());
+        {
+            Dispatcher.UIThread.InvokeAsync(async () =>
+            { 
+                await profileViewModel.LoadTable();
+                ProfileText.Text = profileViewModel.GameProgresses.Count.ToString(); //TODO Delete
+            });
+        }
     }
 
     public void Close(object? sender, RoutedEventArgs e)
@@ -39,6 +45,8 @@ public partial class ProfileContent : UserControl, IDisposable, IUserControl
         
         if (DataContext is ProfileViewModel profileViewModel)
             profileViewModel.UnloadTable();
+        
+        ProfileName.Text = "Profile"; //TODO Delete
         
         Dispose();
     }

@@ -15,10 +15,18 @@ namespace GameRandom.ViewModels;
 
 public class ProfileViewModel : ViewModelBase
 {
-    [Inject] private DatabaseService? _database;
-    [Inject] private ErrorService? _errorService;
-    public ObservableCollection<ProfileTableData>? GameProgresses {get; set;}
+    [Inject] private DatabaseService? _database = null!;
+    [Inject] private ErrorService? _errorService = null!;
+    [Inject] private ObservableConverter? _converter = null!;
     
+    private ObservableCollection<ProfileTableData> _gameProgresses;
+
+    public ObservableCollection<ProfileTableData>? GameProgresses
+    {
+        get => _gameProgresses;
+        set => SetProperty(ref _gameProgresses, value);
+    }
+
     /// <summary>
     /// Method starting operations and threads for load table with player games to profile table
     /// </summary>
@@ -43,8 +51,11 @@ public class ProfileViewModel : ViewModelBase
                 ErrorEnum.Message);
             return;
         }
-        
-        GameProgresses = new ObservableCollection<ProfileTableData>(playerTable);
+
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            GameProgresses = _converter.ToObservableCollection(playerTable);
+        });
     }
     
     /// <summary>
