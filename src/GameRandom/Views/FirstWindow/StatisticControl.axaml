@@ -22,7 +22,7 @@
 
 
                     <Button Grid.Column="1" Classes="ProfileButtons"
-                            HorizontalAlignment="Right">
+                            HorizontalAlignment="Right" Click="OpenTable">
                         Games Table
                     </Button>
                 </Grid>
