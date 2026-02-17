@@ -26,7 +26,7 @@
     <Style Selector="TextBlock.TitleTextBoxStyle">
         <Setter Property="Margin" Value="20,0,0,0"></Setter>
         <Setter Property="FontSize" Value="20"></Setter>
-        <Setter Property="Foreground" Value="WhiteSmoke"></Setter>
+        <Setter Property="Foreground" Value="#F2F2F2"></Setter>
         <Setter Property="LetterSpacing" Value="5"></Setter>
     </Style>
 
@@ -45,7 +45,7 @@
                 </LinearGradientBrush>
             </Setter.Value>
         </Setter>
-        <Setter Property="Foreground" Value="WhiteSmoke"></Setter>
+        <Setter Property="Foreground" Value="#EDEDED"></Setter>
     </Style>
     
     <!-- =========== Profile Buttons Hover Animation =========== -->
@@ -117,7 +117,7 @@
     <!-- =========== Profile Nickname TextBlock =========== -->
     <Style Selector="TextBlock.ProfileNickname">
         <Setter Property="FontSize" Value="24" />
-        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Foreground" Value="#EDEDED" />
         <Setter Property="FontStretch" Value="Condensed" />
     </Style>
 

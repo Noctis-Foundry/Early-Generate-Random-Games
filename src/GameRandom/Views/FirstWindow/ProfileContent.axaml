@@ -35,7 +35,8 @@
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             
-            <ContentControl x:Name="StatisticContent" Width="600" Height="400"
+            <ContentControl x:Name="StatisticContent" Width="700" Height="400"
+                            Margin="0,15,0,0"
                             ></ContentControl>
             
             <Border Grid.Column="1" Width="230" Height="280" DockPanel.Dock="Top" BorderThickness="0"
