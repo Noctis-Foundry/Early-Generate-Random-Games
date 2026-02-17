@@ -7,14 +7,19 @@
              x:Class="GameRandom.Views.StatisticControl"
              x:DataType="vm:StatisticViewModel">
 
-
-    <Border Classes="StatisticContainer" Height="400" Width="600" Background="Transparent">
-        <Grid RowDefinitions="Auto, *" HorizontalAlignment="Center">
+    <Border Classes="StatisticContainer" Height="400" Width="700">
+        <Border.Background>
+            <ImageBrush Source="avares://GameRandom/Assets/TableBorder1920.png"
+                        Stretch="Fill">
+            </ImageBrush>
+        </Border.Background>
+        <Grid RowDefinitions="Auto, *" HorizontalAlignment="Center" Margin="0,50,0,0">
             <Border Classes="StatisticHeader" Height="50" Width="450">
                 <Grid ColumnDefinitions="*, Auto">
                     <TextBlock Text="Player Statistic"
                                Classes="StatisticHeaderText">
                     </TextBlock>
+
 
                     <Button Grid.Column="1" Classes="ProfileButtons"
                             HorizontalAlignment="Right">
@@ -22,30 +27,11 @@
                     </Button>
                 </Grid>
             </Border>
-
-            <ItemsControl Grid.Row="1" ItemsSource="{Binding StatisticCards}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <Grid ColumnDefinitions="*,*" RowDefinitions="Auto, Auto, Auto"></Grid>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Border Classes="StatisticPropertyBorder">
-                            <Grid RowDefinitions="Auto,Auto,Auto"
-                                  Classes="CardBorderGrid">
-                                <TextBlock Text="{Binding Title}"
-                                           Classes="StatisticCardText" />
-                                <Separator Grid.Row="1" />
-                                <TextBlock Grid.Row="2"
-                                           Text="{Binding Data}"
-                                           Classes="StatisticCardText" />
-                            </Grid>
-                        </Border>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+            
+            <Grid Grid.Row="1" RowDefinitions="Auto, Auto, Auto" ColumnDefinitions="*, *"
+                  x:Name="StatisticCardGrid">
+                
+            </Grid>
         </Grid>
     </Border>
 
