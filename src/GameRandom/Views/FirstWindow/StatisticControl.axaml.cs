@@ -17,7 +17,7 @@ public partial class StatisticControl : UserControl
     public void Open()
     {
         if (DataContext is StatisticViewModel statisticViewModel)
-            Dispatcher.UIThread.InvokeAsync(async () => await statisticViewModel.LoadStatisticAsync());
+            Dispatcher.UIThread.InvokeAsync(async () => await statisticViewModel.LoadStatisticAsync(StatisticCardGrid));
     }
 
     public void Close()
