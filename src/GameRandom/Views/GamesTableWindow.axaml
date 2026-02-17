@@ -1,0 +1,23 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:GameRandom.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        Width="800" Height="500"
+        MaxHeight="700" MaxWidth="1000"
+        MinHeight="500" MinWidth="600"
+        x:Class="GameRandom.Views.GamesTableWindow"
+        x:DataType="vm:StatisticGameTableViewModel"
+        Title="GamesTable">
+    <DockPanel Background="Gray">
+        <DataGrid ItemsSource="{Binding GameProgresses}"
+                  AutoGenerateColumns="False" Classes="ProfileDataGrid">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Game name" Binding="{Binding GameName}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Begin data" Binding="{Binding DataBegin}"></DataGridTextColumn>
+                <DataGridTextColumn Header="End data" Binding="{Binding DataEnd}"></DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</Window>
