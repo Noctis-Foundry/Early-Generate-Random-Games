@@ -3,15 +3,89 @@
         xmlns:vm="using:GameRandom.ViewModels"
         x:DataType="vm:StatisticViewModel">
 
+    <Design.PreviewWith>
+         <Border Classes="StatisticContainer" Height="400" Width="700">
+        <Border.Background>
+            <ImageBrush Source="avares://GameRandom/Assets/TableBorder1920.png"
+                        Stretch="Fill">
+            </ImageBrush>
+        </Border.Background>
+        <Grid RowDefinitions="Auto, Auto" HorizontalAlignment="Center" Margin="0,50,0,0">
+            <Border Classes="StatisticHeader" Height="50" Width="450">
+                <Grid ColumnDefinitions="*, Auto">
+                    <TextBlock Text="Player Statistic"
+                               Classes="StatisticHeaderText">
+                    </TextBlock>
+
+                    <Button Grid.Column="1" Classes="ProfileButtons"
+                            HorizontalAlignment="Right">
+                        Games Table
+                    </Button>
+                </Grid>
+            </Border>
+            
+            <Grid Grid.Row="1" RowDefinitions="Auto, Auto" ColumnDefinitions="Auto, Auto, Auto" Classes="CardContainer"
+                  x:Name="StatisticCardGrid">
+                <Border Classes="StatisticPropertyBorder">
+                    <Grid Classes="CardBorderGrid" RowDefinitions="Auto, Auto, Auto">
+                        <TextBlock Classes="StatisticCardText" Text="Games Count"></TextBlock>
+                        <Separator Grid.Row="1"></Separator>
+                        <TextBlock Grid.Row="2" Classes="StatisticCardText" Text="183"></TextBlock>
+                    </Grid>
+                </Border>
+                
+                <Border Grid.Row="0" Grid.Column="1" Classes="StatisticPropertyBorder">
+                    <Grid Classes="CardBorderGrid" RowDefinitions="Auto, Auto, Auto">
+                        <TextBlock Classes="StatisticCardText" Text="Finished games count"></TextBlock>
+                        <Separator Grid.Row="1"></Separator>
+                        <TextBlock Grid.Row="2" Classes="StatisticCardText" Text="183"></TextBlock>
+                    </Grid>
+                </Border>
+                
+                <Border Grid.Row="0" Grid.Column="2" Classes="StatisticPropertyBorder">
+                    <Grid Classes="CardBorderGrid" RowDefinitions="Auto, Auto, Auto">
+                        <TextBlock Classes="StatisticCardText" Text="Finished games count"></TextBlock>
+                        <Separator Grid.Row="1"></Separator>
+                        <TextBlock Grid.Row="2" Classes="StatisticCardText" Text="183"></TextBlock>
+                    </Grid>
+                </Border>
+                <Border Grid.Row="1" Grid.Column="0" Classes="StatisticPropertyBorder">
+                    <Grid Classes="CardBorderGrid" RowDefinitions="Auto, Auto, Auto">
+                        <TextBlock Classes="StatisticCardText" Text="Finished games count"></TextBlock>
+                        <Separator Grid.Row="1"></Separator>
+                        <TextBlock Grid.Row="2" Classes="StatisticCardText" Text="183"></TextBlock>
+                    </Grid>
+                </Border>
+                <Border Grid.Row="1" Grid.Column="1" Classes="StatisticPropertyBorder">
+                    <Grid Classes="CardBorderGrid" RowDefinitions="Auto, Auto, Auto">
+                        <TextBlock Classes="StatisticCardText" Text="Finished games count"></TextBlock>
+                        <Separator Grid.Row="1"></Separator>
+                        <TextBlock Grid.Row="2" Classes="StatisticCardText" Text="183"></TextBlock>
+                    </Grid>
+                </Border>
+                <Border Grid.Row="1" Grid.Column="2" Classes="StatisticPropertyBorder">
+                    <Grid Classes="CardBorderGrid" RowDefinitions="Auto, Auto, Auto">
+                        <TextBlock Classes="StatisticCardText" Text="Finished games count"></TextBlock>
+                        <Separator Grid.Row="1"></Separator>
+                        <TextBlock Grid.Row="2" Classes="StatisticCardText" Text="183"></TextBlock>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Grid>
+    </Border>
+    </Design.PreviewWith>
+    
     <!-- Container grid that holds statistic cards -->
     <Style Selector="Grid.CardContainer">
-        <!-- Base layout container for positioning cards -->
+        <Setter Property="ColumnSpacing" Value="15"/>
+        <Setter Property="Margin" Value="15, 15, 0, 0"/>
+        <Setter Property="RowSpacing" Value="15"/>
     </Style>
 
     <!-- Outer border of a single statistic card -->
     <Style Selector="Border.StatisticPropertyBorder">
         <!-- Transparent background, fixed size, rounded corners -->
-        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Background" Value="CadetBlue"/>
         <Setter Property="Width" Value="130"/>
         <Setter Property="Height" Value="100"/>
         <Setter Property="CornerRadius" Value="10"/>
@@ -30,6 +104,9 @@
         <Setter Property="HorizontalAlignment" Value="Center"/>
         <Setter Property="FontFamily" Value="{DynamicResource 'Anime Ace'}"/>
         <Setter Property="Foreground" Value="White"/>
+        <Setter Property="TextWrapping" Value="Wrap"></Setter>
+        <Setter Property="FontSize" Value="14"></Setter>
+        <Setter Property="TextAlignment" Value="Center"></Setter>
     </Style>
 
     <!-- Main statistics container -->
