@@ -38,7 +38,6 @@
             <ContentControl x:Name="StatisticContent" Width="700" Height="400"
                             Margin="0,15,0,0"
                             ></ContentControl>
-            
             <Border Grid.Column="1" Width="230" Height="280" DockPanel.Dock="Top" BorderThickness="0"
                     HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0, 20,15,0">
                 <Border.Background>
