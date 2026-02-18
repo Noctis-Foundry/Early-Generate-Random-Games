@@ -27,11 +27,11 @@ public class StatisticViewModel : ViewModelBase, IDisposable
 
         if (list is null || list.Count == 0)
             return;
-        
+
         grid.Children.Clear();
 
         int finishedGamesCount = list.Count(e => e.IsFinished);
-        
+
         FactoryNewCard(grid, new StatisticCardInfo("Games count", list.Count.ToString(), 0, 0));
         FactoryNewCard(grid, new StatisticCardInfo("Finished games count", finishedGamesCount.ToString(), 0, 1));
     }
@@ -43,36 +43,34 @@ public class StatisticViewModel : ViewModelBase, IDisposable
 
         Grid cardGrid = new Grid();
         cardGrid.RowDefinitions = new RowDefinitions("Auto, Auto, Auto");
-        cardGrid.ColumnDefinitions = new ColumnDefinitions("Auto, Auto");
         cardGrid.Classes.Add("CardBorderGrid");
-        
+
         cardBorder.Child = cardGrid;
-        
+
         TextBlock cardTitle = new TextBlock();
         cardTitle.Text = cardInfo.Title;
         cardTitle.Classes.Add("StatisticCardText");
         Grid.SetRow(cardTitle, 0);
         cardGrid.Children.Add(cardTitle);
-        
+
         Separator separator = new Separator();
         Grid.SetRow(separator, 1);
         cardGrid.Children.Add(separator);
-        
+
         TextBlock data = new TextBlock();
         data.Text = cardInfo.Data;
         data.Classes.Add("StatisticCardText");
         Grid.SetRow(data, 2);
         cardGrid.Children.Add(data);
-        
+
         Grid.SetRow(cardBorder, cardInfo.Row);
         Grid.SetColumn(cardBorder, cardInfo.Column);
         grid.Children.Add(cardBorder);
     }
-    
+
     public void Dispose()
     {
         _dbService = null;
-        
     }
 }
 
