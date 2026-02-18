@@ -18,6 +18,7 @@
     <Application.Styles>
         <FluentTheme />
         <StyleInclude Source="avares://GameRandom/Styles/StatisticStyle.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/Styles/CurrentGameStatusStyle.axaml"></StyleInclude>
         <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
         <StyleInclude Source="avares://GameRandom/Styles/ProfileDataGridStyle.axaml"></StyleInclude>
         <StyleInclude Source="avares://GameRandom/Styles/GlobalStyle.axaml"></StyleInclude>
