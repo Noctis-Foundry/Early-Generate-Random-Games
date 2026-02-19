@@ -150,7 +150,7 @@
                                                 BorderThickness="0,0,1,0"
                                                 Background="Transparent"
                                                 Padding="10">
-                                            <TextBlock Text="{Binding ClientId}"
+                                            <TextBlock Text="{Binding  PlayerID}"
                                                        FontSize="14" 
                                                        Foreground="White"
                                                        FontWeight="SemiBold"
@@ -163,7 +163,7 @@
                                                 BorderThickness="0,0,1,0"
                                                 Background="Transparent"
                                                 Padding="10">
-                                            <TextBlock Text="{Binding GameName}"
+                                            <TextBlock Text="{Binding AppName}"
                                                        FontSize="14" 
                                                        Foreground="White"
                                                        FontWeight="SemiBold"
@@ -189,7 +189,7 @@
                                                 BorderThickness="0,0,1,0"
                                                 Background="Transparent"
                                                 Padding="10">
-                                            <TextBlock Text="{Binding DataBegin}"
+                                            <TextBlock Text="{Binding BeginTime}"
                                                        FontSize="14" 
                                                        Foreground="White"
                                                        FontWeight="SemiBold"
@@ -202,7 +202,7 @@
                                                 BorderThickness="0"
                                                 Background="Transparent"
                                                 Padding="10">
-                                            <TextBlock Text="{Binding DataEnd}"
+                                            <TextBlock Text="{Binding EndTime}"
                                                        FontSize="14" 
                                                        Foreground="White"
                                                        FontWeight="SemiBold"

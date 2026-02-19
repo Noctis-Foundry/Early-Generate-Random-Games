@@ -90,7 +90,7 @@ public partial class GameTable : UserControl, IDisposable
         
         try
         {
-            var lobbyContexts = await _databaseService.Where<LobbyUserContext>(e => e.LobbyID == _userData.LobbyId);
+            var lobbyContexts = await _databaseService.Where<User>(e => e.LobbyID == _userData.LobbyId);
             var gameProgresses = await _databaseService.GetTableListAsync<GameProgress>();
             
             if (lobbyContexts == null || lobbyContexts.Count <= 0)
@@ -107,7 +107,7 @@ public partial class GameTable : UserControl, IDisposable
             
             foreach (var lobbyContext in lobbyContexts)
             {
-                finalyTable.AddRange(gameProgresses.Where(e => e.ClientId == lobbyContext.MemberID));
+                finalyTable.AddRange(gameProgresses.Where(e => e.PlayerID == lobbyContext.SteamID));
             }
             
             UpdateTable(finalyTable);

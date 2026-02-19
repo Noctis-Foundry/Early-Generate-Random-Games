@@ -68,7 +68,7 @@ public class MainWindowViewModel : ViewModelBase
         }
 
         var lobbyContexts =
-            await _databaseService.Where<LobbyUserContext>(e => e.LobbyID == _userData.LobbyId);
+            await _databaseService.Where<User>(e => e.LobbyID == _userData.LobbyId);
 
         if (lobbyContexts == null || lobbyContexts.Count == 0)
         {
@@ -82,7 +82,7 @@ public class MainWindowViewModel : ViewModelBase
         {
             try
             {
-                var profileContext = await _steamWebApi.GetUserData(lobbyContexts[i].MemberID);
+                var profileContext = await _steamWebApi.GetUserData(lobbyContexts[i].SteamID);
 
                 if (profileContext == null)
                 {
@@ -116,11 +116,11 @@ public class MainWindowViewModel : ViewModelBase
         _errorService.ShowErrorWindow("Open error modal", ErrorEnum.Warning);
     }
 
-    private async Task CreateAvatarsUi(List<LobbyUserContext> usersContext, Grid lobbyGrid)
+    private async Task CreateAvatarsUi(List<User> usersContext, Grid lobbyGrid)
     {
         for (int i = 0; i < usersContext.Count; i++)
         {
-            ulong memberId = usersContext[i].MemberID;
+            ulong memberId = usersContext[i].SteamID;
 
             Image avatar = _mainWindowFactory.CreateImageInGrid(lobbyGrid, i);
             Logger.Debug($"Current request user id {memberId}");
@@ -130,7 +130,7 @@ public class MainWindowViewModel : ViewModelBase
                 Logger.Error($"Failed to add avatar {memberId}. Avatar already exists");
             }
 
-            await LoadAvatars(usersContext[i].MemberID);
+            await LoadAvatars(usersContext[i].SteamID);
         }
     }
 

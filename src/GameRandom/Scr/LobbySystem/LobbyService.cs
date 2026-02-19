@@ -25,7 +25,7 @@ public class LobbyService
     public async Task StartApp()
     {
         var lobbyContexts = await CheckCurrentConnectionOnLobby();
-        var userLobbyCtx = lobbyContexts.FirstOrDefault(e => e.MemberID == _userData.ClientId.m_SteamID);
+        var userLobbyCtx = lobbyContexts.FirstOrDefault(e => e.SteamID == _userData.ClientId.m_SteamID);
 
         if (userLobbyCtx == null)
         {
@@ -36,7 +36,7 @@ public class LobbyService
         _userData.SetLobbyId(userLobbyCtx.LobbyID);
         _userData.SetLobbyContext(userLobbyCtx);
         
-        SendLobbyEvent(await _databaseService.Where<LobbyUserContext>(e => e.LobbyID == userLobbyCtx.LobbyID));
+        SendLobbyEvent(await _databaseService.Where<User>(e => e.LobbyID == userLobbyCtx.LobbyID));
     }
     public async Task CreateLobby()
     {
@@ -57,10 +57,10 @@ public class LobbyService
         Random rnd = new Random();
         long lobbyId = rnd.NextInt64(0, long.MaxValue);
 
-        var isAddNewLobby = await _databaseService.AddItemAsync(new Lobbies
+        var isAddNewLobby = await _databaseService.AddItemAsync(new Lobby
         {
             LobbyID = lobbyId,
-            MemberCount = 1
+            MembersCount = 1
         });
 
         if (!isAddNewLobby)
@@ -71,7 +71,7 @@ public class LobbyService
         }
         
         _userData.SetLobbyId(lobbyId);
-        (bool isAdded, LobbyUserContext lobbyContext) = await AddNewUser(lobbyId, _userData.ClientId);
+        (bool isAdded, User lobbyContext) = await AddNewUser(lobbyId, _userData.ClientId);
         
         if (!isAdded)
         {
@@ -96,7 +96,7 @@ public class LobbyService
             await DisconnectFromLobby();
         }
         
-        var lobbyList = await _databaseService.GetTableListAsync<Lobbies>();
+        var lobbyList = await _databaseService.GetTableListAsync<Lobby>();
 
         if (lobbyList == null)
         {
@@ -104,7 +104,7 @@ public class LobbyService
             return;
         }
         
-        Lobbies? lobby = CheckLobby(lobbyList, lobbyId);
+        Lobby? lobby = CheckLobby(lobbyList, lobbyId);
 
         if (lobby == null)
         {
@@ -115,11 +115,11 @@ public class LobbyService
         var cSteamId = SteamManager.GetSteamManager().GetSteamId();
 
         _userData.SetLobbyId(lobbyId);
-        (bool isAdded, LobbyUserContext lobbyContext) = await AddNewUser(lobbyId, cSteamId);
+        (bool isAdded, User lobbyContext) = await AddNewUser(lobbyId, cSteamId);
 
         if (isAdded)
         {
-            lobby.MemberCount++;
+            lobby.MembersCount++;
             await _databaseService.UpdateAsync(lobby);
             Logger.Debug($"User {cSteamId.m_SteamID} joined the lobby {lobbyId}");
             _userData.SetLobbyContext(lobbyContext);
@@ -130,7 +130,7 @@ public class LobbyService
         if (_userData.LobbyId == 0 || _userData.CurrentLobbyContext == null)
             return;
         
-        var currentLobbyData = await _databaseService.Where<Lobbies>(e => e.LobbyID == _userData.LobbyId);
+        var currentLobbyData = await _databaseService.Where<Lobby>(e => e.LobbyID == _userData.LobbyId);
 
         if (IsEmpty(currentLobbyData))
         {
@@ -138,7 +138,7 @@ public class LobbyService
             return;
         }
 
-        var isDeleted = await _databaseService.DeleteItemAsync<LobbyUserContext>(_userData.CurrentLobbyContext);
+        var isDeleted = await _databaseService.DeleteItemAsync<User>(_userData.CurrentLobbyContext);
 
         if (isDeleted)
         {
@@ -146,9 +146,9 @@ public class LobbyService
 
             if (ctx == null) return;
 
-            ctx.MemberCount--;
+            ctx.MembersCount--;
 
-            if (ctx.MemberCount <= 0)
+            if (ctx.MembersCount <= 0)
             {
                 _errorService.ShowErrorWindow("No member in lobby. Deleting lobby from database", ErrorEnum.Message);
                 await _databaseService.DeleteItemAsync(ctx);
@@ -158,21 +158,21 @@ public class LobbyService
             await _databaseService.UpdateAsync(ctx);
         }
     }
-    private async Task<(bool, LobbyUserContext)> AddNewUser(long lobbyId, CSteamID cSteamId)
+    private async Task<(bool, User)> AddNewUser(long lobbyId, CSteamID cSteamId)
     {
-        var lobbyContext = new LobbyUserContext
+        var lobbyContext = new User
         {
-            LobbyID = lobbyId,
-            MemberID = cSteamId.m_SteamID,
-            NickName = SteamFriends.GetPersonaName(),
-            PlayerIcon = SteamFriends.GetLargeFriendAvatar(cSteamId)
+            LobbyID = lobbyId, 
+            SteamID = cSteamId.m_SteamID,
+            Nickname = SteamFriends.GetPersonaName(),
+            AvatarURL = SteamFriends.GetLargeFriendAvatar(cSteamId)
         };
 
         bool isAddNewUserToLobby = await _databaseService.AddItemAsync(lobbyContext);
 
         return (isAddNewUserToLobby, lobbyContext);
     }
-    private Lobbies? CheckLobby(List<Lobbies> lobbies, long lobbyId)
+    private Lobby? CheckLobby(List<Lobby> lobbies, long lobbyId)
     {
         foreach (var lobby in lobbies)
         {
@@ -182,7 +182,7 @@ public class LobbyService
         
         return null;
     }
-    private void SendLobbyEvent(List<LobbyUserContext>? lobbies)
+    private void SendLobbyEvent(List<User>? lobbies)
     {
         if (IsEmpty(lobbies))
         {
@@ -192,11 +192,11 @@ public class LobbyService
         
         _eventBus.Publish(new LobbyUpdate(lobbies));
     }
-    private async Task<List<LobbyUserContext>?> CheckCurrentConnectionOnLobby()
+    private async Task<List<User>?> CheckCurrentConnectionOnLobby()
     {
         ulong clientId = _userData.ClientId.m_SteamID;
 
-        var lobbyContext = await _databaseService.Where<LobbyUserContext>(e => e.MemberID == clientId);
+        var lobbyContext = await _databaseService.Where<User>(e => e.SteamID == clientId);
         return lobbyContext;
     }
     private bool IsEmpty<T>(List<T>? list)

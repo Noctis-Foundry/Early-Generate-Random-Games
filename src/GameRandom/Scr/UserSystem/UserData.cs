@@ -9,7 +9,7 @@ public class UserData
 {
     private long _lobbyId;
     public CSteamID ClientId { get; private set; }
-    public LobbyUserContext? CurrentLobbyContext { get; private set; }
+    public User? CurrentLobbyContext { get; private set; }
     public long LobbyId
     {
         get => _lobbyId;
@@ -35,7 +35,7 @@ public class UserData
         LobbyId = lobbyId;
     }
 
-    public void SetLobbyContext(LobbyUserContext lobbyContext)
+    public void SetLobbyContext(User lobbyContext)
     {
         CurrentLobbyContext = lobbyContext;
     }

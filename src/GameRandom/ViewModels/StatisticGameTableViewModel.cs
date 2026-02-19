@@ -63,7 +63,7 @@ public class StatisticGameTableViewModel : ViewModelBase
     /// <returns></returns>
     private List<ProfileTableData>? ToPlayerTableData(List<GameProgress> gameProgress, ulong userId)
     {
-        var list = gameProgress.Where(e => e.ClientId == userId).ToList();
+        var list = gameProgress.Where(e => e.PlayerID == userId).ToList();
 
         if (list.Count == 0)
             return null;
@@ -72,7 +72,7 @@ public class StatisticGameTableViewModel : ViewModelBase
 
         for (int i = 0; i < list.Count; i++)
         {
-            playerTable.Add(new ProfileTableData(list[i].GameName, list[i].DataBegin, list[i].DataEnd));
+            playerTable.Add(new ProfileTableData(list[i].AppName, list[i].BeginTime.ToString("yy-MM-dd"), list[i].EndTime.ToString("yy-MM-dd")));
         }
         
         return playerTable;

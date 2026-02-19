@@ -115,9 +115,9 @@ public partial class MainWindow : Window
     {
         var dbContext = new AppDbContext();
         
-        foreach (var item in dbContext.LobbyUserContext.ToList())
+        foreach (var item in dbContext.Users.ToList())
         {
-            dbContext.LobbyUserContext.Remove(item);
+            dbContext.Users.Remove(item);
         }
         foreach (var item in dbContext.Lobbies.ToList())
         {

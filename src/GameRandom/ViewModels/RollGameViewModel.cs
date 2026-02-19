@@ -26,15 +26,16 @@ public class RollGameViewModel : ViewModelBase
         {
             GameProgress gameProgress = new GameProgress
             {
-                ClientId = instance.GetSteamId().m_SteamID,
-                DataBegin = $"{date:yy-MM-dd}",
-                DataEnd = $"{endDate:yy-MM-dd}",
-                GameName = savedContext.AppName,
+                AppID = savedContext.AppId,
+                PlayerID = instance.GetSteamId().m_SteamID,
+                BeginTime = date,
+                EndTime = endDate,
+                AppName = savedContext.AppName,
                 Comment = "Empty",
                 IsFinished = false,
             };
             
-            db.GameProgress.Add(gameProgress);
+            db.GameProgresses.Add(gameProgress);
             await db.SaveChangesAsync();
 
             Process.Start(new ProcessStartInfo

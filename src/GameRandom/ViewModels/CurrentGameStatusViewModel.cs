@@ -1,3 +1,4 @@
+using System;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Service;
 
@@ -7,7 +8,7 @@ public class CurrentGameStatusViewModel : ViewModelBase
 {
     [Inject] private DatabaseService? database = null!;
 
-    public void LoadInfo(int appId)
+    public void LoadInfo()
     {
         
     }
