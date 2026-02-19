@@ -26,6 +26,10 @@ public partial class GamesTableWindow : Window
 
     protected override void OnClosed(EventArgs e)
     {
+        Console.WriteLine("Window is closing");
+        
+        Close();
+        
         base.OnClosed(e);
         
         if (DataContext is StatisticGameTableViewModel statisticGameTableViewModel)
