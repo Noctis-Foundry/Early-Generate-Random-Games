@@ -81,39 +81,58 @@ public partial class GameTable : UserControl, IDisposable
             return;
         }
 
-        var finalyTable = new List<GameProgress>();
+        var finallyList = new List<GameProgresses>();
         
         try
         {
-            var lobbyContexts = await _databaseService.Where<User>(e => e.LobbyID == _userData.LobbyId);
-            var gameProgresses = await _databaseService.GetTableListAsync<GameProgress>();
-            
-            if (lobbyContexts == null || lobbyContexts.Count <= 0)
+            var userInfo = await User.GetInstance().GetUserInfo();
+
+            if (userInfo is null)
             {
-                _errorService.ShowErrorWindow($"Not founded lobby members with lobby id {_userData.LobbyId}", ErrorEnum.Error);
+                _errorService.ShowErrorWindow("Not founded user info. Wait loading and restart task", ErrorEnum.Error);
                 return;
             }
 
-            if (gameProgresses == null || gameProgresses.Count <= 0)
+            var gameList = await _databaseService.GetTableListAsync<GameProgresses>();
+
+            if (gameList is null)
             {
-                _errorService.ShowErrorWindow($"Not founded started game with lobby id {_userData.LobbyId}", ErrorEnum.Error);
+                _errorService.ShowErrorWindow("Not founded games", ErrorEnum.Error);
                 return;
             }
-            
-            foreach (var lobbyContext in lobbyContexts)
+
+            if (userInfo.LobbyID <= 0)
+                finallyList = gameList.Where(x => x.PlayerID == userInfo.SteamID).ToList();
+            else
             {
-                finalyTable.AddRange(gameProgresses.Where(e => e.PlayerID == lobbyContext.SteamID));
+                Lobbies? lobbies = await _databaseService.GetLobbyById(userInfo.LobbyID);
+
+                if (lobbies is null)
+                {
+                    _errorService.ShowErrorWindow($"Failed find lobby with id {userInfo.LobbyID} in db", ErrorEnum.Error);
+                    bool isUpdating = await User.GetInstance().UpdateLobbyId(-1);
+
+                    if (!isUpdating)
+                    {
+                        _errorService.ShowErrorWindow("Failed updating lobby id for user in database", ErrorEnum.Error);
+                        return;
+                    }
+                }
+                
+                //Testing for game table TODO delete this code block and change to get lobby game progresses
+                finallyList = gameList.Where(x => x.PlayerID == userInfo.SteamID).ToList();
             }
             
-            UpdateTable(finalyTable);
+            UpdateTable(finallyList);
         }
-        catch (Exception ex)
+        catch (Exception e)
         {
-            _errorService.ShowErrorWindow(ex + " Failed to load GameTable", ErrorEnum.Error);
+            _errorService.ShowErrorWindow($"An error occured while updating GameTable + {e.Message}", ErrorEnum.Error);
+            return;
         }
     }
     
-    private void UpdateTable(List<GameProgress> gameProgress)
+    private void UpdateTable(List<GameProgresses> gameProgress)
     {
         if (DataContext is GameTableViewModel viewModel)
             viewModel.GameProgress = _converter.ToObservableCollection(gameProgress);
