@@ -5,9 +5,9 @@ namespace GameRandom.Events;
 
 public class LobbyUpdate
 {
-    public List<User>? LobbyMembers;
+    public List<Users>? LobbyMembers;
 
-    public LobbyUpdate(List<User>? lobbyMembers)
+    public LobbyUpdate(List<Users>? lobbyMembers)
     {
         LobbyMembers = lobbyMembers;
     }
