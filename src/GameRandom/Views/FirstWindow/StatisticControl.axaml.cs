@@ -19,8 +19,6 @@ public partial class StatisticControl : UserControl
 
         if (Design.IsDesignMode)
             return;
-        
-        _gameTableWindow = new GamesTableWindow();
     }
 
     public void Open()
@@ -37,6 +35,8 @@ public partial class StatisticControl : UserControl
 
     private void OpenTable(object? sender, RoutedEventArgs e)
     {
+        _gameTableWindow = new GamesTableWindow();
+        
         if (_gameTableWindow is null)
         {
             Console.WriteLine("Statistic Control: error for open table window. Element is null");
