@@ -22,7 +22,7 @@ namespace GameRandom.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("GameRandom.DataBaseContexts.GameProgress", b =>
+            modelBuilder.Entity("GameRandom.DataBaseContexts.GameProgresses", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -60,7 +60,7 @@ namespace GameRandom.Migrations
                     b.ToTable("GameProgresses");
                 });
 
-            modelBuilder.Entity("GameRandom.DataBaseContexts.Lobby", b =>
+            modelBuilder.Entity("GameRandom.DataBaseContexts.Lobbies", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -68,7 +68,7 @@ namespace GameRandom.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
 
-                    b.Property<long>("LobbyID")
+                    b.Property<long>("LobbyId")
                         .HasColumnType("bigint");
 
                     b.Property<int>("MembersCount")
@@ -79,30 +79,25 @@ namespace GameRandom.Migrations
                     b.ToTable("Lobbies");
                 });
 
-            modelBuilder.Entity("GameRandom.DataBaseContexts.User", b =>
+            modelBuilder.Entity("GameRandom.DataBaseContexts.LobbyData", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AvatarURL")
-                        .HasColumnType("integer");
-
-                    b.Property<long>("LobbyID")
+                    b.Property<long>("LobbyId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("Nickname")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<decimal>("SteamID")
+                    b.Property<decimal>("UserId")
                         .HasColumnType("numeric(20,0)");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.HasIndex("LobbyId");
+
+                    b.ToTable("LobbyData");
                 });
 
             modelBuilder.Entity("GameRandom.DataBaseContexts.UserGame", b =>
@@ -140,15 +135,56 @@ namespace GameRandom.Migrations
                     b.ToTable("UserGames");
                 });
 
+            modelBuilder.Entity("GameRandom.DataBaseContexts.Users", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
+
+                    b.Property<int>("AvatarURL")
+                        .HasColumnType("integer");
+
+                    b.Property<long>("LobbyID")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Nickname")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<decimal>("SteamID")
+                        .HasColumnType("numeric(20,0)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("GameRandom.DataBaseContexts.LobbyData", b =>
+                {
+                    b.HasOne("GameRandom.DataBaseContexts.Lobbies", null)
+                        .WithMany("LobbyData")
+                        .HasForeignKey("LobbyId")
+                        .HasPrincipalKey("LobbyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("GameRandom.DataBaseContexts.UserGame", b =>
                 {
-                    b.HasOne("GameRandom.DataBaseContexts.GameProgress", "GameProgress")
+                    b.HasOne("GameRandom.DataBaseContexts.GameProgresses", "GameProgresses")
                         .WithOne()
                         .HasForeignKey("GameRandom.DataBaseContexts.UserGame", "GameID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("GameProgress");
+                    b.Navigation("GameProgresses");
+                });
+
+            modelBuilder.Entity("GameRandom.DataBaseContexts.Lobbies", b =>
+                {
+                    b.Navigation("LobbyData");
                 });
 #pragma warning restore 612, 618
         }
