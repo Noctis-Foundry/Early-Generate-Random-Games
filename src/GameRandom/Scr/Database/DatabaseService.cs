@@ -152,4 +152,22 @@ public class DatabaseService : IDatabaseService
             return null;
         }
     }
+
+    public async Task<Users?> GetUserByUlongId(ulong steamId)
+    {
+        await using var appDb = new AppDbContext();
+        Users? user = await appDb.Users.FirstOrDefaultAsync(u => u.SteamID == steamId);
+
+        return user ?? null;
+    }
+
+    public async Task<Lobbies?> GetLobbyById(long lobbyId)
+    {
+        await using var appDb = new AppDbContext();
+        Lobbies? lobby = await appDb.Lobbies
+            .Include(l => l.LobbyData)
+            .FirstOrDefaultAsync(l => l.LobbyId == lobbyId);
+        
+        return lobby ?? null;
+    }
 }
