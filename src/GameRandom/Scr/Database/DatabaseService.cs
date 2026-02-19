@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GameRandom.DataBaseContexts;
 using Microsoft.EntityFrameworkCore;
+using Steamworks;
 
 namespace GameRandom.Scr.Service;
 
@@ -134,14 +135,14 @@ public class DatabaseService : IDatabaseService
         {
             await using var appDb = new AppDbContext();
             UserGame? game = await appDb.UserGames
-                .Include(ug => ug.GameProgress).FirstOrDefaultAsync(e => e.GameID == appId);
+                .Include(ug => ug.GameProgresses).FirstOrDefaultAsync(e => e.GameID == appId);
 
             if (game is null)
                 return null;
 
-            game.AppName = game.GameProgress.AppName;
-            game.BeginData = game.GameProgress.BeginTime;
-            game.EndData = game.GameProgress.EndTime;
+            game.AppName = game.GameProgresses.AppName;
+            game.BeginData = game.GameProgresses.BeginTime;
+            game.EndData = game.GameProgresses.EndTime;
 
             return game;
         }

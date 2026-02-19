@@ -32,7 +32,7 @@ public class StatisticGameTableViewModel : ViewModelBase
         Di.Container.ResolveFieldsFromClassInstance(this);
         ulong userId = SteamManager.GetSteamManager().GetSteamId().m_SteamID;
         
-        var list = await _database.GetTableListAsync<GameProgress>();
+        var list = await _database.GetTableListAsync<GameProgresses>();
 
         if (list == null || list.Count == 0)
         {
@@ -61,7 +61,7 @@ public class StatisticGameTableViewModel : ViewModelBase
     /// <param name="gameProgress">List with all games</param>
     /// <param name="userId">Steam client id</param>
     /// <returns></returns>
-    private List<ProfileTableData>? ToPlayerTableData(List<GameProgress> gameProgress, ulong userId)
+    private List<ProfileTableData>? ToPlayerTableData(List<GameProgresses> gameProgress, ulong userId)
     {
         var list = gameProgress.Where(e => e.PlayerID == userId).ToList();
 

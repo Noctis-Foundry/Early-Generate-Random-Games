@@ -24,7 +24,7 @@ public class RollGameViewModel : ViewModelBase
         
         await using (var db = new AppDbContext())
         {
-            GameProgress gameProgress = new GameProgress
+            GameProgresses gameProgresses = new GameProgresses
             {
                 AppID = savedContext.AppId,
                 PlayerID = instance.GetSteamId().m_SteamID,
@@ -35,7 +35,7 @@ public class RollGameViewModel : ViewModelBase
                 IsFinished = false,
             };
             
-            db.GameProgresses.Add(gameProgress);
+            db.GameProgresses.Add(gameProgresses);
             await db.SaveChangesAsync();
 
             Process.Start(new ProcessStartInfo

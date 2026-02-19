@@ -6,9 +6,9 @@ namespace GameRandom.ViewModels;
 
 public class GameTableViewModel : ViewModelBase
 {
-    private ObservableCollection<GameProgress> _gameProgress;
+    private ObservableCollection<GameProgresses> _gameProgress;
     
-    public ObservableCollection<GameProgress> GameProgress
+    public ObservableCollection<GameProgresses> GameProgress
     {
         get => _gameProgress;
         set => SetProperty(ref _gameProgress, value);

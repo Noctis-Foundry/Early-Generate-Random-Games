@@ -22,7 +22,7 @@ public class StatisticViewModel : ViewModelBase, IDisposable
         if (_dbService == null)
             return;
 
-        var list = await _dbService.Where<GameProgress>(e =>
+        var list = await _dbService.Where<GameProgresses>(e =>
             e.PlayerID == SteamManager.GetSteamManager().GetSteamId().m_SteamID);
 
         if (list is null || list.Count == 0)

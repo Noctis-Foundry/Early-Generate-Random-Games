@@ -12,7 +12,6 @@ using GameRandom.Scr.WindowScr;
 using GameRandom.Service;
 using GameRandom.SteamSDK;
 using GameRandom.SteamSDK.Enums;
-using GameRandom.SteamSDK.UserSystem;
 using GameRandom.Views;
 using GameRandom.Views.LobbyModalWindow;
 
@@ -22,7 +21,6 @@ public class MainWindowViewModel : ViewModelBase
 {
     [Inject] private readonly MainWindowFactory _mainWindowFactory = null!;
     [Inject] private readonly SteamWebApi _steamWebApi = null!;
-    [Inject] private readonly UserData _userData = null!;
     [Inject] private readonly DatabaseService _databaseService = null!;
     [Inject] private readonly ErrorService _errorService = null!;
 
@@ -51,13 +49,7 @@ public class MainWindowViewModel : ViewModelBase
             _errorService.ShowErrorWindow("Not initialized MainWindowViewModel, Cant update lobby", ErrorEnum.Error);
             return;
         }
-
-        if (_userData.LobbyId == 0)
-        {
-            _errorService.ShowErrorWindow("Not fount user data", ErrorEnum.Warning);
-            return;
-        }
-
+        
         lobbyGrid.Children.Clear();
         _avatars.Clear();
 
@@ -67,12 +59,20 @@ public class MainWindowViewModel : ViewModelBase
             return;
         }
 
+        var userData = await _databaseService.GetUserByUlongId(SteamManager.GetSteamIdAsLong());
+
+        if (userData is null)
+        {
+            Console.WriteLine("Not find user in database");
+            return;
+        }
+        
         var lobbyContexts =
-            await _databaseService.Where<User>(e => e.LobbyID == _userData.LobbyId);
+            await _databaseService.Where<Users>(e => e.LobbyID == userData.LobbyID);
 
         if (lobbyContexts == null || lobbyContexts.Count == 0)
         {
-            _errorService.ShowErrorWindow($"No lobby context found with {_userData.LobbyId}", ErrorEnum.Error);
+            _errorService.ShowErrorWindow($"No lobby context found with {userData.LobbyID}", ErrorEnum.Error);
             return;
         }
 
@@ -114,42 +114,5 @@ public class MainWindowViewModel : ViewModelBase
     public void ShowError()
     {
         _errorService.ShowErrorWindow("Open error modal", ErrorEnum.Warning);
-    }
-
-    private async Task CreateAvatarsUi(List<User> usersContext, Grid lobbyGrid)
-    {
-        for (int i = 0; i < usersContext.Count; i++)
-        {
-            ulong memberId = usersContext[i].SteamID;
-
-            Image avatar = _mainWindowFactory.CreateImageInGrid(lobbyGrid, i);
-            Logger.Debug($"Current request user id {memberId}");
-
-            if (!_avatars.TryAdd(memberId, avatar))
-            {
-                Logger.Error($"Failed to add avatar {memberId}. Avatar already exists");
-            }
-
-            await LoadAvatars(usersContext[i].SteamID);
-        }
-    }
-
-    private async Task LoadAvatars(ulong id)
-    {
-        Logger.Debug("Current on persona state: " + id);
-
-        if (_avatars.TryGetValue(id, out var image))
-        {
-            var userData = await _steamWebApi.GetUserData(id);
-
-            if (userData == null)
-            {
-                Logger.Error("Steam not callback player data");
-                return;
-            }
-
-            Bitmap? avatar = await SteamService.Instance.GetImage(userData.avatarUrl);
-            image.Source = avatar;
-        }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,15 +7,12 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using GameRandom.DataBaseContexts;
-using GameRandom.Events;
 using GameRandom.Scr.DI;
-using GameRandom.Scr.Events;
 using GameRandom.Scr.Service;
 using GameRandom.SteamSDK;
 using GameRandom.SteamSDK.Enums;
-using GameRandom.SteamSDK.UserSystem;
+using GameRandom.SteamSDK.UserData;
 using GameRandom.ViewModels;
-using Microsoft.EntityFrameworkCore;
 
 namespace GameRandom.Views;
 
@@ -25,7 +21,6 @@ public partial class GameTable : UserControl, IDisposable
     [Inject] private DatabaseService _databaseService = null!;
     [Inject] private ObservableConverter _converter = null!;
     [Inject] private ErrorService _errorService = null!;
-    [Inject] private UserData _userData = null!;
     
     private readonly CancellationTokenSource _cts = new();
     
@@ -61,7 +56,7 @@ public partial class GameTable : UserControl, IDisposable
     {
         try
         {
-            var gameProgresses = await _databaseService.GetTableListAsync<GameProgress>();
+            var gameProgresses = await _databaseService.GetTableListAsync<GameProgresses>();
             await Dispatcher.UIThread.InvokeAsync(() => UpdateTable(gameProgresses));
         }
         catch (Exception e)
@@ -138,7 +133,6 @@ public partial class GameTable : UserControl, IDisposable
         _databaseService = null!;
         _errorService = null!;
         _converter = null!;
-        _userData = null!;
         
         _cts.Cancel();
         _cts.Dispose();

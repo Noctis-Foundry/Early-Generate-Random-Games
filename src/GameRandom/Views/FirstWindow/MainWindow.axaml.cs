@@ -111,21 +111,4 @@ public partial class MainWindow : Window
             throw new Exception("Window not found");
     }
     
-    private async Task TestingDeleteLobbyMembers()
-    {
-        var dbContext = new AppDbContext();
-        
-        foreach (var item in dbContext.Users.ToList())
-        {
-            dbContext.Users.Remove(item);
-        }
-        foreach (var item in dbContext.Lobbies.ToList())
-        {
-            dbContext.Lobbies.Remove(item);
-        }
-        
-        await dbContext.SaveChangesAsync();
-    }
-
-  
 }

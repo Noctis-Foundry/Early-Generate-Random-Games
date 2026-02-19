@@ -1,12 +1,17 @@
 ﻿using System;
+using System.Threading.Tasks;
+using Avalonia.Threading;
+using GameRandom.DataBaseContexts;
 using GameRandom.Scr.DI;
-using GameRandom.SteamSDK.UserSystem;
+using GameRandom.Scr.Service;
+using GameRandom.SteamSDK;
 
 namespace GameRandom.ViewModels;
 
 public class CreateLobbyViewModel : ViewModelBase
 {
-    [Inject] private UserData? _userData;
+    [Inject] private DatabaseService? _databaseService = null!;
+    
     private const string DefaultIdMessage = "No find lobby id";
 
     private string _currentLobbyId;
@@ -20,22 +25,22 @@ public class CreateLobbyViewModel : ViewModelBase
     public CreateLobbyViewModel()
     {
         Di.Container.ResolveFieldsFromClassInstance(this);
-
-        if (_userData == null)
-            throw new Exception("UserData is null");
-        
-        _userData?.LobbyIdUpdated += GetCurrentId;
         GetCurrentId();
     }
     
     private void GetCurrentId()
     {
-        if (_userData == null || _userData.LobbyId == 0)
+        Dispatcher.UIThread.InvokeAsync(async () =>
         {
-            CurrentLobbyID = DefaultIdMessage;
-            return;
-        }
+            if (_databaseService is null)
+                return;
 
-        CurrentLobbyID = _userData.LobbyId.ToString();
+            Users? user = await _databaseService.GetUserByUlongId(SteamManager.GetSteamIdAsLong());
+
+            if (user is null)
+                throw new ArgumentNullException(nameof(user));
+
+            CurrentLobbyID = user.LobbyID > 0 ? user.LobbyID.ToString() : DefaultIdMessage;
+        });
     }
 }

@@ -5,9 +5,9 @@ namespace GameRandom.Events;
 
 public class UpdateTableEvent
 {
-    public List<GameProgress> GameProgress;
+    public List<GameProgresses> GameProgress;
     
-    public UpdateTableEvent( List<GameProgress> gameProgress)
+    public UpdateTableEvent( List<GameProgresses> gameProgress)
     {
         GameProgress = gameProgress;
     }
