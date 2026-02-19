@@ -1,14 +1,15 @@
 ﻿using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace GameRandom.DataBaseContexts;
 
 public class AppDbContext : DbContext
 {
-    public DbSet<Users> Users { get; set; }
-    public DbSet<LobbyUserContext> LobbyUserContext { get; set; }
-    public DbSet<GameProgress> GameProgress { get; set; }
-    public DbSet<Lobbies> Lobbies { get; set; }
+    public DbSet<User> Users { get; set; }
+    public DbSet<Lobby> Lobbies { get; set; }
+    public DbSet<GameProgress> GameProgresses { get; set; }
+    public DbSet<UserGame> UserGames { get; set; }
     
     public const string HostPath = "Host=80.93.62.153;Database=steamdata;Username=users;Password=ninokuriko212410";
 
@@ -16,39 +17,55 @@ public class AppDbContext : DbContext
     {
         optionsBuilder.UseNpgsql(HostPath);
     }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<UserGame>().HasOne(u => u.GameProgress).WithOne()
+            .HasForeignKey<UserGame>(gp => gp.GameID);
+    }
 }
 
-public class Users
+public class User
 {
-    public int Id { get; set; }
-    public ulong ClientID { get; set; }
-    public string Username { get; set; }
-}
-
-public class LobbyUserContext
-{
-    public int Id { get; set; }
+    public int ID { get; set; }
+    public ulong SteamID { get; set; }
     public long LobbyID { get; set; }
-    public ulong MemberID { get; set; }
-    public string NickName { get; set; }
-    public int PlayerIcon { get; set; }
+    public string Nickname { get; set; }
+    public int AvatarURL { get; set; }
 }
 
-public class Lobbies
+public class Lobby
 {
-    public int Id { get; set; }
+    public int ID { get; set; }
     public long LobbyID { get; set; }
-    public int MemberCount { get; set; }
+    public int MembersCount { get; set; }
 }
 
 public class GameProgress
 {
-    public int Id { get; set; }
-    public ulong ClientId { get; set; }
-    public string GameName { get; set; }
-    public int Grade {get; set;}
+    public int ID { get; set; }
+    public int AppID { get; set; }
+    public ulong PlayerID { get; set; }
+    public string AppName { get; set; }
     public string? Comment { get; set; }
-    public string DataBegin { get; set; }
-    public string DataEnd { get; set; }
+    public int Grade { get; set; }
+    public DateTime BeginTime { get; set; }
+    public DateTime EndTime { get; set; }
     public bool IsFinished { get; set; }
 }
+
+public class UserGame
+{
+    public int ID { get; set; }
+    public bool IsHaveGame { get; set; }
+    public int GameID { get; set; }                  // FK → GameProgress.ID
+    public string AppName { get; set; }              // ← GameProgress.AppName
+    public int LeftDays { get; set; }
+    public DateTime? BeginData { get; set; }          // ← GameProgress.BeginTime
+    public DateTime? EndData { get; set; }            // ← GameProgress.EndTime
+
+    public GameProgress GameProgress { get; set; }   // Navigation property
+}
+
+
+
