@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net.Http;
-using System.Text.Json;
-using System.Threading.Tasks;
-using System.Timers;
+using System.Linq;
 using Avalonia.Threading;
-using GameRandom.Scr.DI;
 using GameRandom.Scr.Service;
-using GameRandom.SteamSDK.Enums;
-using GameRandom.SteamSDK.UserSystem;
 using Steamworks;
+using System.Threading.Tasks;
+using GameRandom.DataBaseContexts;
+using GameRandom.SteamSDK.UserData;
 
 namespace GameRandom.SteamSDK;
 
@@ -45,23 +40,15 @@ public class SteamManager
         StartEventTimer();
         _isInitialized = true;
 
-        InitializeUser();
+        Task.Run(async () => await User.GetInstance().InitializeUser());
     }
-
+    
     private void StartEventTimer()
     {
         _steamCallbackTimer = new DispatcherTimer();
         _steamCallbackTimer.Interval = TimeSpan.FromMilliseconds(10);
         _steamCallbackTimer.Tick += (sender, args) => SteamAPI.RunCallbacks();
         _steamCallbackTimer.Start();
-    }
-
-    private void InitializeUser()
-    {
-        var playerId = GetSteamId();
-
-        var userData = new UserData(playerId);
-        Di.Container.RegisterSingleInstance(userData);
     }
 
     public void ShutdownSteam()
@@ -74,7 +61,7 @@ public class SteamManager
 
         Console.WriteLine("SteamAPI.Shutdown() finished");
     }
-
+    
     public CSteamID GetSteamId()
     {
         if (!_isInitialized)
@@ -89,5 +76,10 @@ public class SteamManager
             throw new Exception("failed to get SteamManager");
 
         return _instance;
+    }
+    
+    public static ulong GetSteamIdAsLong()
+    {
+        return GetSteamManager().GetSteamId().m_SteamID;
     }
 }
