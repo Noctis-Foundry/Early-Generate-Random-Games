@@ -127,4 +127,28 @@ public class DatabaseService : IDatabaseService
             return null;
         }
     }
+
+    public async Task<UserGame?> GetUserGameByAppId(int appId)
+    {
+        try
+        {
+            await using var appDb = new AppDbContext();
+            UserGame? game = await appDb.UserGames
+                .Include(ug => ug.GameProgress).FirstOrDefaultAsync(e => e.GameID == appId);
+
+            if (game is null)
+                return null;
+
+            game.AppName = game.GameProgress.AppName;
+            game.BeginData = game.GameProgress.BeginTime;
+            game.EndData = game.GameProgress.EndTime;
+
+            return game;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return null;
+        }
+    }
 }
