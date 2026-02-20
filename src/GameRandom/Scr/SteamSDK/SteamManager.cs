@@ -12,16 +12,13 @@ namespace GameRandom.SteamSDK;
 public class SteamManager
 {
     private const int MaxTryToConnect = 6;
-    private static SteamManager? _instance;
+    private static Lazy<SteamManager> _instance = new (() => new SteamManager());
     private bool _isInitialized = false;
 
     private DispatcherTimer? _steamCallbackTimer;
 
-    public SteamManager()
-    {
-        _instance = this;
-    }
-
+    private SteamManager() {}
+    
     public void InitSteam()
     {
         if (_isInitialized)
@@ -39,10 +36,7 @@ public class SteamManager
         
         StartEventTimer();
         _isInitialized = true;
-
-        Task.Run(async () => await User.GetInstance().InitializeUser());
     }
-    
     private void StartEventTimer()
     {
         _steamCallbackTimer = new DispatcherTimer();
@@ -75,7 +69,7 @@ public class SteamManager
         if (_instance == null)
             throw new Exception("failed to get SteamManager");
 
-        return _instance;
+        return _instance.Value;
     }
     
     public static ulong GetSteamIdAsLong()
