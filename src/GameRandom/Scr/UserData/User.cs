@@ -1,43 +1,69 @@
+using System;
 using System.Linq;
 using GameRandom.DataBaseContexts;
 using System.Threading.Tasks;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Service;
+using Microsoft.EntityFrameworkCore;
 using Steamworks;
 
 namespace GameRandom.SteamSDK.UserData;
 
 public class User
 {
-    private static User _userInstance = new User();
+    [Inject] private DatabaseService? _databaseService;
+
+    private static Lazy<User> _userInstance = new (() => new User());
+    public static User GetInstance() => _userInstance.Value;
+
+    private bool isInitialized = false;
     
-    public static User GetInstance() => _userInstance;
+    private User()
+    {
+        
+    }
 
     private Users? _userInfo;
 
     public async Task InitializeUser()
     {
-        if (_userInfo is not null) return;
+        if (_userInfo is not null || isInitialized) return;
         
-        await using var dbContext = new AppDbContext();
-        var list = dbContext.Users.ToList();
-        _userInfo = list.FirstOrDefault(e => e.SteamID == SteamManager.GetSteamIdAsLong());
+        Di.Container.ResolveFieldsFromClassInstance(this);
+
+        if (_databaseService is null) throw new NullReferenceException();
+        
+        _userInfo = await _databaseService.GetUserByUlongId(SteamManager.GetSteamIdAsLong());
+
+        if (_userInfo is not null)
+        {
+            Console.WriteLine($"User already exists in DB. Nickname: {_userInfo.Nickname}");
+            return;
+        }
         
         if (_userInfo is null)
         {
-            CSteamID playerId = new CSteamID(SteamManager.GetSteamIdAsLong());
-            
-            _userInfo = new Users
+            var user = new Users()
             {
-                SteamID = playerId.m_SteamID,
+                SteamID = SteamManager.GetSteamIdAsLong(),
+                Nickname = SteamFriends.GetPersonaName(),
                 LobbyID = 0,
-                Nickname = SteamFriends.GetFriendPersonaName(playerId),
-                AvatarURL = SteamFriends.GetLargeFriendAvatar(playerId)
+                AvatarURL = SteamFriends.GetLargeFriendAvatar(SteamManager.GetSteamManager().GetSteamId())
             };
 
-            await dbContext.Users.AddAsync(_userInfo);
-            await dbContext.SaveChangesAsync();
+            _userInfo = user;
+
+            bool isAdding = await _databaseService.AddItemAsync(_userInfo);
+            
+            if (isAdding)
+                Console.WriteLine("New user added to DB");
+            else
+            {
+                throw new Exception("Failed to add new user to database");
+            }
         }
+
+        isInitialized = _userInfo is not null;
     }
 
     public async Task<bool> UpdateLobbyId(long lobbyId)
