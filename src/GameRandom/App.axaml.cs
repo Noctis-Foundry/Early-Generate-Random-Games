@@ -3,21 +3,22 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Avalonia.Threading;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Service;
 using GameRandom.SteamSDK;
 using GameRandom.SteamSDK.Enums;
 using GameRandom.SteamSDK.LobbySystem;
+using GameRandom.SteamSDK.UserData;
 using GameRandom.Views;
 
 namespace GameRandom;
 
 public partial class App : Application
 {
-    private SteamManager _steamManager;
-    
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -28,9 +29,13 @@ public partial class App : Application
         if (!Design.IsDesignMode)
         {
             Di.Container.ResolveFieldsFromClassInstance(this);
-        
-            InitializeSteam();
         }
+
+        SteamManager.GetSteamManager().InitSteam();
+            
+        Task.Run(async () => await User.GetInstance().InitializeUser()).GetAwaiter().GetResult();
+        
+        Di.Container.RegisterSingleInstance(new LobbyService());
         
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
@@ -43,6 +48,7 @@ public partial class App : Application
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
             };
         }
+        
         
         if (!Design.IsDesignMode) 
             Di.Container.InjectDependenciesAcrossAssembly();
@@ -59,23 +65,5 @@ public partial class App : Application
         {
             BindingPlugins.DataValidators.Remove(plugin);
         }
-    }
-
-    private void InitializeSteam()
-    {
-        try
-        {
-            _steamManager = new SteamManager();
-            _steamManager.InitSteam();
-            
-            var steamId = _steamManager.GetSteamId();
-            Console.WriteLine("SteamID: " + steamId);
-        }
-        catch (Exception e)
-        {
-            throw new Exception("Error initializing Steam: " + e.Message);
-        }
-        
-        Di.Container.RegisterSingleInstance(new LobbyService());
     }
 }
