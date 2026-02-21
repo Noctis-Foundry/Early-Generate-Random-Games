@@ -46,10 +46,10 @@ public partial class GameTable : UserControl, IDisposable
         
         if (Di.Container.TryGetInstance<PostgresListener>() is PostgresListener listener)
         {
-            listener.Subscribe(TableEnum.GameTable, _savedDelegate);
+            listener.Subscribe(TableEnum.GameProgress, _savedDelegate);
         }
         
-        Dispatcher.UIThread.InvokeAsync(() => SubscribeToUpdateTable((int)TableEnum.GameTable));
+        Dispatcher.UIThread.InvokeAsync(() => SubscribeToUpdateTable((int)TableEnum.GameProgress));
     }
 
     private async Task InitializeTable()
@@ -75,7 +75,7 @@ public partial class GameTable : UserControl, IDisposable
 
     private async Task SubscribeToUpdateTable(int tableCode)
     {
-        if (tableCode != (int)TableEnum.GameTable)
+        if (tableCode != (int)TableEnum.GameProgress)
         {
             _errorService.ShowErrorWindow($"TableCode: {tableCode} not correct", ErrorEnum.Error);
             return;
@@ -144,7 +144,7 @@ public partial class GameTable : UserControl, IDisposable
 
         if (Di.Container.TryGetInstance<PostgresListener>() is PostgresListener listener)
         {
-            listener.Unsubscribe(TableEnum.GameTable, _savedDelegate);
+            listener.Unsubscribe(TableEnum.GameProgress, _savedDelegate);
         }
 
         _savedDelegate = null;

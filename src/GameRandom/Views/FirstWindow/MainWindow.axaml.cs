@@ -56,7 +56,7 @@ public partial class MainWindow : Window
         
         _eventBus.Subscribe<LobbyUpdate>(_ =>
         {
-            Dispatcher.UIThread.InvokeAsync(() => vm.UpdateLobby(LobbyImages, (int)TableEnum.LobbyContext));
+            Dispatcher.UIThread.InvokeAsync(() => vm.UpdateLobby(LobbyImages, (int)TableEnum.Lobby));
         });
     }
 
@@ -90,7 +90,7 @@ public partial class MainWindow : Window
         
         if (DataContext is MainWindowViewModel vm)
         {
-            _postgres.Subscribe(TableEnum.LobbyContext,
+            _postgres.Subscribe(TableEnum.Lobby,
                 e => Dispatcher.UIThread.InvokeAsync(async () => await vm.UpdateLobby(LobbyImages, e.TableCode)));
         }
 

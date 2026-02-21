@@ -12,6 +12,7 @@ using GameRandom.Scr.WindowScr;
 using GameRandom.Service;
 using GameRandom.SteamSDK;
 using GameRandom.SteamSDK.Enums;
+using GameRandom.SteamSDK.UserData;
 using GameRandom.Views;
 using GameRandom.Views.LobbyModalWindow;
 
@@ -53,36 +54,37 @@ public class MainWindowViewModel : ViewModelBase
         lobbyGrid.Children.Clear();
         _avatars.Clear();
 
-        if ((TableEnum)tableCode != TableEnum.LobbyContext)
+        if ((TableEnum)tableCode != TableEnum.Lobby)
         {
             _errorService.ShowErrorWindow($"Table code {tableCode} not correct for this method", ErrorEnum.Error);
             return;
         }
 
-        var userData = await _databaseService.GetUserByUlongId(SteamManager.GetSteamIdAsLong());
+        var userData = await User.GetInstance().GetUserInfo();
 
         if (userData is null)
         {
-            Console.WriteLine("Not find user in database");
+            _errorService.ShowErrorWindow("Not find user in database", ErrorEnum.Error);
             return;
         }
-        
-        var lobbyContexts =
-            await _databaseService.Where<Users>(e => e.LobbyID == userData.LobbyID);
 
-        if (lobbyContexts == null || lobbyContexts.Count == 0)
+        var lobbyContexts = await _databaseService.GetLobbyById(userData.LobbyID);
+
+        if (lobbyContexts == null || lobbyContexts.LobbyData.Count <= 0)
         {
             _errorService.ShowErrorWindow($"No lobby context found with {userData.LobbyID}", ErrorEnum.Error);
             return;
         }
+        
+        var lobbyData = lobbyContexts.LobbyData;
 
-        var images = _mainWindowFactory.CreateImagesInGrid(lobbyContexts.Count, lobbyGrid);
+        var images = _mainWindowFactory.CreateImagesInGrid(lobbyData.Count, lobbyGrid);
 
-        for (int i = 0; i < lobbyContexts.Count; i++)
+        for (int i = 0; i < lobbyData.Count; i++)
         {
             try
             {
-                var profileContext = await _steamWebApi.GetUserData(lobbyContexts[i].SteamID);
+                var profileContext = await _steamWebApi.GetUserData(lobbyData[i].UserId);
 
                 if (profileContext == null)
                 {
