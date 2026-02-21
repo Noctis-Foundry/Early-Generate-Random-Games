@@ -13,6 +13,7 @@ public partial class ProfileContent : UserControl, IDisposable, IUserControl
 {
     private Action<string>? _changeContent;
     private StatisticControl _statisticContent;
+    private CurrentGame _currentGame;
 
     public ProfileContent()
     {
@@ -65,5 +66,11 @@ public partial class ProfileContent : UserControl, IDisposable, IUserControl
         _changeContent = null;
         ProfileImage.Source = null;
         DataContext = null;
+    }
+
+    private void OpenActivityGame(object? sender, RoutedEventArgs e)
+    {
+        _currentGame = new CurrentGame();
+        _currentGame.Open();
     }
 }
