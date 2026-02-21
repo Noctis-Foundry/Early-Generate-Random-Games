@@ -1,6 +1,7 @@
 namespace GameRandom.SteamSDK;
 
-public class IWindowLogic
+public interface IWindow
 {
-    
+    public void Open();
+    public void CloseWindow();
 }
