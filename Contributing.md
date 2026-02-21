@@ -34,3 +34,8 @@ The project is currently in active development, so here's how to collaborate saf
  - Keep commits clean and descriptive.
  - Use small, focused PRs whenever possible.
  - CI/status checks (if enabled) must pass before merging.
+
+### Documentation
+
+- **[Project documentation.md](docs/Project%20documentation.md)** contains links to all system documentation.
+- **[ClassesAndSystems/](docs/ClassesAndSystems/)** folder contains detailed documentation for specific systems.
