@@ -16,8 +16,8 @@ public class PostgresListener : IDisposable
         new Dictionary<TableEnum, Action<PayloadStructure>?>
         {
             { TableEnum.Lobby, null },
-            { TableEnum.LobbyContext, null },
-            { TableEnum.GameTable, null },
+            { TableEnum.UserGames, null },
+            { TableEnum.GameProgress, null },
             { TableEnum.Users, null }
         };
 
@@ -140,9 +140,9 @@ public class PayloadStructure
 
 public enum TableEnum
 {
-    Lobby = 0,
-    LobbyContext = 1,
-    GameTable = 2,
+    GameProgress = 0,
+    Lobby = 1,
+    UserGames = 2,
     Users = 3
 }
 
