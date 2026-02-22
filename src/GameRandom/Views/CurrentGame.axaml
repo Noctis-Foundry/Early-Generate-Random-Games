@@ -41,7 +41,7 @@
 
                         <!-- Game cover image or avatar -->
                         <Border Grid.Row="0" Grid.Column="1" Grid.RowSpan="4" Classes="GameImageBorder" Width="140">
-                                <Image Source="avares://GameRandom/Assets/steamAwatarWithNight.jpg" Stretch="UniformToFill"/>
+                                <Image Source="avares://GameRandom/Assets/steamAwatarWithNight.jpg" Stretch="UniformToFill" x:Name="GameImage"/>
                         </Border>
 
                         <!-- Action buttons panel -->
