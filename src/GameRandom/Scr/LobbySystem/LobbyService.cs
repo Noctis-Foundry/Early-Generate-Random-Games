@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using GameRandom.DataBaseContexts;
 using GameRandom.Events;
@@ -31,8 +30,7 @@ public class LobbyService
     /// </summary>
     public async Task StartApp()
     {
-        var user = await GetCurrentUserAsync();
-        if (user is null) return;
+        var user = GetCurrentUserAsync();
 
         var lobby = await FindLobbyAsync(user.LobbyID);
         SendLobbyEvent(lobby);
@@ -49,8 +47,7 @@ public class LobbyService
             return;
         }
 
-        var user = await GetCurrentUserAsync();
-        if (user is null) return;
+        var user = GetCurrentUserAsync();
 
         // Disconnect from current lobby if user is already in one
         await DisconnectIfInLobby(user);
@@ -104,8 +101,7 @@ public class LobbyService
             return;
         }
 
-        var user = await GetCurrentUserAsync();
-        if (user is null) return;
+        var user = GetCurrentUserAsync();
 
         // Disconnect from current lobby before connecting to a new one
         await DisconnectIfInLobby(user);
@@ -142,8 +138,8 @@ public class LobbyService
     /// </summary>
     public async Task DisconnectFromLobby()
     {
-        var user = await GetCurrentUserAsync();
-        if (user is null || user.LobbyID == EmptyLobbyId) return;
+        var user = GetCurrentUserAsync();
+        if (user.LobbyID == EmptyLobbyId) return;
 
         var currentLobby = await FindLobbyAsync(user.LobbyID);
         if (currentLobby is null)
@@ -175,15 +171,9 @@ public class LobbyService
     /// <summary>
     /// Get current user with null check
     /// </summary>
-    private async Task<Users?> GetCurrentUserAsync()
+    private Users GetCurrentUserAsync()
     {
-        var user = await User.GetInstance().GetUserInfo();
-
-        if (user is null)
-        {
-            _errorService.ShowErrorWindow("Not find user data in system", ErrorEnum.Error);
-        }
-
+        var user = User.GetInstance().GetUserInfo();
         return user;
     }
 

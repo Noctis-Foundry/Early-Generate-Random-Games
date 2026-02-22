@@ -60,13 +60,7 @@ public class MainWindowViewModel : ViewModelBase
             return;
         }
 
-        var userData = await User.GetInstance().GetUserInfo();
-
-        if (userData is null)
-        {
-            _errorService.ShowErrorWindow("Not find user in database", ErrorEnum.Error);
-            return;
-        }
+        var userData = User.GetInstance().GetUserInfo();
 
         var lobbyContexts = await _databaseService.GetLobbyById(userData.LobbyID);
 

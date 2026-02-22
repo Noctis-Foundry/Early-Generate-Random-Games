@@ -85,13 +85,7 @@ public partial class GameTable : UserControl, IDisposable
         
         try
         {
-            var userInfo = await User.GetInstance().GetUserInfo();
-
-            if (userInfo is null)
-            {
-                _errorService.ShowErrorWindow("Not founded user info. Wait loading and restart task", ErrorEnum.Error);
-                return;
-            }
+            var userInfo = User.GetInstance().GetUserInfo();
 
             var gameList = await _databaseService.GetTableListAsync<GameProgresses>();
 
