@@ -21,8 +21,10 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<UserGame>().HasOne(u => u.GameProgresses).WithOne()
-            .HasForeignKey<UserGame>(gp => gp.GameID);
+        modelBuilder.Entity<UserGame>().HasOne(u => u.GameProgresses).WithMany()
+            .HasForeignKey(gp => gp.AppId).HasPrincipalKey(u => u.AppID);
+
+        modelBuilder.Entity<UserGame>().HasIndex(u => u.UserId).IsUnique();
 
         modelBuilder.Entity<Lobbies>().HasMany(u => u.LobbyData).WithOne().HasPrincipalKey(e => e.LobbyId)
             .HasForeignKey(e => e.LobbyId);
@@ -63,14 +65,19 @@ public class GameProgresses
 public class UserGame
 {
     public int ID { get; set; }
-    public bool IsHaveGame { get; set; }
-    public int GameID { get; set; }                  // FK → GameProgress.ID
-    public string AppName { get; set; }              // ← GameProgress.AppName
-    public int LeftDays { get; set; }
-    public DateTime? BeginData { get; set; }          // ← GameProgress.BeginTime
-    public DateTime? EndData { get; set; }            // ← GameProgress.EndTime
-
+    public ulong UserId { get; set; } // Взятие листа из базы данных UserGame конкретного пользователя
+    public int AppId { get; set; }
     public GameProgresses GameProgresses { get; set; }   // Navigation property
+}
+
+public class EndGame
+{
+    public ulong UserId { get; set; }
+    public int AppId { get; set; }
+    public byte[]? ScreenShot { get; set; }
+    public string? Nickname { get; set; }
+    public DateTime FinishTime { get; set; }
+    public GameProgresses? GameProgresses { get; set; }
 }
 
 public class LobbyData
