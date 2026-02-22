@@ -108,28 +108,17 @@ namespace GameRandom.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
 
-                    b.Property<string>("AppName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("BeginData")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("EndData")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("GameID")
+                    b.Property<int>("AppId")
                         .HasColumnType("integer");
 
-                    b.Property<bool>("IsHaveGame")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("LeftDays")
-                        .HasColumnType("integer");
+                    b.Property<decimal>("UserId")
+                        .HasColumnType("numeric(20,0)");
 
                     b.HasKey("ID");
 
-                    b.HasIndex("GameID")
+                    b.HasIndex("AppId");
+
+                    b.HasIndex("UserId")
                         .IsUnique();
 
                     b.ToTable("UserGames");
@@ -174,8 +163,9 @@ namespace GameRandom.Migrations
             modelBuilder.Entity("GameRandom.DataBaseContexts.UserGame", b =>
                 {
                     b.HasOne("GameRandom.DataBaseContexts.GameProgresses", "GameProgresses")
-                        .WithOne()
-                        .HasForeignKey("GameRandom.DataBaseContexts.UserGame", "GameID")
+                        .WithMany()
+                        .HasForeignKey("AppId")
+                        .HasPrincipalKey("AppID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
