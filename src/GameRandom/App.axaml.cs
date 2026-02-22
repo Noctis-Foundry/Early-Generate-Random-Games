@@ -29,13 +29,13 @@ public partial class App : Application
         if (!Design.IsDesignMode)
         {
             Di.Container.ResolveFieldsFromClassInstance(this);
-        }
-
-        SteamManager.GetSteamManager().InitSteam();
             
-        Task.Run(async () => await User.GetInstance().InitializeUser()).GetAwaiter().GetResult();
+            SteamManager.GetSteamManager().InitSteam();
+            
+            Task.Run(async () => await User.GetInstance().InitializeUser()).GetAwaiter().GetResult();
         
-        Di.Container.RegisterSingleInstance(new LobbyService());
+            Di.Container.RegisterSingleInstance(new LobbyService());
+        }
         
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
