@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GameRandom.DataBaseContexts;
+using GameRandom.SteamSDK.UserData;
 using Microsoft.EntityFrameworkCore;
 using Steamworks;
 
@@ -17,10 +18,24 @@ public interface IDatabaseService
 
 public class DatabaseService : IDatabaseService
 {
+    private static readonly HashSet<Type> _restrictedAddTypes = new()
+    {
+        typeof(UserGame)
+    };
+
+    private static readonly HashSet<Type> _restrictedGetTypes = new()
+    {
+        typeof(UserGame),
+        typeof(Lobbies)
+    };
+    
     public async Task<bool> AddItemAsync<TEntity>(TEntity item) where TEntity : class
     {
         await using var db = new AppDbContext();
 
+        if (_restrictedAddTypes.Contains(item.GetType()))
+            throw new NotSupportedException($"Type {typeof(TEntity).Name} is restricted. Use Get{typeof(TEntity).Name}Async method");
+        
         try
         {
             var dbContext = db.Set<TEntity>();
@@ -38,9 +53,31 @@ public class DatabaseService : IDatabaseService
         return true;
     }
 
+    public async Task<bool> AddUserGameAsync(Users userInfo)
+    {
+        await using var db = new AppDbContext();
+
+        if (await db.UserGames.AnyAsync(e => e.UserId == userInfo.SteamID))
+            return true;
+
+        UserGame newUserGame = new UserGame
+        {
+            UserId = userInfo.SteamID,
+            AppId = 0
+        };
+        
+        await db.UserGames.AddAsync(newUserGame);
+        await db.SaveChangesAsync();
+
+        return true;
+    }
+
     public async Task<List<TEntity>?> GetTableListAsync<TEntity>() 
         where TEntity : class 
     {
+        if (_restrictedGetTypes.Contains(typeof(TEntity)))
+            throw new NotSupportedException($"Type {typeof(TEntity).Name} is restricted. Use Get{typeof(TEntity).Name}Async method");
+        
         try
         {
             await using var context = new AppDbContext();
@@ -129,22 +166,16 @@ public class DatabaseService : IDatabaseService
         }
     }
 
-    public async Task<UserGame?> GetUserGameByAppId(int appId)
+    public async Task<UserGame?> GetUserGameAsync(Users userData)
     {
         try
         {
             await using var appDb = new AppDbContext();
-            UserGame? game = await appDb.UserGames
-                .Include(ug => ug.GameProgresses).FirstOrDefaultAsync(e => e.GameID == appId);
 
-            if (game is null)
-                return null;
+            var userGames = await appDb.UserGames.Include(g => g.GameProgresses)
+                .FirstOrDefaultAsync(e => e.UserId == userData.SteamID);
 
-            game.AppName = game.GameProgresses.AppName;
-            game.BeginData = game.GameProgresses.BeginTime;
-            game.EndData = game.GameProgresses.EndTime;
-
-            return game;
+            return userGames;
         }
         catch (Exception e)
         {
