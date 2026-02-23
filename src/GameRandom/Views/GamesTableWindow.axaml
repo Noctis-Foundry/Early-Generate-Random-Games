@@ -11,12 +11,12 @@
         x:DataType="vm:StatisticGameTableViewModel"
         Title="GamesTable">
     <DockPanel Background="Gray">
-        <DataGrid ItemsSource="{Binding GameProgresses}"
-                  AutoGenerateColumns="False" Classes="ProfileDataGrid">
+        <DataGrid ItemsSource="{Binding TableData}"
+                  AutoGenerateColumns="False" Classes="ProfileDataGrid" IsReadOnly="True">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Game name" Binding="{Binding GameName}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Begin data" Binding="{Binding DataBegin}"></DataGridTextColumn>
-                <DataGridTextColumn Header="End data" Binding="{Binding DataEnd}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Game name" Binding="{Binding AppName}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Begin data" Binding="{Binding BeginTime}"></DataGridTextColumn>
+                <DataGridTextColumn Header="End data" Binding="{Binding EndTime}"></DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>
