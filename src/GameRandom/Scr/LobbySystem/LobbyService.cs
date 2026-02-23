@@ -32,7 +32,7 @@ public class LobbyService
     {
         var user = GetCurrentUserAsync();
 
-        var lobby = await FindLobbyAsync(user.LobbyID);
+        var lobby = await FindLobbyAsync(user.LobbyId);
         SendLobbyEvent(lobby);
     }
 
@@ -118,7 +118,7 @@ public class LobbyService
         {
             lobby.LobbyData.Add(new LobbyData
             {
-                UserId = user.SteamID,
+                UserId = user.SteamId,
                 LobbyId = lobbyId
             });
             lobby.MembersCount = lobby.LobbyData.Count;
@@ -129,7 +129,7 @@ public class LobbyService
                 return;
             }
             
-            Logger.Debug($"User {user.SteamID} joined the lobby {lobbyId}");
+            Logger.Debug($"User {user.SteamId} joined the lobby {lobbyId}");
         }
     }
 
@@ -139,12 +139,12 @@ public class LobbyService
     public async Task DisconnectFromLobby()
     {
         var user = GetCurrentUserAsync();
-        if (user.LobbyID == EmptyLobbyId) return;
+        if (user.LobbyId == EmptyLobbyId) return;
 
-        var currentLobby = await FindLobbyAsync(user.LobbyID);
+        var currentLobby = await FindLobbyAsync(user.LobbyId);
         if (currentLobby is null)
         {
-            _errorService.ShowErrorWindow($"Failed to disconnect from {user.LobbyID}. Lobby is empty", ErrorEnum.Error);
+            _errorService.ShowErrorWindow($"Failed to disconnect from {user.LobbyId}. Lobby is empty", ErrorEnum.Error);
             return;
         }
 
@@ -152,7 +152,7 @@ public class LobbyService
         if (!await User.GetInstance().UpdateLobbyId(DisconnectedLobbyId)) return;
         
         // Remove user from lobby members list
-        currentLobby.LobbyData.RemoveAll(e => e.UserId == user.SteamID);
+        currentLobby.LobbyData.RemoveAll(e => e.UserId == user.SteamId);
         currentLobby.MembersCount = currentLobby.LobbyData.Count;
 
         // Delete empty lobby or update data
@@ -208,7 +208,7 @@ public class LobbyService
     /// </summary>
     private async Task DisconnectIfInLobby(Users userInfo)
     {
-        if (userInfo.LobbyID > EmptyLobbyId)
+        if (userInfo.LobbyId > EmptyLobbyId)
         {
             //TODO Give choose for player
             await DisconnectFromLobby();
@@ -231,7 +231,7 @@ public class LobbyService
         return new LobbyData
         {
             LobbyId = lobbyId,
-            UserId = userInfo.SteamID
+            UserId = userInfo.SteamId
         };
     }
 }

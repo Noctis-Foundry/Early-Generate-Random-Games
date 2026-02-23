@@ -9,7 +9,6 @@
     <!-- Main container style for the game info window background and spacing -->
     <Style Selector="DockPanel.GameInfoContainer">
         <Setter Property="Background" Value="Gray" />
-        <Setter Property="Margin" Value="5" />
     </Style>
 
     <!-- Grid layout style: centers content and defines spacing between rows and columns -->
@@ -17,7 +16,7 @@
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="RowSpacing" Value="8" />
-        <Setter Property="ColumnSpacing" Value="8" />
+        <Setter Property="ColumnSpacing" Value="15" />
     </Style>
 
     <!-- Style for individual info card borders: dark background with rounded corners and padding -->
@@ -35,7 +34,7 @@
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="TextWrapping" Value="Wrap" />
         <Setter Property="TextAlignment" Value="Center" />
-        <Setter Property="MaxWidth" Value="200" />
+        <Setter Property="MaxWidth" Value="230" />
         <Setter Property="MaxHeight" Value="80" />
     </Style>
 
@@ -76,6 +75,8 @@
     <Style Selector="Button.GameInfoButton:pointerover /template/ContentPresenter">
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="MinHeight" Value="30"></Setter>
+        <Setter Property="MinWidth" Value="110"></Setter>
         <Setter Property="BorderBrush">
         </Setter>
         <Style.Animations>
@@ -113,6 +114,8 @@
         <Setter Property="FontSize" Value="14" />
         <Setter Property="Padding" Value="8, 5" />
         <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="MinHeight" Value="30"></Setter>
+        <Setter Property="MinWidth" Value="110"></Setter>
     </Style>
 
 </Styles>

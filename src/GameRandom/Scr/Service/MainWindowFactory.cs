@@ -58,7 +58,7 @@ public class MainWindowFactory
         {
             images.Add(CreateImageInGrid(grid, i));
         }
-        
+
         return images;
     }
 

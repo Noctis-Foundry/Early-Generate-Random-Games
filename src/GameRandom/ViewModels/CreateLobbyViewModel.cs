@@ -36,6 +36,6 @@ public class CreateLobbyViewModel : ViewModelBase
     private void GetCurrentId()
     {
         var userInfo = User.GetInstance().GetUserInfo();
-        CurrentLobbyID = userInfo.LobbyID > 0 ? userInfo.LobbyID.ToString() : DefaultIdMessage;
+        CurrentLobbyID = userInfo.LobbyId > 0 ? userInfo.LobbyId.ToString() : DefaultIdMessage;
     }
 }

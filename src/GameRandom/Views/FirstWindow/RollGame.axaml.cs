@@ -41,15 +41,15 @@ public partial class RollGame : UserControl, IUserControl, IDisposable
 
         if (Design.IsDesignMode)
             return;
-        
+
         TextBoxEventsInit();
-        
+
         _generateRandomApps = new GenerateRandomApps();
         _mainWindowFactory = new MainWindowFactory();
     }
 
     public void AddListener(Action<string> _onChangeContent) => _onShowContent = _onChangeContent;
-    
+
     private async void GenerateGames(object sender, RoutedEventArgs e)
     {
         if (!_generateRandomApps.IsInitialized || _isRolling)
@@ -146,7 +146,7 @@ public partial class RollGame : UserControl, IUserControl, IDisposable
             }
         }
     }
-    
+
     private void TextBoxEventsInit()
     {
         CountApp.PropertyChanged += (sender, e) =>

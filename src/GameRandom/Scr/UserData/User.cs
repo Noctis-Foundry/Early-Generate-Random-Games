@@ -48,6 +48,7 @@ public class User
             _isInitialized = true;
     
             var isAddUserGame = await _databaseService.AddUserGameAsync(_userInfo);
+            
             if (!isAddUserGame)
                 throw new Exception("Failed to add user game cell");
     
@@ -86,7 +87,7 @@ public class User
     {
         if (_databaseService is null) return false;
         
-        _userInfo.LobbyID = lobbyId;
+        _userInfo.LobbyId = lobbyId;
         
         bool isUpdating = await _databaseService.UpdateAsync(_userInfo);
 

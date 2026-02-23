@@ -62,11 +62,11 @@ public class MainWindowViewModel : ViewModelBase
 
         var userData = User.GetInstance().GetUserInfo();
 
-        var lobbyContexts = await _databaseService.GetLobbyById(userData.LobbyID);
+        var lobbyContexts = await _databaseService.GetLobbyById(userData.LobbyId);
 
         if (lobbyContexts == null || lobbyContexts.LobbyData.Count <= 0)
         {
-            _errorService.ShowErrorWindow($"No lobby context found with {userData.LobbyID}", ErrorEnum.Error);
+            _errorService.ShowErrorWindow($"No lobby context found with {userData.LobbyId}", ErrorEnum.Error);
             return;
         }
         

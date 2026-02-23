@@ -1,11 +1,14 @@
 using Avalonia.Controls;
+using Avalonia.Interactivity;
+using Avalonia.Threading;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Service;
 using GameRandom.SteamSDK;
+using GameRandom.ViewModels;
 
 namespace GameRandom.Views;
 
-public partial class CurrentGame : Window, IWindow
+public partial class CurrentGame : Window
 {
     [Inject]
     private DatabaseService _databaseService;
