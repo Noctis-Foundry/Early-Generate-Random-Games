@@ -7,42 +7,58 @@ using GameRandom.DataBaseContexts;
 using GameRandom.Events;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Events;
+using GameRandom.Scr.Service;
 using GameRandom.SteamSDK;
+using GameRandom.SteamSDK.Enums;
+using GameRandom.SteamSDK.UserData;
 
 namespace GameRandom.ViewModels;
 
 public class RollGameViewModel : ViewModelBase
 {
-    public async Task ChooseGame(AppSavedContext savedContext)
+    public async Task ChooseGame(AppSavedContext savedContext, byte[] imageBytes)
     {
         Console.WriteLine("Choose Game");
         
-        var eventBus = Di.Container.GetInstance<EventBus>() as EventBus;
-        var instance = SteamManager.GetSteamManager();
         DateTime date = DateTime.UtcNow;
         DateTime endDate = date.AddDays(30);
-        
-        await using (var db = new AppDbContext())
-        {
-            GameProgresses gameProgresses = new GameProgresses
-            {
-                AppID = savedContext.AppId,
-                PlayerID = instance.GetSteamId().m_SteamID,
-                BeginTime = date,
-                EndTime = endDate,
-                AppName = savedContext.AppName,
-                Comment = "Empty",
-                IsFinished = false,
-            };
-            
-            db.GameProgresses.Add(gameProgresses);
-            await db.SaveChangesAsync();
 
-            Process.Start(new ProcessStartInfo
+        var gameInfo = new GameProgresses
+        {
+            AppHeaderImage = imageBytes,
+            AppId = savedContext.AppId,
+            AppName = savedContext.AppName,
+            BeginTime = date,
+            Comment = "Default",
+            EndTime = endDate,
+            Grade = 0,
+            IsFinished = false,
+            PlayerId = SteamManager.GetSteamIdAsLong()
+        };
+
+        if (Di.Container.GetInstance<DatabaseService>() is DatabaseService service)
+        {
+            UserGame? userGame = await service.GetUserGameAsync(User.GetInstance().GetUserInfo());
+
+            if (userGame is null)
+                throw new NullReferenceException("User game is not initialize");
+
+            if (userGame.AppId != 0)
             {
-                FileName = AppUrl(savedContext.AppId),
-                UseShellExecute = true
-            });
+                if (Di.Container.GetInstance<ErrorService>() is ErrorService errorService)
+                {
+                    errorService.ShowErrorWindow("Failed to set new game. Finish your current game", ErrorEnum.Message);
+                    return;
+                }
+            }
+            
+            bool isAdded = await service.AddItemAsync(gameInfo);
+            
+            if (!isAdded)
+                throw new Exception("Error add item to db");
+
+            userGame.AppId = savedContext.AppId;
+            await service.UpdateAsync(userGame);
         }
     }
     
