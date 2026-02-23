@@ -59,9 +59,9 @@ public class User
         // Create new user
         var user = new Users()
         {
-            SteamID = SteamManager.GetSteamIdAsLong(),
+            SteamId = SteamManager.GetSteamIdAsLong(),
             Nickname = SteamFriends.GetPersonaName(),
-            LobbyID = 0,
+            LobbyId = 0,
             AvatarURL = SteamFriends.GetLargeFriendAvatar(SteamManager.GetSteamManager().GetSteamId())
         };
 

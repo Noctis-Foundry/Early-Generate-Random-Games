@@ -10,44 +10,36 @@ public class MainWindowFactory
     public void ChangeGrid(int countImage, Grid grid)
     {
         grid.ColumnDefinitions.Clear();
-        
+        grid.Children.Clear();
+
         for (int i = 1; i <= countImage; i++) //TODO Change to i = 0 and i < countImage
             grid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
     }
 
-    public (List<Button>, List<Image>) CreateButtonInGrid(int countImage, Grid grid)
+    public GridElements CreateButtonInGrid(Grid grid, int countGame)
     {
-        grid.Children.Clear();
-        List<Button> buttons = new List<Button>();
-        List<Image> images = new List<Image>();
-        
-        for (int i = 0; i < countImage; i++)
+        Image image = new Image
         {
-            Image image = new Image
-            {
-                Source = new Bitmap("./Assets/avalonia-logo.ico"),
-                Name = $"AppImage{i}"
-            };
-            
-            image.Classes.Add("GameImages");
-            images.Add(image);
-            
-            var button = new Button
-            {
-                Content = image,
-                Name = $"AppButton{i}"
-            };
-            
-            button.Classes.Add("RandomButton");
-            
-            Grid.SetColumn(button, i);
-            grid.Children.Add(button);
-            
-            buttons.Add(button);
-        }
+            Source = new Bitmap("./Assets/avalonia-logo.ico"),
+            Name = $"AppImage{countGame}"
+        };
+
+        image.Classes.Add("GameImages");
+
+        var button = new Button
+        {
+            Content = image,
+            Name = $"AppButton{countGame}"
+        };
+
+        button.Classes.Add("RandomButton");
+
+        Grid.SetColumn(button, countGame);
+        grid.Children.Add(button);
         
-        return (buttons, images);
+        return new GridElements(button, image);
     }
+
     public List<Image> CreateImagesInGrid(int countImage, Grid grid)
     {
         grid.Children.Clear();
@@ -68,22 +60,23 @@ public class MainWindowFactory
         {
             Source = new Bitmap("Assets/avalonia-logo.ico"),
         };
-            
+
         Grid.SetColumn(image, imageColum);
         grid.Children.Add(image);
-        
+
         return image;
     }
 }
 
-public class ButtonContext
+public class ButtonContext(Button button, Image buttonImage, byte[] imageBytes)
 {
-    public Button Button { get; private set; }
-    public Image ButtonImage { get; private set; }
-    
-    public ButtonContext(Button button, Image buttonImage)
-    {
-        Button = button;
-        ButtonImage = buttonImage;
-    }
+    public Button Button { get; private set; } = button;
+    public Image ButtonImage { get; private set; } = buttonImage;
+    public byte[] ImageBytes { get; private set; } = imageBytes;
+}
+
+public class GridElements(Button button, Image image)
+{
+    public Button Button { get; set; } = button;
+    public Image Image { get; set; } = image;
 }
