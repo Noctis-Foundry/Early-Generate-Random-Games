@@ -3,17 +3,23 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="using:GameRandom.ViewModels"
-        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="300"
+        mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="350"
+        MaxHeight="350" MaxWidth="700"
+        MinHeight="300" MinWidth="600"
+        Height="350" Width="650"
         x:Class="GameRandom.Views.CurrentGame"
         x:DataType="vm:CurrentGameStatusViewModel"
         Title="Current game status">
 
         <!-- Main container for the current game status window -->
-        <DockPanel Width="400" Height="300" Classes="GameInfoContainer">
-
+        <DockPanel Classes="GameInfoContainer" Height="350" Width="650">
+                
+                <Border DockPanel.Dock="Top" HorizontalAlignment="Center">
+                        <TextBlock Text="Current game" FontSize="20" Foreground="AliceBlue"></TextBlock>
+                </Border>
+                
                 <!-- Main grid layout: left column for info, right column for image and actions -->
-                <Grid Classes="GameInfoGrid" RowDefinitions="Auto, Auto, Auto, Auto, Auto" ColumnDefinitions="Auto, Auto">
-
+                <Grid Classes="GameInfoGrid" RowDefinitions="*, *, *, *, *" DockPanel.Dock="Left" Margin="5,0,0,0">
                         <!-- Game name label -->
                         <Border Grid.Row="0" Grid.Column="0" Classes="GameInfoItem">
                                 <TextBlock Text="Name: Dead cells" Classes="GameInfoText" x:Name="GameName"/>
@@ -38,25 +44,30 @@
                         <Border Grid.Row="4" Grid.Column="0" Classes="GameInfoItem">
                                 <TextBlock Text="End date: 24.05.2026" Classes="GameInfoText" x:Name="EndDate"/>
                         </Border>
-
+                </Grid>
+                
+                <Grid DockPanel.Dock="Right" RowDefinitions="Auto, Auto" HorizontalAlignment="Center" VerticalAlignment="Center" RowSpacing="5">
                         <!-- Game cover image or avatar -->
-                        <Border Grid.Row="0" Grid.Column="1" Grid.RowSpan="4" Classes="GameImageBorder" Width="140">
-                                <Image Source="avares://GameRandom/Assets/steamAwatarWithNight.jpg" Stretch="UniformToFill" x:Name="GameImage"/>
+                        <Border Grid.Row="0" Grid.Column="0" Width="350" Height="150" MaxWidth="450" MinWidth="250" 
+                                MaxHeight="200" MinHeight="150" Classes="GameImageBorder">
+                                <Image Source="avares://GameRandom/Assets/steamAwatarWithNight.jpg" 
+                                       Stretch="Fill" x:Name="GameImage"/>
                         </Border>
 
                         <!-- Action buttons panel -->
-                        <Border Grid.Row="4" Grid.Column="1">
-                                <Grid ColumnDefinitions="Auto, Auto">
+                        <Border Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center">
+                                <Grid ColumnDefinitions="Auto, Auto, Auto" ColumnSpacing="5">
 
                                         <!-- TODO: Open the game's store page in Steam browser -->
-                                        <Button Classes="GameInfoButton" Content="Steam"></Button>
+                                        <Button Classes="GameInfoButton" Content="Steam" Click="ShowSteamStore"></Button>
 
                                         <!-- TODO: Check if the game is currently active/running by the user -->
-                                        <Button Grid.Column="1" Classes="GameInfoButton" Content="Check status"></Button>
+                                        <Button Grid.Column="1" Classes="GameInfoButton" Content="Check status" Click="CheckStatus"></Button>
+                                        
+                                        <Button Grid.Column="2" Classes="GameInfoButton" Content="Finish game" Click="FinishedGame"></Button>
 
                                 </Grid>
                         </Border>
-
                 </Grid>
         </DockPanel>
 </Window>

@@ -19,27 +19,51 @@ public partial class CurrentGame : Window
     public CurrentGame()
     {
         InitializeComponent();
-    }
+        DataContext = new CurrentGameStatusViewModel();
 
+        WindowStartupLocation = WindowStartupLocation.CenterOwner;
+    }
+    
     public void Open()
     {
         Di.Container.ResolveFieldsFromClassInstance(this);
         
         Show();
+        
+        if (DataContext is CurrentGameStatusViewModel viewModel)
+        {
+            var uiBlocks = new GameStatusInfo(GameName, StartDate, TodayDate,
+                TimeSpent, EndDate, GameImage);
+
+            Dispatcher.UIThread.InvokeAsync(async () => await viewModel.LoadInfo(uiBlocks));
+        }
     }
 
-    public void CloseWindow()
+    protected override void OnClosing(WindowClosingEventArgs e)
     {
         // Очистка данных
         _databaseService = null;
         _errorService = null;
+        
+        if (DataContext is CurrentGameStatusViewModel viewModel)
+        {
+            viewModel.CloseCurrentGameWindow();
+        }
     }
-    
-    private void PopulateControls()
+
+    private void ShowSteamStore(object? sender, RoutedEventArgs e)
     {
-        // Пример заполнения контролов по x:Name:
-        // var myButton = this.FindControl<Button>("MyButton");
-        // var myTextBlock = this.FindControl<TextBlock>("GameTitle");
-        // myTextBlock.Text = "Название игры";
+        throw new System.NotImplementedException();
+    }
+
+    private void CheckStatus(object? sender, RoutedEventArgs e)
+    {
+        throw new System.NotImplementedException();
+    }
+
+
+    private void FinishedGame(object? sender, RoutedEventArgs e)
+    {
+        throw new System.NotImplementedException();
     }
 }
