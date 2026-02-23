@@ -8,102 +8,23 @@ using System.Collections.Generic;
 using Avalonia.Threading;
 using GameRandom.SteamSDK.Enums;
 using System.Linq;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace GameRandom.ViewModels;
 
-public class StatisticGameTableViewModel : ViewModelBase
+public class StatisticGameTableViewModel : AbstractTableWindowViewModel<GameProgresses>
 {
-    [Inject] private DatabaseService? _database = null!;
-    [Inject] private ErrorService? _errorService = null!;
-    [Inject] private ObservableConverter? _converter = null!;
-    private ObservableCollection<ProfileTableData> _gameProgresses;
-
-    public ObservableCollection<ProfileTableData>? GameProgresses
-    {
-        get => _gameProgresses;
-        set => SetProperty(ref _gameProgresses, value);
-    }
-    
-     /// <summary>
-    /// Method starting operations and threads for load table with player games to profile table
-    /// </summary>
-    public async Task LoadTable()
-    {
-        Di.Container.ResolveFieldsFromClassInstance(this);
-        ulong userId = SteamManager.GetSteamManager().GetSteamId().m_SteamID;
-        
-        var list = await _database.GetTableListAsync<GameProgresses>();
-
-        if (list == null || list.Count == 0)
-        {
-            _errorService.ShowErrorWindow("Failed donwoload data from database. Game progress table is empty", ErrorEnum.Message);
-            return;
-        }
-        
-        var playerTable = ToPlayerTableData(list, userId);
-
-        if (playerTable == null)
-        {
-            _errorService.ShowErrorWindow($"Failed rebind data to player table data. Games for your client id: {userId} is not founded",
-                ErrorEnum.Message);
-            return;
-        }
-
-        await Dispatcher.UIThread.InvokeAsync(() =>
-        {
-            GameProgresses = _converter.ToObservableCollection(playerTable);
-        });
-    }
-    
-    /// <summary>
-    /// Sorting GameProgress with client ID and converting to ProfileTableData
-    /// </summary>
-    /// <param name="gameProgress">List with all games</param>
-    /// <param name="userId">Steam client id</param>
-    /// <returns></returns>
-    private List<ProfileTableData>? ToPlayerTableData(List<GameProgresses> gameProgress, ulong userId)
-    {
-        var list = gameProgress.Where(e => e.PlayerID == userId).ToList();
-
-        if (list.Count == 0)
-            return null;
-
-        List<ProfileTableData> playerTable = new List<ProfileTableData>();
-
-        for (int i = 0; i < list.Count; i++)
-        {
-            playerTable.Add(new ProfileTableData(list[i].AppName, list[i].BeginTime.ToString("yy-MM-dd"), list[i].EndTime.ToString("yy-MM-dd")));
-        }
-        
-        return playerTable;
-    }
     
     /// <summary>
     /// Need for clear all reference after closing user content. call from main class with dispose method
     /// </summary>
     public void UnloadTable()
     {
-        if (GameProgresses != null)
-        {
-            GameProgresses.Clear();
-            GameProgresses = null;
-        }
+        TableData.Clear();
+        _tableData.Clear();
         
-        _database = null;
+        _databaseService = null;
         _errorService = null;
-    }
-}
-
-public class ProfileTableData
-{
-    public string GameName { get; set; }
-    public string DataBegin { get; set; }
-    public string DataEnd { get; set; }
-
-    public ProfileTableData(string gameName, string dataBegin, string dataEnd)
-    {
-        GameName = gameName;
-        DataBegin = dataBegin;
-        DataEnd = dataEnd;
+        _observableConverter = null;
     }
 }
