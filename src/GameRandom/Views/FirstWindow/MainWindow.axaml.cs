@@ -65,7 +65,7 @@ public partial class MainWindow : Window
         _preloadRegister.RegisterNewObject("Main", _controlFactory.CreateUserControl<MainWindowContent>(_selectorAction));
         _preloadRegister.RegisterNewObject("Profile", _controlFactory.CreateUserControl<ProfileContent>(_selectorAction));
         _preloadRegister.RegisterNewObject("Roll", _controlFactory.CreateUserControl<RollGame>(_selectorAction));
-        // _preloadRegister.RegisterNewObject("Table", gameTable);
+        _preloadRegister.RegisterNewObject("Table", _controlFactory.CreateUserControl<GameTable>(_selectorAction));
     }
 
     private void Navigate(string nameControl)
