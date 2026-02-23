@@ -21,11 +21,8 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<UserGame>().HasOne(u => u.GameProgresses).WithMany()
-            .HasForeignKey(gp => gp.AppId).HasPrincipalKey(u => u.AppID);
-
         modelBuilder.Entity<UserGame>().HasIndex(u => u.UserId).IsUnique();
-
+        
         modelBuilder.Entity<Lobbies>().HasMany(u => u.LobbyData).WithOne().HasPrincipalKey(e => e.LobbyId)
             .HasForeignKey(e => e.LobbyId);
     }
@@ -33,16 +30,16 @@ public class AppDbContext : DbContext
 
 public class Users
 {
-    public int ID { get; set; }
-    public ulong SteamID { get; set; }
-    public long LobbyID { get; set; }
+    public int Id { get; set; }
+    public ulong SteamId { get; set; }
+    public long LobbyId { get; set; }
     public string Nickname { get; set; }
     public int AvatarURL { get; set; }
 }
 
 public class Lobbies
 {
-    public int ID { get; set; }
+    public int Id { get; set; }
     public long LobbyId { get; set; }
     public int MembersCount { get; set; }
     
@@ -51,11 +48,12 @@ public class Lobbies
 
 public class GameProgresses
 {
-    public int ID { get; set; }
-    public int AppID { get; set; }
-    public ulong PlayerID { get; set; }
-    public string AppName { get; set; }
+    public int Id { get; set; }
+    public int AppId { get; set; }
+    public ulong PlayerId { get; set; }
+    public string? AppName { get; set; }
     public string? Comment { get; set; }
+    public byte[]? AppHeaderImage { get; set; }
     public int Grade { get; set; }
     public DateTime BeginTime { get; set; }
     public DateTime EndTime { get; set; }
@@ -64,10 +62,9 @@ public class GameProgresses
 
 public class UserGame
 {
-    public int ID { get; set; }
+    public int Id { get; set; }
     public ulong UserId { get; set; } // Взятие листа из базы данных UserGame конкретного пользователя
     public int AppId { get; set; }
-    public GameProgresses GameProgresses { get; set; }   // Navigation property
 }
 
 public class EndGame

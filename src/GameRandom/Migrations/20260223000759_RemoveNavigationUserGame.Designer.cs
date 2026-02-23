@@ -3,6 +3,7 @@ using System;
 using GameRandom.DataBaseContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GameRandom.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260223000759_RemoveNavigationUserGame")]
+    partial class RemoveNavigationUserGame
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,19 +27,17 @@ namespace GameRandom.Migrations
 
             modelBuilder.Entity("GameRandom.DataBaseContexts.GameProgresses", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
 
-                    b.Property<byte[]>("AppHeaderImage")
-                        .HasColumnType("bytea");
-
-                    b.Property<int>("AppId")
+                    b.Property<int>("AppID")
                         .HasColumnType("integer");
 
                     b.Property<string>("AppName")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("BeginTime")
@@ -54,21 +55,21 @@ namespace GameRandom.Migrations
                     b.Property<bool>("IsFinished")
                         .HasColumnType("boolean");
 
-                    b.Property<decimal>("PlayerId")
+                    b.Property<decimal>("PlayerID")
                         .HasColumnType("numeric(20,0)");
 
-                    b.HasKey("Id");
+                    b.HasKey("ID");
 
                     b.ToTable("GameProgresses");
                 });
 
             modelBuilder.Entity("GameRandom.DataBaseContexts.Lobbies", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
 
                     b.Property<long>("LobbyId")
                         .HasColumnType("bigint");
@@ -76,7 +77,7 @@ namespace GameRandom.Migrations
                     b.Property<int>("MembersCount")
                         .HasColumnType("integer");
 
-                    b.HasKey("Id");
+                    b.HasKey("ID");
 
                     b.ToTable("Lobbies");
                 });
@@ -104,11 +105,11 @@ namespace GameRandom.Migrations
 
             modelBuilder.Entity("GameRandom.DataBaseContexts.UserGame", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
 
                     b.Property<int>("AppId")
                         .HasColumnType("integer");
@@ -116,7 +117,7 @@ namespace GameRandom.Migrations
                     b.Property<decimal>("UserId")
                         .HasColumnType("numeric(20,0)");
 
-                    b.HasKey("Id");
+                    b.HasKey("ID");
 
                     b.HasIndex("UserId")
                         .IsUnique();
@@ -126,26 +127,26 @@ namespace GameRandom.Migrations
 
             modelBuilder.Entity("GameRandom.DataBaseContexts.Users", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
 
                     b.Property<int>("AvatarURL")
                         .HasColumnType("integer");
 
-                    b.Property<long>("LobbyId")
+                    b.Property<long>("LobbyID")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Nickname")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<decimal>("SteamId")
+                    b.Property<decimal>("SteamID")
                         .HasColumnType("numeric(20,0)");
 
-                    b.HasKey("Id");
+                    b.HasKey("ID");
 
                     b.ToTable("Users");
                 });
