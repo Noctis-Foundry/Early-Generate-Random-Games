@@ -16,13 +16,9 @@ using GameRandom.ViewModels;
 
 namespace GameRandom.Views;
 
-public partial class GameTable : UserControl, IDisposable
+public partial class GameTable : UserControl, IDisposable, IUserControl
 {
-    [Inject] private DatabaseService _databaseService = null!;
-    [Inject] private ObservableConverter _converter = null!;
     [Inject] private ErrorService _errorService = null!;
-    
-    private readonly CancellationTokenSource _cts = new();
     
     private Action<PayloadStructure>? _savedDelegate;
     
@@ -31,13 +27,12 @@ public partial class GameTable : UserControl, IDisposable
     public GameTable()
     {
         InitializeComponent();
-        Di.Container.ResolveFieldsFromClassInstance(this);
-        DataContext = new GameTableViewModel();
         
         if (Design.IsDesignMode)
             return;
-
-        Task.Run(async () => await InitializeTable(), _cts.Token);
+        
+        DataContext = new GameTableViewModel();
+        Di.Container.ResolveFieldsFromClassInstance(this);
 
         _savedDelegate = e => 
         {
@@ -52,86 +47,38 @@ public partial class GameTable : UserControl, IDisposable
         Dispatcher.UIThread.InvokeAsync(() => SubscribeToUpdateTable((int)TableEnum.GameProgress));
     }
 
-    private async Task InitializeTable()
+    public void Open()
     {
-        try
-        {
-            var gameProgresses = await _databaseService.GetTableListAsync<GameProgresses>();
-            await Dispatcher.UIThread.InvokeAsync(() => UpdateTable(gameProgresses));
-        }
-        catch (Exception e)
-        {
-            _errorService.ShowErrorWindow($"An error occured while loading GameTable + {e.Message}", ErrorEnum.Error);
-        }
+        UpdateTableData();
     }
-    
+
     public void AddListener(Action<string> onChangeContent) => _onShowContent = onChangeContent;
 
-    private void Close(object? sender, RoutedEventArgs e)
+    public void Close(object? sender, RoutedEventArgs e)
     {
         _onShowContent?.Invoke("Main");
-        // Dispose();
+        Dispose();
     }
 
-    private async Task SubscribeToUpdateTable(int tableCode)
+    private void SubscribeToUpdateTable(int tableCode)
     {
         if (tableCode != (int)TableEnum.GameProgress)
         {
-            _errorService.ShowErrorWindow($"TableCode: {tableCode} not correct", ErrorEnum.Error);
+            Logger.Info("Failed to update table, not correctly table code");
             return;
         }
-
-        var finallyList = new List<GameProgresses>();
         
-        try
+        UpdateTableData();
+    }
+
+    private void UpdateTableData()
+    {
+        if (DataContext is GameTableViewModel vm)
         {
-            var userInfo = User.GetInstance().GetUserInfo();
-
-            var gameList = await _databaseService.GetTableListAsync<GameProgresses>();
-
-            if (gameList is null)
-            {
-                _errorService.ShowErrorWindow("Not founded games", ErrorEnum.Error);
-                return;
-            }
-
-            if (userInfo.LobbyID <= 0)
-                finallyList = gameList.Where(x => x.PlayerID == userInfo.SteamID).ToList();
-            else
-            {
-                Lobbies? lobbies = await _databaseService.GetLobbyById(userInfo.LobbyID);
-
-                if (lobbies is null)
-                {
-                    _errorService.ShowErrorWindow($"Failed find lobby with id {userInfo.LobbyID} in db", ErrorEnum.Error);
-                    bool isUpdating = await User.GetInstance().UpdateLobbyId(-1);
-
-                    if (!isUpdating)
-                    {
-                        _errorService.ShowErrorWindow("Failed updating lobby id for user in database", ErrorEnum.Error);
-                        return;
-                    }
-                }
-                
-                //Testing for game table TODO delete this code block and change to get lobby game progresses
-                finallyList = gameList.Where(x => x.PlayerID == userInfo.SteamID).ToList();
-            }
-            
-            UpdateTable(finallyList);
-        }
-        catch (Exception e)
-        {
-            _errorService.ShowErrorWindow($"An error occured while updating GameTable + {e.Message}", ErrorEnum.Error);
-            return;
+            Dispatcher.UIThread.InvokeAsync(async () => await vm.LoadData());
         }
     }
     
-    private void UpdateTable(List<GameProgresses> gameProgress)
-    {
-        if (DataContext is GameTableViewModel viewModel)
-            viewModel.GameProgress = _converter.ToObservableCollection(gameProgress);
-    }
-
     public void Dispose()
     {
         _onShowContent = null;
@@ -143,12 +90,7 @@ public partial class GameTable : UserControl, IDisposable
 
         _savedDelegate = null;
         
-        _databaseService = null!;
         _errorService = null!;
-        _converter = null!;
-        
-        _cts.Cancel();
-        _cts.Dispose();
         
         GC.Collect();
         GC.WaitForPendingFinalizers();
