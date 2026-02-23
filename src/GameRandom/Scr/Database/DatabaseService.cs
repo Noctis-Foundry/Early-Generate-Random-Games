@@ -57,12 +57,12 @@ public class DatabaseService : IDatabaseService
     {
         await using var db = new AppDbContext();
 
-        if (await db.UserGames.AnyAsync(e => e.UserId == userInfo.SteamID))
+        if (await db.UserGames.AnyAsync(e => e.UserId == userInfo.SteamId))
             return true;
 
         UserGame newUserGame = new UserGame
         {
-            UserId = userInfo.SteamID,
+            UserId = userInfo.SteamId,
             AppId = 0
         };
         
@@ -70,6 +70,22 @@ public class DatabaseService : IDatabaseService
         await db.SaveChangesAsync();
 
         return true;
+    }
+
+    public async Task<TEntity?> GetFirstOrDefaultAsync<TEntity>(Func<TEntity, bool> predicate) where TEntity : class
+    {
+        try
+        {
+            await using var context = new AppDbContext();
+            var list = await context.Set<TEntity>().AsNoTracking().ToListAsync();
+            
+            return list.FirstOrDefault(predicate);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return null;
+        }
     }
 
     public async Task<List<TEntity>?> GetTableListAsync<TEntity>() 
@@ -171,11 +187,7 @@ public class DatabaseService : IDatabaseService
         try
         {
             await using var appDb = new AppDbContext();
-
-            var userGames = await appDb.UserGames.Include(g => g.GameProgresses)
-                .FirstOrDefaultAsync(e => e.UserId == userData.SteamID);
-
-            return userGames;
+            return await appDb.UserGames.FirstOrDefaultAsync(e => e.UserId == userData.SteamId);
         }
         catch (Exception e)
         {
@@ -187,7 +199,7 @@ public class DatabaseService : IDatabaseService
     public async Task<Users?> GetUserByUlongId(ulong steamId)
     {
         await using var appDb = new AppDbContext();
-        Users? user = await appDb.Users.FirstOrDefaultAsync(u => u.SteamID == steamId);
+        Users? user = await appDb.Users.FirstOrDefaultAsync(u => u.SteamId == steamId);
 
         return user ?? null;
     }
