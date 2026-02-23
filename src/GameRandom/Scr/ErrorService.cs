@@ -14,16 +14,14 @@ public class ErrorService : Register, IError
 {
     private Window _ownerWindow;
     private ErrorWindow _errorWindow;
-    
-    private readonly Queue<ErrorStruct> _queue = new();
 
-    private bool isActiveWindow = false;
+    private readonly Queue<ErrorStruct> _queue = new();
 
     public ErrorService()
     {
         GlobalExceptionHandler();
     }
-    
+
     private void GlobalExceptionHandler()
     {
         AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
@@ -45,45 +43,36 @@ public class ErrorService : Register, IError
     {
         if (arg1 is Window owner)
             _ownerWindow = owner;
-        
+
         _errorWindow = new ErrorWindow();
 
-        _errorWindow.Closed += (sender, args) =>
+        _errorWindow.Closing += (sender, args) =>
         {
-            ClosedWindow();
+            CloseErrorWindow();
         };
     }
 
     public void ShowErrorWindow(string message, ErrorEnum errorType)
     {
-        if (isActiveWindow)
+        if (_errorWindow.IsActiveWindow)
         {
             _queue.Enqueue(new ErrorStruct { ErrorMessage = message, ErrorType = errorType });
             return;
         }
-
-        isActiveWindow = true;
-        _errorWindow.ChangeTextOnModal(message, errorType);
         
-        Dispatcher.UIThread.InvokeAsync(async () =>
-        {
-            try
-            {
-                await _errorWindow.ShowDialog(_ownerWindow);
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e.Message);
-                _errorWindow.Close();
-            }
-        });
+        _errorWindow.ChangeTextOnModal(message, errorType);
+        _errorWindow.IsActiveWindow = true;
+        _errorWindow.Show(_ownerWindow);
     }
 
-    private void ClosedWindow()
+    private void CloseErrorWindow()
     {
-        isActiveWindow = false;
-        TryGoNext();
+        if (!_errorWindow.IsActiveWindow)
+        {
+            TryGoNext();
+        }
     }
+
 
     private void SaveInvokeOnUI(Action action)
     {
@@ -92,11 +81,11 @@ public class ErrorService : Register, IError
 
     private void TryGoNext()
     {
-        if (_queue.Count > 0 && !isActiveWindow)
+        if (_queue.Count > 0 && !_errorWindow.IsActiveWindow)
         {
             var error = _queue.Dequeue();
             ShowErrorWindow(error.ErrorMessage, error.ErrorType);
-        } 
+        }
     }
 }
 

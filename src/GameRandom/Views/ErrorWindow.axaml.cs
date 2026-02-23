@@ -9,15 +9,11 @@ namespace GameRandom.Views;
 public partial class ErrorWindow : Window
 {
     private ErrorEnum _currentErrorType;
+    public bool IsActiveWindow { get; set; } = false;
     
     public ErrorWindow()
     {
         InitializeComponent();
-
-        Closed += (sender, args) =>
-        {
-            OnClosed();
-        };
         
         WindowStartupLocation = WindowStartupLocation.CenterOwner;
     }
@@ -35,14 +31,14 @@ public partial class ErrorWindow : Window
 
     private void MessageBoxButtonAction(object? sender, RoutedEventArgs e)
     {
-        Close();
+        Hide();
+        IsActiveWindow = false;
     }
 
-    private void OnClosed()
+    protected override void OnClosing(WindowClosingEventArgs e)
     {
-        if (_currentErrorType == ErrorEnum.Critical)
-        {
-            Environment.Exit(0);
-        }
+        e.Cancel = true;
+        IsActiveWindow = false;
+        Hide();
     }
 }

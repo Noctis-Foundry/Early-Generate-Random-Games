@@ -19,4 +19,6 @@ public class BoolConverter : IValueConverter
         // Обычно ConvertBack не нужен, можно просто вернуть false
         return value is string str && str.Equals("Completed", StringComparison.OrdinalIgnoreCase);
     }
+    
+    
 }
