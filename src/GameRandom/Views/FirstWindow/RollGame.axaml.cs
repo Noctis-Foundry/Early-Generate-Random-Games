@@ -20,20 +20,15 @@ namespace GameRandom.Views;
 public partial class RollGame : UserControl, IUserControl, IDisposable
 {
     [Inject] private ErrorService _errorService = null!;
-    
-    private Dictionary<ButtonContext, AppSavedContext?>? _appData = new ();
-    
-    private Random? _random = new();
-    
-    private IGenApp? _generateRandomApps;
-    private MainWindowFactory? _mainWindowFactory;
+
+    private Dictionary<ButtonContext, AppSavedContext?> _appData = new();
+
+    private IGenApp _generateRandomApps;
+    private MainWindowFactory _mainWindowFactory;
 
     private Action<string>? _onShowContent;
     private bool _isRolling = false;
 
-    private int _lastYear = 0;
-    private int countClick = 0;
-    
     public RollGame()
     {
         InitializeComponent();
@@ -57,44 +52,36 @@ public partial class RollGame : UserControl, IUserControl, IDisposable
             _errorService.ShowErrorWindow("Generating random games not initialized.", ErrorEnum.Error);
             return;
         }
-        
+
         _isRolling = true;
-        
+
         int countGames = int.Parse(CountApp.Text ?? "1");
         
-        List<AppSavedContext?> apps = new List<AppSavedContext?>();
-        
-        
-        while (apps.Count < countGames)
-        {
-            int year = _random.Next(2010, 2025);
+        _appData.Clear();
+        _mainWindowFactory.ChangeGrid(countGames, GamesGrid);
 
-            if (_lastYear == year)
-            {
-                continue;
-            }
-            _lastYear = year;
+        int iterCount = 0;
+        
+        while (_appData.Count < countGames)
+        {
+            var year = Random.Shared.Next(2010, 2026);
+            var gameInfo = _generateRandomApps.GetRandomGame(year);
             
-            var game = _generateRandomApps.GetRandomGame(year);
-            if (!apps.Contains(game) && game != null)
-            {
-                apps.Add(game);
-            }
-        }
+            if (gameInfo is null)
+                continue;
 
-        if (apps.Count <= 0)
-        {
-            _errorService.ShowErrorWindow("No games found", ErrorEnum.Error);
-            _isRolling = false;
-            return;
+            var imageBytes = await SteamService.Instance.GetImageBytes(gameInfo.HeaderImage);
+            
+            if (imageBytes is null)
+                continue;
+
+            var gridElements = _mainWindowFactory.CreateButtonInGrid(GamesGrid, iterCount);
+            InitDictionaryWithComponents(gridElements.Button, gridElements.Image, gameInfo, imageBytes);
+            
+            iterCount++;
         }
         
-        _mainWindowFactory.ChangeGrid(apps.Count, GamesGrid);
-        (List<Button> buttons, List<Image> images) = _mainWindowFactory.CreateButtonInGrid(apps.Count, GamesGrid);
-        
-        await InitDictionaryWithComponents(buttons, images, apps);
         InitializeButtonListeners();
-
         _isRolling = false;
     }
 
@@ -110,20 +97,23 @@ public partial class RollGame : UserControl, IUserControl, IDisposable
         //TODO
     }
 
-    private async Task InitDictionaryWithComponents(List<Button> buttons, List<Image> images, List<AppSavedContext?> apps)
+    private void InitDictionaryWithComponents(Button buttons, Image images, AppSavedContext apps,
+        byte[] imageBytes)
     {
-        for (int i = 0; i < apps.Count; i++)
-        {
-            ButtonContext buttonContext = new ButtonContext(buttons[i], images[i]);
+        ButtonContext buttonContext = new ButtonContext(buttons, images, imageBytes);
 
-            Bitmap imageBitmap = await SteamService.Instance.GetImage(apps[i].HeaderImage);
-            buttonContext.ButtonImage.Source = imageBitmap;
-            
-            if (!_appData.TryAdd(buttonContext, apps[i]))
-            {
-                _errorService.ShowErrorWindow($"Dictionary contains duplicated app button with hash code {Equals(buttonContext)}",
-                    ErrorEnum.Error);
-            }
+        Bitmap? bitmap = SteamService.Instance.GetImageSyncFromBytes(imageBytes);
+
+        if (bitmap is null)
+            throw new NullReferenceException("Failed to get bitmap from bytes");
+        
+        buttonContext.ButtonImage.Source = bitmap;
+
+        if (!_appData.TryAdd(buttonContext, apps))
+        {
+            _errorService.ShowErrorWindow(
+                $"Dictionary contains duplicated app button with hash code {Equals(buttonContext)}",
+                ErrorEnum.Error);
         }
     }
 
@@ -132,11 +122,11 @@ public partial class RollGame : UserControl, IUserControl, IDisposable
         foreach (var item in _appData)
         {
             var button = item.Key.Button;
-            
+
             if (DataContext is RollGameViewModel vm)
             {
                 if (item.Value != null)
-                    button.Command = new RelayCommand(async () => await vm.ChooseGame(item.Value));
+                    button.Command = new RelayCommand(async () => await vm.ChooseGame(item.Value, item.Key.ImageBytes));
                 else
                     throw new Exception("Not find game");
             }
@@ -170,7 +160,6 @@ public partial class RollGame : UserControl, IUserControl, IDisposable
         _onShowContent = null;
         _generateRandomApps = null;
         _errorService = null!;
-        _random = null;
         _appData = null;
         _mainWindowFactory = null;
     }
