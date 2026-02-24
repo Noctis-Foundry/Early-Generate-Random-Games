@@ -46,7 +46,7 @@ public class DatabaseService : IDatabaseService
         }
         catch (Exception e)
         {
-            Logger.Error("Failed to add new item: " + e.Message);
+            Logger.Error("Failed to add new item: " + e);
             return false;
         }
 
@@ -134,13 +134,19 @@ public class DatabaseService : IDatabaseService
             await context.SaveChangesAsync();
             return true;
         }
-        catch (Exception e)
+        catch (DbUpdateException e)
         {
-            Console.WriteLine($"Failed update database data {e.Message}");
+            Console.WriteLine($"DbUpdateException: {e.Message}");
+            Console.WriteLine($"Inner: {e.InnerException?.Message}");
+            Console.WriteLine($"Inner inner: {e.InnerException?.InnerException?.Message}");
             return false;
         }
-        
-    
+        catch (Exception e)
+        {
+            Console.WriteLine($"Exception: {e.Message}");
+            Console.WriteLine($"Inner: {e.InnerException?.Message}");
+            return false;
+        }
     }
     
     public async Task<List<TEntity>?> Where<TEntity>(Func<TEntity,bool> predicate)
