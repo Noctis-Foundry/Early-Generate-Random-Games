@@ -13,7 +13,7 @@ using GameRandom.ViewModels;
 
 namespace GameRandom.Views.LobbyModalWindow;
 
-public partial class LobbyWindow : Window
+public partial class LobbyWindow : WindowAbstract
 {
     private const int MaxLenghtId = 18;
     [Inject] private readonly EventBus _eventBus = null!;

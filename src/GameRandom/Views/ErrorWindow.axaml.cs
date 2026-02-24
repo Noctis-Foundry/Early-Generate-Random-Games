@@ -2,14 +2,14 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using GameRandom.SteamSDK;
 using GameRandom.SteamSDK.Enums;
 
 namespace GameRandom.Views;
 
-public partial class ErrorWindow : Window
+public partial class ErrorWindow : WindowAbstract
 {
     private ErrorEnum _currentErrorType;
-    public bool IsActiveWindow { get; set; } = false;
     
     public ErrorWindow()
     {
@@ -31,14 +31,6 @@ public partial class ErrorWindow : Window
 
     private void MessageBoxButtonAction(object? sender, RoutedEventArgs e)
     {
-        Hide();
-        IsActiveWindow = false;
-    }
-
-    protected override void OnClosing(WindowClosingEventArgs e)
-    {
-        e.Cancel = true;
-        IsActiveWindow = false;
-        Hide();
+        Close();
     }
 }
