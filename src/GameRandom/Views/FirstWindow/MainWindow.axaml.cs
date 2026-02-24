@@ -87,6 +87,7 @@ public partial class MainWindow : Window
     private void MainWindow_OnClosed(object? sender, EventArgs e)
     {
         SteamManager.GetSteamManager().ShutdownSteam();
+        Environment.Exit(0);
     }
     private void EventsConnecting()
     {
