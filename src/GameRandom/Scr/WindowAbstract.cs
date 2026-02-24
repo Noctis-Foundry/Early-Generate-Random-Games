@@ -21,7 +21,7 @@ public abstract class WindowAbstract : Window
         Show();
     }
     
-    public virtual void Close()
+    public virtual void CloseWindow()
     {
         Hide();
         IsActive = false;
