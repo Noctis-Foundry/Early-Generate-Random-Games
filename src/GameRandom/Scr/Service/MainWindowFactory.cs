@@ -20,7 +20,7 @@ public class MainWindowFactory
     {
         Image image = new Image
         {
-            Source = new Bitmap("./Assets/avalonia-logo.ico"),
+            Source = AvaloniaService.CreateBitmapFromPath("Assets/avalonia-logo.ico"),
             Name = $"AppImage{countGame}"
         };
 
@@ -58,7 +58,7 @@ public class MainWindowFactory
     {
         Image image = new Image
         {
-            Source = new Bitmap("Assets/avalonia-logo.ico"),
+            Source = AvaloniaService.CreateBitmapFromPath("Assets/avalonia-logo.ico"),
         };
 
         Grid.SetColumn(image, imageColum);
