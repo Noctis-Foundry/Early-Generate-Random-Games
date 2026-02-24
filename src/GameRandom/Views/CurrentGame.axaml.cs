@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
@@ -8,14 +9,8 @@ using GameRandom.ViewModels;
 
 namespace GameRandom.Views;
 
-public partial class CurrentGame : Window
+public partial class CurrentGame : WindowAbstract
 {
-    [Inject]
-    private DatabaseService _databaseService;
-    
-    [Inject]
-    private ErrorService _errorService;
-    
     public CurrentGame()
     {
         InitializeComponent();
@@ -24,11 +19,11 @@ public partial class CurrentGame : Window
         WindowStartupLocation = WindowStartupLocation.CenterOwner;
     }
     
-    public void Open()
+    public override void Open(Window? parent = null)
     {
-        Di.Container.ResolveFieldsFromClassInstance(this);
+        base.Open(parent);
         
-        Show();
+        Di.Container.ResolveFieldsFromClassInstance(this);
         
         if (DataContext is CurrentGameStatusViewModel viewModel)
         {
@@ -41,29 +36,31 @@ public partial class CurrentGame : Window
 
     protected override void OnClosing(WindowClosingEventArgs e)
     {
-        // Очистка данных
-        _databaseService = null;
-        _errorService = null;
-        
         if (DataContext is CurrentGameStatusViewModel viewModel)
         {
-            viewModel.CloseCurrentGameWindow();
+            viewModel.ClearingContent();
         }
+        
+        base.OnClosing(e);
     }
 
     private void ShowSteamStore(object? sender, RoutedEventArgs e)
     {
-        throw new System.NotImplementedException();
+        if (DataContext is not CurrentGameStatusViewModel vm) return;
+
+        var url = SteamService.Instance.AppSteamPage(vm.UserGame.AppId);
+
+        Process.Start(new ProcessStartInfo
+        {
+            FileName = url,
+            UseShellExecute = true
+        });
     }
 
-    private void CheckStatus(object? sender, RoutedEventArgs e)
+    private async void FinishedGame(object? sender, RoutedEventArgs e)
     {
-        throw new System.NotImplementedException();
-    }
+        if (DataContext is not CurrentGameStatusViewModel vm) return;
 
-
-    private void FinishedGame(object? sender, RoutedEventArgs e)
-    {
-        throw new System.NotImplementedException();
+        await vm.FinishingGame();
     }
 }

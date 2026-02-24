@@ -56,15 +56,12 @@
 
                         <!-- Action buttons panel -->
                         <Border Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center">
-                                <Grid ColumnDefinitions="Auto, Auto, Auto" ColumnSpacing="5">
+                                <Grid ColumnDefinitions="Auto, Auto" ColumnSpacing="30">
 
                                         <!-- TODO: Open the game's store page in Steam browser -->
                                         <Button Classes="GameInfoButton" Content="Steam" Click="ShowSteamStore"></Button>
-
-                                        <!-- TODO: Check if the game is currently active/running by the user -->
-                                        <Button Grid.Column="1" Classes="GameInfoButton" Content="Check status" Click="CheckStatus"></Button>
                                         
-                                        <Button Grid.Column="2" Classes="GameInfoButton" Content="Finish game" Click="FinishedGame"></Button>
+                                        <Button Grid.Column="1" Classes="GameInfoButton" Content="Finish game" Click="FinishedGame"></Button>
 
                                 </Grid>
                         </Border>
