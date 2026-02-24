@@ -57,6 +57,7 @@ public class GameProgresses
     public int Grade { get; set; }
     public DateTime BeginTime { get; set; }
     public DateTime EndTime { get; set; }
+    public DateTime FinishTime { get; set; }
     public bool IsFinished { get; set; }
 }
 
