@@ -35,6 +35,7 @@
                 <DataGridTextColumn Header="End date" Binding="{Binding GameInfo.EndTime, DataType=vm:GameTableData}"/>
                 <DataGridCheckBoxColumn Header="Is finished"
                                         Binding="{Binding GameInfo.IsFinished, DataType=vm:GameTableData}"/>
+                <DataGridTextColumn Header="Finished time" Binding="{Binding GameInfo.FinishTime, DataType=vm:GameTableData}"></DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>
