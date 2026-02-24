@@ -27,7 +27,7 @@ public partial class MainWindow : Window
     [Inject] private readonly EventBus _eventBus = null!;
     [Inject] private readonly UserControlFactory _controlFactory = null!;
     
-    private readonly Register<string, IUserControl> _preloadRegister = new();
+    private readonly Register<string, Func<UserControl>> _preloadRegister = new();
     private readonly Action<string> _selectorAction;
 
     private IUserControl? _oldControl = null;
@@ -62,20 +62,26 @@ public partial class MainWindow : Window
 
     private void InitializeUserControlRegister()
     {
-        _preloadRegister.RegisterNewObject("Main", _controlFactory.CreateUserControl<MainWindowContent>(_selectorAction));
-        _preloadRegister.RegisterNewObject("Profile", _controlFactory.CreateUserControl<ProfileContent>(_selectorAction));
-        _preloadRegister.RegisterNewObject("Roll", _controlFactory.CreateUserControl<RollGame>(_selectorAction));
-        _preloadRegister.RegisterNewObject("Table", _controlFactory.CreateUserControl<GameTable>(_selectorAction));
+        _preloadRegister.RegisterNewObject("Main", () => _controlFactory.CreateUserControl<MainWindowContent>(_selectorAction));
+        _preloadRegister.RegisterNewObject("Profile",() => _controlFactory.CreateUserControl<ProfileContent>(_selectorAction));
+        _preloadRegister.RegisterNewObject("Roll", () =>  _controlFactory.CreateUserControl<RollGame>(_selectorAction));
+        _preloadRegister.RegisterNewObject("Table", () =>  _controlFactory.CreateUserControl<GameTable>(_selectorAction));
     }
 
     private void Navigate(string nameControl)
     {
-        if (_preloadRegister.GetObjectFromRegister(nameControl, out var value))
+        if (_preloadRegister.GetObjectFromRegister(nameControl, out var func))
         {
-            if (value is null) return;
-            
-            ControlMain.Content = value;
-            value.Open();
+            var content = func?.Invoke();
+
+            if (content is null)
+                throw new NullReferenceException($"Failed navigate to {nameControl}");
+
+            if (content is IUserControl value)
+            {
+                ControlMain.Content = value;
+                value.Open();
+            }
         }
     }
     private void MainWindow_OnClosed(object? sender, EventArgs e)
