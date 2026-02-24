@@ -17,11 +17,12 @@ using GameRandom.ViewModels;
 
 namespace GameRandom.Views;
 
-public partial class RollGame : UserControl, IUserControl, IDisposable
+public partial class RollGame : UserControl, IUserControl, IDisposable //TODO Refactoring classes and extract logic to view model
 {
     [Inject] private ErrorService _errorService = null!;
 
     private Dictionary<ButtonContext, AppSavedContext?> _appData = new();
+    private ChooseGameWindow _chooseGameWindow = new();
 
     private IGenApp _generateRandomApps;
     private MainWindowFactory _mainWindowFactory;
@@ -56,31 +57,31 @@ public partial class RollGame : UserControl, IUserControl, IDisposable
         _isRolling = true;
 
         int countGames = int.Parse(CountApp.Text ?? "1");
-        
+
         _appData.Clear();
         _mainWindowFactory.ChangeGrid(countGames, GamesGrid);
 
         int iterCount = 0;
-        
+
         while (_appData.Count < countGames)
         {
             var year = Random.Shared.Next(2010, 2026);
             var gameInfo = _generateRandomApps.GetRandomGame(year);
-            
+
             if (gameInfo is null)
                 continue;
 
             var imageBytes = await SteamService.Instance.GetImageBytes(gameInfo.HeaderImage);
-            
+
             if (imageBytes is null)
                 continue;
 
             var gridElements = _mainWindowFactory.CreateButtonInGrid(GamesGrid, iterCount);
             InitDictionaryWithComponents(gridElements.Button, gridElements.Image, gameInfo, imageBytes);
-            
+
             iterCount++;
         }
-        
+
         InitializeButtonListeners();
         _isRolling = false;
     }
@@ -106,7 +107,7 @@ public partial class RollGame : UserControl, IUserControl, IDisposable
 
         if (bitmap is null)
             throw new NullReferenceException("Failed to get bitmap from bytes");
-        
+
         buttonContext.ButtonImage.Source = bitmap;
 
         if (!_appData.TryAdd(buttonContext, apps))
@@ -122,18 +123,15 @@ public partial class RollGame : UserControl, IUserControl, IDisposable
         foreach (var item in _appData)
         {
             var button = item.Key.Button;
-
-            if (DataContext is RollGameViewModel vm)
-            {
-                if (item.Value != null)
-                    button.Command = new RelayCommand(async () => await vm.ChooseGame(item.Value, item.Key.ImageBytes));
-                else
-                    throw new Exception("Not find game");
-            }
+            
+            if (item.Value != null)
+                button.Command = new RelayCommand(() =>
+                {
+                    _chooseGameWindow.Open();
+                    _chooseGameWindow.LoadData(item.Value, item.Key.ImageBytes);
+                });
             else
-            {
-                _errorService.ShowErrorWindow("Not find roll game view model for RollGame.axaml", ErrorEnum.Error);
-            }
+                throw new Exception("Not find game");
         }
     }
 

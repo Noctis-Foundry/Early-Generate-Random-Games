@@ -31,6 +31,6 @@ public partial class ErrorWindow : WindowAbstract
 
     private void MessageBoxButtonAction(object? sender, RoutedEventArgs e)
     {
-        Close();
+        CloseWindow();
     }
 }
