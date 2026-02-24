@@ -4,12 +4,13 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
+using GameRandom.SteamSDK;
 using GameRandom.SteamSDK.UserData;
 using GameRandom.ViewModels;
 
 namespace GameRandom.Views;
 
-public partial class GamesTableWindow : Window
+public partial class GamesTableWindow : WindowAbstract
 {
     public GamesTableWindow()
     {
@@ -21,9 +22,9 @@ public partial class GamesTableWindow : Window
         DataContext = new StatisticGameTableViewModel();
     }
 
-    public void Open()
+    public override void Open(Window? parent = null)
     {
-        Show();
+        base.Open(parent);
         
         if (DataContext is StatisticGameTableViewModel statisticGameTableViewModel)
             Dispatcher.UIThread.InvokeAsync(async () => await statisticGameTableViewModel.LoadData(e => e.PlayerId == User.GetInstance().GetUserInfo().SteamId));
@@ -31,7 +32,7 @@ public partial class GamesTableWindow : Window
 
     protected override void OnClosing(WindowClosingEventArgs e)
     {
-        Hide();
+        base.OnClosing(e);
         
         if (DataContext is StatisticGameTableViewModel statisticGameTableViewModel)
             statisticGameTableViewModel.UnloadTable();
