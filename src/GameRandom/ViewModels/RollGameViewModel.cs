@@ -33,6 +33,7 @@ public class RollGameViewModel : ViewModelBase
             EndTime = endDate,
             Grade = 0,
             IsFinished = false,
+            FinishTime = endDate,
             PlayerId = SteamManager.GetSteamIdAsLong()
         };
 
@@ -60,10 +61,5 @@ public class RollGameViewModel : ViewModelBase
             userGame.AppId = savedContext.AppId;
             await service.UpdateAsync(userGame);
         }
-    }
-    
-    private string AppUrl(int appId)
-    {
-        return $"https://store.steampowered.com/app/{appId}/?I=english";
     }
 }
