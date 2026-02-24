@@ -54,20 +54,19 @@ public class ErrorService : Register, IError
 
     public void ShowErrorWindow(string message, ErrorEnum errorType)
     {
-        if (_errorWindow.IsActiveWindow)
+        if (_errorWindow.IsActive)
         {
             _queue.Enqueue(new ErrorStruct { ErrorMessage = message, ErrorType = errorType });
             return;
         }
         
         _errorWindow.ChangeTextOnModal(message, errorType);
-        _errorWindow.IsActiveWindow = true;
-        _errorWindow.Show(_ownerWindow);
+        _errorWindow.Open(_ownerWindow);
     }
 
     private void CloseErrorWindow()
     {
-        if (!_errorWindow.IsActiveWindow)
+        if (!_errorWindow.IsActive)
         {
             TryGoNext();
         }
@@ -81,7 +80,7 @@ public class ErrorService : Register, IError
 
     private void TryGoNext()
     {
-        if (_queue.Count > 0 && !_errorWindow.IsActiveWindow)
+        if (_queue.Count > 0 && !_errorWindow.IsActive)
         {
             var error = _queue.Dequeue();
             ShowErrorWindow(error.ErrorMessage, error.ErrorType);
