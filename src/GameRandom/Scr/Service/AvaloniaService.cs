@@ -52,4 +52,15 @@ public static class AvaloniaService
         var bitmap = CreateBitmap(imageByte, (int)width, (int)height);
         return bitmap;
     }
+    
+    /// <summary>
+    /// Создает Bitmap из файла изображения по указанному пути в ресурсах приложения.
+    /// </summary>
+    /// <param name="path">Относительный путь к изображению в ресурсах. Пример: Assets/img.png</param>
+    /// <returns>Bitmap изображения или null в случае ошибки.</returns>
+    public static Bitmap? CreateBitmapFromPath(string path)
+    {
+        var uri = new Uri($"avares://GameRandom/{path}");
+        return new Bitmap(AssetLoader.Open(uri));
+    }
 }

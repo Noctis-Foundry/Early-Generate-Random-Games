@@ -65,4 +65,9 @@ public class SteamService
         
         return new Bitmap(mr);
     }
+    
+    public string AppSteamPage(int appId)
+    {
+        return $"https://store.steampowered.com/app/{appId}/?I=english";
+    }
 }
