@@ -81,16 +81,6 @@ public class GenerateRandomApps : IGenApp
 
         return null;
     }
-    public AppSavedContext? GetRandomGame(int year, int indexCategory)
-    {
-        if (_apps.TryGetValue(year, out var apps))
-        {
-            AppSavedContext? app = apps.Find(a => a.AppCategoris.ContainsKey(indexCategory));
-            return app;
-        }
-
-        return null;
-    }
 }
 
 public interface IGenApp
@@ -98,6 +88,5 @@ public interface IGenApp
     bool IsInitialized { get; }
     
     AppSavedContext? GetRandomGame(int year);
-    AppSavedContext? GetRandomGame(int year, int indexCategory);
 }
 
