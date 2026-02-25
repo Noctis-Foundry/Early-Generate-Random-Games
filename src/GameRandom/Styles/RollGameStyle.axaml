@@ -59,6 +59,10 @@
         </Style.Animations>
     </Style>
     
+    <Style Selector="StackPanel.ContentPanel">
+        <Setter Property="Background" Value="#66000000"/>
+    </Style>
+    
     <!-- Стиль кнопки закрытия -->
     <Style Selector="Button.CloseButton">
         <Setter Property="Background" Value="Black"/>

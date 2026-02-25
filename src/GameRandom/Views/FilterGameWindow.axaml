@@ -19,11 +19,15 @@
         <Style Selector="ListBoxItem.FilteredBox">
             <Setter Property="Padding" Value="8,4"/>
         </Style>
-        <Style Selector="ListBoxItem.FilteredBox:selected /template/ ContentPresenter">
-            <Setter Property="Background" Value="#007ACC"/>
-        </Style>
        <Style Selector="TextBlock.FilteredBox">
            <Setter Property="Foreground" Value="GhostWhite"></Setter>
+       </Style>
+       <Style Selector="ListBox.FilteredBox TextBlock">
+           <Setter Property="Foreground" Value="PaleVioletRed"></Setter>
+       </Style>
+       
+       <Style Selector="ListBox.FilteredBox ListBoxItem:selected /template/ContentPresenter">
+           <Setter Property="Background" Value="#C1185A"></Setter>
        </Style>
     </Window.Styles>
     
@@ -38,15 +42,15 @@
         <Border Margin="16" Background="#252526" BorderBrush="#3F3F46" BorderThickness="1">
             <Grid RowDefinitions="Auto,*,Auto,*,Auto,*" Margin="16">
                 <TextBlock Classes="FilteredBox" Text="Categories" FontWeight="SemiBold" Margin="0,0,0,8"/>
-                <ListBox Classes="FilteredBox" Grid.Row="1" SelectionMode="Multiple" ItemsSource="{Binding Categories}"
+                <ListBox Classes="FilteredBox" Grid.Row="1" SelectionMode="Multiple, Toggle" ItemsSource="{Binding Categories}"
                          SelectedItems="{Binding SelectedCategories}" MaxHeight="200" Margin="0,0,0,16"/>
                 
                 <TextBlock Classes="FilteredBox" Grid.Row="2" Text="Genres" FontWeight="SemiBold" Margin="0,0,0,8"/>
-                <ListBox Classes="FilteredBox" Grid.Row="3" SelectionMode="Multiple" ItemsSource="{Binding Genres}" 
+                <ListBox Classes="FilteredBox" Grid.Row="3" SelectionMode="Multiple, Toggle" ItemsSource="{Binding Genres}" 
                          SelectedItems="{Binding SelectedGenres}" MaxHeight="150" Margin="0,0,0,16"/>
                 
                 <TextBlock Classes="FilteredBox" Grid.Row="4" Text="Years" FontWeight="SemiBold" Margin="0,0,0,8"/>
-                <ListBox Classes="FilteredBox" Grid.Row="5" SelectionMode="Multiple" ItemsSource="{Binding Years}" 
+                <ListBox Classes="FilteredBox" Grid.Row="5" SelectionMode="Multiple, Toggle" ItemsSource="{Binding Years}" 
                          SelectedItems="{Binding SelectedYears}" MaxHeight="150"/>
             </Grid>
         </Border>
