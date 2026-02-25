@@ -3,16 +3,16 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:vm="using:GameRandom.ViewModels"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="500"
              x:Class="GameRandom.Views.RollGame" x:DataType="vm:RollGameViewModel"
-             Width="1000" Height="600">
+             Width="1000" Height="500">
 
     <DockPanel>
         <DockPanel.Background>
             <ImageBrush Source="avares://GameRandom/Assets/RandomGame.png" Stretch="Fill" />
         </DockPanel.Background>
-
-        <Border Classes="HeaderBorder" DockPanel.Dock="Top" Margin="13">
+        
+        <Border Classes="HeaderBorder" DockPanel.Dock="Top" Margin="15,15,15,0">
             <Grid ColumnDefinitions="*, Auto Auto" ColumnSpacing="10">
                 <Border HorizontalAlignment="Left" Margin="15,0,0,0">
                     <TextBlock Classes="HeaderText" Text="GAME RANDOMIZER" HorizontalAlignment="Center"
@@ -31,11 +31,11 @@
         </Border>
         
 
-        <Border Classes="ContentBorder" HorizontalAlignment="Center" VerticalAlignment="Top"
-                MinWidth="600" MaxWidth="800" MinHeight="280" MaxHeight="400"
+        <StackPanel Classes="ContentPanel" HorizontalAlignment="Center" VerticalAlignment="Top"
+                MinWidth="600" MaxWidth="900" MinHeight="280" MaxHeight="400" Width="900"
                 Margin="0,15,0,0">
-            <Grid x:Name="GamesGrid" RowDefinitions="Auto, Auto" ColumnDefinitions="Auto, Auto, Auto"
-                  HorizontalAlignment="Center" RowSpacing="10">
+            <Grid x:Name="GamesGrid" RowDefinitions="Auto, Auto" ColumnDefinitions="Auto, Auto, Auto" Margin="0,15,0,0"
+                  HorizontalAlignment="Center" RowSpacing="10" ColumnSpacing="15">
 
                 <Border Classes="GameBorder" Grid.Column="0">
                     <Button Classes="RandomButton" x:Name="AppButton1">
@@ -57,26 +57,26 @@
                                Source="avares://GameRandom/Assets/avalonia-logo.ico" />
                     </Button>
                 </Border>
-                
-                <Border Grid.Row="1" Grid.Column="1" Classes="ContentBorder" Height="80" Width="320">
-                    <Grid RowDefinitions="Auto" ColumnDefinitions="Auto, Auto, Auto" HorizontalAlignment="Center"
-                          VerticalAlignment="Center"
-                          ColumnSpacing="15">
-
-                        <Button Classes="GenerateButton" Grid.Column="0" x:Name="GenerateButton"
-                                Click="GenerateGames">
-                            <TextBlock Classes="GenerateButtonText" Text="Search" />
-                        </Button>
-
-                        <Border Classes="InputBorder" Grid.Column="1">
-                            <MaskedTextBox Classes="CountInput" x:Name="CountApp" Text="3"
-                                           HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
-                        </Border>
-                        
-                        <CheckBox Grid.Column="2" Content="filter" Width="100"></CheckBox>
-                    </Grid>
-                </Border>
             </Grid>
-        </Border>
+            
+            <Border Classes="ContentBorder" Height="80" Width="320">
+                <Grid RowDefinitions="Auto" ColumnDefinitions="Auto, Auto, Auto" HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      ColumnSpacing="15">
+
+                    <Button Classes="GenerateButton" Grid.Column="0" x:Name="GenerateButton"
+                            Click="GenerateGames">
+                        <TextBlock Classes="GenerateButtonText" Text="Search" />
+                    </Button>
+
+                    <Border Classes="InputBorder" Grid.Column="1">
+                        <MaskedTextBox Classes="CountInput" x:Name="CountApp" Text="3"
+                                       HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+                    </Border>
+                        
+                    <CheckBox Grid.Column="2" Content="filter" Width="100" x:Name="FilterCheckBox"></CheckBox>
+                </Grid>
+            </Border>
+        </StackPanel>
     </DockPanel>
 </UserControl>
