@@ -4,185 +4,80 @@
              xmlns:vm="using:GameRandom.ViewModels"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="GameRandom.Views.RollGame"
-             x:DataType="vm:RollGameViewModel"
+             x:Class="GameRandom.Views.RollGame" x:DataType="vm:RollGameViewModel"
              Width="1000" Height="600">
-   
+    
     <Grid>
-        <!-- Манга фон -->
         <Grid.Background>
             <ImageBrush Source="avares://GameRandom/Assets/RandomGame.png" Stretch="UniformToFill" Opacity="0.8"/>
         </Grid.Background>
         
-        <!-- Затемнение для контраста -->
         <Rectangle Fill="Black" Opacity="0.6"/>
         
         <StackPanel>
-            <!-- Заголовок в стиле манги -->
-            <Border Background="Black" 
-                    BorderBrush="White" 
-                    BorderThickness="3,3,3,0"
-                    CornerRadius="0"
-                    Margin="20,20,20,0"
-                    Padding="15">
-                <TextBlock Text="GAME RANDOMIZER" 
-                           FontSize="24" 
-                           FontWeight="Bold"
-                           Foreground="White"
-                           HorizontalAlignment="Center"
-                           FontFamily="Arial"/>
+            <Border Classes="HeaderBorder">
+                <TextBlock Classes="HeaderText" Text="GAME RANDOMIZER"/>
             </Border>
 
-            <!-- Основной контент -->
-            <Border Background="#99000000" 
-                    BorderBrush="White" 
-                    BorderThickness="3"
-                    CornerRadius="0"
-                    Margin="20,0,20,20"
-                    Padding="20">
+            <Border Classes="ContentBorder">
                 <StackPanel>
-                    <!-- Кнопка закрытия -->
-                    <Button VerticalAlignment="Top" 
-                            HorizontalAlignment="Right" 
-                            Click="Close"
-                            Background="Black" 
-                            Foreground="White"
-                            BorderBrush="White"
-                            BorderThickness="2"
-                            FontWeight="Bold"
-                            FontSize="14"
-                            Margin="0,0,0,20"
-                            Width=""
-                            Height="30"
-                            CornerRadius="0">
+                    <Button Classes="CloseButton" VerticalAlignment="Top" HorizontalAlignment="Right"
+                            Click="Close" Margin="0,0,0,20">
                         ✕ CLOSE
                     </Button>
 
-                    <!-- Сетка игр -->
-                    <Grid RowDefinitions="Auto" 
-                          x:Name="GamesGrid" 
-                          ColumnDefinitions="Auto, Auto, Auto"
-                          HorizontalAlignment="Center"
-                          Margin="0,20,0,40">
+                    <Grid x:Name="GamesGrid" RowDefinitions="Auto" ColumnDefinitions="Auto, Auto, Auto"
+                          HorizontalAlignment="Center" Margin="0,20,0,40">
                         
-                        <!-- Игра 1 -->
-                        <Border Grid.Column="0" 
-                                BorderBrush="White" 
-                                BorderThickness="3"
-                                Background="Black"
-                                Margin="10"
-                                Padding="5">
-                            <Button Classes="RandomButton" 
-                                    x:Name="AppButton1"
-                                    Background="Transparent"
-                                    BorderThickness="0">
-                                <Image Classes="GameImages" 
-                                       x:Name="AppImage1" 
-                                       Source="avares://GameRandom/Assets/avalonia-logo.ico"
-                                       Width="80" 
-                                       Height="80"/>
+                        <Border Classes="GameBorder" Grid.Column="0">
+                            <Button Classes="RandomButton" x:Name="AppButton1">
+                                <Image Classes="GameImages" x:Name="AppImage1"
+                                       Source="avares://GameRandom/Assets/avalonia-logo.ico"/>
                             </Button>
                         </Border>
 
-                        <!-- Игра 2 -->
-                        <Border Grid.Column="1" 
-                                BorderBrush="White" 
-                                BorderThickness="3"
-                                Background="Black"
-                                Margin="10"
-                                Padding="5">
-                            <Button Classes="RandomButton" 
-                                    x:Name="AppButton2"
-                                    Background="Transparent"
-                                    BorderThickness="0">
-                                <Image Classes="GameImages" 
-                                       x:Name="AppImage2" 
-                                       Source="avares://GameRandom/Assets/avalonia-logo.ico"
-                                       Width="80" 
-                                       Height="80"/>
+                        <Border Classes="GameBorder" Grid.Column="1">
+                            <Button Classes="RandomButton" x:Name="AppButton2">
+                                <Image Classes="GameImages" x:Name="AppImage2"
+                                       Source="avares://GameRandom/Assets/avalonia-logo.ico"/>
                             </Button>
                         </Border>
 
-                        <!-- Игра 3 -->
-                        <Border Grid.Column="2" 
-                                BorderBrush="White" 
-                                BorderThickness="3"
-                                Background="Black"
-                                Margin="10"
-                                Padding="5">
-                            <Button Classes="RandomButton" 
-                                    x:Name="AppButton3"
-                                    Background="Transparent"
-                                    BorderThickness="0">
-                                <Image Classes="GameImages" 
-                                       x:Name="AppImage3" 
-                                       Source="avares://GameRandom/Assets/avalonia-logo.ico"
-                                       Width="80" 
-                                       Height="80"/>
+                        <Border Classes="GameBorder" Grid.Column="2">
+                            <Button Classes="RandomButton" x:Name="AppButton3">
+                                <Image Classes="GameImages" x:Name="AppImage3"
+                                       Source="avares://GameRandom/Assets/avalonia-logo.ico"/>
                             </Button>
                         </Border>
                     </Grid>
 
-                    <!-- Панель управления -->
-                    <Border Background="Black" 
-                            BorderBrush="White" 
-                            BorderThickness="2"
-                            CornerRadius="0"
-                            Padding="15"
-                            HorizontalAlignment="Center">
-                        <Grid RowDefinitions="Auto" 
-                              ColumnDefinitions="Auto, Auto" 
-                              HorizontalAlignment="Center">
+                    <Border Classes="ControlPanel">
+                        <Grid RowDefinitions="Auto" ColumnDefinitions="Auto, Auto, Auto, Auto" HorizontalAlignment="Center"
+                              ColumnSpacing="15">
                             
-                            <!-- Кнопка генерации -->
-                            <Button Grid.Column="0" 
-                                    Click="GenerateGames" 
-                                    x:Name="GenerateButton"
-                                    Background="Black"
-                                    BorderBrush="White"
-                                    BorderThickness="2"
-                                    Margin="0,0,15,0"
-                                    Width="" 
-                                    Height="60"
-                                    CornerRadius="0">
-                                <TextBlock Text="Search"
-                                           Foreground="White"
-                                           FontSize="14"
-                                           FontWeight="Bold"
-                                           HorizontalAlignment="Center"
-                                           VerticalAlignment="Center"/>
+                            <Button Classes="GenerateButton" Grid.Column="0" x:Name="GenerateButton"
+                                    Click="GenerateGames">
+                                <TextBlock Classes="GenerateButtonText" Text="Search"/>
                             </Button>
                             
-                            <!-- Поле ввода количества -->
-                            <Border Grid.Column="1" 
-                                    BorderBrush="White" 
-                                    BorderThickness="2"
-                                    Background="Black"
-                                    Width="60" 
-                                    Height="60">
-                                <MaskedTextBox 
-                                               x:Name="CountApp" 
-                                               Background="Transparent"
-                                               BorderThickness="0"
-                                               HorizontalContentAlignment="Center" 
-                                               VerticalContentAlignment="Center"
-                                               Text="3" 
-                                               FontSize="24" 
-                                               FontWeight="Bold"
-                                               Foreground="White"
-                                               CaretBrush="White"/>
+                            <Border Classes="InputBorder" Grid.Column="1">
+                                <MaskedTextBox Classes="CountInput" x:Name="CountApp" Text="3"
+                                               HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
                             </Border>
+                            
+                            <CheckBox Grid.Column="2" Content="Filter" Width="80" Background="White" 
+                                      HorizontalContentAlignment="Center">
+                            </CheckBox>
+                            
+                            <Button Classes="GenerateButton" Grid.Column="3" x:Name="FilteredButton"
+                                     Click="GenerateGames">
+                                <TextBlock Classes="GenerateButtonText" Text="Search"/>
+                            </Button>
                         </Grid>
                     </Border>
 
-                    <!-- Подпись -->
-                    <TextBlock Text="Select the number of games and click to randomize"
-                               Foreground="White"
-                               FontSize="12"
-                               FontWeight="SemiBold"
-                               HorizontalAlignment="Center"
-                               Margin="0,15,0,0"
-                               TextAlignment="Center"/>
+                    <TextBlock Classes="HintText" Margin="0,15,0,0"
+                               Text="Select the number of games and click to randomize"/>
                 </StackPanel>
             </Border>
         </StackPanel>

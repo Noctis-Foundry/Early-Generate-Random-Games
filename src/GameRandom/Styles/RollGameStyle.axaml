@@ -1,0 +1,122 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <!-- Стиль заголовка -->
+    <Style Selector="Border.HeaderBorder">
+        <Setter Property="Background" Value="Black"/>
+        <Setter Property="BorderBrush" Value="White"/>
+        <Setter Property="BorderThickness" Value="3,3,3,0"/>
+        <Setter Property="CornerRadius" Value="0"/>
+        <Setter Property="Margin" Value="20,20,20,0"/>
+        <Setter Property="Padding" Value="15"/>
+    </Style>
+    
+    <Style Selector="TextBlock.HeaderText">
+        <Setter Property="FontSize" Value="24"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="FontFamily" Value="Arial"/>
+    </Style>
+    
+    <!-- Стиль основного контента -->
+    <Style Selector="Border.ContentBorder">
+        <Setter Property="Background" Value="#99000000"/>
+        <Setter Property="BorderBrush" Value="White"/>
+        <Setter Property="BorderThickness" Value="3"/>
+        <Setter Property="CornerRadius" Value="0"/>
+        <Setter Property="Margin" Value="20,0,20,20"/>
+        <Setter Property="Padding" Value="20"/>
+    </Style>
+    
+    <!-- Стиль кнопки закрытия -->
+    <Style Selector="Button.CloseButton">
+        <Setter Property="Background" Value="Black"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderBrush" Value="White"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="CornerRadius" Value="0"/>
+    </Style>
+    
+    <!-- Стиль рамки игры -->
+    <Style Selector="Border.GameBorder">
+        <Setter Property="BorderBrush" Value="White"/>
+        <Setter Property="BorderThickness" Value="3"/>
+        <Setter Property="Background" Value="Black"/>
+        <Setter Property="Margin" Value="10"/>
+        <Setter Property="Padding" Value="5"/>
+    </Style>
+    
+    <!-- Стиль кнопки игры -->
+    <Style Selector="Button.RandomButton">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+    
+    <!-- Стиль изображения игры -->
+    <Style Selector="Image.GameImages">
+        <Setter Property="Width" Value="80"/>
+        <Setter Property="Height" Value="80"/>
+    </Style>
+    
+    <!-- Стиль панели управления -->
+    <Style Selector="Border.ControlPanel">
+        <Setter Property="Background" Value="Black"/>
+        <Setter Property="BorderBrush" Value="White"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="CornerRadius" Value="0"/>
+        <Setter Property="Padding" Value="15"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+    </Style>
+    
+    <!-- Стиль кнопки генерации -->
+    <Style Selector="Button.GenerateButton">
+        <Setter Property="Background" Value="Black"/>
+        <Setter Property="BorderBrush" Value="White"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="Height" Value="60"/>
+        <Setter Property="CornerRadius" Value="0"/>
+    </Style>
+    
+    <Style Selector="TextBlock.GenerateButtonText">
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+    
+    <!-- Стиль поля ввода -->
+    <Style Selector="Border.InputBorder">
+        <Setter Property="BorderBrush" Value="White"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="Background" Value="Black"/>
+        <Setter Property="Width" Value="60"/>
+        <Setter Property="Height" Value="60"/>
+    </Style>
+    
+    <Style Selector="MaskedTextBox.CountInput">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="FontSize" Value="36"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="CaretBrush" Value="White"/>
+    </Style>
+    
+    <!-- Стиль подписи -->
+    <Style Selector="TextBlock.HintText">
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="TextAlignment" Value="Center"/>
+    </Style>
+    
+    
+</Styles>
