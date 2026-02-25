@@ -80,7 +80,7 @@ public class ChooseGameViewModel : ViewModelBase, IDisposable
         _imageBytes = imageBytes;
         
         uiInfo.AppName.Text = appSavedContext.AppName;
-        uiInfo.Genres.Text = string.Join(", ", appSavedContext.AppGenres.Values);
+        uiInfo.Genres.Text = string.Join(", ", appSavedContext.AppGenres);
         uiInfo.DateRelease.Text = appSavedContext.AppReleaseYear.ToString();
         uiInfo.GameHeaderImage.Source = SteamService.Instance.GetImageSyncFromBytes(_imageBytes);
     }
