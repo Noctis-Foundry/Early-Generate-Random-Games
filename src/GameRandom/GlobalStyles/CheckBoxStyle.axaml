@@ -1,0 +1,131 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <Grid RowDefinitions="*, *" RowSpacing="15">
+                <CheckBox Content="Row 1"></CheckBox>
+                <CheckBox IsChecked="True" Grid.Row="1" Content="Row 2"></CheckBox>
+            </Grid>
+        </Border>
+    </Design.PreviewWith>
+    
+    <!-- Styles resources -->
+    <Styles.Resources>
+        <Thickness x:Key="RectangularMargin">10,0,0,0</Thickness>
+        
+        <LinearGradientBrush StartPoint="0%, 0%" EndPoint="100%, 0%" x:Key="LightStaticLinear">
+            <GradientStop Color="{StaticResource GradientColorStart}" Offset="0.0"/>
+            <GradientStop Color="{StaticResource GradientColorMiddle}" Offset="0.5"/> 
+            <GradientStop Color="{StaticResource GradientColorEnd}" Offset="1.0"/>
+        </LinearGradientBrush>
+    </Styles.Resources>
+    
+    <!-- Default checkbox styles -->
+    <Style Selector="CheckBox">
+        <Setter Property="Background" Value="Gray"></Setter>
+        <Setter Property="Foreground" Value="White"></Setter>
+        <Setter Property="CornerRadius" Value="20"></Setter>
+        <Setter Property="FontFamily" Value="{StaticResource 'Anime Ace'}"></Setter>
+        <Setter Property="FontSize" Value="12"></Setter>
+        <Setter Property="MinWidth" Value="100"></Setter>
+        <Setter Property="HorizontalContentAlignment" Value="Center"></Setter>
+        <Setter Property="ClipToBounds" Value="True"></Setter>
+        <Setter Property="BorderThickness" Value="1.5"></Setter>
+        <Setter Property="BorderBrush" Value="{StaticResource LightStaticLinear}"/>
+    </Style>
+    
+    <!-- Unchecking styles -->
+    <Style Selector="CheckBox:unchecked">
+        <Style Selector="^ /template/ Border#NormalRectangle">
+            <Setter Property="Margin" Value="{StaticResource RectangularMargin}"></Setter>
+            <Setter Property="BorderBrush" Value="{StaticResource LightStaticLinear}"/>
+        </Style>
+    </Style>
+    
+    <!-- Pointerover styles -->
+    <Style Selector="CheckBox:pointerover">
+        <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="White"></Setter>
+        </Style>
+        
+        <Style Selector="^ /template/ Border#PART_Border">
+            <Setter Property="Background" Value="Gray"></Setter>
+            <Setter Property="BorderBrush"></Setter>
+            <Style.Animations>
+                <Animation Duration="0:0:3" IterationCount="Infinite">
+                    <KeyFrame Cue="0%">
+                        <Setter Property="BorderBrush">
+                            <Setter.Value>
+                                <ConicGradientBrush Angle="0" Center="50%, 50%">
+                                    <GradientStop Color="{StaticResource GradientColorStart}" Offset="0.0"/>
+                                    <GradientStop Color="{StaticResource GradientColorMiddle}" Offset="0.5"/> 
+                                    <GradientStop Color="{StaticResource GradientColorEnd}" Offset="1.0"/>
+                                </ConicGradientBrush>
+                            </Setter.Value>
+                        </Setter>
+                    </KeyFrame>
+                    <KeyFrame Cue="100%">
+                        <Setter Property="BorderBrush">
+                            <Setter.Value>
+                                <ConicGradientBrush Angle="360" Center="50%, 50%">
+                                    <GradientStop Color="{StaticResource GradientColorStart}" Offset="0.0"/>
+                                    <GradientStop Color="{StaticResource GradientColorMiddle}" Offset="0.5"/> 
+                                    <GradientStop Color="{StaticResource GradientColorEnd}" Offset="1.0"/>
+                                </ConicGradientBrush>
+                            </Setter.Value>
+                        </Setter>
+                    </KeyFrame>
+                </Animation>
+            </Style.Animations>
+        </Style>
+        
+        <Style Selector="^ /template/ Border#NormalRectangle">
+            <Setter Property="BorderBrush"></Setter>
+            <Style.Animations>
+                <Animation Duration="0:0:3" IterationCount="Infinite">
+                    <KeyFrame Cue="0%">
+                        <Setter Property="BorderBrush">
+                            <Setter.Value>
+                                <ConicGradientBrush Angle="0" Center="50%, 50%">
+                                    <GradientStop Color="{StaticResource GradientColorStart}" Offset="0.0"/>
+                                    <GradientStop Color="{StaticResource GradientColorMiddle}" Offset="0.5"/> 
+                                    <GradientStop Color="{StaticResource GradientColorEnd}" Offset="1.0"/>
+                                </ConicGradientBrush>
+                            </Setter.Value>
+                        </Setter>
+                    </KeyFrame>
+                    <KeyFrame Cue="100%">
+                        <Setter Property="BorderBrush">
+                            <Setter.Value>
+                                <ConicGradientBrush Angle="360" Center="50%, 50%">
+                                    <GradientStop Color="{StaticResource GradientColorStart}" Offset="0.0"/>
+                                    <GradientStop Color="{StaticResource GradientColorMiddle}" Offset="0.5"/> 
+                                    <GradientStop Color="{StaticResource GradientColorEnd}" Offset="1.0"/>
+                                </ConicGradientBrush>
+                            </Setter.Value>
+                        </Setter>
+                    </KeyFrame>
+                </Animation>
+            </Style.Animations>
+            <Setter Property="Margin" Value="{StaticResource RectangularMargin}"></Setter>
+        </Style>
+    </Style>
+    
+    <!-- Checked checkbox style -->
+    <Style Selector="CheckBox:checked">
+        <Setter Property="Background" Value="Gray"></Setter>
+        <Setter Property="Foreground" Value="White"></Setter>
+        <Setter Property="BorderThickness" Value="1"></Setter>
+        <Setter Property="BorderBrush" Value="{StaticResource LightStaticLinear}">
+        </Setter>
+        
+        <Style Selector="^ /template/Border#NormalRectangle">
+            <Setter Property="Margin" Value="{StaticResource RectangularMargin}"></Setter>
+            <Setter Property="BorderBrush" Value="{StaticResource LightStaticLinear}"></Setter>
+        </Style>
+        
+        <Style Selector="^ /template/Path#CheckGlyph">
+            <Setter Property="HorizontalAlignment" Value="Right"></Setter>
+        </Style>
+    </Style>
+</Styles>

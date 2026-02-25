@@ -8,33 +8,9 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceInclude Source="avares://GameRandom/GlobalStyles/CheckBox.axaml"></ResourceInclude>
+                <ResourceInclude Source="avares://GameRandom/Resources/StylesResources.axaml"></ResourceInclude>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-        
-        <FontFamily x:Key="Rye-Font">avares://GameRandom/Assets/Fonts/Rye-Regular.ttf #Rye Regular</FontFamily>
-        <FontFamily x:Key="Anime Ace">avares://GameRandom/Assets/Fonts/AnimeAce.ttf #Anime Ace v05</FontFamily>
-        <FontFamily x:Key="Anime-AceV3">avares://GameRandom/Assets/Fonts/AnimeAcev3.ttf #Anime Ace v3:</FontFamily>
-        
-        <ConicGradientBrush x:Key="StartAnimatedConicBrush"
-                            Center="50%,50%"
-                            Angle="0">
-            <GradientStop Color="#FF3B30" Offset="0.0"/>
-            <GradientStop Color="#34C759" Offset="0.25"/>
-            <GradientStop Color="#007AFF" Offset="0.5"/>
-            <GradientStop Color="#AF52DE" Offset="0.75"/>
-            <GradientStop Color="GreenYellow" Offset="1"></GradientStop>
-        </ConicGradientBrush>
-        
-        <ConicGradientBrush x:Key="EndAnimatedConicBrush"
-                            Center="50%,50%"
-                            Angle="360">
-            <GradientStop Color="#FF3B30" Offset="0.0"/>
-            <GradientStop Color="#34C759" Offset="0.25"/>
-            <GradientStop Color="#007AFF" Offset="0.5"/>
-            <GradientStop Color="#AF52DE" Offset="0.75"/>
-            <GradientStop Color="GreenYellow" Offset="1"></GradientStop>
-        </ConicGradientBrush>
     </Application.Resources>
     
     <Application.DataTemplates>
@@ -43,6 +19,7 @@
     
     <Application.Styles>
         <FluentTheme />
+        <StyleInclude Source="avares://GameRandom/GlobalStyles/CheckBoxStyle.axaml"></StyleInclude>
         <StyleInclude Source="avares://GameRandom/Styles/StatisticStyle.axaml"></StyleInclude>
         <StyleInclude Source="avares://GameRandom/Styles/RollGameStyle.axaml"></StyleInclude>
         <StyleInclude Source="avares://GameRandom/Styles/CurrentGameStatusStyle.axaml"></StyleInclude>
