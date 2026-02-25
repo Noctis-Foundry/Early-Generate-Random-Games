@@ -2,8 +2,53 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:GameRandom.ViewModels"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="GameRandom.Views.FilterGameWindow"
-        Title="FilterGameWindow">
-    Welcome to Avalonia!
+        x:DataType="vm:FilterGameViewModel"
+        Title="FilterGameWindow"
+        Width="800" Height="600"
+        MaxWidth="1000" MinWidth="600"
+        MaxHeight="750" MinHeight="500">
+   <Window.Styles>
+        <Style Selector="ListBox.FilteredBox">
+            <Setter Property="Background" Value="#2D2D30"/>
+            <Setter Property="BorderBrush" Value="#3F3F46"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+        <Style Selector="ListBoxItem.FilteredBox">
+            <Setter Property="Padding" Value="8,4"/>
+        </Style>
+        <Style Selector="ListBoxItem.FilteredBox:selected /template/ ContentPresenter">
+            <Setter Property="Background" Value="#007ACC"/>
+        </Style>
+       <Style Selector="TextBlock.FilteredBox">
+           <Setter Property="Foreground" Value="GhostWhite"></Setter>
+       </Style>
+    </Window.Styles>
+    
+    <DockPanel Background="#1E1E1E">
+        <Border DockPanel.Dock="Top" Background="#2D2D30" BorderBrush="#3F3F46" BorderThickness="0,0,0,1" Padding="16,12">
+            <Grid ColumnDefinitions="*,Auto">
+                <TextBlock Text="Фильтры игр" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" Classes="FilteredBox"/>
+                <Button Grid.Column="1" Content="✕" Width="32" Height="32" Click="Close"/>
+            </Grid>
+        </Border>
+        
+        <Border Margin="16" Background="#252526" BorderBrush="#3F3F46" BorderThickness="1">
+            <Grid RowDefinitions="Auto,*,Auto,*,Auto,*" Margin="16">
+                <TextBlock Classes="FilteredBox" Text="Categories" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                <ListBox Classes="FilteredBox" Grid.Row="1" SelectionMode="Multiple" ItemsSource="{Binding Categories}"
+                         SelectedItems="{Binding SelectedCategories}" MaxHeight="200" Margin="0,0,0,16"/>
+                
+                <TextBlock Classes="FilteredBox" Grid.Row="2" Text="Genres" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                <ListBox Classes="FilteredBox" Grid.Row="3" SelectionMode="Multiple" ItemsSource="{Binding Genres}" 
+                         SelectedItems="{Binding SelectedGenres}" MaxHeight="150" Margin="0,0,0,16"/>
+                
+                <TextBlock Classes="FilteredBox" Grid.Row="4" Text="Years" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                <ListBox Classes="FilteredBox" Grid.Row="5" SelectionMode="Multiple" ItemsSource="{Binding Years}" 
+                         SelectedItems="{Binding SelectedYears}" MaxHeight="150"/>
+            </Grid>
+        </Border>
+    </DockPanel>
 </Window>
