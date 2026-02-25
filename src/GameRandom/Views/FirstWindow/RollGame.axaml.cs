@@ -20,9 +20,13 @@ namespace GameRandom.Views;
 public partial class RollGame : UserControl, IUserControl, IDisposable //TODO Refactoring classes and extract logic to view model
 {
     [Inject] private ErrorService _errorService = null!;
+    
+    private const int MinYear = 2003;
+    private const int MaxYear = 2026;
 
     private Dictionary<ButtonContext, AppSavedContext?> _appData = new();
     private ChooseGameWindow _chooseGameWindow = new();
+    private FilterGameWindow _filterGameWindow = new();
 
     private IGenApp _generateRandomApps;
     private MainWindowFactory _mainWindowFactory;
@@ -63,14 +67,22 @@ public partial class RollGame : UserControl, IUserControl, IDisposable //TODO Re
 
         int iterCount = 0;
 
-        while (_appData.Count < countGames)
+        List<AppSavedContext> savedGames = new();
+
+        while (_appData.Count < countGames && iterCount < 1000)
         {
-            var year = Random.Shared.Next(2010, 2026);
+            var year = FilterCheckBox.IsChecked == true ? _filterGameWindow.GetYear() : Random.Shared.Next(MinYear, MaxYear);
             var gameInfo = _generateRandomApps.GetRandomGame(year);
 
-            if (gameInfo is null)
+            if (gameInfo is null || savedGames.Contains(gameInfo))
                 continue;
 
+            if (FilterCheckBox.IsChecked == true)
+            {
+                if (!_filterGameWindow.CheckFilters(gameInfo))
+                    continue;
+            }
+            
             var imageBytes = await SteamService.Instance.GetImageBytes(gameInfo.HeaderImage);
 
             if (imageBytes is null)
@@ -79,13 +91,14 @@ public partial class RollGame : UserControl, IUserControl, IDisposable //TODO Re
             var gridElements = _mainWindowFactory.CreateButtonInGrid(GamesGrid, iterCount);
             InitDictionaryWithComponents(gridElements.Button, gridElements.Image, gameInfo, imageBytes);
 
+            savedGames.Add(gameInfo);
             iterCount++;
         }
 
         InitializeButtonListeners();
         _isRolling = false;
     }
-
+    
     public void Close(object? sender, RoutedEventArgs e)
     {
         //TODO
@@ -160,5 +173,10 @@ public partial class RollGame : UserControl, IUserControl, IDisposable //TODO Re
         _errorService = null!;
         _appData = null;
         _mainWindowFactory = null;
+    }
+
+    private void GoToFilter(object? sender, RoutedEventArgs e)
+    {
+        _filterGameWindow.Open();
     }
 }
