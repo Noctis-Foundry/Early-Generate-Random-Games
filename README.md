@@ -48,8 +48,10 @@ Monitor your current game session with detailed information about start date, ti
 
 ## ⚡ Project Status
 
-> The project is currently in active development.  
-> There is no release version yet. Installation instructions will be added later.
+> **Beta Version 0.2.0**  
+> Available installation files:  
+> - **Linux x64**: AppImage  
+> - **Windows x64**: NSIS Setup
 
 ---
 
