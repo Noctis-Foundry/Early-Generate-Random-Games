@@ -34,15 +34,38 @@ Primary application window managing navigation, lobby integration, and global UI
 
 [Detailed Documentation](ClassesAndSystems/MainWindow.md)
 
+### RollGame
+Random game selection interface with dynamic grid layout and filtering capabilities. Generates up to 5 random games from Steam library with optional year/category filters and displays them with clickable images. Uses FilterGameSystem for advanced filtering.
+
+[Detailed Documentation](ClassesAndSystems/RollGame.md) | [Filter System](ClassesAndSystems/FilterGameSystem.md)
+
 ### Current Game Status
 Modal window displaying active game session information with animated visuals. Shows game name, dates, time tracking, and action buttons for Steam integration.
 
 [Detailed Documentation](ClassesAndSystems/CurrentGameStatusSystem.md)
 
-### Global Style
-Application-wide XAML style definitions for TextBlock and Button controls. Uses Rye-Font and dark gray color scheme for consistent UI appearance.
+### Global Styles
+Application-wide XAML style definitions for consistent UI appearance.
 
-[Detailed Documentation](ClassesAndSystems/GlobalStyle.md)
+#### Button Style
+Global button styling with Rye-Font, size 16, dark gray text on light gray background.
+
+[Detailed Documentation](ClassesAndSystems/GlobalStyles/ButtonStyle.md)
+
+#### CheckBox Style
+Comprehensive checkbox styling with animated gradient borders, rounded corners, and state-specific appearances using Anime Ace font.
+
+[Detailed Documentation](ClassesAndSystems/GlobalStyles/CheckBoxStyle.md)
+
+#### MenuItem Style
+Menu item styling with WhiteSmoke text and DarkSeaGreen hover effect using Anime Ace font.
+
+[Detailed Documentation](ClassesAndSystems/GlobalStyles/MenuItemStyle.md)
+
+#### TextBlock Style
+Global text styling with Rye-Font and dark gray color for all TextBlock controls.
+
+[Detailed Documentation](ClassesAndSystems/GlobalStyles/TextBlockStyle.md)
 
 ### Main Window Content
 Primary navigation hub with three large image-based buttons (Table, Profile, Roll). Features animated rotating gradient borders on hover.

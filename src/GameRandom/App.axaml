@@ -21,18 +21,15 @@
         <FluentTheme />
         <StyleInclude Source="avares://GameRandom/GlobalStyles/CheckBoxStyle.axaml"></StyleInclude>
         <StyleInclude Source="avares://GameRandom/GlobalStyles/MenuItem.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/GlobalStyles/TextBlock.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/GlobalStyles/Button.axaml"></StyleInclude>
         <StyleInclude Source="avares://GameRandom/Styles/StatisticStyle.axaml"></StyleInclude>
         <StyleInclude Source="avares://GameRandom/Styles/RollGameStyle.axaml"></StyleInclude>
         <StyleInclude Source="avares://GameRandom/Styles/CurrentGameStatusStyle.axaml"></StyleInclude>
         <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
         <StyleInclude Source="avares://GameRandom/Styles/ProfileDataGridStyle.axaml"></StyleInclude>
-        <StyleInclude Source="avares://GameRandom/Styles/GlobalStyle.axaml"></StyleInclude>
-        <StyleInclude Source="TestingStyles/MainContentStyle.axaml"></StyleInclude>
-        <StyleInclude Source="TestingStyles/RollContentStyle.axaml"></StyleInclude>
-        <StyleInclude Source="TestingStyles/MenuItemsStyle.axaml"></StyleInclude>
-        <StyleInclude Source="TestingStyles/LobbyStyle.axaml"></StyleInclude>
-        <StyleInclude Source="TestingStyles/TableStyle.axaml"></StyleInclude>
-        <StyleInclude Source="Styles/MainWindowStyle.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/Styles/LobbyStyle.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/Styles/MainWindowStyle.axaml"></StyleInclude>
         <StyleInclude Source="avares://GameRandom/Styles/ProfileStyle.axaml"></StyleInclude>
     </Application.Styles>
 </Application>

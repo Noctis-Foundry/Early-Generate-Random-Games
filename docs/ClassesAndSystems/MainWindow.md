@@ -1,271 +1,231 @@
-# MainWindow System
+# MainWindow
 
 ## Overview
-Primary application window managing navigation, lobby integration, and global UI state. Serves as the root container for all user controls and handles Steam/database initialization.
+Primary application window managing navigation, lobby system integration, and user interface state.
+
+## Files
+- `MainWindow.axaml` - UI layout
+- `MainWindow.axaml.cs` - Code-behind logic
 
 ## Purpose
-- Host all user controls via ContentControl
-- Display top menu bar with lobby avatars
-- Manage navigation between pages
-- Initialize services and event subscriptions
-- Handle application lifecycle
+- Application entry point window
+- Content navigation management
+- Lobby system integration
+- Database event handling
+- User profile display
 
-## Layout
+## UI Structure
 
-### Window Properties
-- Size: 1000x500 (fixed)
-- Min/Max: 1000x500 (non-resizable)
-- Background: Black
-- Icon: avalonia-logo.ico
-- Title: "GameRandom"
-
-### Structure
-- **Row 0**: Top menu bar (Auto height)
-- **Row 1**: Content area (fills remaining space)
-
-### Top Menu Bar
-
-**Left Section** (Menu):
-- Width: 600px, Height: 30px
-- Background: MediumAquamarine
+### Top Bar (DockPanel.Dock="Top")
 - Menu items:
-  - "Lobby" - Opens lobby window
-  - "Show Error" - Test error display
-  - "Rules" - Opens create lobby window
-
-**Right Section** (LobbyImages Grid):
-- Width: 363px, Height: 30px
-- Background: MediumAquamarine
-- 2 columns (40px each)
-- Displays lobby member avatars
-- Dynamically updated via EventBus
+  - "Lobby System" - Opens lobby interface
+  - "Rules" - Opens rules display
+- User profile section:
+  - Avatar image display
+  - Lobby member avatars (dynamic)
 
 ### Content Area
-- ContentControl named "ControlMain"
-- Hosts current page (Main, Profile, Roll, Table)
+- ContentControl for dynamic view switching
+- Size: 1000x460
 
-## Code-behind (MainWindow.axaml.cs)
+## Window Properties
+- Title: "GameRandom"
+- Size: 1000x500 (fixed)
+- Background: Gray
+
+## Key Components
 
 ### Injected Dependencies
-- `_lobby` (LobbyService) - Lobby management
-- `_diFactory` (DiFactory) - Dependency injection factory
-- `_postgres` (PostgresListener) - Database change notifications
-- `_eventBus` (EventBus) - Event pub/sub system
-- `_controlFactory` (UserControlFactory) - User control creation
+```csharp
+[Inject] private readonly LobbyService _lobby
+[Inject] private readonly DiFactory _diFactory
+[Inject] private readonly PostgresListener _postgres
+[Inject] private readonly EventBus _eventBus
+[Inject] private readonly UserControlFactory _controlFactory
+```
 
-### Fields
-- `_preloadRegister` (Register<string, IUserControl>) - Preloaded pages
-- `_selectorAction` (Action<string>) - Navigation callback
-- `_oldControl` (IUserControl?) - Previous control reference
+### Private Fields
+```csharp
+private readonly Register<string, Func<UserControl>> _preloadRegister
+private readonly Action<string> _selectorAction
+private IUserControl? _oldControl
+```
+
+## Methods
 
 ### Constructor
+Initializes window and all subsystems.
 
 **Process**:
 1. Initialize component
-2. Skip if design mode
-3. Resolve DI dependencies
-4. Register ErrorService with window
-5. Create MainWindowViewModel
-6. Set DataContext
-7. Initialize navigation action
-8. Preload user controls
-9. Navigate to "Main" page
-10. Subscribe to Closing event
-11. Connect database events
-12. Subscribe to LobbyUpdate events
+2. Skip if in design mode
+3. Resolve dependencies via DI
+4. Register UI service
+5. Create and set ViewModel
+6. Initialize navigation action
+7. Register user controls
+8. Navigate to "Main" view
+9. Subscribe to closing event
+10. Connect database events
+11. Subscribe to lobby updates
 
-### Methods
+### InitializeUserControlRegister()
+Registers navigation targets.
 
-**InitializeUserControlRegister()**
-Preloads and registers all user controls.
-
-**Registered Pages**:
+**Registered Controls**:
 - "Main" → MainWindowContent
 - "Profile" → ProfileContent
 - "Roll" → RollGame
-- "Table" → GameTable (commented out)
+- "Table" → GameTable
 
-**Navigate(string nameControl)**
-Switches displayed content to specified page.
+**Pattern**: Each control receives `_selectorAction` for navigation
+
+### Navigate(string nameControl)
+Switches active content view.
+
+**Parameters**:
+- `nameControl` - Registered control name
 
 **Process**:
-1. Lookup control in register
-2. Set as ContentControl content
-3. Call Open() on control
+1. Retrieve control factory from register
+2. Invoke factory to create control
+3. Validate control creation
+4. Cast to IUserControl
+5. Set as ContentControl content
+6. Call Open() on control
 
-**MainWindow_OnClosed(object? sender, EventArgs e)**
+**Throws**: NullReferenceException if control creation fails
+
+### MainWindow_OnClosed(object? sender, EventArgs e)
 Cleanup on window close.
 
 **Actions**:
-- Shuts down Steam API
+1. Shutdown Steam integration
+2. Exit application (code 0)
 
-**EventsConnecting()**
-Sets up event subscriptions and initializations.
+### EventsConnecting()
+Initializes event subscriptions.
 
 **Process**:
-1. Clear lobby images grid
-2. Subscribe to PostgresListener for lobby changes
-3. Validate lobby service
-4. Start lobby app (loads current user's lobby)
+1. Clear lobby images
+2. Subscribe to PostgreSQL lobby table changes
+3. Update lobby UI on changes
+4. Start lobby service
 
-**RegisterUiService(Window window)**
-Registers ErrorService with main window for modal dialogs.
+**Database Events**: Listens to TableEnum.Lobby changes
+
+### RegisterUiService(Window window)
+Registers error service with DI container.
 
 **Validation**: Ensures window is MainWindow type
 
-## ViewModel Integration
+**Throws**: Exception if window type mismatch
 
-### MainWindowViewModel
-Handles menu commands and lobby avatar updates.
+## Navigation System
 
-**Commands**:
-- OpenLobby - Opens lobby management window
-- ShowError - Test error display
-- OpenCreateLobbyWindow - Opens lobby creation
-
-**Methods**:
-- UpdateLobby(Grid grid, int tableCode) - Updates lobby avatars
-
-## Event Flow
-
-### LobbyUpdate Event
-```
-Database change → PostgresListener → EventBus.Publish(LobbyUpdate) →
-MainWindow subscription → ViewModel.UpdateLobby() → UI update
-```
+### Registered Views
+1. **Main** - Main menu/content
+2. **Profile** - User profile display
+3. **Roll** - Random game selection
+4. **Table** - Game table view
 
 ### Navigation Flow
 ```
-User action → Navigate("PageName") → 
-Lookup in register → Set ContentControl.Content → 
-Call IUserControl.Open()
+User Action → Navigate(name) → Factory → Create Control → Set Content → Open()
 ```
 
-## Preloading Strategy
+## Event Handling
 
-All main pages preloaded at startup:
-- Faster navigation (no instantiation delay)
-- Maintains state between navigations
-- Uses Register<string, IUserControl> for storage
+### Lobby Updates
+- Source: EventBus LobbyUpdate events
+- Action: Update lobby images in UI thread
+- Target: LobbyImages grid
+
+### Database Changes
+- Source: PostgresListener
+- Table: Lobby (TableEnum.Lobby)
+- Action: Update lobby UI asynchronously
+- Thread: UI thread via Dispatcher
+
+### Window Closing
+- Action: Shutdown Steam and exit application
+
+## Dependency Injection
+
+### Resolved Services
+- LobbyService - Lobby management
+- DiFactory - DI factory
+- PostgresListener - Database events
+- EventBus - Application events
+- UserControlFactory - Control creation
+
+### Registered Services
+- ErrorService - Error handling (registered with window)
+
+## ViewModel
+
+### MainWindowViewModel
+Created with WindowService wrapper.
+
+**Responsibilities**:
+- Command handling (OpenLobbyCommand, RulesOpen)
+- Lobby UI updates
+- Window service integration
+
+## UI Components
+
+### Menu
+- MenuItem: "Lobby System" → OpenLobbyCommand
+- MenuItem: "Rules" → RulesOpen
+
+### LobbyImages Grid
+- Dynamic avatar display
+- Updated on lobby changes
+- Column-based layout
+
+### ControlMain
+- ContentControl for view switching
+- Fixed size: 1000x460
 
 ## Lifecycle
 
-### Startup
-1. Window constructor
-2. DI resolution
-3. Service registration
-4. ViewModel creation
-5. Control preloading
-6. Event subscriptions
-7. Navigate to Main
-8. Lobby initialization
+1. **Initialization**
+   - DI resolution
+   - Service registration
+   - Control registration
+   - Event subscription
 
-### Navigation
-1. User triggers navigation
-2. Navigate() called with page name
-3. Old control remains in memory
-4. New control displayed
-5. Open() called on new control
+2. **Runtime**
+   - Navigation handling
+   - Event processing
+   - UI updates
 
-### Shutdown
-1. Closing event fired
-2. Steam API shutdown
-3. Window closes
+3. **Shutdown**
+   - Steam shutdown
+   - Application exit
 
-## Features
+## Best Practices
 
-- **Preloaded Pages**: Instant navigation
-- **Event-Driven**: Real-time lobby updates
-- **DI Integration**: All services injected
-- **Steam Integration**: Automatic initialization/cleanup
-- **Database Monitoring**: PostgresListener subscriptions
-- **Fixed Size**: Consistent window dimensions
+1. Always use Navigate() for view switching
+2. Register new views in InitializeUserControlRegister()
+3. Use Dispatcher.UIThread for UI updates from events
+4. Implement IUserControl for navigable views
+5. Handle cleanup in MainWindow_OnClosed
 
-## Integration Example
+## Integration Points
 
-```csharp
-// App.axaml.cs
-public override void OnFrameworkInitializationCompleted()
-{
-    if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-    {
-        var mainWindow = new MainWindow();
-        desktop.MainWindow = mainWindow;
-    }
-    
-    base.OnFrameworkInitializationCompleted();
-}
-```
+### Steam Integration
+- Initialized before window
+- Shutdown on close
 
-## Limitations
+### Database
+- PostgresListener for real-time updates
+- Lobby table monitoring
 
-- Fixed window size (non-resizable)
-- Table page commented out
-- No back button navigation
-- Preloads all pages (memory overhead)
-- No lazy loading
-- Hardcoded page names
+### Event System
+- EventBus for application events
+- LobbyUpdate event handling
 
-## Potential Improvements
-
-```csharp
-public partial class MainWindow : Window
-{
-    private Stack<string> _navigationHistory = new();
-    
-    public void Navigate(string nameControl, bool addToHistory = true)
-    {
-        if (_preloadRegister.GetObjectFromRegister(nameControl, out var value))
-        {
-            if (value is null) return;
-            
-            _oldControl?.Close(null, null);
-            
-            ControlMain.Content = value;
-            value.Open();
-            
-            if (addToHistory)
-                _navigationHistory.Push(nameControl);
-            
-            _oldControl = value;
-        }
-    }
-    
-    public void NavigateBack()
-    {
-        if (_navigationHistory.Count > 1)
-        {
-            _navigationHistory.Pop(); // Remove current
-            var previous = _navigationHistory.Pop(); // Get previous
-            Navigate(previous, addToHistory: false);
-        }
-    }
-    
-    // Lazy loading alternative
-    private IUserControl GetOrCreateControl(string name)
-    {
-        if (!_preloadRegister.GetObjectFromRegister(name, out var control))
-        {
-            control = CreateControl(name);
-            _preloadRegister.RegisterNewObject(name, control);
-        }
-        return control;
-    }
-}
-```
-
-## Testing
-
-```csharp
-[Test]
-public void TestNavigation()
-{
-    var mainWindow = new MainWindow();
-    
-    mainWindow.Navigate("Profile");
-    Assert.IsInstanceOf<ProfileContent>(mainWindow.ControlMain.Content);
-    
-    mainWindow.Navigate("Main");
-    Assert.IsInstanceOf<MainWindowContent>(mainWindow.ControlMain.Content);
-}
-```
+### Dependency Injection
+- Di.Container for field resolution
+- DiFactory for service creation
