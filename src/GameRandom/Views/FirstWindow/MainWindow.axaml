@@ -11,32 +11,28 @@
         Width="1000" Height="500"
         MinWidth="1000" MinHeight="500"
         MaxWidth="1000" MaxHeight="500">
-    
-    <Grid RowDefinitions="Auto, *">
-        <Grid.Background> Black </Grid.Background>
-        <Grid ColumnDefinitions="Auto, Auto">
-            <Menu Classes="MainWindowMenu" Width="600" Height="30" Background="MediumAquamarine">
-                <MenuItem Classes="MainWindowMenuItem" Header="Lobby"
-                          Command="{Binding OpenLobby}"></MenuItem>
-                <MenuItem Classes="MainWindowMenuItem" Header="Show Error"
-                          Command="{Binding ShowError}"></MenuItem>
-                <MenuItem Classes="MainWindowMenuItem" Header="Rules"
-                          Command="{Binding OpenCreateLobbyWindow}"></MenuItem>
-            </Menu>
-            
-            <Grid Grid.Column="1" x:Name="LobbyImages" HorizontalAlignment="Right" Width="363" Height="30" ColumnDefinitions="40,40">
-                <Grid.Background>
-                    MediumAquamarine
-                </Grid.Background>
-                <Image Source="avares://GameRandom/Assets/avalonia-logo.ico" 
-                       Width="128" Height="30">
-                </Image>
-                <Image Grid.Column="1" Source="avares://GameRandom/Assets/avalonia-logo.ico" 
-                       Width="40" Height="30">
-                </Image>
-            </Grid>
-        </Grid>
         
-        <ContentControl Grid.Row="1" x:Name="ControlMain"></ContentControl>
-    </Grid>
+        <DockPanel Background="Gray">
+                <Border Classes="TopProfileContainer" MinHeight="40" MaxHeight="40" DockPanel.Dock="Top" CornerRadius="0"
+                        Background="DimGray">
+                        <Grid ColumnDefinitions="*, Auto">
+                                <Menu>
+                                        <MenuItem Header="Lobby System" Command="{Binding OpenLobbyCommand}"></MenuItem>
+                                        <MenuItem Header="Rules" Command="{Binding RulesOpen}"></MenuItem>
+                                </Menu>
+                                <Grid Grid.Column="1" ColumnDefinitions="Auto, Auto" HorizontalAlignment="Center" ColumnSpacing="5"
+                                      VerticalAlignment="Center" Margin="0,0,10, 0" x:Name="LobbyImages">
+                                        <Border ClipToBounds="True" CornerRadius="10" MinHeight="30" MaxHeight="40">
+                                                <Image Source="avares://GameRandom/Assets/steamAwatarWithNight.jpg"/>
+                                        </Border>
+                                     
+                                </Grid>
+                        </Grid>
+                </Border>
+                       
+                
+                <ContentControl x:Name="ControlMain" Width="1000" Height="460"></ContentControl>
+        </DockPanel>
+        
+       
 </Window>

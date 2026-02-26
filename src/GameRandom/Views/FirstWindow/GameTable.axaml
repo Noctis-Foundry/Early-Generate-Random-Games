@@ -4,7 +4,8 @@
              xmlns:vm="using:GameRandom.ViewModels"
              xmlns:converters="using:GameRandom.AvaloniaConverters"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="500"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="460"
+             MinHeight="460" MaxHeight="460"
              x:Class="GameRandom.Views.GameTable"
              x:DataType="vm:GameTableViewModel">
     
@@ -12,7 +13,7 @@
         <converters:BoolConverter x:Key="BoolConverter"></converters:BoolConverter>
     </UserControl.Resources>
     
-    <DockPanel Width="1000" Height="500">
+    <DockPanel Width="1000" Height="500" Margin="0,15,0,0">
         <DockPanel.Background>
             Gray
         </DockPanel.Background>
