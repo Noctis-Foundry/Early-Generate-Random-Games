@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using GameRandom.DataBaseContexts;
 using GameRandom.SteamSDK.UserData;
@@ -11,9 +12,9 @@ namespace GameRandom.Scr.Service;
 
 public interface IDatabaseService
 {
-    Task<bool> AddItemAsync<TEntity>(TEntity item) where TEntity : class;
-    Task<List<TEntity>?> GetTableListAsync<TEntity>() where TEntity : class;
-    Task<bool> DeleteItemAsync<TEntity>(TEntity item) where TEntity : class;
+    Task<bool> AddItemAsync<TEntity>(TEntity item, CancellationToken ct = default) where TEntity : class;
+    Task<List<TEntity>?> GetTableListAsync<TEntity>(CancellationToken ct = default) where TEntity : class;
+    Task<bool> DeleteItemAsync<TEntity>(TEntity item, CancellationToken ct = default) where TEntity : class;
 }
 
 public class DatabaseService : IDatabaseService
@@ -29,7 +30,7 @@ public class DatabaseService : IDatabaseService
         typeof(Lobbies)
     };
     
-    public async Task<bool> AddItemAsync<TEntity>(TEntity item) where TEntity : class
+    public async Task<bool> AddItemAsync<TEntity>(TEntity item, CancellationToken ct = default) where TEntity : class
     {
         await using var db = new AppDbContext();
 
@@ -39,56 +40,79 @@ public class DatabaseService : IDatabaseService
         try
         {
             var dbContext = db.Set<TEntity>();
-            await dbContext.AddAsync(item);
-            await db.SaveChangesAsync();
+            await dbContext.AddAsync(item, ct);
+            await db.SaveChangesAsync(ct);
             
             Logger.Debug($"Added {item} to db");
         }
+        catch (OperationCanceledException e)
+        {
+            Logger.Error($"Operation failed {e.Message}");
+            return false;
+        }
         catch (Exception e)
         {
-            Logger.Error("Failed to add new item: " + e);
+            Logger.Error($"Operation failed {e.Message}");
             return false;
         }
 
         return true;
     }
 
-    public async Task<bool> AddUserGameAsync(Users userInfo)
+    public async Task<bool> AddUserGameAsync(Users userInfo, CancellationToken ct = default)
     {
-        await using var db = new AppDbContext();
-
-        if (await db.UserGames.AnyAsync(e => e.UserId == userInfo.SteamId))
-            return true;
-
-        UserGame newUserGame = new UserGame
+        try
         {
-            UserId = userInfo.SteamId,
-            AppId = 0
-        };
-        
-        await db.UserGames.AddAsync(newUserGame);
-        await db.SaveChangesAsync();
+            await using var db = new AppDbContext();
 
-        return true;
+            if (await db.UserGames.AnyAsync(e => e.UserId == userInfo.SteamId, ct))
+                return true;
+
+            UserGame newUserGame = new UserGame
+            {
+                UserId = userInfo.SteamId,
+                AppId = 0
+            };
+            
+            await db.UserGames.AddAsync(newUserGame, ct);
+            await db.SaveChangesAsync(ct);
+
+            return true;
+        }
+        catch (OperationCanceledException e)
+        {
+            Logger.Error($"Operation failed {e.Message}");
+            return false;
+        }
+        catch (Exception e)
+        {
+            Logger.Error($"Operation failed {e.Message}");
+            return false;
+        }
     }
 
-    public async Task<TEntity?> GetFirstOrDefaultAsync<TEntity>(Func<TEntity, bool> predicate) where TEntity : class
+    public async Task<TEntity?> GetFirstOrDefaultAsync<TEntity>(Func<TEntity, bool> predicate, CancellationToken ct = default) where TEntity : class
     {
         try
         {
             await using var context = new AppDbContext();
-            var list = await context.Set<TEntity>().AsNoTracking().ToListAsync();
+            var list = await context.Set<TEntity>().AsNoTracking().ToListAsync(ct);
             
             return list.FirstOrDefault(predicate);
         }
+        catch (OperationCanceledException e)
+        {
+            Logger.Error($"Operation failed {e.Message}");
+            return null;
+        }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            Logger.Error($"Operation failed {e.Message}");
             return null;
         }
     }
 
-    public async Task<List<TEntity>?> GetTableListAsync<TEntity>() 
+    public async Task<List<TEntity>?> GetTableListAsync<TEntity>(CancellationToken ct = default) 
         where TEntity : class 
     {
         if (_restrictedGetTypes.Contains(typeof(TEntity)))
@@ -97,16 +121,21 @@ public class DatabaseService : IDatabaseService
         try
         {
             await using var context = new AppDbContext();
-            return await context.Set<TEntity>().AsNoTracking().ToListAsync();
+            return await context.Set<TEntity>().AsNoTracking().ToListAsync(ct);
+        }
+        catch (OperationCanceledException e)
+        {
+            Logger.Error($"Operation failed {e.Message}");
+            return null;
         }
         catch (Exception e)
         {
-            Logger.Error("Failed to get table list from table " + e.Message);
+            Logger.Error($"Operation failed {e.Message}");
             return null;
         }
     }
     
-    public async Task<bool>  DeleteItemAsync<TEntity>(TEntity item) where TEntity : class
+    public async Task<bool>  DeleteItemAsync<TEntity>(TEntity item, CancellationToken ct = default) where TEntity : class
     {
         await using var context = new AppDbContext();
 
@@ -114,109 +143,165 @@ public class DatabaseService : IDatabaseService
         {
             var db = context.Set<TEntity>();
             db.Remove(item);
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsync(ct);
+        }
+        catch (OperationCanceledException e)
+        {
+            Logger.Error($"Operation failed {e.Message}");
+            return false;
         }
         catch (Exception e)
         {
-            Logger.Error($"Failed deleted item with type {typeof(TEntity).Name}. Error: {e.Message}");
+            Logger.Error($"Operation failed {e.Message}");
             return false;
         }
 
         return true;
     }
     
-    public async Task<bool> UpdateAsync<TEntity>(TEntity item) where TEntity : class
+    public async Task<bool> UpdateAsync<TEntity>(TEntity item, CancellationToken ct = default) where TEntity : class
     {
         try
         {
             await using var context = new AppDbContext();
             context.Set<TEntity>().Update(item);
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsync(ct);
             return true;
+        }
+        catch (OperationCanceledException e)
+        {
+            Logger.Error($"Operation failed {e.Message}");
+            return false;
         }
         catch (DbUpdateException e)
         {
-            Console.WriteLine($"DbUpdateException: {e.Message}");
-            Console.WriteLine($"Inner: {e.InnerException?.Message}");
-            Console.WriteLine($"Inner inner: {e.InnerException?.InnerException?.Message}");
+            Logger.Error($"Operation failed {e.Message}");
             return false;
         }
         catch (Exception e)
         {
-            Console.WriteLine($"Exception: {e.Message}");
-            Console.WriteLine($"Inner: {e.InnerException?.Message}");
+            Logger.Error($"Operation failed {e.Message}");
             return false;
         }
     }
     
-    public async Task<List<TEntity>?> Where<TEntity>(Func<TEntity,bool> predicate)
+    public async Task<List<TEntity>?> Where<TEntity>(Func<TEntity,bool> predicate, CancellationToken ct = default)
         where TEntity : class
     {
-        await using var context = new AppDbContext();
-        var list = await context.Set<TEntity>().AsNoTracking().ToListAsync();
-
-        if (list.Count <= 0)
+        try
         {
-            Logger.Error($"List with name {typeof(TEntity).Name} not found");
+            await using var context = new AppDbContext();
+            var list = await context.Set<TEntity>().AsNoTracking().ToListAsync(ct);
+
+            if (list.Count <= 0)
+            {
+                Logger.Error($"List with name {typeof(TEntity).Name} not found");
+                return null;
+            }
+            
+            List<TEntity>? result = new();
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (predicate(list[i]))
+                {
+                    result.Add(list[i]);
+                }
+            }
+            
+            return result;
+        }
+        catch (OperationCanceledException e)
+        {
+            Logger.Error($"Operation failed {e.Message}");
             return null;
         }
-        
-        List<TEntity>? result = new();
-
-        for (int i = 0; i < list.Count; i++)
+        catch (Exception e)
         {
-            if (predicate(list[i]))
-            {
-                result.Add(list[i]);
-            }
+            Logger.Error($"Operation failed {e.Message}");
+            return null;
         }
-        
-        return result;
     }
 
     public async Task<TResult?> ExecuteDbOperation<TResult>(Func<DatabaseService, Task<TResult>> operation,
-        string errorMessage) where TResult : class
+        string errorMessage, CancellationToken ct = default) where TResult : class
     {
         try
         {
             return await operation(this);
         }
+        catch (OperationCanceledException e)
+        {
+            Logger.Error($"Operation failed {e.Message}");
+            return null;
+        }
         catch (Exception e)
         {
-            Logger.Error($"{errorMessage}, {e.Message}");
+            Logger.Error($"Operation failed {e.Message}");
             return null;
         }
     }
 
-    public async Task<UserGame?> GetUserGameAsync(Users userData)
+    public async Task<UserGame?> GetUserGameAsync(Users userData, CancellationToken ct = default)
     {
         try
         {
             await using var appDb = new AppDbContext();
-            return await appDb.UserGames.FirstOrDefaultAsync(e => e.UserId == userData.SteamId);
+            return await appDb.UserGames.FirstOrDefaultAsync(e => e.UserId == userData.SteamId, ct);
+        }
+        catch (OperationCanceledException e)
+        {
+            Logger.Error($"Operation failed {e.Message}");
+            return null;
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            Logger.Error($"Operation failed {e.Message}");
             return null;
         }
     }
 
-    public async Task<Users?> GetUserByUlongId(ulong steamId)
+    public async Task<Users?> GetUserByUlongId(ulong steamId, CancellationToken ct = default)
     {
-        await using var appDb = new AppDbContext();
-        Users? user = await appDb.Users.FirstOrDefaultAsync(u => u.SteamId == steamId);
+        try
+        {
+            await using var appDb = new AppDbContext();
+            Users? user = await appDb.Users.FirstOrDefaultAsync(u => u.SteamId == steamId, ct);
 
-        return user ?? null;
+            return user ?? null;
+        }
+        catch (OperationCanceledException e)
+        {
+            Logger.Error($"Operation failed {e.Message}");
+            return null;
+        }
+        catch (Exception e)
+        {
+            Logger.Error($"Operation failed {e.Message}");
+            return null;
+        }
     }
 
-    public async Task<Lobbies?> GetLobbyById(long lobbyId)
+    public async Task<Lobbies?> GetLobbyById(long lobbyId, CancellationToken ct = default)
     {
-        await using var appDb = new AppDbContext();
-        Lobbies? lobby = await appDb.Lobbies
-            .Include(l => l.LobbyData)
-            .FirstOrDefaultAsync(l => l.LobbyId == lobbyId);
-        
-        return lobby ?? null;
+        try
+        {
+            await using var appDb = new AppDbContext();
+            Lobbies? lobby = await appDb.Lobbies
+                .Include(l => l.LobbyData)
+                .FirstOrDefaultAsync(l => l.LobbyId == lobbyId, ct);
+            
+            return lobby ?? null;
+        }
+        catch (OperationCanceledException e)
+        {
+            Logger.Error($"Operation failed {e.Message}");
+            return null;
+        }
+        catch (Exception e)
+        {
+            Logger.Error($"Operation failed {e.Message}");
+            return null;
+        }
     }
 }
