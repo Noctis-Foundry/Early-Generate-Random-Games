@@ -1,0 +1,20 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <Menu Background="Gray">
+                <MenuItem Header="Lobby System"></MenuItem>
+                <MenuItem Header="Rules"></MenuItem>
+            </Menu>
+        </Border>
+    </Design.PreviewWith>
+
+    <Style Selector="MenuItem">
+        <Setter Property="Foreground" Value="WhiteSmoke"></Setter>
+        <Setter Property="FontFamily" Value="{DynamicResource 'Anime Ace'}"></Setter>
+    </Style>
+    
+    <Style Selector="MenuItem:pointerover /template/ContentPresenter">
+        <Setter Property="Foreground" Value="DarkSeaGreen"></Setter>
+    </Style>
+</Styles>
