@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 
@@ -40,31 +41,38 @@ public class MainWindowFactory
         return new GridElements(button, image);
     }
 
-    public List<Image> CreateImagesInGrid(int countImage, Grid grid)
+    public List<Image> CreateImageInGrid(Grid grid, int count)
     {
-        grid.Children.Clear();
+        grid.ColumnDefinitions.Clear();
+    
+        for (int i = 0; i < count; i++)
+            grid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
 
-        List<Image> images = new List<Image>();
-
-        for (int i = 0; i < countImage; i++)
+        var images = new List<Image>();
+    
+        for (int i = 0; i < count; i++)
         {
-            images.Add(CreateImageInGrid(grid, i));
+            var image = new Image
+            {
+                Source = AvaloniaService.CreateBitmapFromPath("Assets/avalonia-logo.ico")
+            };
+
+            var border = new Border
+            {
+                Height = 30,
+                MinHeight = 30,
+                MaxHeight = 40,
+                ClipToBounds = true,
+                CornerRadius = new CornerRadius(10),
+                Child = image
+            };
+
+            Grid.SetColumn(border, i);
+            grid.Children.Add(border);
+            images.Add(image);
         }
 
         return images;
-    }
-
-    public Image CreateImageInGrid(Grid grid, int imageColum)
-    {
-        Image image = new Image
-        {
-            Source = AvaloniaService.CreateBitmapFromPath("Assets/avalonia-logo.ico"),
-        };
-
-        Grid.SetColumn(image, imageColum);
-        grid.Children.Add(image);
-
-        return image;
     }
 }
 
