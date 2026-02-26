@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Controls;
@@ -25,18 +26,22 @@ public class MainWindowViewModel : ViewModelBase
     [Inject] private readonly DatabaseService _databaseService = null!;
     [Inject] private readonly ErrorService _errorService = null!;
 
+    private Rules _rules = new();
+    
     private readonly IWindowService _windowService;
     public ICommand OpenLobbyCommand { get; }
-    public ICommand CreateLobbyCommand { get; }
+    public ICommand RulesOpen { get; }
 
     private Dictionary<ulong, Image> _avatars = new();
     private bool _isInitialized;
+    
+    private readonly SemaphoreSlim _semaphore = new(1, 1);
 
     public MainWindowViewModel(IWindowService windowService)
     {
         _windowService = windowService;
         OpenLobbyCommand = new RelayCommand(OpenLobby);
-        CreateLobbyCommand = new RelayCommand(OpenCreateLobbyWindow);
+        RulesOpen = new RelayCommand(OpenRules);
 
         Di.Container.ResolveFieldsFromClassInstance(this);
 
@@ -45,6 +50,10 @@ public class MainWindowViewModel : ViewModelBase
 
     public async Task UpdateLobby(Grid lobbyGrid, int tableCode)
     {
+        await _semaphore.WaitAsync();
+        
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+        
         if (!_isInitialized)
         {
             _errorService.ShowErrorWindow("Not initialized MainWindowViewModel, Cant update lobby", ErrorEnum.Error);
@@ -62,7 +71,7 @@ public class MainWindowViewModel : ViewModelBase
 
         var userData = User.GetInstance().GetUserInfo();
 
-        var lobbyContexts = await _databaseService.GetLobbyById(userData.LobbyId);
+        var lobbyContexts = await _databaseService.GetLobbyById(userData.LobbyId, cts.Token);
 
         if (lobbyContexts == null || lobbyContexts.LobbyData.Count <= 0)
         {
@@ -72,7 +81,7 @@ public class MainWindowViewModel : ViewModelBase
         
         var lobbyData = lobbyContexts.LobbyData;
 
-        var images = _mainWindowFactory.CreateImagesInGrid(lobbyData.Count, lobbyGrid);
+        var images = _mainWindowFactory.CreateImageInGrid(lobbyGrid, lobbyData.Count);
 
         for (int i = 0; i < lobbyData.Count; i++)
         {
@@ -102,9 +111,9 @@ public class MainWindowViewModel : ViewModelBase
         await _windowService.ShowDialogAsync<LobbyWindow>();
     }
 
-    public async void OpenCreateLobbyWindow()
+    public  void OpenRules()
     {
-        await _windowService.ShowDialogAsync<Rules>();
+       _rules.Open();
     }
 
     public void ShowError()

@@ -35,8 +35,11 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        
-        if (Design.IsDesignMode) return;
+
+        if (Design.IsDesignMode)
+        {
+            return;
+        }
         
         Di.Container.ResolveFieldsFromClassInstance(this);
         RegisterUiService(this);
@@ -91,8 +94,6 @@ public partial class MainWindow : Window
     }
     private void EventsConnecting()
     {
-        //Task.Run(async () => await TestingDeleteLobbyMembers()); //Deleted all position on Lobby and LobbyUserContext tables
-
         LobbyImages.Children.Clear();
         
         if (DataContext is MainWindowViewModel vm)

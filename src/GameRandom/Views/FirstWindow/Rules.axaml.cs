@@ -3,10 +3,11 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using GameRandom.SteamSDK;
 
 namespace GameRandom.Views;
 
-public partial class Rules : Window
+public partial class Rules : WindowAbstract
 {
     private bool _isEnglish = false;
     public Rules()
