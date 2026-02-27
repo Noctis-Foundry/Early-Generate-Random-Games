@@ -107,8 +107,8 @@
     
     <!-- Стиль изображения игры -->
     <Style Selector="Image.GameImages">
-        <Setter Property="Width" Value="80"/>
-        <Setter Property="Height" Value="80"/>
+        <Setter Property="Width" Value="200"/>
+        <Setter Property="Height" Value="100"/>
     </Style>
     
     <!-- Стиль панели управления -->
