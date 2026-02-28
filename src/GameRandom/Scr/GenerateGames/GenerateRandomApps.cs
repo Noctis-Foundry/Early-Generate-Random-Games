@@ -14,8 +14,8 @@ namespace GameRandom.CoreApp;
 
 public class GenerateRandomApps : IGenApp
 {
-    private Dictionary<int, List<AppSavedContext>> _apps = new();
     private string _localPath = Path.Combine(AppContext.BaseDirectory, "Assets", "Jsons", "temp_apps.json");
+    private List<AppSavedContext>? _apps = new();
     private readonly Random _rng = new();
 
     public bool IsInitialized { get; private set; } = false;
@@ -46,40 +46,28 @@ public class GenerateRandomApps : IGenApp
             PropertyNameCaseInsensitive = true,
         };
         
-        var apps = JsonSerializer.Deserialize<List<AppSavedContext>>(json, options);
+        _apps = JsonSerializer.Deserialize<List<AppSavedContext>>(json, options);
         
-        if (apps == null)
+        if (_apps == null)
             throw new FileNotFoundException("The apps saved context was not found.");
-        
-        try
-        {
-            foreach (var app in apps)
-            {
-                if (_apps.ContainsKey(app.AppReleaseYear))
-                    _apps[app.AppReleaseYear].Add(app);
-                else
-                {
-                    _apps.Add(app.AppReleaseYear, new List<AppSavedContext>());
-                    _apps[app.AppReleaseYear].Add(app);
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            throw new Exception("Problems with convert json file to dictionary: " + e.Message);
-        }
     }
     public AppSavedContext? GetRandomGame(int year)
     {
-        if (!_apps.ContainsKey(year))
+        if (_apps is null) throw new ArgumentNullException(nameof(_apps));
+        
+        var listYear = _apps.Where(e => e.AppReleaseYear == year).ToList();
+
+        if (listYear.Count == 0)
             return null;
         
-        if (_apps.TryGetValue(year, out var apps))
-        {
-            return apps[_rng.Next(0, apps.Count)];
-        }
+        return listYear[Random.Shared.Next(0, listYear.Count)];
+    }
 
-        return null;
+    public AppSavedContext? GetRandomGame()
+    {
+        if (_apps is null) throw new ArgumentNullException(nameof(_apps));
+        
+        return _apps[Random.Shared.Next(0, _apps.Count)];
     }
 }
 
@@ -88,5 +76,7 @@ public interface IGenApp
     bool IsInitialized { get; }
     
     AppSavedContext? GetRandomGame(int year);
+    
+    AppSavedContext? GetRandomGame();
 }
 
