@@ -28,8 +28,6 @@ public partial class App : Application
     {
         if (!Design.IsDesignMode)
         {
-            Di.Container.ResolveFieldsFromClassInstance(this);
-            
             SteamManager.GetSteamManager().InitSteam();
             
             Task.Run(async () => await User.GetInstance().InitializeUser()).GetAwaiter().GetResult();
@@ -48,7 +46,6 @@ public partial class App : Application
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
             };
         }
-        
         
         if (!Design.IsDesignMode) 
             Di.Container.InjectDependenciesAcrossAssembly();

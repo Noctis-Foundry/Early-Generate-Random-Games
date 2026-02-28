@@ -45,6 +45,7 @@
         <PackageReference Include="Avalonia.Remote.Protocol" Version="11.3.11"/>
         <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.11"/>
         <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.3.11"/>
+        <PackageReference Include="Avalonia.Labs.Gif" Version="11.3.1" />
 
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.0-rc.1.25451.107"/>
