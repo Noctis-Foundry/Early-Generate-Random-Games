@@ -1,39 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Avalonia;
+using System.Threading;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
-using Avalonia.VisualTree;
+using System.Threading.Tasks;
+using Avalonia.Labs.Gif;
 using CommunityToolkit.Mvvm.Input;
 using GameRandom.CoreApp;
 using GameRandom.Scr.DI;
+using GameRandom.Scr.Service;
 using GameRandom.Service;
 using GameRandom.SteamSDK;
 using GameRandom.SteamSDK.Enums;
+using GameRandom.SteamSDK.Factory;
 using GameRandom.ViewModels;
 
 namespace GameRandom.Views;
 
-public partial class RollGame : UserControl, IUserControl, IDisposable //TODO Refactoring classes and extract logic to view model
+public partial class RollGame : MainWindowUserControlAbstract
 {
-    [Inject] private ErrorService _errorService = null!;
+    [Inject] private ErrorService? _errorService = null!;
+    [Inject] private ConfirmService? _confirmDialog = null!;
+
+    private ChooseGameWindow? _chooseGameWindow = new();
+    private FilterGameWindow? _filterGameWindow = new();
+
+    private List<RollButtonsInfo> _buttonsInfo = new();
+    private GifImage? _loadGif;
+
+    private const int DefaultCountApp = 1;
+    private const int IterationDelayMilliseconds = 500;
+    private const int maxCountGames = 4;
     
-    private const int MinYear = 2003;
-    private const int MaxYear = 2026;
+    private SemaphoreSlim _rollSemaphore = new(1, 1);
 
-    private Dictionary<ButtonContext, AppSavedContext?> _appData = new();
-    private ChooseGameWindow _chooseGameWindow = new();
-    private FilterGameWindow _filterGameWindow = new();
-
-    private IGenApp _generateRandomApps;
-    private MainWindowFactory _mainWindowFactory;
-
-    private Action<string>? _onShowContent;
-    private bool _isRolling = false;
-
+    /// <summary>
+    /// Initializes the RollGame control and its dependencies.
+    /// </summary>
     public RollGame()
     {
         InitializeComponent();
@@ -44,110 +48,24 @@ public partial class RollGame : UserControl, IUserControl, IDisposable //TODO Re
 
         TextBoxEventsInit();
 
-        _generateRandomApps = new GenerateRandomApps();
-        _mainWindowFactory = new MainWindowFactory();
+        Di.Container.ResolveFieldsFromClassInstance(this);
+
+        if (_errorService is null || _confirmDialog is null)
+            throw new NullReferenceException();
     }
 
-    public void AddListener(Action<string> _onChangeContent) => _onShowContent = _onChangeContent;
-
-    private async void GenerateGames(object sender, RoutedEventArgs e)
+    public override void Close(object? sender, RoutedEventArgs e)
     {
-        if (!_generateRandomApps.IsInitialized || _isRolling)
-        {
-            _errorService.ShowErrorWindow("Generating random games not initialized.", ErrorEnum.Error);
-            return;
-        }
+        _changeWindowAction?.Invoke("Main");
 
-        _isRolling = true;
+        if (DataContext is not RollGameViewModel viewModel) return;
 
-        int countGames = int.Parse(CountApp.Text ?? "1");
-
-        _appData.Clear();
-        _mainWindowFactory.ChangeGrid(countGames, GamesGrid);
-
-        int iterCount = 0;
-
-        List<AppSavedContext> savedGames = new();
-
-        while (_appData.Count < countGames && iterCount < 1000)
-        {
-            var year = FilterCheckBox.IsChecked == true ? _filterGameWindow.GetYear() : Random.Shared.Next(MinYear, MaxYear);
-            var gameInfo = _generateRandomApps.GetRandomGame(year);
-
-            if (gameInfo is null || savedGames.Contains(gameInfo))
-                continue;
-
-            if (FilterCheckBox.IsChecked == true)
-            {
-                if (!_filterGameWindow.CheckFilters(gameInfo))
-                    continue;
-            }
-            
-            var imageBytes = await SteamService.Instance.GetImageBytes(gameInfo.HeaderImage);
-
-            if (imageBytes is null)
-                continue;
-
-            var gridElements = _mainWindowFactory.CreateButtonInGrid(GamesGrid, iterCount);
-            InitDictionaryWithComponents(gridElements.Button, gridElements.Image, gameInfo, imageBytes);
-
-            savedGames.Add(gameInfo);
-            iterCount++;
-        }
-
-        InitializeButtonListeners();
-        _isRolling = false;
-    }
-    
-    public void Close(object? sender, RoutedEventArgs e)
-    {
-        //TODO
-        _onShowContent?.Invoke("Main");
-        Dispose();
+        viewModel.Dispose();
     }
 
-    public void Open()
-    {
-        //TODO
-    }
-
-    private void InitDictionaryWithComponents(Button buttons, Image images, AppSavedContext apps,
-        byte[] imageBytes)
-    {
-        ButtonContext buttonContext = new ButtonContext(buttons, images, imageBytes);
-
-        Bitmap? bitmap = SteamService.Instance.GetImageSyncFromBytes(imageBytes);
-
-        if (bitmap is null)
-            throw new NullReferenceException("Failed to get bitmap from bytes");
-
-        buttonContext.ButtonImage.Source = bitmap;
-
-        if (!_appData.TryAdd(buttonContext, apps))
-        {
-            _errorService.ShowErrorWindow(
-                $"Dictionary contains duplicated app button with hash code {Equals(buttonContext)}",
-                ErrorEnum.Error);
-        }
-    }
-
-    private void InitializeButtonListeners()
-    {
-        foreach (var item in _appData)
-        {
-            var button = item.Key.Button;
-            
-            if (item.Value != null)
-                button.Command = new RelayCommand(() =>
-                {
-                    _chooseGameWindow.Open();
-                    _chooseGameWindow.LoadData(item.Value, item.Key.ImageBytes);
-                });
-            else
-                throw new Exception("Not find game");
-        }
-    }
-
+    /// <summary>
+    /// Configures count input validation to clamp values between 1-5.
+    /// </summary>
     private void TextBoxEventsInit()
     {
         CountApp.PropertyChanged += (sender, e) =>
@@ -158,25 +76,113 @@ public partial class RollGame : UserControl, IUserControl, IDisposable //TODO Re
 
                 if (int.TryParse(text, out var count))
                 {
-                    var num = Math.Clamp(count, 1, 5);
-                    if (num.ToString() != CountApp.Text)
-                        CountApp.Text = num.ToString();
+                    if (count >  maxCountGames)
+                        CountApp.Text = maxCountGames.ToString();
                 }
             }
         };
     }
 
-    public void Dispose()
-    {
-        _onShowContent = null;
-        _generateRandomApps = null;
-        _errorService = null!;
-        _appData = null;
-        _mainWindowFactory = null;
-    }
-
+    /// <summary>
+    /// Opens the filter configuration window.
+    /// </summary>
     private void GoToFilter(object? sender, RoutedEventArgs e)
     {
-        _filterGameWindow.Open();
+        _filterGameWindow?.Open();
+    }
+
+    /// <summary>
+    /// Call generate game event from view model
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private async void GenerateGame(object? sender, RoutedEventArgs e)
+    {
+        if (!await _rollSemaphore.WaitAsync(0))
+        {
+            _errorService.ShowErrorWindow("Wait for the generation to complete", ErrorEnum.Error);
+            return;
+        }
+
+        try
+        {
+            if (DataContext is not RollGameViewModel viewModel) return;
+            int countGames = int.TryParse(CountApp.Text, out int count) ? count : DefaultCountApp;
+            
+            SetupGrid(countGames);
+            
+            var filters = _filterGameWindow?.GetFilters();
+
+            await viewModel.GenerateGames(countGames, filters);
+            
+            await GenerateUi();
+        }
+        catch (Exception exception)
+        {
+            Console.WriteLine(exception.Message);
+        }
+        finally
+        {
+            _rollSemaphore.Release();
+        }
+    }
+
+    private async Task GenerateUi()
+    {
+        if (Di.Container.GetInstance<MainWindowFactory>() is not MainWindowFactory mainWindowFactory) return;
+        if (DataContext is not RollGameViewModel viewModel) return;
+
+        for (int i = 0; i < viewModel.AppInfo.Count; i++)
+        {
+            var gridElements = mainWindowFactory.CreateButtonInGrid(GamesGrid, i);
+            InitDictionaryWithComponents(gridElements, viewModel.AppInfo[i]);
+
+            await Task.Delay(IterationDelayMilliseconds);
+        }
+
+        if (_loadGif != null)
+        {
+            GamesGrid.Children.Remove(_loadGif);
+            _loadGif = null;
+        }
+    }
+
+    private void SetupGrid(int countGames = DefaultCountApp)
+    {
+        GamesGrid.Children.Clear();
+        GamesGrid.ColumnDefinitions.Clear();
+
+        for (int i = 0; i < countGames; i++)
+        {
+            GamesGrid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
+        }
+
+        if (Di.Container.GetInstance<MainWindowFactory>() is MainWindowFactory mainWindowFactory)
+        {
+            _loadGif = mainWindowFactory.CreateAnimatedImage(GamesGrid);
+        }
+    }
+    
+    /// <summary>
+    /// Associates game data with UI components and loads game image.
+    /// </summary>
+    private void InitDictionaryWithComponents(GridElements gridElements, AppInfo app)
+    {
+        Bitmap? bitmap = SteamService.Instance.GetImageSyncFromBytes(app.ImageBytes);
+
+        if (bitmap is null)
+            throw new NullReferenceException("Failed to get bitmap from bytes");
+
+        gridElements.Image.Source = bitmap;
+
+        RelayCommand appCommand = new RelayCommand(() =>
+        {
+            _chooseGameWindow?.Open();
+            _chooseGameWindow?.LoadData(app.AppData, app.ImageBytes);
+        });
+
+        gridElements.Button.Command = appCommand;
+
+        _buttonsInfo.Add(new RollButtonsInfo(gridElements.Button, gridElements.Image, appCommand));
     }
 }
