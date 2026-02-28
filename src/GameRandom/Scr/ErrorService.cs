@@ -10,16 +10,20 @@ using GameRandom.Views;
 
 namespace GameRandom.SteamSDK;
 
-public class ErrorService : Register, IError
+public class ErrorService : IError
 {
     private Window _ownerWindow;
     private ErrorWindow _errorWindow;
 
     private readonly Queue<ErrorStruct> _queue = new();
 
-    public ErrorService()
+    public ErrorService(Window owner)
     {
         GlobalExceptionHandler();
+        
+        _ownerWindow = owner;
+        
+        Init();
     }
 
     private void GlobalExceptionHandler()
@@ -39,11 +43,8 @@ public class ErrorService : Register, IError
         };
     }
 
-    public override void Init<T1>(T1 arg1)
+    private void Init()
     {
-        if (arg1 is Window owner)
-            _ownerWindow = owner;
-
         _errorWindow = new ErrorWindow();
 
         _errorWindow.Closing += (sender, args) =>
