@@ -23,31 +23,11 @@ public partial class FilterGameWindow : WindowAbstract
         CloseWindow();
     }
 
-    public bool CheckFilters(AppSavedContext apps)
+    public FilteredData? GetFilters()
     {
-        if (DataContext is not FilterGameViewModel vm) return false;
+        if (DataContext is FilterGameViewModel viewModel)
+            return viewModel.GetFilters();
 
-        var selectedItems = vm.GetCategory();
-
-        if (selectedItems.Categories.Count > 0 &&
-            !selectedItems.Categories.Any(g => apps.AppCategoris.Contains(g)))
-            return false;
-
-        if (selectedItems.Genres.Count > 0 &&
-            !selectedItems.Genres.Any(g => apps.AppGenres.Contains(g)))
-            return false;
-        
-        return true;
-    }
-
-    public int GetYear()
-    {
-        if (DataContext is not FilterGameViewModel vm) return Random.Shared.Next(2003, 2026);
-
-        var vmSelectedYears = vm.SelectedYears;
-        
-        int year = vmSelectedYears.Count > 0 ? vmSelectedYears[Random.Shared.Next(0, vmSelectedYears.Count)] : Random.Shared.Next(2003, 2026);
-        
-        return year;
+        return null;
     }
 }
