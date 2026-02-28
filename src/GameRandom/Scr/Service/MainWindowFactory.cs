@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Labs.Gif;
 using Avalonia.Media.Imaging;
 
 namespace GameRandom.Service;
@@ -73,6 +74,15 @@ public class MainWindowFactory
         }
 
         return images;
+    }
+
+    public GifImage CreateAnimatedImage(Grid grid)
+    {
+        var image = AvaloniaService.CreateGifImageFromPath("Assets/load.gif");
+        Grid.SetColumn(image, grid.ColumnDefinitions.Count - 1);
+        grid.Children.Add(image);
+
+        return image;
     }
 }
 

@@ -4,6 +4,7 @@ using System.IO;
 using System.Text.Json;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Labs.Gif;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using GameRandom.CoreApp;
@@ -62,5 +63,16 @@ public static class AvaloniaService
     {
         var uri = new Uri($"avares://GameRandom/{path}");
         return new Bitmap(AssetLoader.Open(uri));
+    }
+
+    public static GifImage CreateGifImageFromPath(string path)
+    {
+        var uri = new Uri($"avares://GameRandom/{path}");
+        return new GifImage
+        {
+            Source = uri,
+            Width = 120,
+            Height = 70
+        };
     }
 }
