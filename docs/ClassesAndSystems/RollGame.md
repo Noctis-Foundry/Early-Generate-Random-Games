@@ -1,18 +1,18 @@
 # RollGame
 
 ## Overview
-User control for random game selection interface. Displays dynamically generated game options with filtering capabilities.
+User control for random game selection interface. Displays dynamically generated game options with filtering capabilities using MVVM pattern.
 
 ## Files
 - `RollGame.axaml` - UI layout
-- `RollGame.axaml.cs` - Code-behind logic
-- `RollGameStyle.axaml` - Style definitions
+- `RollGame.axaml.cs` - Code-behind with UI logic
+- `RollGameViewModel.cs` - Business logic and data management
 
 ## Purpose
 - Random game generation from Steam library
-- Visual game selection interface
+- Visual game selection interface with dynamic grid
 - Filter integration for targeted selection
-- Dynamic grid layout management
+- MVVM architecture with separated concerns
 
 ## UI Structure
 
@@ -22,180 +22,313 @@ User control for random game selection interface. Displays dynamically generated
 - Close button: Returns to main content
 
 ### Content Panel
-- Dynamic game grid (up to 5 games)
+- Dynamic game grid (up to 4 games)
 - Game images with click handlers
 - Control panel with:
   - Search button
-  - Count input (1-5)
-  - Filter checkbox
+  - Count input (1-4)
+  - Filter checkbox (bound to ViewModel)
 
-## Key Components
+## Architecture
 
-### Properties
+### View (RollGame.axaml.cs)
+**Properties**:
 ```csharp
-private Dictionary<ButtonContext, AppSavedContext?> _appData
-private ChooseGameWindow _chooseGameWindow
-private FilterGameWindow _filterGameWindow
-private IGenApp _generateRandomApps
-private MainWindowFactory _mainWindowFactory
-private Action<string>? _onShowContent
-private bool _isRolling
+private ErrorService? _errorService
+private ConfirmService? _confirmDialog
+private ChooseGameWindow? _chooseGameWindow
+private FilterGameWindow? _filterGameWindow
+private List<RollButtonsInfo> _buttonsInfo
+private GifImage? _loadGif
+private SemaphoreSlim _rollSemaphore
 ```
 
-### Constants
+**Constants**:
+- `DefaultCountApp = 1`
+- `IterationDelayMilliseconds = 500`
+- `maxCountGames = 4`
+
+### ViewModel (RollGameViewModel)
+**Properties**:
 ```csharp
-private const int MinYear = 2003
-private const int MaxYear = 2026
+private List<AppInfo> _appInfo
+private IGenApp? _generateRandomApps
+private bool _isFilter
+private int _iterationCount
 ```
+
+**Constants**:
+- `IterationLimit = 500`
 
 ## Methods
 
-### GenerateGames(object sender, RoutedEventArgs e)
-Main game generation logic.
+### View Methods (RollGame.axaml.cs)
+
+#### GenerateGame(object? sender, RoutedEventArgs e)
+Event handler for game generation button click.
 
 **Process**:
-1. Validate initialization state
-2. Parse game count from input
-3. Clear previous data and reconfigure grid
-4. Generate random games with optional filtering
-5. Load game images asynchronously
-6. Create UI elements dynamically
-7. Initialize button click handlers
+1. Check semaphore availability (non-blocking)
+2. Show error if generation already in progress
+3. Parse game count from CountApp TextBox
+4. Setup grid layout via SetupGrid()
+5. Get filters from FilterGameWindow
+6. Call ViewModel.GenerateGames()
+7. Generate UI elements via GenerateUi()
+8. Release semaphore in finally block
 
-**Filtering**:
-- If FilterCheckBox is checked, applies year and category/genre filters
-- Skips games that don't match filter criteria
+**Thread Safety**: Uses SemaphoreSlim to prevent concurrent operations
 
-**Iteration Limit**: 1000 attempts to prevent infinite loops
+#### GenerateUi()
+Creates UI elements for generated games with animation delay.
 
-### Close(object? sender, RoutedEventArgs e)
-Navigates back to main content and disposes resources.
+**Process**:
+1. Get MainWindowFactory instance
+2. Iterate through ViewModel.AppInfo
+3. Create button/image grid elements
+4. Initialize components via InitDictionaryWithComponents()
+5. Delay 500ms between iterations for visual effect
+6. Remove loading GIF when complete
 
-### InitDictionaryWithComponents(Button, Image, AppSavedContext, byte[])
+#### SetupGrid(int countGames)
+Configures grid layout for specified game count.
+
+**Actions**:
+- Clears existing grid children and column definitions
+- Creates column definitions for each game
+- Adds animated loading GIF to grid
+
+#### InitDictionaryWithComponents(GridElements, AppInfo)
 Associates game data with UI components.
 
-**Parameters**:
-- `buttons` - Button control
-- `images` - Image control
-- `apps` - Game metadata
-- `imageBytes` - Game header image data
+**Process**:
+1. Convert image bytes to Bitmap
+2. Set image source
+3. Create RelayCommand for button click
+4. Command opens ChooseGameWindow with game data
+5. Store button info in _buttonsInfo list
 
-**Creates**: ButtonContext with all components
-
-### InitializeButtonListeners()
-Attaches click handlers to game buttons.
-
-**Action**: Opens ChooseGameWindow with selected game data
-
-### TextBoxEventsInit()
+#### TextBoxEventsInit()
 Configures count input validation.
 
-**Validation**: Clamps input to 1-5 range
+**Validation**: Clamps input to 1-4 range (maxCountGames)
 
-### GoToFilter(object? sender, RoutedEventArgs e)
+#### GoToFilter(object? sender, RoutedEventArgs e)
 Opens filter configuration window.
 
-## Style Classes
+#### Close(object? sender, RoutedEventArgs e)
+Navigates back to main content and disposes ViewModel.
 
-### Border.HeaderBorder
-- Gray background
-- Gradient border (start to end colors)
-- Border thickness: 2
-- Corner radius: 20
+**Process**:
+1. Invoke navigation action to "Main"
+2. Dispose ViewModel resources
 
-### TextBlock.HeaderText
-- Font size: 24
-- Bold weight
-- White foreground
-- Anime Ace font family
+### ViewModel Methods (RollGameViewModel)
 
-### Border.ContentBorder
-- Semi-transparent black background (#66000000)
-- Animated conic gradient border (3s rotation)
-- Border thickness: 3
-- Corner radius: 20
+#### GenerateGames(int countGames, FilteredData? filteredGamesData, CancellationToken cancellationToken)
+Main game generation logic.
 
-### Button.CloseButton
-- Black background
-- White foreground/border
-- Border thickness: 2
-- Corner radius: 20
-- Animated border on hover (2s conic gradient)
+**Parameters**:
+- `countGames` - Number of games to generate (1-4)
+- `filteredGamesData` - Optional filter criteria
+- `cancellationToken` - Cancellation support
 
-### Border.GameBorder
-- White border, thickness 3
-- Gray background
-- Margin: 10, Padding: 5
+**Process**:
+1. Validate initialization via IsValidationGenerateData()
+2. Clear previous data
+3. Check cancellation token
+4. Loop until IterationLimit (500) or countGames reached:
+   - Get random game from IGenApp
+   - Skip if null or duplicate AppId
+   - Apply filters if IsFilter enabled
+   - Load game image bytes asynchronously
+   - Add to _appInfo list
+5. Handle exceptions
 
-### Button.RandomButton
-- Transparent background
-- No border
+**Iteration Limit**: 500 attempts to prevent infinite loops
 
-### Image.GameImages
-- Width: 80, Height: 80
+#### FilterGame(AppSavedContext savedGame, FilteredData filter)
+Checks if game matches filter criteria.
 
-### Button.GenerateButton
-- Black background
-- White border, thickness 2
-- Height: 60
+**Returns**: `bool` - True if game passes all filters
 
-### Border.InputBorder
-- White border, thickness 2
-- Gray background
-- Width: 60, Height: 60
+**Filter Logic**:
+- Categories: Game must contain at least one selected category
+- Genres: Game must contain at least one selected genre
+- Years: Game release year must match selected years
 
-### MaskedTextBox.CountInput
-- Transparent background
-- Font size: 36, bold
-- White foreground and caret
-- Centered content
+#### IsValidationGenerateData()
+Validates that game generator is initialized.
+
+**Returns**: `bool` - _generateRandomApps.IsInitialized
+
+#### ClearItems()
+Resets generation state.
+
+**Actions**:
+- Clears _appInfo list
+- Resets _iterationCount to 0
+
+## UI Components
+
+### Layout Structure
+```
+DockPanel (Background: RandomGame.png)
+├── Border.HeaderBorder (Top)
+│   └── Grid
+│       ├── TextBlock "GAME RANDOMIZER"
+│       ├── Button "Filters" (GoToFilter)
+│       └── Button "✕" (Close)
+├── StackPanel.ContentPanel
+│   ├── Grid (GamesGrid) - Dynamic columns
+│   │   └── Border.GameBorder × N
+│   │       └── Button.RandomButton
+│   │           └── Image.GameImages
+│   └── Border.ContentBorder
+│       └── Grid
+│           ├── Button.GenerateButton "Search"
+│           ├── Border.InputBorder
+│           │   └── MaskedTextBox (CountApp)
+│           └── CheckBox "filter" (IsFilter binding)
+```
+
+### Key Style Classes
+- **HeaderBorder**: Top panel with gradient border
+- **CloseButton**: Close button with hover animation
+- **ContentPanel**: Main content container
+- **GameBorder**: Individual game card border
+- **RandomButton**: Transparent button for game selection
+- **GameImages**: Game cover images
+- **GenerateButton**: Search button (Height: 60)
+- **InputBorder**: Count input container (60×60)
+- **CountInput**: Numeric input (Font: 36, bold)
+
+## Data Flow
+
+### Generation Flow
+```
+User clicks Search
+  ↓
+View: GenerateGame() - Acquire semaphore
+  ↓
+View: SetupGrid() - Configure layout
+  ↓
+ViewModel: GenerateGames() - Generate game data
+  ↓
+View: GenerateUi() - Create UI elements
+  ↓
+View: Release semaphore
+```
+
+### Filter Flow
+```
+ViewModel.IsFilter = true (CheckBox binding)
+  ↓
+GenerateGames() checks IsFilter
+  ↓
+FilterGame() validates each game
+  ↓
+Only matching games added to AppInfo
+```
 
 ## Usage Flow
 
 1. User opens RollGame control
 2. Optionally configures filters via "Filters" button
-3. Sets game count (1-5) in input field
+3. Sets game count (1-4) in input field
 4. Checks filter checkbox if filtering desired
 5. Clicks "Search" button
-6. System generates random games matching criteria
-7. User clicks game image to view details in ChooseGameWindow
+6. Loading GIF displays during generation
+7. Games appear with 500ms delay between each
+8. User clicks game image to view details in ChooseGameWindow
 
 ## Integration Points
 
-### Dependencies
-- `IGenApp` - Game generation service
-- `MainWindowFactory` - Grid layout management
-- `FilterGameWindow` - Filter configuration
+### View Dependencies (Injected)
+- `ErrorService` - Error message display
+- `ConfirmService` - User confirmation dialogs
+
+### View Dependencies (Instantiated)
 - `ChooseGameWindow` - Game details display
-- `ErrorService` - Error handling
-- `SteamService` - Image loading
+- `FilterGameWindow` - Filter configuration
+- `MainWindowFactory` - Grid layout and GIF creation
+- `SteamService` - Image conversion
+
+### ViewModel Dependencies
+- `IGenApp` (GenerateRandomApps) - Random game generation
+- `SteamService` - Image byte loading
 
 ### Navigation
-- Implements `IUserControl` interface
-- Uses `AddListener` for navigation callbacks
+- Extends `MainWindowUserControlAbstract`
+- Uses `_changeWindowAction` for navigation
 - Navigates to "Main" on close
+
+### Data Binding
+- `IsFilter` property bound to CheckBox
+- Two-way binding for filter state
 
 ## Error Handling
 
+### View Level
+- Shows error if generation already in progress
+- Throws NullReferenceException if services not injected
+- Throws NullReferenceException if bitmap conversion fails
+- Always releases semaphore in finally block
+
+### ViewModel Level
 - Validates initialization before generation
-- Prevents concurrent generation with `_isRolling` flag
-- Shows error window for uninitialized state
-- Handles null image bytes gracefully
-- Throws exception for null bitmap conversion
+- Skips games with null image bytes
+- Catches and logs all exceptions during generation
+- Supports cancellation token (though not currently used)
+
+## Thread Safety
+
+### Concurrency Control
+- **SemaphoreSlim**: Prevents multiple simultaneous operations
+- **Non-blocking Check**: Uses `WaitAsync(0)` to check availability
+- **Error Display**: Shows error message if generation in progress
+
+### Current Behavior
+```
+User clicks Generate (operation in progress) →
+Semaphore unavailable →
+Show error message →
+Return without starting new operation
+```
+
+### Resource Cleanup
+- Semaphore released in finally block
+- ViewModel disposed on close
 
 ## Disposal
 
-Clears all references:
-- Navigation callback
-- Game generation service
-- Error service
-- App data dictionary
-- Window factory
+### View Disposal
+- Calls ViewModel.Dispose() on close
+- Retains window references (not disposed)
+
+### ViewModel Disposal
+- Clears _generateRandomApps reference
+- Clears _appInfo list
+- Resets _iterationCount
+
+## Key Features
+
+1. **MVVM Separation**: Business logic in ViewModel, UI logic in View
+2. **Thread Safety**: Semaphore prevents concurrent generation
+3. **Visual Feedback**: Loading GIF and staggered game appearance
+4. **Flexible Filtering**: Optional category/genre/year filters
+5. **Iteration Limit**: Prevents infinite loops (500 attempts)
+6. **Dynamic Layout**: Grid adjusts to game count (1-4)
+7. **Dependency Injection**: Services injected via Di.Container
+8. **Data Binding**: IsFilter property bound to CheckBox
 
 ## Best Practices
 
-1. Always check `_isRolling` before starting generation
-2. Dispose properly when closing
-3. Validate count input to prevent invalid states
+1. Use semaphore for concurrent operation control
+2. Release semaphore in finally block
+3. Validate count input (1-4 range)
 4. Use iteration limit to prevent infinite loops
-5. Handle async image loading with proper error checking
+5. Handle null image bytes gracefully
+6. Dispose ViewModel on close
+7. Separate UI and business logic (MVVM)
+8. Use RelayCommand for button actions
