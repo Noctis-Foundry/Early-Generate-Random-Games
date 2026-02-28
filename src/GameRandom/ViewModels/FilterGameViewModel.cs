@@ -107,7 +107,7 @@ public class FilterGameViewModel : ViewModelBase, IDisposable
         }
     }
 
-    public FilteredData GetCategory()
+    public FilteredData GetFilters()
     {
         return new FilteredData(SelectedCategories, SelectedGenres, SelectedYears);
     }

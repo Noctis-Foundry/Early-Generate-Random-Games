@@ -29,20 +29,15 @@ public partial class MainWindow : Window
     
     private readonly Register<string, Func<UserControl>> _preloadRegister = new();
     private readonly Action<string> _selectorAction;
-
-    private IUserControl? _oldControl = null;
     
     public MainWindow()
     {
         InitializeComponent();
 
         if (Design.IsDesignMode)
-        {
             return;
-        }
         
-        Di.Container.ResolveFieldsFromClassInstance(this);
-        RegisterUiService(this);
+        RegisterServiceWithMainWindowOwnerAndResolve(this);
         
         var vm = new MainWindowViewModel(new WindowService(this));
         DataContext = vm;
@@ -50,9 +45,20 @@ public partial class MainWindow : Window
         _selectorAction = Navigate;
         
         InitializeUserControlRegister();
-        
-        Navigate("Main");
-        
+        _selectorAction.Invoke("Main");
+        InitWindowEvents(vm);
+    }
+    
+    private void InitializeUserControlRegister() //TODO Change IUserControl in MainWindowUserControlAbstract for Profile and GameTable
+    {
+        _preloadRegister.RegisterNewObject("Main", () => _controlFactory.CreateUserControl<MainWindowContent>(_selectorAction));
+        // _preloadRegister.RegisterNewObject("Profile",() => _controlFactory.CreateUserControl<ProfileContent>(_selectorAction));
+        _preloadRegister.RegisterNewObject("Roll", () =>  _controlFactory.CreateUserControl<RollGame>(_selectorAction));
+        // _preloadRegister.RegisterNewObject("Table", () =>  _controlFactory.CreateUserControl<GameTable>(_selectorAction));
+    }
+
+    private void InitWindowEvents(MainWindowViewModel vm)
+    {
         Closing += MainWindow_OnClosed;
         
         EventsConnecting();
@@ -61,14 +67,6 @@ public partial class MainWindow : Window
         {
             Dispatcher.UIThread.InvokeAsync(() => vm.UpdateLobby(LobbyImages, (int)TableEnum.Lobby));
         });
-    }
-
-    private void InitializeUserControlRegister()
-    {
-        _preloadRegister.RegisterNewObject("Main", () => _controlFactory.CreateUserControl<MainWindowContent>(_selectorAction));
-        _preloadRegister.RegisterNewObject("Profile",() => _controlFactory.CreateUserControl<ProfileContent>(_selectorAction));
-        _preloadRegister.RegisterNewObject("Roll", () =>  _controlFactory.CreateUserControl<RollGame>(_selectorAction));
-        _preloadRegister.RegisterNewObject("Table", () =>  _controlFactory.CreateUserControl<GameTable>(_selectorAction));
     }
 
     private void Navigate(string nameControl)
@@ -80,7 +78,7 @@ public partial class MainWindow : Window
             if (content is null)
                 throw new NullReferenceException($"Failed navigate to {nameControl}");
 
-            if (content is IUserControl value)
+            if (content is MainWindowUserControlAbstract value)
             {
                 ControlMain.Content = value;
                 value.Open();
@@ -111,12 +109,11 @@ public partial class MainWindow : Window
         });
     }
     
-    private void RegisterUiService(Window window)
+    private void RegisterServiceWithMainWindowOwnerAndResolve(Window mainWindow)
     {
-        if (window is MainWindow mainWindow)
-            _diFactory.Create(new ErrorService(), mainWindow);
-        else
-            throw new Exception("Window not found");
+        Di.Container.RegisterSingleInstance(new ErrorService(mainWindow));
+        Di.Container.RegisterSingleInstance(new ConfirmService(mainWindow));
+        
+        Di.Container.ResolveFieldsFromClassInstance(this);
     }
-    
 }
