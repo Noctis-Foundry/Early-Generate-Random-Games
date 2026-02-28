@@ -15,7 +15,7 @@
 
                         <!-- Game name -->
                         <Border Grid.Row="0" Grid.Column="0" Classes="GameInfoItem">
-                                <TextBlock Text="Name: " Classes="GameInfoText" x:Name="GameName"/>
+                                <SelectableTextBlock Text="Name: " Classes="SelectableGameInfo" x:Name="GameName"/>
                         </Border>
 
                         <!-- Game genres -->
