@@ -16,7 +16,7 @@ using GameRandom.ViewModels;
 
 namespace GameRandom.Views;
 
-public partial class GameTable : UserControl, IDisposable, IUserControl
+public partial class GameTable : UserControl, IDisposable
 {
     [Inject] private ErrorService _errorService = null!;
     

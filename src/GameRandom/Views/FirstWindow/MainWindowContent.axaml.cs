@@ -5,44 +5,35 @@ using GameRandom.SteamSDK;
 
 namespace GameRandom.Views;
 
-public partial class MainWindowContent : UserControl, IUserControl
+public partial class MainWindowContent : MainWindowUserControlAbstract
 {
-    private Action<string> _changeContent; 
-    
     public MainWindowContent()
     {
         InitializeComponent();
     }
-    
-    public void AddListener(Action<string> _onChangeContent) => _changeContent = _onChangeContent;
 
-    public void Open()
-    {
-        
-    }
-
-    public void Close(object? sender, RoutedEventArgs e)
+    public override void Close(object? sender, RoutedEventArgs e)
     {
         
     }
 
     private void GoToRollContent(object? sender, RoutedEventArgs e)
     {
-        _changeContent?.Invoke("Roll");
+        _changeWindowAction?.Invoke("Roll");
     }
     
     private void GoToTable(object? sender, RoutedEventArgs e)
     {
-        _changeContent?.Invoke("Table");
+        _changeWindowAction?.Invoke("Table");
     }
 
     private void GoToProfile(object? sender, RoutedEventArgs e)
     {
-        _changeContent?.Invoke("Profile");
+        _changeWindowAction?.Invoke("Profile");
     }
 
     private void GoToRules(object? sender, RoutedEventArgs e)
     {
-        _changeContent?.Invoke("Rules");
+        _changeWindowAction?.Invoke("Rules");
     }
 }

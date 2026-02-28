@@ -9,7 +9,7 @@ using Steamworks;
 
 namespace GameRandom.Views;
 
-public partial class ProfileContent : UserControl, IDisposable, IUserControl
+public partial class ProfileContent : UserControl, IDisposable
 {
     private Action<string>? _changeContent;
     private StatisticControl _statisticContent;
