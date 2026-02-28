@@ -35,7 +35,7 @@
                 MinWidth="600" MaxWidth="900" MinHeight="280" MaxHeight="400" Width="900"
                 Margin="0,15,0,0">
             <Grid x:Name="GamesGrid" RowDefinitions="Auto, Auto" ColumnDefinitions="Auto, Auto, Auto" Margin="0,15,0,0"
-                  HorizontalAlignment="Center" RowSpacing="10" ColumnSpacing="15">
+                  HorizontalAlignment="Center" RowSpacing="10" ColumnSpacing="3">
 
                 <Border Classes="GameBorder" Grid.Column="0">
                     <Button Classes="RandomButton" x:Name="AppButton1">
@@ -65,7 +65,7 @@
                       ColumnSpacing="15">
 
                     <Button Classes="GenerateButton" Grid.Column="0" x:Name="GenerateButton"
-                            Click="GenerateGames">
+                            Click="GenerateGame">
                         <TextBlock Classes="GenerateButtonText" Text="Search" />
                     </Button>
 
@@ -74,7 +74,7 @@
                                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
                     </Border>
                         
-                    <CheckBox Grid.Column="2" Content="filter" Width="100" x:Name="FilterCheckBox"></CheckBox>
+                    <CheckBox Grid.Column="2" Content="filter" Width="100" IsChecked="{Binding IsFilter}" x:Name="FilterCheckBox"></CheckBox>
                 </Grid>
             </Border>
         </StackPanel>
