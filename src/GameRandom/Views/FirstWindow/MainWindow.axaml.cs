@@ -28,7 +28,7 @@ public partial class MainWindow : Window
     [Inject] private readonly UserControlFactory _controlFactory = null!;
     
     private readonly Register<string, Func<UserControl>> _preloadRegister = new();
-    private readonly Action<string> _selectorAction;
+    private readonly Action<string> _changeUserControlAction;
     
     public MainWindow()
     {
@@ -42,19 +42,19 @@ public partial class MainWindow : Window
         var vm = new MainWindowViewModel(new WindowService(this));
         DataContext = vm;
         
-        _selectorAction = Navigate;
+        _changeUserControlAction = Navigate;
         
         InitializeUserControlRegister();
-        _selectorAction.Invoke("Main");
+        _changeUserControlAction.Invoke("Main");
         InitWindowEvents(vm);
     }
     
     private void InitializeUserControlRegister() //TODO Change IUserControl in MainWindowUserControlAbstract for Profile and GameTable
     {
-        _preloadRegister.RegisterNewObject("Main", () => _controlFactory.CreateUserControl<MainWindowContent>(_selectorAction));
-        // _preloadRegister.RegisterNewObject("Profile",() => _controlFactory.CreateUserControl<ProfileContent>(_selectorAction));
-        _preloadRegister.RegisterNewObject("Roll", () =>  _controlFactory.CreateUserControl<RollGame>(_selectorAction));
-        // _preloadRegister.RegisterNewObject("Table", () =>  _controlFactory.CreateUserControl<GameTable>(_selectorAction));
+        _preloadRegister.RegisterNewObject("Main", () => _controlFactory.CreateUserControl<MainWindowContent>(_changeUserControlAction));
+        _preloadRegister.RegisterNewObject("Profile",() => _controlFactory.CreateUserControl<ProfileContent>(_changeUserControlAction));
+        _preloadRegister.RegisterNewObject("Roll", () =>  _controlFactory.CreateUserControl<RollGame>(_changeUserControlAction));
+        _preloadRegister.RegisterNewObject("Table", () =>  _controlFactory.CreateUserControl<GameTable>(_changeUserControlAction));
     }
 
     private void InitWindowEvents(MainWindowViewModel vm)
