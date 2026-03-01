@@ -9,9 +9,8 @@ using Steamworks;
 
 namespace GameRandom.Views;
 
-public partial class ProfileContent : UserControl, IDisposable
+public partial class ProfileContent : MainWindowUserControlAbstract
 {
-    private Action<string>? _changeContent;
     private StatisticControl _statisticContent;
     private CurrentGame _currentGame;
 
@@ -28,10 +27,8 @@ public partial class ProfileContent : UserControl, IDisposable
         
         DataContext = new ProfileViewModel();
     }
-    
-    public void AddListener(Action<string> _onChangeContent) => _changeContent = _onChangeContent;
 
-    public void Open()
+    public override void Open()
     {
         InitProfileAvatar();
         
@@ -41,9 +38,9 @@ public partial class ProfileContent : UserControl, IDisposable
         StatisticContent.Content = _statisticContent;
     }
 
-    public void Close(object? sender, RoutedEventArgs e)
+    public override void Close(object? sender, RoutedEventArgs e)
     {
-        _changeContent?.Invoke("Main");
+        _changeWindowAction?.Invoke("Main");
         Dispose();
     }
 
@@ -61,9 +58,9 @@ public partial class ProfileContent : UserControl, IDisposable
         ProfileName.Text = accName;
     }
 
-    public void Dispose()
+    public override void Dispose()
     {
-        _changeContent = null;
+        _changeWindowAction = null;
         ProfileImage.Source = null;
         DataContext = null;
     }
