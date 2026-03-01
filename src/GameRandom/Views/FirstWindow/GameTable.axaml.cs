@@ -1,29 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
-using GameRandom.DataBaseContexts;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Service;
 using GameRandom.SteamSDK;
-using GameRandom.SteamSDK.Enums;
-using GameRandom.SteamSDK.UserData;
 using GameRandom.ViewModels;
 
 namespace GameRandom.Views;
 
-public partial class GameTable : UserControl, IDisposable
+/// <summary>
+/// User control for displaying game progress table with real-time updates.
+/// </summary>
+public partial class GameTable : MainWindowUserControlAbstract
 {
     [Inject] private ErrorService _errorService = null!;
     
+    /// <summary>
+    /// Delegate for handling table update notifications from PostgresListener.
+    /// </summary>
     private Action<PayloadStructure>? _savedDelegate;
-    
-    private Action<string>? _onShowContent;
 
+    /// <summary>
+    /// Initializes the GameTable control and subscribes to database notifications.
+    /// </summary>
     public GameTable()
     {
         InitializeComponent();
@@ -47,19 +47,27 @@ public partial class GameTable : UserControl, IDisposable
         Dispatcher.UIThread.InvokeAsync(() => SubscribeToUpdateTable((int)TableEnum.GameProgress));
     }
 
-    public void Open()
+    /// <summary>
+    /// Called when the control is opened. Refreshes table data.
+    /// </summary>
+    public override void Open()
     {
         UpdateTableData();
     }
 
-    public void AddListener(Action<string> onChangeContent) => _onShowContent = onChangeContent;
-
-    public void Close(object? sender, RoutedEventArgs e)
+    /// <summary>
+    /// Closes the control, navigates to main view, and disposes resources.
+    /// </summary>
+    public override void Close(object? sender, RoutedEventArgs e)
     {
-        _onShowContent?.Invoke("Main");
+        _changeWindowAction?.Invoke("Main");
         Dispose();
     }
 
+    /// <summary>
+    /// Handles table update notifications from database listener.
+    /// </summary>
+    /// <param name="tableCode">Code identifying which table was updated.</param>
     private void SubscribeToUpdateTable(int tableCode)
     {
         if (tableCode != (int)TableEnum.GameProgress)
@@ -71,17 +79,21 @@ public partial class GameTable : UserControl, IDisposable
         UpdateTableData();
     }
 
+    /// <summary>
+    /// Refreshes table data by calling ViewModel's LoadData method on UI thread.
+    /// </summary>
     private void UpdateTableData()
     {
         if (DataContext is GameTableViewModel vm)
-        {
             Dispatcher.UIThread.InvokeAsync(async () => await vm.LoadData());
-        }
     }
     
-    public void Dispose()
+    /// <summary>
+    /// Disposes resources and unsubscribes from database notifications.
+    /// </summary>
+    public override void Dispose()
     {
-        _onShowContent = null;
+        _changeWindowAction = null;
 
         if (Di.Container.TryGetInstance<PostgresListener>() is PostgresListener listener)
         {
