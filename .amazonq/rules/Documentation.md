@@ -20,3 +20,7 @@ Contains high-level overview:
 When documenting a class:
 1. Create detailed file in `docs/ClassesAndSystems/ClassName.md`
 2. Add brief overview in `docs/Project documentation.md` with link to detailed file
+
+## Language
+
+All code comments and XML documentation summaries must be written in English.
