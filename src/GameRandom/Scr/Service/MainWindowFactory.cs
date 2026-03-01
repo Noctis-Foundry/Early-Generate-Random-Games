@@ -38,42 +38,31 @@ public class MainWindowFactory
 
         Grid.SetColumn(button, countGame);
         grid.Children.Add(button);
-        
+
         return new GridElements(button, image);
     }
 
-    public List<Image> CreateImageInGrid(Grid grid, int count)
+    public Image CreateImageInGrid(Grid grid, int currentImage)
     {
-        grid.ColumnDefinitions.Clear();
-    
-        for (int i = 0; i < count; i++)
-            grid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
-
-        var images = new List<Image>();
-    
-        for (int i = 0; i < count; i++)
+        var image = new Image
         {
-            var image = new Image
-            {
-                Source = AvaloniaService.CreateBitmapFromPath("Assets/avalonia-logo.ico")
-            };
+            Source = AvaloniaService.CreateBitmapFromPath("Assets/avalonia-logo.ico")
+        };
 
-            var border = new Border
-            {
-                Height = 30,
-                MinHeight = 30,
-                MaxHeight = 40,
-                ClipToBounds = true,
-                CornerRadius = new CornerRadius(10),
-                Child = image
-            };
+        var border = new Border
+        {
+            Height = 30,
+            MinHeight = 30,
+            MaxHeight = 40,
+            ClipToBounds = true,
+            CornerRadius = new CornerRadius(10),
+            Child = image
+        };
 
-            Grid.SetColumn(border, i);
-            grid.Children.Add(border);
-            images.Add(image);
-        }
+        Grid.SetColumn(border, currentImage);
+        grid.Children.Add(border);
 
-        return images;
+        return image;
     }
 
     public GifImage CreateAnimatedImage(Grid grid)
@@ -84,13 +73,6 @@ public class MainWindowFactory
 
         return image;
     }
-}
-
-public class ButtonContext(Button button, Image buttonImage, byte[] imageBytes)
-{
-    public Button Button { get; private set; } = button;
-    public Image ButtonImage { get; private set; } = buttonImage;
-    public byte[] ImageBytes { get; private set; } = imageBytes;
 }
 
 public class GridElements(Button button, Image image)

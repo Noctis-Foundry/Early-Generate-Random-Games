@@ -18,15 +18,15 @@ public class SteamService
     {
     }
 
-    public async Task<Bitmap?> GetImage(string imageUrl)
+    public async Task<Bitmap?> GetImage(string imageUrl, CancellationToken cancellationToken = default)
     {
         using var imageClient = new HttpClient();
 
         try
         {
-            var response = await imageClient.GetAsync(imageUrl);
+            var response = await imageClient.GetAsync(imageUrl, cancellationToken);
 
-            var imageBytes = await response.Content.ReadAsByteArrayAsync();
+            var imageBytes = await response.Content.ReadAsByteArrayAsync(cancellationToken);
             
             using (var mr = new MemoryStream(imageBytes))
             {

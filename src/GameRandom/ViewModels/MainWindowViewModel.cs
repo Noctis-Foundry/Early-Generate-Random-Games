@@ -3,52 +3,73 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Avalonia.Controls;
-using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.Input;
-using GameRandom.DataBaseContexts;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Service;
-using GameRandom.Scr.WindowScr;
-using GameRandom.Service;
 using GameRandom.SteamSDK;
 using GameRandom.SteamSDK.Enums;
+using GameRandom.SteamSDK.SteamsContexts;
 using GameRandom.SteamSDK.UserData;
-using GameRandom.Views;
-using GameRandom.Views.LobbyModalWindow;
 
 namespace GameRandom.ViewModels;
 
+/// <summary>
+/// ViewModel for the main application window. Manages lobby and challenge rules.
+/// </summary>
 public class MainWindowViewModel : ViewModelBase
 {
-    [Inject] private readonly MainWindowFactory _mainWindowFactory = null!;
     [Inject] private readonly SteamWebApi _steamWebApi = null!;
     [Inject] private readonly DatabaseService _databaseService = null!;
     [Inject] private readonly ErrorService _errorService = null!;
-
-    private Rules _rules = new();
     
-    private readonly IWindowService _windowService;
-    public ICommand OpenLobbyCommand { get; }
-    public ICommand RulesOpen { get; }
+    /// <summary>
+    /// Command to open the lobby window.
+    /// </summary>
+    private ICommand? _openLobbyCommand;
+    public ICommand? OpenLobbyCommand
+    {
+        get => _openLobbyCommand;
+        set => SetProperty(ref _openLobbyCommand, value);
+    }
+    /// <summary>
+    /// Command to open the challenge rules window.
+    /// </summary>
+    private ICommand? _rulesOpen;
+    public ICommand? RulesOpen
+    {
+        get => _rulesOpen;
+        set => SetProperty(ref _rulesOpen, value);
+    }
 
-    private Dictionary<ulong, Image> _avatars = new();
-    private bool _isInitialized;
+    /// <summary>
+    /// Collection of users in the current lobby.
+    /// </summary>
+    private HashSet<ProfilerContext> _usersToLobby = new HashSet<ProfilerContext>();
+    
+    /// <summary>
+    /// Gets the collection of users in the lobby.
+    /// </summary>
+    public HashSet<ProfilerContext> UsersToLobby => _usersToLobby;
+    
+    private readonly bool _isInitialized;
     
     private readonly SemaphoreSlim _semaphore = new(1, 1);
 
-    public MainWindowViewModel(IWindowService windowService)
+    /// <summary>
+    /// Initializes a new instance of MainWindowViewModel.
+    /// </summary>
+    public MainWindowViewModel()
     {
-        _windowService = windowService;
-        OpenLobbyCommand = new RelayCommand(OpenLobby);
-        RulesOpen = new RelayCommand(OpenRules);
-
         Di.Container.ResolveFieldsFromClassInstance(this);
 
         _isInitialized = true;
     }
 
-    public async Task UpdateLobby(Grid lobbyGrid, int tableCode)
+    /// <summary>
+    /// Updates lobby data by loading information about all participants.
+    /// </summary>
+    /// <param name="tableCode">Table code for update (must be TableEnum.Lobby).</param>
+    public async Task UpdateLobby(int tableCode)
     {
         await _semaphore.WaitAsync();
         
@@ -60,9 +81,6 @@ public class MainWindowViewModel : ViewModelBase
             return;
         }
         
-        lobbyGrid.Children.Clear();
-        _avatars.Clear();
-
         if ((TableEnum)tableCode != TableEnum.Lobby)
         {
             _errorService.ShowErrorWindow($"Table code {tableCode} not correct for this method", ErrorEnum.Error);
@@ -81,8 +99,6 @@ public class MainWindowViewModel : ViewModelBase
         
         var lobbyData = lobbyContexts.LobbyData;
 
-        var images = _mainWindowFactory.CreateImageInGrid(lobbyGrid, lobbyData.Count);
-
         for (int i = 0; i < lobbyData.Count; i++)
         {
             try
@@ -95,8 +111,7 @@ public class MainWindowViewModel : ViewModelBase
                     return;
                 }
                 
-                var bitmap = await SteamService.Instance.GetImage(profileContext.avatarUrl);
-                images[i].Source = bitmap;
+                _usersToLobby.Add(profileContext);
             }
             catch (Exception e)
             {
@@ -106,18 +121,23 @@ public class MainWindowViewModel : ViewModelBase
         }
     }
 
-    public async void OpenLobby()
+    /// <summary>
+    /// Binds the lobby opening command to the specified action.
+    /// </summary>
+    /// <param name="func">Action executed when opening the lobby.</param>
+    public void BindingOpenLobbyCommand(Action func)
     {
-        await _windowService.ShowDialogAsync<LobbyWindow>();
+        if (OpenLobbyCommand is null) 
+            OpenLobbyCommand = new RelayCommand(func);
     }
 
-    public  void OpenRules()
+    /// <summary>
+    /// Binds the rules window opening command to the specified action.
+    /// </summary>
+    /// <param name="func">Action executed when opening the rules window.</param>
+    public void BindingRulesWindow(Action func)
     {
-       _rules.Open();
-    }
-
-    public void ShowError()
-    {
-        _errorService.ShowErrorWindow("Open error modal", ErrorEnum.Warning);
+        if (RulesOpen is null) 
+            RulesOpen = new RelayCommand(func);
     }
 }

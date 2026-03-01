@@ -1,74 +1,102 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
-using GameRandom.DataBaseContexts;
 using GameRandom.Events;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Events;
 using GameRandom.Scr.Service;
 using GameRandom.Service;
 using GameRandom.SteamSDK;
-using GameRandom.Scr.WindowScr;
-using GameRandom.SteamSDK.Enums;
 using GameRandom.SteamSDK.Factory;
 using GameRandom.SteamSDK.LobbySystem;
 using GameRandom.ViewModels;
+using GameRandom.Views.LobbyModalWindow;
 
 namespace GameRandom.Views;
 
+/// <summary>
+/// Primary application window managing navigation, lobby system, and UI state.
+/// </summary>
 public partial class MainWindow : Window
 {
     [Inject] private readonly LobbyService _lobby = null!;
-    [Inject] private readonly DiFactory _diFactory = null!;
-    [Inject] private readonly PostgresListener  _postgres = null!;
+    [Inject] private readonly PostgresListener _postgres = null!;
     [Inject] private readonly EventBus _eventBus = null!;
     [Inject] private readonly UserControlFactory _controlFactory = null!;
-    
+    [Inject] private readonly MainWindowFactory _mainWindowFactory = null!;
+
+    /// <summary>
+    /// Registry for user control factories mapped by navigation keys.
+    /// </summary>
     private readonly Register<string, Func<UserControl>> _preloadRegister = new();
-    private readonly Action<string> _changeUserControlAction;
     
+    /// <summary>
+    /// Action delegate for navigating between user controls.
+    /// </summary>
+    private readonly Action<string> _changeUserControlAction;
+
+    private readonly Rules _rules = new();
+    private readonly LobbyWindow _lobbyWindow;
+
+
+    /// <summary>
+    /// Initializes the main window and all subsystems.
+    /// </summary>
     public MainWindow()
     {
         InitializeComponent();
 
         if (Design.IsDesignMode)
             return;
-        
+
         RegisterServiceWithMainWindowOwnerAndResolve(this);
         
-        var vm = new MainWindowViewModel(new WindowService(this));
-        DataContext = vm;
-        
+        _lobbyWindow = new LobbyWindow();
+        DataContext = new MainWindowViewModel();
+        BindingCommand();
+
         _changeUserControlAction = Navigate;
-        
+
         InitializeUserControlRegister();
         _changeUserControlAction.Invoke("Main");
-        InitWindowEvents(vm);
-    }
-    
-    private void InitializeUserControlRegister() //TODO Change IUserControl in MainWindowUserControlAbstract for Profile and GameTable
-    {
-        _preloadRegister.RegisterNewObject("Main", () => _controlFactory.CreateUserControl<MainWindowContent>(_changeUserControlAction));
-        _preloadRegister.RegisterNewObject("Profile",() => _controlFactory.CreateUserControl<ProfileContent>(_changeUserControlAction));
-        _preloadRegister.RegisterNewObject("Roll", () =>  _controlFactory.CreateUserControl<RollGame>(_changeUserControlAction));
-        _preloadRegister.RegisterNewObject("Table", () =>  _controlFactory.CreateUserControl<GameTable>(_changeUserControlAction));
+        InitWindowEvents();
     }
 
-    private void InitWindowEvents(MainWindowViewModel vm)
+    /// <summary>
+    /// Registers navigation targets for user controls.
+    /// </summary>
+    private void
+        InitializeUserControlRegister() //TODO Change IUserControl in MainWindowUserControlAbstract for Profile and GameTable
+    {
+        _preloadRegister.RegisterNewObject("Main",
+            () => _controlFactory.CreateUserControl<MainWindowContent>(_changeUserControlAction));
+        _preloadRegister.RegisterNewObject("Profile",
+            () => _controlFactory.CreateUserControl<ProfileContent>(_changeUserControlAction));
+        _preloadRegister.RegisterNewObject("Roll",
+            () => _controlFactory.CreateUserControl<RollGame>(_changeUserControlAction));
+        _preloadRegister.RegisterNewObject("Table",
+            () => _controlFactory.CreateUserControl<GameTable>(_changeUserControlAction));
+    }
+
+    /// <summary>
+    /// Initializes window event subscriptions.
+    /// </summary>
+    private void InitWindowEvents()
     {
         Closing += MainWindow_OnClosed;
-        
+
         EventsConnecting();
-        
-        _eventBus.Subscribe<LobbyUpdate>(_ =>
-        {
-            Dispatcher.UIThread.InvokeAsync(() => vm.UpdateLobby(LobbyImages, (int)TableEnum.Lobby));
-        });
+
+        _eventBus.Subscribe<LobbyUpdate>(_ => { UpdateLobby((int)TableEnum.Lobby); });
     }
 
+    /// <summary>
+    /// Navigates to the specified user control.
+    /// </summary>
+    /// <param name="nameControl">Navigation key for the target control.</param>
+    /// <exception cref="NullReferenceException">Thrown when control creation fails.</exception>
     private void Navigate(string nameControl)
     {
         if (_preloadRegister.GetObjectFromRegister(nameControl, out var func))
@@ -85,35 +113,94 @@ public partial class MainWindow : Window
             }
         }
     }
+
+    /// <summary>
+    /// Handles window closing event, shutting down Steam and exiting application.
+    /// </summary>
     private void MainWindow_OnClosed(object? sender, EventArgs e)
     {
         SteamManager.GetSteamManager().ShutdownSteam();
         Environment.Exit(0);
     }
+
+    /// <summary>
+    /// Subscribes to database and lobby events.
+    /// </summary>
+    /// <exception cref="Exception">Thrown when lobby service is not found.</exception>
     private void EventsConnecting()
     {
         LobbyImages.Children.Clear();
-        
-        if (DataContext is MainWindowViewModel vm)
-        {
-            _postgres.Subscribe(TableEnum.Lobby,
-                e => Dispatcher.UIThread.InvokeAsync(async () => await vm.UpdateLobby(LobbyImages, e.TableCode)));
-        }
+
+        _postgres.Subscribe(TableEnum.Lobby,
+            e => UpdateLobby(e.TableCode));
 
         if (_lobby == null)
             throw new Exception("Lobby service not found");
-        
-        Dispatcher.UIThread.InvokeAsync(async () =>
-        {
-            await _lobby.StartApp();
-        });
+
+        Dispatcher.UIThread.InvokeAsync(async () => { await _lobby.StartApp(); });
     }
-    
+
+    /// <summary>
+    /// Registers services with DI container and resolves dependencies.
+    /// </summary>
+    /// <param name="mainWindow">The main window instance.</param>
     private void RegisterServiceWithMainWindowOwnerAndResolve(Window mainWindow)
     {
         Di.Container.RegisterSingleInstance(new ErrorService(mainWindow));
         Di.Container.RegisterSingleInstance(new ConfirmService(mainWindow));
-        
+
         Di.Container.ResolveFieldsFromClassInstance(this);
+    }
+
+    /// <summary>
+    /// Updates lobby data and avatar grid on UI thread.
+    /// </summary>
+    /// <param name="tableCode">Database table code for validation.</param>
+    private void UpdateLobby(int tableCode)
+    {
+        if (DataContext is not MainWindowViewModel vm) return;
+
+        Dispatcher.UIThread.InvokeAsync(async () =>
+        {
+            await vm.UpdateLobby(tableCode);
+            await UpdateAvatarGrid();
+        });
+    }
+
+    /// <summary>
+    /// Updates the avatar grid with lobby member images.
+    /// </summary>
+    private async Task UpdateAvatarGrid()
+    {
+        if (DataContext is not MainWindowViewModel vm) return;
+
+        var profileList = vm.UsersToLobby;
+        LobbyImages.Children.Clear();
+
+        LobbyImages.ColumnDefinitions.Clear();
+        int imageCount = 0;
+
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+
+        foreach (var profile in profileList)
+        {
+            LobbyImages.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
+            var image = _mainWindowFactory.CreateImageInGrid(LobbyImages, imageCount);
+
+            image.Source = await SteamService.Instance.GetImage(profile.avatarUrl, cts.Token);
+            imageCount++;
+        }
+    }
+
+    /// <summary>
+    /// Binds ViewModel commands to window actions.
+    /// </summary>
+    private void BindingCommand()
+    {
+        if (DataContext is MainWindowViewModel vm)
+        {
+            vm.BindingOpenLobbyCommand(() => _lobbyWindow.Open());
+            vm.BindingRulesWindow(() => _rules.Open());
+        }
     }
 }
