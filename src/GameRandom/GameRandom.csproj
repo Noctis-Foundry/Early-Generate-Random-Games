@@ -12,7 +12,12 @@
     <ItemGroup>
         <Folder Include="Models\"/>
         <Folder Include="Scr\Events\"/>
-        <None Include="Assets\Jsons\temp_apps.json" CopyToOutputDirectory="Always"></None>
+        <Content Include="Assets\Localization\**">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <None Include="Assets\Jsons\temp_apps.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Include="Assets\avalonia-logo.ico">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>

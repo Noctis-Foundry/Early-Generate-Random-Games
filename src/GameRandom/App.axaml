@@ -20,6 +20,7 @@
     <Application.Styles>
         <FluentTheme />
         <StyleInclude Source="avares://GameRandom/GlobalStyles/CheckBoxStyle.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/Styles/RulesStyle.axaml"></StyleInclude>
         <StyleInclude Source="avares://GameRandom/GlobalStyles/MenuItem.axaml"></StyleInclude>
         <StyleInclude Source="avares://GameRandom/GlobalStyles/TextBlock.axaml"></StyleInclude>
         <StyleInclude Source="avares://GameRandom/GlobalStyles/Button.axaml"></StyleInclude>
