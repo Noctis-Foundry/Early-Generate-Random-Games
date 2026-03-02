@@ -27,10 +27,11 @@ public partial class CurrentGame : WindowAbstract
         
         if (DataContext is CurrentGameStatusViewModel viewModel)
         {
-            var uiBlocks = new GameStatusInfo(GameName, StartDate, TodayDate,
-                TimeSpent, EndDate, GameImage);
-
-            Dispatcher.UIThread.InvokeAsync(async () => await viewModel.LoadInfo(uiBlocks));
+            Dispatcher.UIThread.InvokeAsync(async () =>
+            {
+                await viewModel.LoadInfo();
+                UpdatingUi(viewModel);
+            });
         }
     }
 
@@ -62,5 +63,15 @@ public partial class CurrentGame : WindowAbstract
         if (DataContext is not CurrentGameStatusViewModel vm) return;
 
         await vm.FinishingGame();
+    }
+
+    private void UpdatingUi(CurrentGameStatusViewModel vm)
+    {
+        if (vm.AppInfo is null) return;
+
+        GameName.Text = $"Game name: {vm.AppInfo.AppName}";
+        StartDate.Text = $"Date start: {vm.AppInfo.BeginTime:D}";
+        EndDate.Text = $"Date end: {vm.AppInfo.EndTime:D}";
+        GameImage.Source = SteamService.Instance.GetImageSyncFromBytes(vm.AppInfo.AppHeaderImage);
     }
 }

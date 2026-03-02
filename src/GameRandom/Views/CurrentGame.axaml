@@ -22,7 +22,7 @@
                 <Grid Classes="GameInfoGrid" RowDefinitions="*, *, *, *, *" DockPanel.Dock="Left" Margin="5,0,0,0">
                         <!-- Game name label -->
                         <Border Grid.Row="0" Grid.Column="0" Classes="GameInfoItem">
-                                <TextBlock Text="Name: Dead cells" Classes="GameInfoText" x:Name="GameName"/>
+                                <TextBlock Text="Name: Dead Cells" Classes="GameInfoText" x:Name="GameName"/>
                         </Border>
 
                         <!-- Date when the game session was started -->
@@ -30,18 +30,13 @@
                                 <TextBlock Text="Start: 24.04.2026" Classes="GameInfoText" x:Name="StartDate"/>
                         </Border>
 
-                        <!-- Current date -->
-                        <Border Grid.Row="2" Grid.Column="0" Classes="GameInfoItem">
-                                <TextBlock Text="Today: 26.04.2026" Classes="GameInfoText" x:Name="TodayDate"/>
-                        </Border>
-
                         <!-- Total time spent on the game -->
-                        <Border Grid.Row="3" Grid.Column="0" Classes="GameInfoItem">
-                                <TextBlock Text="Time: 30day 14h 52m" Classes="GameInfoText" x:Name="TimeSpent"/>
+                        <Border Grid.Row="2" Grid.Column="0" Classes="GameInfoItem">
+                                <TextBlock Text="{Binding CurrentTime, StringFormat='LeftTimeЖ {0:dd\\:hh\\:mm\\:ss}'}" Classes="GameInfoText" x:Name="TimeSpent"/>
                         </Border>
 
                         <!-- Expected or deadline end date for the game -->
-                        <Border Grid.Row="4" Grid.Column="0" Classes="GameInfoItem">
+                        <Border Grid.Row="3" Grid.Column="0" Classes="GameInfoItem">
                                 <TextBlock Text="End date: 24.05.2026" Classes="GameInfoText" x:Name="EndDate"/>
                         </Border>
                 </Grid>
