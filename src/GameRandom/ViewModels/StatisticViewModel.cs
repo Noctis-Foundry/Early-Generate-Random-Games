@@ -15,7 +15,9 @@ public class StatisticViewModel : ViewModelBase, IDisposable
 {
     [Inject] private DatabaseService? _dbService = null!;
 
-    public async Task LoadStatisticAsync(Grid grid)
+    public List<StatisticCardInfo> StatisticCardInfos { get; private set; } = new();
+
+    public async Task LoadStatisticAsync()
     {
         Di.Container.ResolveFieldsFromClassInstance(this);
 
@@ -28,44 +30,10 @@ public class StatisticViewModel : ViewModelBase, IDisposable
         if (list is null || list.Count == 0)
             return;
 
-        grid.Children.Clear();
-
         int finishedGamesCount = list.Count(e => e.IsFinished);
-
-        FactoryNewCard(grid, new StatisticCardInfo("Games count", list.Count.ToString(), 0, 0));
-        FactoryNewCard(grid, new StatisticCardInfo("Finished games count", finishedGamesCount.ToString(), 0, 1));
-    }
-
-    private void FactoryNewCard(Grid grid, StatisticCardInfo cardInfo)
-    {
-        Border cardBorder = new Border();
-        cardBorder.Classes.Add("StatisticPropertyBorder");
-
-        Grid cardGrid = new Grid();
-        cardGrid.RowDefinitions = new RowDefinitions("Auto, Auto, Auto");
-        cardGrid.Classes.Add("CardBorderGrid");
-
-        cardBorder.Child = cardGrid;
-
-        TextBlock cardTitle = new TextBlock();
-        cardTitle.Text = cardInfo.Title;
-        cardTitle.Classes.Add("StatisticCardText");
-        Grid.SetRow(cardTitle, 0);
-        cardGrid.Children.Add(cardTitle);
-
-        Separator separator = new Separator();
-        Grid.SetRow(separator, 1);
-        cardGrid.Children.Add(separator);
-
-        TextBlock data = new TextBlock();
-        data.Text = cardInfo.Data;
-        data.Classes.Add("StatisticCardText");
-        Grid.SetRow(data, 2);
-        cardGrid.Children.Add(data);
-
-        Grid.SetRow(cardBorder, cardInfo.Row);
-        Grid.SetColumn(cardBorder, cardInfo.Column);
-        grid.Children.Add(cardBorder);
+        
+        StatisticCardInfos.Add(new StatisticCardInfo("Games count", list.Count.ToString(), 0, 0));
+        StatisticCardInfos.Add(new StatisticCardInfo("Finished games count", finishedGamesCount.ToString(), 0, 1));
     }
 
     public void Dispose()
