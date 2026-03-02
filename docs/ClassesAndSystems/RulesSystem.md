@@ -1,33 +1,50 @@
 # Rules System
 
 ## Overview
-UserControl displaying game challenge rules with scrollable content. Shows 10 rules with pricing structure for game completion rewards.
+UserControl displaying game challenge rules with bilingual support (English/Russian). Features scrollable content with 10 rules and pricing structure for game completion rewards. Uses JSON-based localization system with external styling.
 
 ## Purpose
 - Display challenge rules and guidelines
 - Show pricing structure for completed games
 - Provide scrollable rule list
-- Support bilingual content (planned)
+- Support bilingual content (English/Russian)
+- Maintain consistent visual styling
+
+## Architecture
+
+### Files
+- **Rules.axaml** - UI layout with style classes
+- **Rules.axaml.cs** - Code-behind with localization logic
+- **RulesStyle.axaml** - External style definitions
+- **Localization/Rules.en.json** - English translations
+- **Localization/Rules.ru.json** - Russian translations
 
 ## Layout
 
 ### Window Properties
-- Background: Black
+- Background: #2A2A2A (dark gray)
 - 2-row grid layout
-- Row 0: Header and close button (Auto)
+- Row 0: Header with title and buttons (Auto)
 - Row 1: Scrollable content (fills remaining)
 
 ### Header Section
-- Title: "CHALLENGE RULES"
-- Font size: 24px, Bold, White
-- Underlined text decoration
-- Close button (top-right)
+- **Title**: Dynamic text from localization
+  - Font: 24px, Bold, White, Underlined
+  - Center aligned
+- **Language Toggle Button**: Switches between EN/RU
+  - Size: 108x35
+  - Top-right alignment
+- **Close Button**: Returns to main view
+  - Content: "✕ CLOSE"
+  - Size: 108x35
+  - Top-right alignment
 
-### Close Button
-- Content: "✕ CLOSE"
-- Black background, white text/border
-- Size: 108x30
-- Border: 2px white
+### Button Styling
+- Background: #3A3A3A (gray)
+- Foreground: White
+- Border: 2px #CCCCCC (light gray)
+- Hover: #4A4A4A background, white border
+- Corner radius: 4px
 
 ### Rules Content
 
@@ -59,56 +76,123 @@ Scrollable area with 10 bordered rule cards:
 **Rule 10**: Reroll policy for completed games
 
 ### Rule Card Styling
-- Border: 1px white
-- Background: #111111 (very dark gray)
+- Border: 1px #CCCCCC (light gray)
+- Background: #3A3A3A (gray)
 - Padding: 15px
+- Corner radius: 4px
 - White text, size 14px
 - Text wrapping enabled
 
 ## Code-behind (Rules.axaml.cs)
 
 ### Fields
-- `_isEnglish` (bool) - Language toggle state
-- `_onShowContent` (Action<string>) - Navigation callback
+- `_isEnglish` (bool) - Language toggle state (default: false/Russian)
+- `_currentLocalization` (Dictionary<string, string>) - Current language strings
+- `_localizationPath` (string) - Path to localization folder
+- `TitleText`, `Rule1Text`...`Rule10Text` (TextBlock) - UI element references
+- `PricesTitleText`, `Price1Text`...`Price5Text` (TextBlock) - Pricing UI references
+- `LanguageButton` (Button) - Language toggle button reference
+
+### Constructor
+```csharp
+public Rules()
+{
+    InitializeComponent();
+    _localizationPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Localization");
+    LoadLocalization("en");
+}
+```
+Initializes component, sets localization path, loads English by default.
 
 ### Methods
 
-**AddListener(Action<string> onChangeContent)**
-Registers navigation callback.
-
 **Close(object? sender, RoutedEventArgs e)**
-Navigates to "Main" page.
+Closes the rules window and returns to main view.
 
-**ToggleLanguage(object? sender, RoutedEventArgs e)** (Implemented but not connected)
-- Toggles between English/Russian
-- Updates button text
-- Calls UpdateTextToEnglish() or UpdateTextToRussian()
+**LoadLocalization(string language)**
+- Constructs path to JSON file: `Rules.{language}.json`
+- Validates file existence (throws FileNotFoundException)
+- Reads and deserializes JSON to dictionary
+- Calls UpdateText() to apply translations
 
-**UpdateTextToEnglish()**
-Updates all TextBlock content to English translations.
+**ToggleLanguage(object? sender, RoutedEventArgs e)**
+- Toggles `_isEnglish` flag
+- Loads "en" or "ru" localization
+- Updates all UI text automatically
 
-**UpdateTextToRussian()**
-Updates all TextBlock content to Russian translations.
+**UpdateText()**
+Applies current localization to all UI elements:
+- Title and all 10 rules
+- Pricing title and 5 price entries
+- Language button content
 
-### Language Support
+## Localization System
 
-**English Translations**:
-- All rules translated
-- Pricing in rubles maintained
-- Button labels in English
+### JSON Structure
+```json
+{
+  "Title": "CHALLENGE RULES",
+  "Rule1": "1. The initial number...",
+  "Rule2": "2. If a player completes...",
+  ...
+  "PricesTitle": "Prices for completing games:",
+  "Price1": "• Game from 1-5 hours: 150 rubles",
+  ...
+  "LanguageButton": "РУССКИЙ"
+}
+```
 
-**Russian Translations**:
-- Original rule text
-- Native language content
-- Cyrillic characters
+### Supported Languages
+- **English** (Rules.en.json) - Default language
+- **Russian** (Rules.ru.json) - Alternative language
+
+### File Location
+`Assets/Localization/Rules.{language}.json`
+
+## Styling System (RulesStyle.axaml)
+
+### Style Classes
+
+**RulesGrid**
+- Background: #2A2A2A
+
+**TitleText**
+- Font: 24px, Bold, White
+- Center aligned, underlined
+- Margin: 0,20,0,10
+
+**RulesButton**
+- Background: #3A3A3A
+- Foreground: White
+- Border: 2px #CCCCCC
+- Size: 108x35
+- Corner radius: 4px
+- Hover: #4A4A4A background, white border
+
+**RuleBorder**
+- Border: 1px #CCCCCC
+- Background: #3A3A3A
+- Padding: 15px
+- Corner radius: 4px
+
+**RuleText**
+- Foreground: White
+- Font: 14px
+- Text wrapping enabled
+
+**PriceText**
+- Foreground: White
+- Font: 13px
 
 ## Features
 
+- **Bilingual Support**: Full English/Russian localization
+- **JSON-based Translations**: Easy to add new languages
+- **External Styling**: Centralized visual design
 - **Scrollable Content**: Handles long rule list
-- **Bilingual Support**: English/Russian (code ready, UI not connected)
-- **Clear Structure**: Numbered rules with borders
-- **Pricing Transparency**: Detailed reward structure
-- **Navigation Integration**: IUserControl compatible
+- **Interactive Language Toggle**: Real-time switching
+- **File Validation**: Checks localization file existence
+- **Clean Architecture**: Separation of concerns (UI/Logic/Style/Data)
 
 ## Usage Example
 
@@ -137,37 +221,52 @@ public void OpenRules()
 }
 ```
 
-## Limitations
+## Adding New Languages
 
-- Language toggle button not in UI
-- No x:Name attributes for TextBlocks (language switching incomplete)
-- Hardcoded rule text
-- No rule editing capability
-- Fixed pricing structure
-- No localization framework
-- Close button requires x:Name for language switching
-
-## Potential Improvements
+1. Create new JSON file: `Rules.{code}.json`
+2. Copy structure from existing file
+3. Translate all values
+4. Update ToggleLanguage logic if needed:
 
 ```csharp
-// Add language toggle button to XAML
-<Button Content="ENGLISH" 
-        Click="ToggleLanguage"
-        x:Name="LanguageButton"
-        HorizontalAlignment="Left"/>
-
-// Add x:Name to all TextBlocks
-<TextBlock x:Name="TitleText" Text="CHALLENGE RULES"/>
-<TextBlock x:Name="Rule1Text" Text="..."/>
-
-// Use resource files for localization
-<TextBlock Text="{Binding Source={StaticResource Strings}, Path=Rule1}"/>
-
-// Dynamic pricing
-public class RulesViewModel
+private void ToggleLanguage(object? sender, RoutedEventArgs e)
 {
-    public ObservableCollection<PricingTier> Pricing { get; set; }
-    public ObservableCollection<Rule> Rules { get; set; }
+    _currentLanguage = (_currentLanguage + 1) % 3; // For 3 languages
+    var languages = new[] { "en", "ru", "de" };
+    LoadLocalization(languages[_currentLanguage]);
+}
+```
+
+## Error Handling
+
+- **FileNotFoundException**: Thrown if localization file missing
+- **InvalidOperationException**: Thrown if JSON deserialization fails
+- Both exceptions provide clear error messages
+
+## Testing
+
+```csharp
+[Test]
+public void TestLanguageToggle()
+{
+    var rules = new Rules();
+    Assert.IsFalse(rules._isEnglish); // Starts with Russian
+    
+    rules.ToggleLanguage(null, null);
+    Assert.IsTrue(rules._isEnglish); // Switches to English
+    
+    rules.ToggleLanguage(null, null);
+    Assert.IsFalse(rules._isEnglish); // Back to Russian
+}
+
+[Test]
+public void TestLocalizationLoading()
+{
+    var rules = new Rules();
+    rules.LoadLocalization("en");
+    
+    Assert.IsNotNull(rules._currentLocalization);
+    Assert.IsTrue(rules._currentLocalization.ContainsKey("Title"));
 }
 ```
 
@@ -184,18 +283,13 @@ public class RulesViewModel
 9. **Speedrun**: -1 roll, no speed bonus
 10. **Rerolls**: Allowed for completed games
 
-## Testing
+## Improvements Over Previous Version
 
-```csharp
-[Test]
-public void TestLanguageToggle()
-{
-    var rules = new Rules();
-    rules.ToggleLanguage(null, null);
-    
-    Assert.IsTrue(rules._isEnglish);
-    
-    rules.ToggleLanguage(null, null);
-    Assert.IsFalse(rules._isEnglish);
-}
-```
+- ✅ Language toggle fully implemented and connected
+- ✅ All TextBlocks have x:Name attributes
+- ✅ JSON-based localization (no hardcoded text)
+- ✅ External styling system
+- ✅ File validation
+- ✅ Clean separation of concerns
+- ✅ Gray color scheme with hover effects
+- ✅ Direct field access (no FindControl in UpdateText)
