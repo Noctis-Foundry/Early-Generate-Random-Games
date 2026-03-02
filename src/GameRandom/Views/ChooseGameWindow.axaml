@@ -2,11 +2,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:GameRandom.ViewModels"
         mc:Ignorable="d" d:DesignWidth="550" d:DesignHeight="350"
         MinHeight="350" MinWidth="550"
         MaxHeight="400" MaxWidth="650"
         Width="550" Height="350"
         x:Class="GameRandom.Views.ChooseGameWindow"
+        x:DataType="vm:ChooseGameViewModel"
         Title="Choose Game">
 
         <DockPanel Classes="GameInfoContainer">
@@ -15,7 +17,7 @@
 
                         <!-- Game name -->
                         <Border Grid.Row="0" Grid.Column="0" Classes="GameInfoItem">
-                                <SelectableTextBlock Text="Name: " Classes="SelectableGameInfo" x:Name="GameName"/>
+                                <SelectableTextBlock Text="AppName: " Classes="SelectableGameInfo" x:Name="GameName"/>
                         </Border>
 
                         <!-- Game genres -->

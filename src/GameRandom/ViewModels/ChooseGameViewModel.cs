@@ -15,17 +15,22 @@ namespace GameRandom.ViewModels;
 
 public class ChooseGameViewModel : ViewModelBase, IDisposable
 {
-    private ChooseGameUiInfo? _uiInfo;
     private AppSavedContext? _savedContext;
-    private byte[]? _imageBytes;
+    public AppSavedContext SavedContext
+    {
+        get => _savedContext;
+        set => SetProperty(ref _savedContext, value);
+    }
+    
+    public byte[]? ImageBytes { get; private set; }
     
     public async Task<bool> ChooseGame()
     {
         Console.WriteLine("Choose Game");
 
-        if (_savedContext is null || _imageBytes is null)
+        if (_savedContext is null || ImageBytes is null)
         {
-            throw new NullReferenceException($"_savedContext or _imageBytes is null. _imageBytes {_imageBytes == null}, _saveContext {_savedContext == null}");
+            throw new NullReferenceException($"_savedContext or _imageBytes is null. _imageBytes {ImageBytes == null}, _saveContext {_savedContext == null}");
         }
         
         DateTime date = DateTime.UtcNow;
@@ -33,7 +38,7 @@ public class ChooseGameViewModel : ViewModelBase, IDisposable
 
         var gameInfo = new GameProgresses
         {
-            AppHeaderImage = _imageBytes,
+            AppHeaderImage = ImageBytes,
             AppId = _savedContext.AppId,
             AppName = _savedContext.AppName,
             BeginTime = date,
@@ -73,16 +78,10 @@ public class ChooseGameViewModel : ViewModelBase, IDisposable
         return true;
     }
 
-    public void LoadGameInfo(AppSavedContext appSavedContext, ChooseGameUiInfo uiInfo, byte[] imageBytes)
+    public void LoadGameInfo(AppSavedContext appSavedContext, byte[] imageBytes)
     {
-        _uiInfo = uiInfo;
-        _savedContext = appSavedContext;
-        _imageBytes = imageBytes;
-        
-        uiInfo.AppName.Text = appSavedContext.AppName;
-        uiInfo.Genres.Text = string.Join(", ", appSavedContext.AppGenres);
-        uiInfo.DateRelease.Text = appSavedContext.AppReleaseYear.ToString();
-        uiInfo.GameHeaderImage.Source = SteamService.Instance.GetImageSyncFromBytes(_imageBytes);
+        SavedContext = appSavedContext;
+        ImageBytes = imageBytes;
     }
 
     public void ShowSteamStore()
@@ -97,20 +96,6 @@ public class ChooseGameViewModel : ViewModelBase, IDisposable
 
     public void Dispose()
     {
-        _uiInfo = null;
+        _savedContext = null;
     }
-}
-
-public class ChooseGameUiInfo(
-    TextBlock appName,
-    TextBlock genres,
-    TextBlock dateRelease,
-    TextBlock rating,
-    TextBlock developers,
-    Image gameHeaderImage)
-{
-    public TextBlock AppName { get; private set; } = appName;
-    public TextBlock Genres { get; private set; } = genres;
-    public TextBlock DateRelease { get; private set; } = dateRelease;
-    public Image GameHeaderImage { get; private set; } = gameHeaderImage;
 }

@@ -15,7 +15,7 @@ namespace GameRandom.Views;
 public partial class ChooseGameWindow : WindowAbstract
 {
     [Inject] private ErrorService _errorService = null!;
-    
+
     public ChooseGameWindow()
     {
         InitializeComponent();
@@ -32,10 +32,8 @@ public partial class ChooseGameWindow : WindowAbstract
     {
         if (DataContext is ChooseGameViewModel viewModel)
         {
-            ChooseGameUiInfo uiInfo = new ChooseGameUiInfo(GameName, GameGenres, ReleaseDate, GameRating,
-                GameDevelopers, GameHeader);
-            
-            viewModel.LoadGameInfo(appSavedContext, uiInfo, imageBytes);
+            viewModel.LoadGameInfo(appSavedContext, imageBytes);
+            LoadGameInfoToUi(viewModel);
         }
     }
 
@@ -45,14 +43,13 @@ public partial class ChooseGameWindow : WindowAbstract
         if (DataContext is ChooseGameViewModel viewModel)
             viewModel.Dispose();
     }
-    
+
     protected override void OnClosing(WindowClosingEventArgs e)
     {
         base.OnClosing(e);
         if (DataContext is ChooseGameViewModel viewModel)
             viewModel.Dispose();
     }
-
 
     private void ToSteamStorePage(object? sender, RoutedEventArgs e)
     {
@@ -65,18 +62,28 @@ public partial class ChooseGameWindow : WindowAbstract
         try
         {
             if (DataContext is not ChooseGameViewModel viewModel) return;
-            
+
             bool isAdd = await viewModel.ChooseGame();
 
             if (!isAdd)
                 _errorService.ShowErrorWindow("Failed to add game to database, try again", ErrorEnum.Message);
             else
                 _errorService.ShowErrorWindow("Game added to database", ErrorEnum.Message);
-
         }
         catch (Exception exception)
         {
             throw new Exception("Failed to add game progress to database: " + exception.Message);
         }
+    }
+
+    private void LoadGameInfoToUi(ChooseGameViewModel viewModel)
+    {
+        var genresText = string.Join(",", viewModel.SavedContext.AppGenres);
+        
+        
+        GameName.Text = $"Game name: {viewModel.SavedContext.AppName}";
+        GameGenres.Text = $"Game genres: {genresText}";
+        ReleaseDate.Text = $"Game release: {viewModel.SavedContext.AppReleaseYear}";
+        GameHeader.Source = SteamService.Instance.GetImageSyncFromBytes(viewModel.ImageBytes);
     }
 }
