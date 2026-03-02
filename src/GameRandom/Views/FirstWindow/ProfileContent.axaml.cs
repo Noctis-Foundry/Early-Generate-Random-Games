@@ -23,9 +23,6 @@ public partial class ProfileContent : MainWindowUserControlAbstract
             StatisticContent.Content = new StatisticControl();
             return;
         }
-         
-        
-        DataContext = new ProfileViewModel();
     }
 
     public override void Open()

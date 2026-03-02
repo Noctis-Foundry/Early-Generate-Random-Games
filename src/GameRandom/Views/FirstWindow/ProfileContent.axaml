@@ -2,7 +2,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:GameRandom.ViewModels"
         x:Class="GameRandom.Views.ProfileContent"
-        x:DataType="vm:ProfileViewModel"
         Width="1000" Height="460"
         MinWidth="1000" MinHeight="460"
         MaxWidth="1000" MaxHeight="460">
