@@ -2,10 +2,15 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Design.PreviewWith>
         <Border Padding="20">
-            <!-- Add Controls for Previewer Here -->
+            <Button Classes="GameInfoButton" Content="Hello kitty"></Button>
         </Border>
     </Design.PreviewWith>
 
+    <Styles.Resources>
+        <ImageBrush Source="avares://GameRandom/Assets/TextBlockBorder.png" Stretch="Fill" x:Key="TextBlockBackground"></ImageBrush>
+        <ImageBrush Source="avares://GameRandom/Assets/buttonBorder.png" Stretch="Fill" x:Key="ButtonBackground"></ImageBrush>
+    </Styles.Resources>
+    
     <!-- Main container style for the game info window background and spacing -->
     <Style Selector="DockPanel.GameInfoContainer">
         <Setter Property="Background" Value="Gray" />
@@ -21,15 +26,16 @@
 
     <!-- Style for individual info card borders: dark background with rounded corners and padding -->
     <Style Selector="Border.GameInfoItem">
-        <Setter Property="Background" Value="#444444" />
+        <Setter Property="Background" Value="{StaticResource TextBlockBackground}"/>
         <Setter Property="CornerRadius" Value="4" />
-        <Setter Property="Padding" Value="8, 5" />
+        <Setter Property="Padding" Value="13"/>
     </Style>
 
     <!-- Style for info text labels: white text, centered, with wrapping and size constraints -->
     <Style Selector="TextBlock.GameInfoText">
         <Setter Property="Foreground" Value="White" />
-        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontFamily" Value="{StaticResource 'Anime Ace'}"></Setter>
+        <Setter Property="FontSize" Value="12" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="TextWrapping" Value="Wrap" />
@@ -84,10 +90,7 @@
 
     <!-- Button hover style: animated conic gradient border on pointer over -->
     <Style Selector="Button.GameInfoButton:pointerover /template/ContentPresenter">
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="CornerRadius" Value="4" />
-        <Setter Property="MinHeight" Value="30"></Setter>
-        <Setter Property="MinWidth" Value="110"></Setter>
+        <Setter Property="BorderThickness" Value="2" />
         <Setter Property="BorderBrush">
         </Setter>
         <Style.Animations>
@@ -96,9 +99,9 @@
                     <Setter Property="BorderBrush">
                         <Setter.Value>
                             <ConicGradientBrush Center="50%,50%" Angle="0">
-                                <GradientStop Color="#FFFFFF" Offset="0" />
-                                <GradientStop Color="#C0C0C0" Offset="0.5" />
-                                <GradientStop Color="#808080" Offset="1" />
+                                <GradientStop Color="#bb9e67" Offset="0" />
+                                <GradientStop Color="{StaticResource GradientColorMiddle}" Offset="0.5" />
+                                <GradientStop Color="{StaticResource GradientColorEnd}" Offset="1" />
                             </ConicGradientBrush>
                         </Setter.Value>
                     </Setter>
@@ -107,9 +110,9 @@
                     <Setter Property="BorderBrush">
                         <Setter.Value>
                             <ConicGradientBrush Center="50%,50%" Angle="360">
-                                <GradientStop Color="#FFFFFF" Offset="0" />
-                                <GradientStop Color="#C0C0C0" Offset="0.5" />
-                                <GradientStop Color="#808080" Offset="1" />
+                                <GradientStop Color="#bb9e67" Offset="0" />
+                                <GradientStop Color="{StaticResource GradientColorMiddle}" Offset="0.5" />
+                                <GradientStop Color="{StaticResource GradientColorEnd}" Offset="1" />
                             </ConicGradientBrush>
                         </Setter.Value>
                     </Setter>
@@ -117,16 +120,21 @@
             </Animation>
         </Style.Animations>
     </Style>
-
-    <!-- Style for action buttons: dark background, white text, rounded corners -->
+    
+    <!-- Свойства самой кнопки -->
     <Style Selector="Button.GameInfoButton">
-        <Setter Property="Background" Value="#555555" />
-        <Setter Property="Foreground" Value="White" />
-        <Setter Property="FontSize" Value="14" />
-        <Setter Property="Padding" Value="8, 5" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="MinHeight" Value="40" />
+        <Setter Property="MinWidth" Value="150" />
+    </Style>
+
+    <!-- Свойства ContentPresenter -->
+    <Style Selector="Button.GameInfoButton /template/ ContentPresenter">
+        <Setter Property="Background" Value="{StaticResource ButtonBackground}" />
+        <Setter Property="Foreground" Value="White"></Setter>
         <Setter Property="CornerRadius" Value="4" />
-        <Setter Property="MinHeight" Value="30"></Setter>
-        <Setter Property="MinWidth" Value="110"></Setter>
     </Style>
 
 </Styles>
