@@ -30,7 +30,21 @@ public class CurrentGameStatusViewModel : ViewModelBase
 
     private EventHandler? _savedHandler;
     public UserGame? UserGame { get; private set; }
-    public GameProgresses? AppInfo { get; private set; }
+    
+    private GameProgresses? _appInfo;
+    public GameProgresses? AppInfo
+    {
+        get => _appInfo;
+        set => SetProperty(ref _appInfo, value);
+    }
+
+    private Bitmap? _imageBitmap;
+
+    public Bitmap? ImageBitmap
+    {
+        get => _imageBitmap;
+        set => SetProperty(ref _imageBitmap, value);
+    }
 
     public async Task LoadInfo()
     {
@@ -57,7 +71,9 @@ public class CurrentGameStatusViewModel : ViewModelBase
             
             AppInfo = gameInfo;
 
-            _savedHandler = (sender, args) => UpdateDateTimer(); 
+            _savedHandler = (sender, args) => UpdateDateTimer();
+
+            ImageBitmap = SteamService.Instance.GetImageSyncFromBytes(_appInfo.AppHeaderImage);
             
             _timer = new DispatcherTimer();
             _timer.Interval = TimeSpan.FromMilliseconds(1000);
@@ -88,13 +104,13 @@ public class CurrentGameStatusViewModel : ViewModelBase
         isUpdating = await _databaseService.UpdateAsync(finishedGame);
         if (!isUpdating) throw new Exception("Failed to update game progresses");
         
-        _timer?.Stop();
+        ClearingContent();
     }
 
     private void UpdateDateTimer()
     {
-        if (AppInfo is not null) 
-            CurrentTime = AppInfo.EndTime - DateTime.Now;
+        if (_appInfo is not null) 
+            CurrentTime = _appInfo.EndTime - DateTime.Now;
     }
 
     public void ClearingContent()
@@ -110,6 +126,6 @@ public class CurrentGameStatusViewModel : ViewModelBase
         _savedHandler = null;
         _databaseService = null;
         UserGame = null;
-        AppInfo = null;
+        _appInfo = null;
     }
 }

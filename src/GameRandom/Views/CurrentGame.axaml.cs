@@ -30,19 +30,14 @@ public partial class CurrentGame : WindowAbstract
             Dispatcher.UIThread.InvokeAsync(async () =>
             {
                 await viewModel.LoadInfo();
-                UpdatingUi(viewModel);
             });
         }
     }
 
-    protected override void OnClosing(WindowClosingEventArgs e)
+    public void ProfileClosed()
     {
-        if (DataContext is CurrentGameStatusViewModel viewModel)
-        {
-            viewModel.ClearingContent();
-        }
-        
-        base.OnClosing(e);
+        if (DataContext is CurrentGameStatusViewModel vm)
+            vm.ClearingContent();
     }
 
     private void ShowSteamStore(object? sender, RoutedEventArgs e)
@@ -63,15 +58,5 @@ public partial class CurrentGame : WindowAbstract
         if (DataContext is not CurrentGameStatusViewModel vm) return;
 
         await vm.FinishingGame();
-    }
-
-    private void UpdatingUi(CurrentGameStatusViewModel vm)
-    {
-        if (vm.AppInfo is null) return;
-
-        GameName.Text = $"Game name: {vm.AppInfo.AppName}";
-        StartDate.Text = $"Date start: {vm.AppInfo.BeginTime:D}";
-        EndDate.Text = $"Date end: {vm.AppInfo.EndTime:D}";
-        GameImage.Source = SteamService.Instance.GetImageSyncFromBytes(vm.AppInfo.AppHeaderImage);
     }
 }
