@@ -60,6 +60,8 @@ public partial class ProfileContent : MainWindowUserControlAbstract
         _changeWindowAction = null;
         ProfileImage.Source = null;
         DataContext = null;
+        
+        _currentGame.ProfileClosed();
     }
 
     private void OpenActivityGame(object? sender, RoutedEventArgs e)

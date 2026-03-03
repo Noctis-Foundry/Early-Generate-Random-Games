@@ -37,23 +37,6 @@ public partial class LobbyWindow : WindowAbstract
         _errorService = _errorService ?? throw new InvalidOperationException("ErrorService is null");
     }
 
-    private void OnLobbyIdChanging(object sender, TextChangedEventArgs e)
-    {
-        if (sender is TextBox textBox)
-        {
-            if (textBox.Text == null)
-                return;
-
-            var filtered = new string(textBox.Text.Where(char.IsDigit).ToArray());
-
-            // if (filtered.Length > 19)
-            //   filtered = filtered.Substring(0, 19);
-
-            if (filtered != textBox.Text)
-                textBox.Text = filtered;
-        }
-    }
-
     private async void Connect(object? sender, RoutedEventArgs e)
     {
         if (long.TryParse(IdBox.Text, out var lobbyId))
