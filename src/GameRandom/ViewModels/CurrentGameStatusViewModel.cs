@@ -105,6 +105,9 @@ public class CurrentGameStatusViewModel : ViewModelBase
         if (!isUpdating) throw new Exception("Failed to update game progresses");
         
         ClearingContent();
+        
+        if (Di.Container.GetInstance<ErrorService>() is ErrorService errorService)
+            errorService.ShowErrorWindow("Game finished", ErrorEnum.Message);
     }
 
     private void UpdateDateTimer()
