@@ -33,7 +33,6 @@ public partial class ChooseGameWindow : WindowAbstract
         if (DataContext is ChooseGameViewModel viewModel)
         {
             viewModel.LoadGameInfo(appSavedContext, imageBytes);
-            LoadGameInfoToUi(viewModel);
         }
     }
 
@@ -74,16 +73,5 @@ public partial class ChooseGameWindow : WindowAbstract
         {
             throw new Exception("Failed to add game progress to database: " + exception.Message);
         }
-    }
-
-    private void LoadGameInfoToUi(ChooseGameViewModel viewModel)
-    {
-        var genresText = string.Join(",", viewModel.SavedContext.AppGenres);
-        
-        
-        GameName.Text = $"Game name: {viewModel.SavedContext.AppName}";
-        GameGenres.Text = $"Game genres: {genresText}";
-        ReleaseDate.Text = $"Game release: {viewModel.SavedContext.AppReleaseYear}";
-        GameHeader.Source = SteamService.Instance.GetImageSyncFromBytes(viewModel.ImageBytes);
     }
 }
