@@ -3,59 +3,59 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="using:GameRandom.ViewModels"
-        mc:Ignorable="d" d:DesignWidth="550" d:DesignHeight="350"
-        MinHeight="350" MinWidth="550"
-        MaxHeight="400" MaxWidth="650"
-        Width="550" Height="350"
+        mc:Ignorable="d" d:DesignWidth="700" d:DesignHeight="400"
+        MinWidth="700" MaxWidth="700"
+        MinHeight="400" MaxHeight="400"
         x:Class="GameRandom.Views.ChooseGameWindow"
         x:DataType="vm:ChooseGameViewModel"
         Title="Choose Game">
 
-        <DockPanel Classes="GameInfoContainer">
+        <DockPanel Classes="WindowContainer">
 
-                <Grid Classes="GameInfoGrid" RowDefinitions="Auto, Auto, Auto, Auto, Auto" ColumnDefinitions="Auto, Auto">
+                <Border DockPanel.Dock="Top" Classes="WindowTopContainer">
+                        <TextBlock Text="Choose game" Classes="WindowTextBlock"></TextBlock>
+                </Border>
+                
+                <Grid Classes="WindowGrid" RowDefinitions="Auto, Auto, Auto, Auto, Auto" ColumnDefinitions="Auto, Auto">
 
                         <!-- Game name -->
-                        <Border Grid.Row="0" Grid.Column="0" Classes="GameInfoItem">
-                                <SelectableTextBlock Text="AppName: " Classes="SelectableGameInfo" x:Name="GameName"/>
+                        <Border Grid.Row="0" Grid.Column="0" Classes="WindowTextBorder">
+                                <SelectableTextBlock Text="{Binding AppInfo.AppData.AppName, StringFormat='App name: {0}',
+                                TargetNullValue='Name is null', FallbackValue='Not find name'}" Classes="WindowTextBlock" x:Name="GameName"/>
                         </Border>
 
                         <!-- Game genres -->
-                        <Border Grid.Row="1" Grid.Column="0" Classes="GameInfoItem">
-                                <TextBlock Text="Genres: " Classes="GameInfoText" x:Name="GameGenres"/>
+                        <Border Grid.Row="1" Grid.Column="0" Classes="WindowTextBorder">
+                                <TextBlock Text="{Binding AppInfo.AppData.AppGenres, 
+                                Converter={StaticResource ArrayTextJoinConverter}, ConverterParameter='Genres'}" Classes="WindowTextBlock" x:Name="GameGenres"/>
+                        </Border>
+                        
+                        <Border Grid.Row="1" Grid.Column="0" Classes="WindowTextBorder">
+                                <TextBlock Text="{Binding AppInfo.AppData.AppCategories, 
+                                Converter={StaticResource ArrayTextJoinConverter}, ConverterParameter='Categories'}" Classes="WindowTextBlock" x:Name="GameCategories"/>
                         </Border>
 
                         <!-- Release date -->
-                        <Border Grid.Row="2" Grid.Column="0" Classes="GameInfoItem">
-                                <TextBlock Text="Release: " Classes="GameInfoText" x:Name="ReleaseDate"/>
+                        <Border Grid.Row="3" Grid.Column="0" Classes="WindowTextBorder">
+                                <TextBlock Text="{Binding AppInfo.AppData.AppReleaseYear, StringFormat='Release: {0}',
+                                TargetNullValue='Release is null', FallbackValue='Not find release'}" Classes="WindowTextBlock" x:Name="ReleaseDate"/>
                         </Border>
-
-                        <!-- Game rating -->
-                        <Border Grid.Row="3" Grid.Column="0" Classes="GameInfoItem">
-                                <TextBlock Text="Rating: " Classes="GameInfoText" x:Name="GameRating"/>
-                        </Border>
-
-                        <!-- Game developers -->
-                        <Border Grid.Row="4" Grid.Column="0" Classes="GameInfoItem">
-                                <TextBlock Text="Developers: " Classes="GameInfoText" x:Name="GameDevelopers"/>
-                        </Border>
-
-                        <!-- Game cover image -->
-                        
                 </Grid>
                 
                 <Grid RowDefinitions="Auto, Auto" DockPanel.Dock="Left" HorizontalAlignment="Center"  VerticalAlignment="Center" RowSpacing="5">
-                        <Border  Classes="GameImageBorder" Width="300" Height="150">
-                                <Image Source="avares://GameRandom/Assets/steamAwatarWithNight.jpg" Stretch="UniformToFill" x:Name="GameHeader"/>
+                        <Border  Classes="WindowImageBorder">
+                                <Border>
+                                        <Image Source="avares://GameRandom/Assets/steamAwatarWithNight.jpg" x:Name="GameHeader"/>
+                                </Border>
                         </Border>
                 
                         <!-- Action buttons -->
                         <Border Grid.Row="1">
                                 <Grid ColumnDefinitions="Auto, Auto" HorizontalAlignment="Center" ColumnSpacing="10">
 
-                                        <Button Classes="GameInfoButton" Content="Steam" Click="ToSteamStorePage"></Button>
+                                        <Button Classes="WindowButton" Content="Steam" Click="ToSteamStorePage"></Button>
 
-                                        <Button Grid.Column="1" Classes="GameInfoButton" Content="Choose Game" Click="ChooseGame"></Button>
+                                        <Button Grid.Column="1" Classes="WindowButton" Content="Choose Game" Click="ChooseGame"></Button>
 
                                 </Grid>
                         </Border>
