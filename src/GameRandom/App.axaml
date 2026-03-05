@@ -2,11 +2,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="GameRandom.App"
              xmlns:local="using:GameRandom"
+             xmlns:con="using:GameRandom.AvaloniaConverters"
              RequestedThemeVariant="Default">
     <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
     
     <Application.Resources>
         <ResourceDictionary>
+            <con:ImageNullConverter x:Key="NullImageConverter" />
+            <con:TimeSpanFormatConverter x:Key="TimeSpanConverter"></con:TimeSpanFormatConverter>
+            <con:ArrayTextJoinConverter x:Key="ArrayTextJoinConverter"></con:ArrayTextJoinConverter>
+            
             <ResourceDictionary.MergedDictionaries>
                 <ResourceInclude Source="avares://GameRandom/Resources/StylesResources.axaml"></ResourceInclude>
             </ResourceDictionary.MergedDictionaries>
@@ -23,10 +28,11 @@
         <StyleInclude Source="avares://GameRandom/Styles/RulesStyle.axaml"></StyleInclude>
         <StyleInclude Source="avares://GameRandom/GlobalStyles/MenuItem.axaml"></StyleInclude>
         <StyleInclude Source="avares://GameRandom/GlobalStyles/TextBlock.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/GlobalStyles/ContextWindowsStyle.axaml"></StyleInclude>
         <StyleInclude Source="avares://GameRandom/GlobalStyles/Button.axaml"></StyleInclude>
         <StyleInclude Source="avares://GameRandom/Styles/StatisticStyle.axaml"></StyleInclude>
         <StyleInclude Source="avares://GameRandom/Styles/RollGameStyle.axaml"></StyleInclude>
-        <StyleInclude Source="avares://GameRandom/Styles/CurrentGameStatusStyle.axaml"></StyleInclude>
+       
         <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
         <StyleInclude Source="avares://GameRandom/Styles/ProfileDataGridStyle.axaml"></StyleInclude>
         <StyleInclude Source="avares://GameRandom/Styles/LobbyStyle.axaml"></StyleInclude>
