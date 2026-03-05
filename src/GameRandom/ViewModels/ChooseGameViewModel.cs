@@ -15,22 +15,21 @@ namespace GameRandom.ViewModels;
 
 public class ChooseGameViewModel : ViewModelBase, IDisposable
 {
-    private AppSavedContext? _savedContext;
-    public AppSavedContext SavedContext
+    private AppInfo? _appInfo;
+
+    public AppInfo? AppInfo
     {
-        get => _savedContext;
-        set => SetProperty(ref _savedContext, value);
+        get => _appInfo;
+        set => SetProperty(ref _appInfo, value);
     }
-    
-    public byte[]? ImageBytes { get; private set; }
     
     public async Task<bool> ChooseGame()
     {
         Console.WriteLine("Choose Game");
 
-        if (_savedContext is null || ImageBytes is null)
+        if (_appInfo is null)
         {
-            throw new NullReferenceException($"_savedContext or _imageBytes is null. _imageBytes {ImageBytes == null}, _saveContext {_savedContext == null}");
+            throw new NullReferenceException($"_savedContext or _imageBytes is null. _saveContext {_appInfo == null}");
         }
         
         DateTime date = DateTime.UtcNow;
@@ -38,9 +37,9 @@ public class ChooseGameViewModel : ViewModelBase, IDisposable
 
         var gameInfo = new GameProgresses
         {
-            AppHeaderImage = ImageBytes,
-            AppId = _savedContext.AppId,
-            AppName = _savedContext.AppName,
+            AppHeaderImage = _appInfo.ImageBytes,
+            AppId = _appInfo.AppData.AppId,
+            AppName = _appInfo.AppData.AppName,
             BeginTime = date,
             Comment = "Default",
             EndTime = endDate,
@@ -71,7 +70,7 @@ public class ChooseGameViewModel : ViewModelBase, IDisposable
             if (!isAdded)
                 throw new Exception("Error add item to db");
 
-            userGame.AppId = _savedContext.AppId;
+            userGame.AppId = _appInfo.AppData.AppId;
             await service.UpdateAsync(userGame);
         }
 
@@ -80,13 +79,12 @@ public class ChooseGameViewModel : ViewModelBase, IDisposable
 
     public void LoadGameInfo(AppSavedContext appSavedContext, byte[] imageBytes)
     {
-        SavedContext = appSavedContext;
-        ImageBytes = imageBytes;
+        _appInfo = new AppInfo(appSavedContext, imageBytes);
     }
 
     public void ShowSteamStore()
     {
-        var url = $"https://store.steampowered.com/app/{_savedContext?.AppId}";
+        var url = $"https://store.steampowered.com/app/{_appInfo?.AppData.AppId}";
         Process.Start(new ProcessStartInfo
         {
             FileName = url,
@@ -96,6 +94,6 @@ public class ChooseGameViewModel : ViewModelBase, IDisposable
 
     public void Dispose()
     {
-        _savedContext = null;
+        _appInfo = null;
     }
 }

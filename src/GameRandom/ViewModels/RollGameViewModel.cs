@@ -80,7 +80,7 @@ public class RollGameViewModel : ViewModelBase, IDisposable
 
     private bool FilterGame(AppSavedContext savedGame, FilteredData filter)
     {
-        if (filter.Categories.Count > 0 && !filter.Categories.Any(c => savedGame.AppCategoris.Contains(c)))
+        if (filter.Categories.Count > 0 && !filter.Categories.Any(c => savedGame.AppCategories.Contains(c)))
             return false;
 
         if (filter.Genres.Count > 0 && !filter.Genres.Any(g => savedGame.AppGenres.Contains(g)))

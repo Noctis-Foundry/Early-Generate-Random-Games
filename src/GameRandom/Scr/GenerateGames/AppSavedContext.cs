@@ -16,5 +16,5 @@ public class AppSavedContext
     public HashSet<string> AppGenres { get; set; } = [];
 
     [JsonConverter(typeof(DictionaryValuesToHashSetConverter))]
-    public HashSet<string> AppCategoris { get; set; } = [];
+    public HashSet<string> AppCategories { get; set; } = [];
 }
