@@ -56,7 +56,7 @@
             <Border Grid.Row="0" Grid.Column="0" Classes="WindowImageBorder">
                 <Border>
                     <Image Source="{Binding ImageBitmap, Converter={StaticResource NullImageConverter}}"
-                           x:Name="GameImage">
+                           x:Name="GameImage" Classes="WindowHeaderImage">
                     </Image>
                 </Border>
             </Border>
