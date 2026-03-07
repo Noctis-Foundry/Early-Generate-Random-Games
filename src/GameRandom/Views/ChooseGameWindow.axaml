@@ -27,12 +27,12 @@
                         <!-- Game genres -->
                         <Border Grid.Row="1" Grid.Column="0" Classes="WindowTextBorder">
                                 <TextBlock Text="{Binding AppInfo.AppData.AppGenres, 
-                                Converter={StaticResource ArrayTextJoinConverter}, ConverterParameter='Genres'}" Classes="WindowTextBlock" x:Name="GameGenres"/>
+                                Converter={StaticResource ArrayTextJoinConverter}, ConverterParameter='Genres', FallbackValue='Genres not find'}" Classes="WindowTextBlock" x:Name="GameGenres"/>
                         </Border>
                         
-                        <Border Grid.Row="1" Grid.Column="0" Classes="WindowTextBorder">
+                        <Border Grid.Row="2" Grid.Column="0" Classes="WindowTextBorder">
                                 <TextBlock Text="{Binding AppInfo.AppData.AppCategories, 
-                                Converter={StaticResource ArrayTextJoinConverter}, ConverterParameter='Categories'}" Classes="WindowTextBlock" x:Name="GameCategories"/>
+                                Converter={StaticResource ArrayTextJoinConverter}, ConverterParameter='Categories', FallbackValue='Categories not find'}" Classes="WindowTextBlock" x:Name="GameCategories"/>
                         </Border>
 
                         <!-- Release date -->
@@ -45,7 +45,8 @@
                 <Grid RowDefinitions="Auto, Auto" DockPanel.Dock="Left" HorizontalAlignment="Center"  VerticalAlignment="Center" RowSpacing="5">
                         <Border  Classes="WindowImageBorder">
                                 <Border>
-                                        <Image Source="avares://GameRandom/Assets/steamAwatarWithNight.jpg" x:Name="GameHeader"/>
+                                        <Image Source="{Binding AppInfo.ImageBytes, Converter={StaticResource ByteToImageConverter}}" 
+                                               Classes="WindowHeaderImage" x:Name="GameHeader"/>
                                 </Border>
                         </Border>
                 
