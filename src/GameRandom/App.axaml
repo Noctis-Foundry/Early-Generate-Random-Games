@@ -11,6 +11,8 @@
             <con:ImageNullConverter x:Key="NullImageConverter" />
             <con:TimeSpanFormatConverter x:Key="TimeSpanConverter"></con:TimeSpanFormatConverter>
             <con:ArrayTextJoinConverter x:Key="ArrayTextJoinConverter"></con:ArrayTextJoinConverter>
+            <con:ByteToImageConverter x:Key="ByteToImageConverter"></con:ByteToImageConverter>
+            <con:LongToStringConverter x:Key="LongToStringConverter"></con:LongToStringConverter>
             
             <ResourceDictionary.MergedDictionaries>
                 <ResourceInclude Source="avares://GameRandom/Resources/StylesResources.axaml"></ResourceInclude>
