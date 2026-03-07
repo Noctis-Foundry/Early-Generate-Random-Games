@@ -22,11 +22,12 @@ public partial class LobbyWindow : WindowAbstract
 
     public LobbyWindow()
     {
-        Console.WriteLine("Initialize Create Lobby");
-
         InitializeComponent();
 
-        var viewModel = new CreateLobbyViewModel();
+        if (Design.IsDesignMode)
+            return;
+        
+        var viewModel = new LobbyWindowViewModel();
         DataContext = viewModel;
 
         Di.Container.RegisterSingleInstance(viewModel);
