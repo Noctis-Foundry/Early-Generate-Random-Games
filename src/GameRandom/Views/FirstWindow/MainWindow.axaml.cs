@@ -9,6 +9,7 @@ using GameRandom.Scr.Events;
 using GameRandom.Scr.Service;
 using GameRandom.Service;
 using GameRandom.SteamSDK;
+using GameRandom.SteamSDK.Enums;
 using GameRandom.SteamSDK.Factory;
 using GameRandom.SteamSDK.LobbySystem;
 using GameRandom.ViewModels;
