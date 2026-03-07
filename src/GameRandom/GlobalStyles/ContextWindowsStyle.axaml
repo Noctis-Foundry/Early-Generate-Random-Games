@@ -37,7 +37,7 @@
     <Style Selector="Border.WindowTextBorder">
         <Setter Property="Background" Value="{StaticResource TextBlockBackground}"/>
         <Setter Property="CornerRadius" Value="4" />
-        <Setter Property="Padding" Value="13"/>
+        <Setter Property="Padding" Value="30,10,30,5"/>
     </Style>
 
     <!-- Style for info text labels: white text, centered, with wrapping and size constraints -->
@@ -49,19 +49,16 @@
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="TextWrapping" Value="Wrap" />
         <Setter Property="TextAlignment" Value="Center" />
-        <Setter Property="MaxWidth" Value="230" />
-        <Setter Property="MaxHeight" Value="80" />
     </Style>
     
     <Style Selector="SelectableTextBlock.WindowTextBlock">
         <Setter Property="Foreground" Value="White" />
+        <Setter Property="FontFamily" Value="{StaticResource 'Anime Ace'}"></Setter>
         <Setter Property="FontSize" Value="14" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="TextWrapping" Value="Wrap" />
         <Setter Property="TextAlignment" Value="Center" />
-        <Setter Property="MaxWidth" Value="230" />
-        <Setter Property="MaxHeight" Value="80" />
     </Style>
 
     <!-- Animated border style for game image with rotating conic gradient outline -->
@@ -88,7 +85,7 @@
     <Style Selector="Image.WindowHeaderImage">
         <Setter Property="MaxHeight" Value="187" />
         <Setter Property="MaxWidth" Value="300" />
-        <Setter Property="Stretch" Value="UniformToFill" />
+        <Setter Property="Stretch" Value="Fill" />
     </Style>
 
     <!-- Button hover style: animated conic gradient border on pointer over -->
