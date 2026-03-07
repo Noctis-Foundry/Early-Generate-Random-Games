@@ -79,7 +79,7 @@ public class ChooseGameViewModel : ViewModelBase, IDisposable
 
     public void LoadGameInfo(AppSavedContext appSavedContext, byte[] imageBytes)
     {
-        _appInfo = new AppInfo(appSavedContext, imageBytes);
+        AppInfo = new AppInfo(appSavedContext, imageBytes);
     }
 
     public void ShowSteamStore()
@@ -94,6 +94,7 @@ public class ChooseGameViewModel : ViewModelBase, IDisposable
 
     public void Dispose()
     {
+        AppInfo = null;
         _appInfo = null;
     }
 }
