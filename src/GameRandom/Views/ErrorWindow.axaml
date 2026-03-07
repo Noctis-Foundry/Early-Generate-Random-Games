@@ -2,22 +2,21 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="300"
         x:Class="GameRandom.Views.ErrorWindow"
-        Width="500" Height="150"
-        MaxWidth="1920" MaxHeight="1080"
-        Title="ErrorWindow">
+        MinWidth="450" MaxWidth="450"
+        MinHeight="250" MaxHeight="250"
+        Title="Error">
     
-    <DockPanel>
-        <DockPanel.Background>Gray</DockPanel.Background>
-        
-        <Grid RowDefinitions="Auto, Auto" RowSpacing="40"
-              HorizontalAlignment="Center" VerticalAlignment="Center">
-            <SelectableTextBlock TextWrapping="Wrap" x:Name="ErrorLabel" Foreground="White" Text="Error"></SelectableTextBlock>
-            <Button Grid.Row="1" Click="MessageBoxButtonAction" 
-                    x:Name="ErrorButton" Content="Ok" HorizontalAlignment="Center"
-                    Background="Black" Foreground="White" FontSize="16"
-                    Width="100" HorizontalContentAlignment="Center"></Button>
+    <DockPanel Classes="WindowContainer">
+        <Grid Classes="WindowGrid" RowDefinitions="*, Auto">
+            
+            <Border Grid.Row="0" Classes="WindowTextBorder" MinWidth="400" MaxWidth="400" MinHeight="60" MaxHeight="80">
+                <SelectableTextBlock x:Name="ErrorLabel" Text="fdsaaaaaaadsaffffffffffffdsfaaaaaaa" Classes="WindowTextBlock"/>
+            </Border>
+            
+            <Button Grid.Row="1" Click="MessageBoxButtonAction" x:Name="ErrorButton" 
+                    Content="Ok" Classes="WindowButton" HorizontalAlignment="Center"/>
         </Grid>
+        
     </DockPanel>
 </Window>
