@@ -143,7 +143,8 @@ public enum TableEnum
     GameProgress = 0,
     Lobby = 1,
     UserGames = 2,
-    Users = 3
+    Users = 3,
+    EndGameTable = 4,
 }
 
 public enum OperationsEnum
