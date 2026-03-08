@@ -11,12 +11,18 @@ public class AppDbContext : DbContext
     public DbSet<GameProgresses> GameProgresses { get; set; }
     public DbSet<UserGame> UserGames { get; set; }
     public DbSet<LobbyData> LobbyData { get; set; }
+    public DbSet<FinishedGames> EndGames { get; set; }
     
-    public const string HostPath = "Host=80.93.62.153;Database=steamdata;Username=users;Password=ninokuriko212410";
+    private string? _hostPath = "";
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseNpgsql(HostPath);
+        _hostPath = Environment.GetEnvironmentVariable("GAMERANDOM_DB_CONNECT");
+        
+        if (_hostPath is null)
+            throw new ArgumentNullException(nameof(_hostPath));
+        
+        optionsBuilder.UseNpgsql(_hostPath);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -25,6 +31,9 @@ public class AppDbContext : DbContext
         
         modelBuilder.Entity<Lobbies>().HasMany(u => u.LobbyData).WithOne().HasPrincipalKey(e => e.LobbyId)
             .HasForeignKey(e => e.LobbyId);
+
+        modelBuilder.Entity<FinishedGames>().HasOne(e => e.GameProgresses).WithMany()
+            .HasForeignKey(e => new { e.GameProgressId });
     }
 }
 
@@ -68,13 +77,13 @@ public class UserGame
     public int AppId { get; set; }
 }
 
-public class EndGame
+public class FinishedGames
 {
-    public ulong UserId { get; set; }
-    public int AppId { get; set; }
+    public int Id { get; set; }
+    
+    public int GameProgressId { get; set; }
+    
     public byte[]? ScreenShot { get; set; }
-    public string? Nickname { get; set; }
-    public DateTime FinishTime { get; set; }
     public GameProgresses? GameProgresses { get; set; }
 }
 
