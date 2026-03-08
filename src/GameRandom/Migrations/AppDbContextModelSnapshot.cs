@@ -22,6 +22,27 @@ namespace GameRandom.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("GameRandom.DataBaseContexts.FinishedGames", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("GameProgressId")
+                        .HasColumnType("integer");
+
+                    b.Property<byte[]>("ScreenShot")
+                        .HasColumnType("bytea");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GameProgressId");
+
+                    b.ToTable("EndGames");
+                });
+
             modelBuilder.Entity("GameRandom.DataBaseContexts.GameProgresses", b =>
                 {
                     b.Property<int>("Id")
@@ -151,6 +172,17 @@ namespace GameRandom.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("GameRandom.DataBaseContexts.FinishedGames", b =>
+                {
+                    b.HasOne("GameRandom.DataBaseContexts.GameProgresses", "GameProgresses")
+                        .WithMany()
+                        .HasForeignKey("GameProgressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("GameProgresses");
                 });
 
             modelBuilder.Entity("GameRandom.DataBaseContexts.LobbyData", b =>
