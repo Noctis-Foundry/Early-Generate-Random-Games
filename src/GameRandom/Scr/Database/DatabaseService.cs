@@ -242,6 +242,12 @@ public class DatabaseService : IDatabaseService
         }
     }
 
+    public async Task<List<FinishedGames>?> GetFinishedGames(CancellationToken ct = default)
+    {
+        await using var db = new AppDbContext();
+        return null;
+    }
+
     public async Task<UserGame?> GetUserGameAsync(Users userData, CancellationToken ct = default)
     {
         try
