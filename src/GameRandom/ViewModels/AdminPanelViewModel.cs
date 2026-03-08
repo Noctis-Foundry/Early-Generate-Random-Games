@@ -14,7 +14,7 @@ namespace GameRandom.ViewModels;
 public class AdminPanelViewModel : ViewModelBase, IDisposable
 {
     [Inject] private readonly IDatabaseService? _databaseService = null!;
-    [Inject] private readonly ConfirmEndGameService? _confirmEndGameService = null!;
+    [Inject] private readonly AdminConfirmService? _confirmEndGameService = null!;
     [Inject] private readonly PostgresListener? _postgresListener = null!;
     
     private List<AdminPanelElementData> _gameProgresses;
