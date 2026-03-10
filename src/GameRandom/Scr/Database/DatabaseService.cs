@@ -50,6 +50,14 @@ public class DatabaseService : IDatabaseService
             Logger.Error($"Operation failed {e.Message}");
             return false;
         }
+        catch (DbUpdateException e)
+        {
+            // Внутреннее исключение с реальной причиной
+            var innerMessage = e.InnerException?.Message;
+            Console.WriteLine($"DB Error: {innerMessage}");
+
+            return false;
+        }
         catch (Exception e)
         {
             Logger.Error($"Operation failed {e.Message}");
@@ -244,8 +252,43 @@ public class DatabaseService : IDatabaseService
 
     public async Task<List<FinishedGames>?> GetFinishedGames(CancellationToken ct = default)
     {
-        await using var db = new AppDbContext();
-        return null;
+        try
+        {
+            await using var db = new AppDbContext();
+            return await db.FinishedGames
+                .Include(x => x.GameProgresses)
+                .ToListAsync(ct);
+        }
+        catch (OperationCanceledException e)
+        {
+            Logger.Error($"Operation failed {e.Message}");
+            return null;
+        }
+        catch (Exception e)
+        {
+            Logger.Error($"Operation failed {e.Message}");
+            return null;
+        }
+    }
+
+    public async Task<FinishedGames?> GetFinishedGamesFromId(int rowId, CancellationToken ct = default)
+    {
+        try
+        {
+            await using var db = new AppDbContext();
+            return await db.FinishedGames.Include(e => e.GameProgresses).FirstOrDefaultAsync(g => g.Id == rowId, ct);
+
+        }
+        catch (OperationCanceledException e)
+        {
+            Logger.Error($"Operation failed {e.Message}");
+            return null;
+        }
+        catch (Exception e)
+        {
+            Logger.Error($"Operation failed {e.Message}");
+            return null;
+        }
     }
 
     public async Task<UserGame?> GetUserGameAsync(Users userData, CancellationToken ct = default)

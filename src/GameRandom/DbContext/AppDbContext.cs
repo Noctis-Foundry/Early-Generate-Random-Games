@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System;
+using Microsoft.Extensions.Logging;
 
 namespace GameRandom.DataBaseContexts;
 
@@ -11,7 +12,7 @@ public class AppDbContext : DbContext
     public DbSet<GameProgresses> GameProgresses { get; set; }
     public DbSet<UserGame> UserGames { get; set; }
     public DbSet<LobbyData> LobbyData { get; set; }
-    public DbSet<FinishedGames> EndGames { get; set; }
+    public DbSet<FinishedGames> FinishedGames { get; set; }
     
     private string? _hostPath = "";
 
@@ -22,7 +23,7 @@ public class AppDbContext : DbContext
         if (_hostPath is null)
             throw new ArgumentNullException(nameof(_hostPath));
         
-        optionsBuilder.UseNpgsql(_hostPath);
+        optionsBuilder.UseNpgsql(_hostPath).LogTo(Console.WriteLine, LogLevel.Information).EnableSensitiveDataLogging();
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -33,7 +34,7 @@ public class AppDbContext : DbContext
             .HasForeignKey(e => e.LobbyId);
 
         modelBuilder.Entity<FinishedGames>().HasOne(e => e.GameProgresses).WithMany()
-            .HasForeignKey(e => new { e.GameProgressId });
+            .HasForeignKey(e => e.GameProgressId );
     }
 }
 
@@ -84,6 +85,9 @@ public class FinishedGames
     public int GameProgressId { get; set; }
     
     public byte[]? ScreenShot { get; set; }
+    
+    public bool IsImprove { get; set; }
+    
     public GameProgresses? GameProgresses { get; set; }
 }
 
