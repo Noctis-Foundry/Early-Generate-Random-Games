@@ -9,6 +9,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <con:ImageNullConverter x:Key="NullImageConverter" />
+            <con:DictionaryToListConverter x:Key="DictionaryToListConverter"></con:DictionaryToListConverter>
             <con:TimeSpanFormatConverter x:Key="TimeSpanConverter"></con:TimeSpanFormatConverter>
             <con:ArrayTextJoinConverter x:Key="ArrayTextJoinConverter"></con:ArrayTextJoinConverter>
             <con:ByteToImageConverter x:Key="ByteToImageConverter"></con:ByteToImageConverter>
