@@ -18,8 +18,7 @@ public class SteamWebApi
     {
         try
         {
-            var steamUrl =
-                $" https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={ApiKey}&steamids={userId}";
+            var steamUrl = GetSteamUrl(userId);
 
             Logger.Debug($"{steamUrl}");
 
@@ -56,4 +55,13 @@ public class SteamWebApi
             throw new Exception("GetUserData error", e);
         }
     }
+
+    public string GetUserNickName()
+    {
+        //TODO: Implement steam nickname parser
+        Logger.Debug("Get steam nickname");
+        return "";
+    }
+    
+    private string GetSteamUrl(ulong userId) => $"https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={ApiKey}&steamids={userId}";
 }
