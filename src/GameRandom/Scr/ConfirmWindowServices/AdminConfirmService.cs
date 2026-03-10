@@ -11,7 +11,8 @@ public class AdminConfirmService
     private Window _ownerWindow;
     private AdminConfirmWindow _adminConfirmWindow = new AdminConfirmWindow();
 
-    private Queue<GameProgresses>? _dialogQueue = new Queue<GameProgresses>();
+    private Queue<FinishedGames>? _dialogQueue = new();
+    public bool IsOpen { get; private set; } = false;
     
     public AdminConfirmService(Window owner)
     {
@@ -23,16 +24,16 @@ public class AdminConfirmService
         };
     }
     
-    public async Task OpenDialogWindowAsync(GameProgresses gameInfo)
+    public async Task OpenDialogWindowAsync(FinishedGames gameInfo)
     {
         await ShowWindow(gameInfo);
     }
 
-    public async Task OpenDialogWindowWithList(List<GameProgresses> list)
+    public async Task OpenDialogWindowWithList(List<FinishedGames> list)
     {
         if (list.Count <= 0) return;
         
-        _dialogQueue = new Queue<GameProgresses>(list);
+        _dialogQueue = new Queue<FinishedGames>(list);
         
         var firstGame = _dialogQueue.Dequeue();
         
@@ -44,7 +45,16 @@ public class AdminConfirmService
         if (NextDialog())
         {
             LoadNextDialog();
+            return;
         }
+
+        IsOpen = false;
+        _adminConfirmWindow.CloseWindow();
+    }
+
+    public void AddNextDialog(FinishedGames game)
+    {
+        _dialogQueue?.Enqueue(game);
     }
 
     private void LoadNextDialog()
@@ -61,7 +71,7 @@ public class AdminConfirmService
         return true;
     }
     
-    private async Task ShowWindow(GameProgresses gameInfo)
+    private async Task ShowWindow(FinishedGames gameInfo)
     {
         await _adminConfirmWindow.ShowDialog(_ownerWindow);
         _adminConfirmWindow.LoadData(gameInfo);

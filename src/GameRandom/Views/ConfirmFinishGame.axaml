@@ -1,0 +1,50 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:GameRandom.ViewModels"
+        x:Class="GameRandom.Views.ConfirmFinishGame"
+        x:DataType="vm:ConfirmFinishGameViewModel"
+        Title="Confirm Finish Game"
+        Width="700" Height="400"
+        CanResize="False">
+
+    <Design.DataContext>
+        <vm:ConfirmFinishGameViewModel />
+    </Design.DataContext>
+
+    <DockPanel Classes="WindowContainer">
+        <!-- Header -->
+        <Border Classes="WindowTopContainer" DockPanel.Dock="Top">
+            <TextBlock Classes="WindowTextBlock" FontSize="18" Text="Finish Game" />
+        </Border>
+
+        <Grid Classes="WindowGrid" RowDefinitions="*,Auto" Width="310" MaxWidth="310">
+            <!-- Left Column -->
+            <Border Classes="WindowTextBorder" MinHeight="60" MaxHeight="80">
+                <TextBlock Classes="WindowTextBlock" FontSize="14" Text="{Binding GameProgress.AppName,
+                FallbackValue='Not find game'}" />
+            </Border>
+
+            <!-- Comment TextBox -->
+            <Border Grid.Row="1" Classes="WindowTextBorder" MinHeight="70" MaxHeight="80">
+                <TextBox MinHeight="30" MaxHeight="60" TextWrapping="Wrap" AcceptsReturn="True" 
+                         Watermark="Write comment..." Margin="10" MaxWidth="260" MinWidth="260" FontSize="12"/>
+            </Border>
+        </Grid>
+
+        <Grid DockPanel.Dock="Right" RowDefinitions="Auto, Auto" HorizontalAlignment="Right" VerticalAlignment="Center">
+            <!-- Image -->
+            <Border Classes="WindowImageBorder" HorizontalAlignment="Center">
+                <Image Classes="WindowHeaderImage" Source="{Binding ImageBitmap}" />
+            </Border>
+
+            <!-- Buttons -->
+            <Grid Grid.Row="1" ColumnDefinitions="Auto,Auto" ColumnSpacing="15" HorizontalAlignment="Center"
+                  Margin="0,0,15,0">
+                <Button Classes="WindowButton" Grid.Column="0" Content="Save Edit" Click="OnSaveEditClick" />
+                <Button Classes="WindowButton" Grid.Column="1" Content="Choose Image" Click="OnChooseImageClick" />
+            </Grid>
+        </Grid>
+    </DockPanel>
+</Window>
