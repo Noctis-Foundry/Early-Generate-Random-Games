@@ -10,20 +10,13 @@ using GameRandom.Views;
 
 namespace GameRandom.SteamSDK;
 
-public class ErrorService : IError
+public class ErrorService : AbstractWindowService<ErrorWindow>
 {
-    private Window _ownerWindow;
-    private ErrorWindow _errorWindow;
-
     private readonly Queue<ErrorStruct> _queue = new();
 
-    public ErrorService(Window owner)
+    public ErrorService(Window owner) : base(owner)
     {
         GlobalExceptionHandler();
-        
-        _ownerWindow = owner;
-        
-        Init();
     }
 
     private void GlobalExceptionHandler()
@@ -32,45 +25,40 @@ public class ErrorService : IError
         {
             if (args.ExceptionObject is Exception exception)
             {
-                SaveInvokeOnUI(() => ShowErrorWindow(exception.Message, ErrorEnum.Error));
+                SaveInvokeOnUI(() => ShowWindow(new ErrorStruct{ErrorMessage = exception.Message, ErrorType = ErrorEnum.Error}));
             }
         };
 
         TaskScheduler.UnobservedTaskException += (sender, args) =>
         {
-            SaveInvokeOnUI(() => ShowErrorWindow(args.Exception.Message, ErrorEnum.Error));
+            SaveInvokeOnUI(() => ShowWindow(new ErrorStruct{ErrorMessage = args.Exception.Message, ErrorType = ErrorEnum.Error}));
             args.SetObserved();
         };
     }
 
-    private void Init()
+    public override void ShowWindow(object? data = null)
     {
-        _errorWindow = new ErrorWindow();
-
-        _errorWindow.Closing += (sender, args) =>
+        if (data is not null && data is ErrorStruct errorStruct)
         {
-            CloseErrorWindow();
-        };
+            ShowErrorWindow(errorStruct);
+        }
     }
 
-    public void ShowErrorWindow(string message, ErrorEnum errorType)
+    private void ShowErrorWindow(ErrorStruct errorStruct)
     {
-        if (_errorWindow.IsActive)
+        if (ControlWindow.IsActive)
         {
-            _queue.Enqueue(new ErrorStruct { ErrorMessage = message, ErrorType = errorType });
+            _queue.Enqueue(errorStruct);
             return;
         }
         
-        _errorWindow.ChangeTextOnModal(message, errorType);
-        _errorWindow.Open(_ownerWindow);
+        ControlWindow.ChangeTextOnModal(errorStruct.ErrorMessage, errorStruct.ErrorType);
+        ControlWindow.Open();
     }
 
-    private void CloseErrorWindow()
+    protected override void ClosingWindow()
     {
-        if (!_errorWindow.IsActive)
-        {
-            TryGoNext();
-        }
+        TryGoNext();
     }
 
 
@@ -81,17 +69,11 @@ public class ErrorService : IError
 
     private void TryGoNext()
     {
-        if (_queue.Count > 0 && !_errorWindow.IsActive)
+        if (_queue.Count > 0 && !ControlWindow.IsActive)
         {
-            var error = _queue.Dequeue();
-            ShowErrorWindow(error.ErrorMessage, error.ErrorType);
+            ShowErrorWindow(_queue.Dequeue());
         }
     }
-}
-
-public interface IError
-{
-    public void ShowErrorWindow(string message, ErrorEnum errorType);
 }
 
 public struct ErrorStruct
