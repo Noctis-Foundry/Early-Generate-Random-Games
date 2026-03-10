@@ -95,6 +95,9 @@
         <Compile Update="Views\ErrorWindow.axaml.cs">
             <DependentUpon>ErrorWindow.axaml</DependentUpon>
         </Compile>
+        <Compile Update="Views\ConfirmFinishGame.axaml.cs">
+          <DependentUpon>ConfirmFinishGame.axaml</DependentUpon>
+        </Compile>
     </ItemGroup>
 
     <ItemGroup>
