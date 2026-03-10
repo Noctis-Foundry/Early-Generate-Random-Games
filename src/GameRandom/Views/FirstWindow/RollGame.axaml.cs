@@ -100,7 +100,7 @@ public partial class RollGame : MainWindowUserControlAbstract
     {
         if (!await _rollSemaphore.WaitAsync(0))
         {
-            _errorService.ShowErrorWindow("Wait for the generation to complete", ErrorEnum.Error);
+            _errorService.ShowWindow(new ErrorStruct{ErrorMessage = "Wait for the generation to complete", ErrorType = ErrorEnum.Error});
             return;
         }
 

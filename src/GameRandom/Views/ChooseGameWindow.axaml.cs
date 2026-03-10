@@ -65,9 +65,9 @@ public partial class ChooseGameWindow : WindowAbstract
             bool isAdd = await viewModel.ChooseGame();
 
             if (!isAdd)
-                _errorService.ShowErrorWindow("Failed to add game to database, try again", ErrorEnum.Message);
+                _errorService.ShowWindow(new ErrorStruct{ErrorMessage = "Failed to add game to database, try again", ErrorType = ErrorEnum.Message});
             else
-                _errorService.ShowErrorWindow("Game added to database", ErrorEnum.Message);
+                _errorService.ShowWindow(new ErrorStruct{ErrorMessage = "Game added to database", ErrorType = ErrorEnum.Message});
         }
         catch (Exception exception)
         {

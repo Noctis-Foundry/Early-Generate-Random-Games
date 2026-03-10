@@ -45,7 +45,7 @@ public partial class LobbyWindow : WindowAbstract
             await _lobbyService.ConnectToLobby(lobbyId);
         }
         else
-            _errorService.ShowErrorWindow("Failed connect to the lobby", ErrorEnum.Error);
+            _errorService.ShowWindow(new ErrorStruct{ErrorMessage = "Failed connect to the lobby", ErrorType = ErrorEnum.Error});
     }
 
     private async void Create(object? sender, RoutedEventArgs e)
