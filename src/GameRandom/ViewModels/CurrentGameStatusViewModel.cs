@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading;
 using System.Timers;
 using Avalonia.Controls;
 using GameRandom.Scr.DI;
@@ -18,6 +19,10 @@ namespace GameRandom.ViewModels;
 public class CurrentGameStatusViewModel : ViewModelBase
 {
     [Inject] private DatabaseService? _databaseService = null!;
+    [Inject] private FinishedGameDialogService? _finishedGameDialogService = null!;
+    [Inject] private ErrorService? _errorService = null!;
+    
+    private CancellationTokenSource _cts = new CancellationTokenSource();
 
     private TimeSpan _currentTime;
     public TimeSpan CurrentTime
@@ -54,14 +59,14 @@ public class CurrentGameStatusViewModel : ViewModelBase
 
         if (_databaseService is null) throw new NullReferenceException();
 
-        var userGameInfo = await _databaseService.GetUserGameAsync(userInfo);
+        var userGameInfo = await _databaseService.GetUserGameAsync(userInfo, _cts.Token);
 
         if (userGameInfo is not null && userGameInfo.AppId != 0)
         {
             UserGame = userGameInfo;
             
             var gameInfo = await _databaseService.GetFirstOrDefaultAsync<GameProgresses>
-                (e => e.AppId == userGameInfo.AppId);
+                (e => e.AppId == userGameInfo.AppId, _cts.Token);
 
             if (gameInfo is null)
             {
@@ -84,30 +89,24 @@ public class CurrentGameStatusViewModel : ViewModelBase
 
     public async Task FinishingGame()
     {
-        if (UserGame is null || _databaseService == null) throw new NullReferenceException();
+        if (_finishedGameDialogService is null || _errorService is null) throw new NullReferenceException();
 
-        var finishedGame =
-            await _databaseService.GetFirstOrDefaultAsync<GameProgresses>(e =>
-                e.AppId == UserGame.AppId && !e.IsFinished && e.PlayerId == UserGame.UserId);
-
-        if (finishedGame is null)
+        if (AppInfo is null)
+        {
+            _errorService.ShowWindow(new ErrorStruct{ErrorMessage = "Failed to finish game, your game is Empty"});
             return;
+        }
         
-        finishedGame.IsFinished = true;
-        finishedGame.FinishTime = DateTime.UtcNow;
-        
-        UserGame.AppId = 0;
-        var isUpdating = await _databaseService.UpdateAsync(UserGame);
-        
-        if (!isUpdating) throw new Exception("Failed to update user game");
-        
-        isUpdating = await _databaseService.UpdateAsync(finishedGame);
-        if (!isUpdating) throw new Exception("Failed to update game progresses");
-        
-        ClearingContent();
-        
-        if (Di.Container.GetInstance<ErrorService>() is ErrorService errorService)
-            errorService.ShowErrorWindow("Game finished", ErrorEnum.Message);
+        var isAdded = await _finishedGameDialogService.ShowWindowAsync(AppInfo);
+
+        if (isAdded && UserGame is not null)
+        {
+            UserGame.AppId = 0;
+            var isUpdate = await _databaseService.UpdateAsync(UserGame, _cts.Token);
+            
+            if (isUpdate) 
+                ClearingContent();
+        }
     }
 
     private void UpdateDateTimer()
@@ -118,6 +117,10 @@ public class CurrentGameStatusViewModel : ViewModelBase
 
     public void ClearingContent()
     {
+        _cts?.Cancel();
+        _cts?.Dispose();
+        _cts = new CancellationTokenSource();
+        
         if (_timer != null)
         {
             _timer.Stop();

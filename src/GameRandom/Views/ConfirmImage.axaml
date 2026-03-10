@@ -2,8 +2,31 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        xmlns:vm="using:GameRandom.ViewModels"
         x:Class="GameRandom.Views.ConfirmImage"
-        Title="ConfirmImage">
-    Welcome to Avalonia!
+        x:DataType="vm:ConfirmImageViewModel"
+        Title="Choose Image"
+        MaxWidth="500" MaxHeight="370"
+        MinWidth="500" MinHeight="370"
+        CanResize="False">
+    
+    <DockPanel Classes="WindowContainer" Width="500" Height="370">
+        <!-- Header -->
+        <Border Classes="WindowTopContainer" DockPanel.Dock="Top">
+            <TextBlock Classes="WindowTextBlock" FontSize="18" Text="Choose Image" />
+        </Border>
+        
+        <Grid Classes="WindowGrid" RowDefinitions="*,Auto" >
+            <!-- Image -->
+            <Border Classes="WindowImageBorder" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Image Classes="WindowHeaderImage" x:Name="PreviewImage" Source="{Binding ImageBitmap}" />
+            </Border>
+            
+            <!-- Buttons -->
+            <Grid Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="15" HorizontalAlignment="Center">
+                <Button Classes="WindowButton" Grid.Column="0" Content="Choose from File" Click="FileChoose" />
+                <Button Classes="WindowButton" Grid.Column="1" Content="Paste from Clipboard" Click="ClipboardChoose" />
+            </Grid>
+        </Grid>
+    </DockPanel>
 </Window>

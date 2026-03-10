@@ -29,7 +29,8 @@
             <!-- Comment TextBox -->
             <Border Grid.Row="1" Classes="WindowTextBorder" MinHeight="70" MaxHeight="80">
                 <TextBox MinHeight="30" MaxHeight="60" TextWrapping="Wrap" AcceptsReturn="True" 
-                         Watermark="Write comment..." Margin="10" MaxWidth="260" MinWidth="260" FontSize="12"/>
+                         Watermark="Write comment..." Margin="10" MaxWidth="260" MinWidth="260" FontSize="12"
+                         x:Name="CommentBox"/>
             </Border>
         </Grid>
 

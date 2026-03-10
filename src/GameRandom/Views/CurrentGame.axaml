@@ -10,6 +10,12 @@
         x:DataType="vm:CurrentGameStatusViewModel"
         Title="Current game status">
 
+    <Window.Styles>
+        <Style Selector="TextBlock.WindowTextBlock">
+            <Setter Property="MaxWidth" Value="230"></Setter>
+        </Style>
+    </Window.Styles>
+    
     <!-- Main container for the current game status window -->
     <DockPanel Classes="WindowContainer">
         
@@ -33,7 +39,7 @@
                 <TextBlock
                     Text="{Binding AppInfo.BeginTime, Converter={StaticResource TimeSpanConverter}, 
                                         ConverterParameter='Start date'}"
-                    Classes="WindowTextBlock" x:Name="StartDate" />
+                    Classes="WindowTextBlock" x:Name="StartDate"/>
 
             </Border>
 
