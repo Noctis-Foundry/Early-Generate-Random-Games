@@ -8,20 +8,16 @@ namespace GameRandom.SteamSDK;
 
 public class ConfirmService(Window owner)
 {
-    private ConfirmDialog? _confirmDialog;
-    private SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
+    private ConfirmDialog _confirmDialog;
 
     private Window _owner = owner;
     
     public async Task<bool> OpenConfirmDialog(string title)
     {
-        if (!await _semaphore.WaitAsync(0))
+        if (_confirmDialog.IsVisible)
             return false;
         
-        _confirmDialog = new ConfirmDialog();
         var result = await _confirmDialog.ShowConfirmDialog(title, _owner);
-        
-        _semaphore.Release();
         
         return result;
     }
