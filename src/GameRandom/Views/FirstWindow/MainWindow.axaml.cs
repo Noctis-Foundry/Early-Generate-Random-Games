@@ -40,6 +40,7 @@ public partial class MainWindow : Window
 
     private readonly Rules _rules = new();
     private readonly LobbyWindow _lobbyWindow;
+    private AdminPanel _adminUserControl;
 
 
     /// <summary>
@@ -79,6 +80,7 @@ public partial class MainWindow : Window
             () => _controlFactory.CreateUserControl<RollGame>(_changeUserControlAction));
         _preloadRegister.RegisterNewObject("Table",
             () => _controlFactory.CreateUserControl<GameTable>(_changeUserControlAction));
+        _preloadRegister.RegisterNewObject("Admin", () => _controlFactory.CreateUserControl<AdminPanel>(_changeUserControlAction));
     }
 
     /// <summary>
@@ -149,6 +151,9 @@ public partial class MainWindow : Window
     {
         Di.Container.RegisterSingleInstance(new ErrorService(mainWindow));
         Di.Container.RegisterSingleInstance(new ConfirmService(mainWindow));
+        Di.Container.RegisterSingleInstance(new AdminConfirmService(mainWindow));
+        Di.Container.RegisterSingleInstance(new ImageConfirmService(mainWindow));
+        Di.Container.RegisterSingleInstance(new FinishedGameDialogService(mainWindow));
 
         Di.Container.ResolveFieldsFromClassInstance(this);
     }
@@ -202,6 +207,7 @@ public partial class MainWindow : Window
         {
             vm.BindingOpenLobbyCommand(() => _lobbyWindow.Open());
             vm.BindingRulesWindow(() => _rules.Open());
+            vm.BindingAdminPanel(() => Navigate("Admin"));
         }
     }
 }

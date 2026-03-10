@@ -63,7 +63,6 @@
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="Foreground" Value="#d4af37"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
-        <Setter Property="Margin" Value="0,0,0,20"/>
     </Style>
     
     <Style Selector="TextBlock.RatingLabel">

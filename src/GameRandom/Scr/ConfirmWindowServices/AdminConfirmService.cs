@@ -6,50 +6,29 @@ using GameRandom.Views;
 namespace GameRandom.SteamSDK;
 using System.Threading.Tasks;
 
-public class AdminConfirmService
+public class AdminConfirmService(Window owner) : AbstractWindowService<AdminConfirmWindow>(owner)
 {
-    private Window _ownerWindow;
-    private AdminConfirmWindow _adminConfirmWindow = new AdminConfirmWindow();
-
     private Queue<FinishedGames>? _dialogQueue = new();
     public bool IsOpen { get; private set; } = false;
-    
-    public AdminConfirmService(Window owner)
-    {
-        _ownerWindow = owner;
 
-        _adminConfirmWindow.Closing += (sender, args) =>
+    public override void ShowWindow(object? data = null)
+    {
+        if (data is FinishedGames gameInfo && !ControlWindow.IsActive)
         {
-            OnClosing();
-        };
-    }
-    
-    public async Task OpenDialogWindowAsync(FinishedGames gameInfo)
-    {
-        await ShowWindow(gameInfo);
-    }
-
-    public async Task OpenDialogWindowWithList(List<FinishedGames> list)
-    {
-        if (list.Count <= 0) return;
-        
-        _dialogQueue = new Queue<FinishedGames>(list);
-        
-        var firstGame = _dialogQueue.Dequeue();
-        
-        await ShowWindow(firstGame);
-    }
-
-    private void OnClosing()
-    {
-        if (NextDialog())
-        {
-            LoadNextDialog();
-            return;
+            ControlWindow = new();
+            ControlWindow.LoadData(gameInfo);
         }
+    }
 
-        IsOpen = false;
-        _adminConfirmWindow.CloseWindow();
+    public override async Task ShowWindowAsync(object? data = null)
+    {
+        if (data is not List<FinishedGames> gamesInfo || gamesInfo.Count == 0) return;
+
+        ControlWindow = new AdminConfirmWindow();
+        _dialogQueue = new Queue<FinishedGames>(gamesInfo);
+        ControlWindow.LoadData(_dialogQueue.Dequeue());
+        
+        await base.ShowWindowAsync(data);
     }
 
     public void AddNextDialog(FinishedGames game)
@@ -60,7 +39,7 @@ public class AdminConfirmService
     private void LoadNextDialog()
     {
         var nextGame = _dialogQueue!.Dequeue();
-        _adminConfirmWindow.LoadData(nextGame);
+        ControlWindow.LoadData(nextGame);
     }
 
     private bool NextDialog()
@@ -70,10 +49,16 @@ public class AdminConfirmService
         
         return true;
     }
-    
-    private async Task ShowWindow(FinishedGames gameInfo)
+
+    protected override void ClosingWindow()
     {
-        await _adminConfirmWindow.ShowDialog(_ownerWindow);
-        _adminConfirmWindow.LoadData(gameInfo);
+        if (NextDialog())
+        {
+            LoadNextDialog();
+            return;
+        }
+        
+        IsOpen = false;
+        base.ClosingWindow();
     }
 }

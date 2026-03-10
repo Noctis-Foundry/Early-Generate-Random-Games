@@ -41,6 +41,14 @@ public class MainWindowViewModel : ViewModelBase
         set => SetProperty(ref _rulesOpen, value);
     }
 
+    private ICommand? _adminPanelOpen;
+
+    public ICommand? AdminPanelOpen
+    {
+        get => _adminPanelOpen;
+        set => SetProperty(ref _adminPanelOpen, value);
+    }
+
     /// <summary>
     /// Collection of users in the current lobby.
     /// </summary>
@@ -77,13 +85,13 @@ public class MainWindowViewModel : ViewModelBase
         
         if (!_isInitialized)
         {
-            _errorService.ShowErrorWindow("Not initialized MainWindowViewModel, Cant update lobby", ErrorEnum.Error);
+            _errorService.ShowWindow(new ErrorStruct{ErrorMessage = "Not initialized MainWindowViewModel, Cant update lobby", ErrorType = ErrorEnum.Error});
             return;
         }
         
         if ((TableEnum)tableCode != TableEnum.Lobby)
         {
-            _errorService.ShowErrorWindow($"Table code {tableCode} not correct for this method", ErrorEnum.Error);
+            _errorService.ShowWindow(new ErrorStruct{ErrorMessage = $"Table code {tableCode} not correct for this method", ErrorType = ErrorEnum.Error});
             return;
         }
 
@@ -93,7 +101,7 @@ public class MainWindowViewModel : ViewModelBase
 
         if (lobbyContexts == null || lobbyContexts.LobbyData.Count <= 0)
         {
-            _errorService.ShowErrorWindow($"No lobby context found with {userData.LobbyId}", ErrorEnum.Error);
+            _errorService.ShowWindow(new ErrorStruct{ErrorMessage = $"No lobby context found with {userData.LobbyId}", ErrorType = ErrorEnum.Error});
             return;
         }
         
@@ -107,7 +115,7 @@ public class MainWindowViewModel : ViewModelBase
 
                 if (profileContext == null)
                 {
-                    _errorService.ShowErrorWindow("Not found profile context", ErrorEnum.Error);
+                    _errorService.ShowWindow(new ErrorStruct{ErrorMessage = "Not found profile context", ErrorType = ErrorEnum.Error});
                     return;
                 }
                 
@@ -139,5 +147,11 @@ public class MainWindowViewModel : ViewModelBase
     {
         if (RulesOpen is null) 
             RulesOpen = new RelayCommand(func);
+    }
+
+    public void BindingAdminPanel(Action func)
+    {
+        if (AdminPanelOpen is null)
+            AdminPanelOpen = new RelayCommand(func);
     }
 }
