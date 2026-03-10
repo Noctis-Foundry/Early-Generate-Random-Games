@@ -60,7 +60,7 @@ public class ChooseGameViewModel : ViewModelBase, IDisposable
             {
                 if (Di.Container.GetInstance<ErrorService>() is ErrorService errorService)
                 {
-                    errorService.ShowErrorWindow("Failed to set new game. Finish your current game", ErrorEnum.Message);
+                    errorService.ShowWindow(new ErrorStruct{ErrorMessage = "Failed to set new game. Finish your current game", ErrorType = ErrorEnum.Message});
                     return false;
                 }
             }

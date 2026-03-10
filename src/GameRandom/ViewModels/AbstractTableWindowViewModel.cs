@@ -15,9 +15,11 @@ public class AbstractTableWindowViewModel<TEntity> : ViewModelBase where TEntity
     [Inject] protected DatabaseService? _databaseService = null!;
     [Inject] protected ObservableConverter? _observableConverter = null!;
     [Inject] protected ErrorService? _errorService = null!;
-    protected ObservableCollection<TEntity> _tableData;
+    protected ObservableCollection<TEntity>? _tableData;
+    
+    protected CancellationTokenSource _cts = new();
 
-    public ObservableCollection<TEntity> TableData
+    public ObservableCollection<TEntity>? TableData
     {
         get => _tableData;
         set => SetProperty(ref _tableData, value);
@@ -35,12 +37,12 @@ public class AbstractTableWindowViewModel<TEntity> : ViewModelBase where TEntity
         List<TEntity>? tableList = new();
 
         tableList = predicate is null
-            ? await _databaseService.GetTableListAsync<TEntity>()
-            : await _databaseService.Where(predicate);
+            ? await _databaseService.GetTableListAsync<TEntity>(_cts.Token)
+            : await _databaseService.Where(predicate, _cts.Token);
 
         if (tableList is null)
         {
-            _errorService.ShowErrorWindow($"Failed get table with type {typeof(TEntity)}", ErrorEnum.Error);
+            _errorService.ShowWindow(new ErrorStruct{ErrorMessage = $"Failed get table with type {typeof(TEntity)}", ErrorType = ErrorEnum.Error});
             return;
         }
             

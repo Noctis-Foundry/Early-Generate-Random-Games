@@ -12,7 +12,7 @@ namespace GameRandom.Views;
 public partial class ProfileContent : MainWindowUserControlAbstract
 {
     private StatisticControl _statisticContent;
-    private CurrentGame _currentGame;
+    private CurrentGame? _currentGame;
 
     public ProfileContent()
     {
@@ -61,7 +61,7 @@ public partial class ProfileContent : MainWindowUserControlAbstract
         ProfileImage.Source = null;
         DataContext = null;
         
-        _currentGame.ProfileClosed();
+        _currentGame?.ProfileClosed();
     }
 
     private void OpenActivityGame(object? sender, RoutedEventArgs e)
