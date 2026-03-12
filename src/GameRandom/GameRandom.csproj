@@ -60,6 +60,7 @@
         </PackageReference>
         <PackageReference Include="Newtonsoft.Json.Bson" Version="1.0.3"/>
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0-rc.1"/>
+        <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
         <PackageReference Include="Steamworks.NET" Version="2024.8.0"/>
     </ItemGroup>
 
