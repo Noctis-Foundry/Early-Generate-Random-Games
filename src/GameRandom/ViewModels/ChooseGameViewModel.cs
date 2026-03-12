@@ -35,9 +35,16 @@ public class ChooseGameViewModel : ViewModelBase, IDisposable
         DateTime date = DateTime.UtcNow;
         DateTime endDate = date.AddDays(30);
 
+        var bitmap = SteamService.Instance.GetImageSyncFromBytes(_appInfo.ImageBytes);
+        
+        if (bitmap is null)
+            throw new NullReferenceException("bitmap is null");
+        
+        byte[] webpBytes = AvaloniaService.Instance.ConvertToWebpBytes(bitmap);
+
         var gameInfo = new GameProgresses
         {
-            AppHeaderImage = _appInfo.ImageBytes,
+            AppHeaderImage = webpBytes,
             AppId = _appInfo.AppData.AppId,
             AppName = _appInfo.AppData.AppName,
             BeginTime = date,

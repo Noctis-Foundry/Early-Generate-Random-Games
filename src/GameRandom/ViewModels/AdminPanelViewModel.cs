@@ -49,7 +49,7 @@ public class AdminPanelViewModel : ViewModelBase, IDisposable
         if (_databaseService is null || _confirmEndGameService is null || _postgresListener is null) 
             throw new NullReferenceException("Failed inject instances");
         
-        _postgresListener.Subscribe(TableEnum.GameProgress, p =>
+        _postgresListener.Subscribe(TableEnum.EndGameTable, p =>
         {
             Dispatcher.UIThread.InvokeAsync(async () => await UpdateData(p));
         });
@@ -75,6 +75,9 @@ public class AdminPanelViewModel : ViewModelBase, IDisposable
         
         foreach (var game in gameList)
         {
+            if (game.IsImprove)
+                continue;
+            
             var localGame = game;
             AsyncRelayCommand openConfirmGameWindow = new AsyncRelayCommand ( async () =>
             {
