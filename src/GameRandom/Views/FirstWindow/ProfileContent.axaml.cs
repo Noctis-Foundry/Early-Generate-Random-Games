@@ -49,7 +49,7 @@ public partial class ProfileContent : MainWindowUserControlAbstract
         
         int imageId = SteamFriends.GetLargeFriendAvatar(steamId);
         
-        var bitmap = AvaloniaService.CreateSteamImage(imageId);
+        var bitmap = AvaloniaService.Instance.CreateSteamImage(imageId);
         
         ProfileImage.Source = bitmap;
         ProfileName.Text = accName;

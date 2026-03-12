@@ -1,20 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text.Json;
 using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Labs.Gif;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
-using GameRandom.CoreApp;
+using GameRandom.Scr.Service;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Webp;
+using SixLabors.ImageSharp.PixelFormats;
 using Steamworks;
 
 namespace GameRandom.Service;
 
-public static class AvaloniaService
+public class AvaloniaService
 {
-    public static Bitmap CreateBitmap(byte[] rawRgba, int width, int height)
+    private static Lazy<AvaloniaService> _lazyAvalonia = new (() => new AvaloniaService());
+    
+    public static AvaloniaService Instance => _lazyAvalonia.Value;
+    
+    private AvaloniaService(){}
+    
+    public Bitmap CreateBitmap(byte[] rawRgba, int width, int height)
     {
         byte[] bgra = new byte[rawRgba.Length];
         for (int i = 0; i < rawRgba.Length; i += 4)
@@ -39,7 +45,7 @@ public static class AvaloniaService
         return bitmap;
     }
 
-    public static Bitmap? CreateSteamImage(int image)
+    public Bitmap? CreateSteamImage(int image)
     {
         if (image == 0)
             return null;
@@ -59,13 +65,13 @@ public static class AvaloniaService
     /// </summary>
     /// <param name="path">Относительный путь к изображению в ресурсах. Пример: Assets/img.png</param>
     /// <returns>Bitmap изображения или null в случае ошибки.</returns>
-    public static Bitmap? CreateBitmapFromPath(string path)
+    public Bitmap? CreateBitmapFromPath(string path)
     {
         var uri = new Uri($"avares://GameRandom/{path}");
         return new Bitmap(AssetLoader.Open(uri));
     }
 
-    public static GifImage CreateGifImageFromPath(string path)
+    public GifImage CreateGifImageFromPath(string path)
     {
         var uri = new Uri($"avares://GameRandom/{path}");
         return new GifImage
@@ -74,5 +80,32 @@ public static class AvaloniaService
             Width = 120,
             Height = 70
         };
+    }
+
+    public byte[] ConvertToWebpBytes(Bitmap bitmap)
+    {
+        using var ms = new MemoryStream();
+        bitmap.Save(ms);
+        ms.Position = 0;
+        
+        var originalBytes = ms.ToArray().Length * 8;
+        
+        Image<Rgba32> image = Image.Load<Rgba32>(ms);
+        
+        using var msWebp = new MemoryStream();
+        var encoder = new WebpEncoder { Quality = 80, FileFormat = WebpFileFormatType.Lossy};
+        image.Save(msWebp, encoder);
+
+        var compressedBytes = msWebp.ToArray().Length * 8;
+        
+        Logger.Debug($"Original size = {originalBytes} and compressed bytes = {compressedBytes}");
+        
+        return msWebp.ToArray();
+    }
+    
+    public Bitmap CreateBitmapFromBytes(byte[] bytes)
+    {
+        using var ms = new MemoryStream(bytes);
+        return new Bitmap(ms);
     }
 }

@@ -7,6 +7,7 @@ using Avalonia.Platform.Storage;
 using GameRandom.DataBaseContexts;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Service;
+using GameRandom.Service;
 using GameRandom.SteamSDK;
 using GameRandom.SteamSDK.Enums;
 
@@ -51,7 +52,7 @@ public class ConfirmFinishGameViewModel : ViewModelBase
     {
         if (!IsRequiredParameters()) return false;
 
-        byte[]? imageBytes = BitmapToByteArray();
+        byte[]? imageBytes = AvaloniaService.Instance.ConvertToWebpBytes(ImageBitmap);
         
         var finishedGame = new FinishedGames
         {
@@ -77,15 +78,6 @@ public class ConfirmFinishGameViewModel : ViewModelBase
         
         _errorService?.ShowWindow(new ErrorStruct{ErrorMessage = "Failed to save finished game", ErrorType = ErrorEnum.Error});
         return false;
-    }
-
-    private byte[] BitmapToByteArray()
-    {
-        using var stream = new MemoryStream();
-        
-        ImageBitmap.Save(stream);
-        
-        return stream.ToArray();
     }
     
     private bool IsRequiredParameters()

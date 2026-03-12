@@ -10,6 +10,12 @@
         x:DataType="vm:ChooseGameViewModel"
         Title="Choose Game">
 
+        <Window.Styles>
+                <Style Selector="TextBlock.WindowTextBlock">
+                        <Setter Property="MaxWidth" Value="230"></Setter>
+                </Style>
+        </Window.Styles>
+        
         <DockPanel Classes="WindowContainer">
 
                 <Border DockPanel.Dock="Top" Classes="WindowTopContainer">
@@ -52,7 +58,8 @@
                 
                         <!-- Action buttons -->
                         <Border Grid.Row="1">
-                                <Grid ColumnDefinitions="Auto, Auto" HorizontalAlignment="Center" ColumnSpacing="10">
+                                <Grid ColumnDefinitions="Auto, Auto" HorizontalAlignment="Center" ColumnSpacing="10" 
+                                      Margin="0, 0,20,0">
 
                                         <Button Classes="WindowButton" Content="Steam" Click="ToSteamStorePage"></Button>
 

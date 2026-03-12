@@ -22,7 +22,7 @@ public class MainWindowFactory
     {
         Image image = new Image
         {
-            Source = AvaloniaService.CreateBitmapFromPath("Assets/avalonia-logo.ico"),
+            Source = AvaloniaService.Instance.CreateBitmapFromPath("Assets/avalonia-logo.ico"),
             Name = $"AppImage{countGame}"
         };
 
@@ -46,7 +46,7 @@ public class MainWindowFactory
     {
         var image = new Image
         {
-            Source = AvaloniaService.CreateBitmapFromPath("Assets/avalonia-logo.ico")
+            Source = AvaloniaService.Instance.CreateBitmapFromPath("Assets/avalonia-logo.ico")
         };
 
         var border = new Border
@@ -67,7 +67,7 @@ public class MainWindowFactory
 
     public GifImage CreateAnimatedImage(Grid grid)
     {
-        var image = AvaloniaService.CreateGifImageFromPath("Assets/load.gif");
+        var image = AvaloniaService.Instance.CreateGifImageFromPath("Assets/load.gif");
         Grid.SetColumn(image, grid.ColumnDefinitions.Count - 1);
         grid.Children.Add(image);
 
