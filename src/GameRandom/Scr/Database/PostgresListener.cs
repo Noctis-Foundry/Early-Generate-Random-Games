@@ -13,12 +13,13 @@ public class PostgresListener : IDisposable
     private const string HostPath = "Host=80.93.62.153;Database=steamdata;Username=users;Password=ninokuriko212410";
 
     private Dictionary<TableEnum, Action<PayloadStructure>?> _tableCallbacks =
-        new Dictionary<TableEnum, Action<PayloadStructure>?>
+        new()
         {
             { TableEnum.Lobby, null },
             { TableEnum.UserGames, null },
             { TableEnum.GameProgress, null },
-            { TableEnum.Users, null }
+            { TableEnum.Users, null },
+            { TableEnum.EndGameTable, null }
         };
 
     public PostgresListener()
