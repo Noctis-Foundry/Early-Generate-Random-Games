@@ -5,5 +5,36 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="GameRandom.Views.AdminRegistrationWindow"
         Title="AdminRegistrationWindow">
-    Welcome to Avalonia!
+    
+    <Window.Styles>
+        <StyleInclude Source="avares://GameRandom/Styles/AdminPanelStyle.axaml"/>
+    </Window.Styles>
+    
+    <DockPanel Classes="WindowContainer">
+        <Border Classes="WindowTopContainer" DockPanel.Dock="Top">
+            <SelectableTextBlock Classes="WindowTextBlock" Text="Admin Panel"/>
+        </Border>
+        
+        <DataGrid Margin="20" AutoGenerateColumns="False" Classes="AdminDataGrid">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="NickName" Width="*"/>
+                <DataGridCheckBoxColumn Header="Admin Status" Width="Auto"/>
+                <DataGridTemplateColumn Header="Actions" Width="Auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="X" Classes="WindowButton" Padding="10,5"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Remove" Width="Auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="X" Classes="WindowButton" Padding="10,5"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+    
 </Window>
