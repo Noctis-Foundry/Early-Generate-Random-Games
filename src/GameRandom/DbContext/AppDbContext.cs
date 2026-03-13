@@ -13,6 +13,7 @@ public class AppDbContext : DbContext
     public DbSet<UserGame> UserGames { get; set; }
     public DbSet<LobbyData> LobbyData { get; set; }
     public DbSet<FinishedGames> FinishedGames { get; set; }
+    public DbSet<Admins> Admins { get; set; }
     
     private string? _hostPath = "";
 
@@ -33,8 +34,16 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Lobbies>().HasMany(u => u.LobbyData).WithOne().HasPrincipalKey(e => e.LobbyId)
             .HasForeignKey(e => e.LobbyId);
 
+        modelBuilder.Entity<Lobbies>().HasMany(u => u.AdminsList).WithOne().HasPrincipalKey(e => e.LobbyId)
+            .HasPrincipalKey(e => e.LobbyId);
+
         modelBuilder.Entity<FinishedGames>().HasOne(e => e.GameProgresses).WithMany()
             .HasForeignKey(e => e.GameProgressId );
+
+        //TODO: Optimization UserGame Table Post/Fetch
+        // modelBuilder.Entity<UserGame>().HasOne(e => e.Users).WithMany().HasForeignKey(e => e.UserId);
+        // modelBuilder.Entity<UserGame>().HasOne(e => e.GameProgresses).WithMany()
+        //     .HasForeignKey(e => new { e.UserId, e.AppId });
     }
 }
 
@@ -43,8 +52,8 @@ public class Users
     public int Id { get; set; }
     public ulong SteamId { get; set; }
     public long LobbyId { get; set; }
-    public string Nickname { get; set; }
-    public int AvatarURL { get; set; }
+    public string? Nickname { get; set; }
+    public int AvatarURL { get; set; } //TODO Change to byte + webp format
 }
 
 public class Lobbies
@@ -52,8 +61,9 @@ public class Lobbies
     public int Id { get; set; }
     public long LobbyId { get; set; }
     public int MembersCount { get; set; }
-    
     public List<LobbyData> LobbyData { get; set; } //Navigation
+    
+    public List<Admins> AdminsList { get; set; } //Navigation
 }
 
 public class GameProgresses
@@ -76,6 +86,9 @@ public class UserGame
     public int Id { get; set; }
     public ulong UserId { get; set; } // Взятие листа из базы данных UserGame конкретного пользователя
     public int AppId { get; set; }
+    
+    // public Users? Users { get; set; } // Навигационное свойство
+    // public GameProgresses? GameProgresses { get; set; } // Навигационное свойство
 }
 
 public class FinishedGames
@@ -89,6 +102,14 @@ public class FinishedGames
     public bool IsImprove { get; set; }
     
     public GameProgresses? GameProgresses { get; set; }
+}
+
+public class Admins
+{
+    public int Id { get; set; }
+    public ulong SteamId { get; set; }
+    public long LobbyId { get; set; }
+    public bool IsTopAdmin { get; set; }
 }
 
 public class LobbyData

@@ -3,6 +3,7 @@ using System;
 using GameRandom.DataBaseContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GameRandom.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260313175245_AddAdminTable")]
+    partial class AddAdminTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,21 +33,10 @@ namespace GameRandom.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("IsTopAdmin")
-                        .HasColumnType("boolean");
-
-                    b.Property<long?>("LobbiesLobbyId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("LobbyId")
-                        .HasColumnType("bigint");
-
                     b.Property<decimal>("SteamId")
                         .HasColumnType("numeric(20,0)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("LobbiesLobbyId");
 
                     b.ToTable("Admins");
                 });
@@ -193,6 +185,7 @@ namespace GameRandom.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("Nickname")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<decimal>("SteamId")
@@ -201,14 +194,6 @@ namespace GameRandom.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("GameRandom.DataBaseContexts.Admins", b =>
-                {
-                    b.HasOne("GameRandom.DataBaseContexts.Lobbies", null)
-                        .WithMany("AdminsList")
-                        .HasForeignKey("LobbiesLobbyId")
-                        .HasPrincipalKey("LobbyId");
                 });
 
             modelBuilder.Entity("GameRandom.DataBaseContexts.FinishedGames", b =>
@@ -234,8 +219,6 @@ namespace GameRandom.Migrations
 
             modelBuilder.Entity("GameRandom.DataBaseContexts.Lobbies", b =>
                 {
-                    b.Navigation("AdminsList");
-
                     b.Navigation("LobbyData");
                 });
 #pragma warning restore 612, 618
