@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
+using GameRandom.DataBaseContexts;
 using GameRandom.Events;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Events;
@@ -12,6 +13,7 @@ using GameRandom.SteamSDK;
 using GameRandom.SteamSDK.Enums;
 using GameRandom.SteamSDK.Factory;
 using GameRandom.SteamSDK.LobbySystem;
+using GameRandom.SteamSDK.UserData;
 using GameRandom.ViewModels;
 using GameRandom.Views.LobbyModalWindow;
 
@@ -55,12 +57,17 @@ public partial class MainWindow : Window
 
         RegisterServiceWithMainWindowOwnerAndResolve(this);
         
+        _eventBus.Subscribe<AdminRulesUpdating>(_ =>
+        {
+            EnableAdminPanel();
+        });
+        
         _lobbyWindow = new LobbyWindow();
         DataContext = new MainWindowViewModel();
         BindingCommand();
 
         _changeUserControlAction = Navigate;
-
+        
         InitializeUserControlRegister();
         _changeUserControlAction.Invoke("Main");
         InitWindowEvents();
@@ -80,7 +87,6 @@ public partial class MainWindow : Window
             () => _controlFactory.CreateUserControl<RollGame>(_changeUserControlAction));
         _preloadRegister.RegisterNewObject("Table",
             () => _controlFactory.CreateUserControl<GameTable>(_changeUserControlAction));
-        _preloadRegister.RegisterNewObject("Admin", () => _controlFactory.CreateUserControl<AdminPanel>(_changeUserControlAction));
     }
 
     /// <summary>
@@ -207,6 +213,22 @@ public partial class MainWindow : Window
         {
             vm.BindingOpenLobbyCommand(() => _lobbyWindow.Open());
             vm.BindingRulesWindow(() => _rules.Open());
+        }
+    }
+
+    private void EnableAdminPanel()
+    {
+        if (!User.GetInstance().IsAdmin)
+        {
+            AdminPanel.IsVisible = false;
+            return;
+        }
+        
+        _preloadRegister.RegisterNewObject("Admin", () => _controlFactory.CreateUserControl<AdminPanel>(_changeUserControlAction));
+        AdminPanel.IsVisible = true;
+        
+        if (DataContext is MainWindowViewModel vm)
+        {
             vm.BindingAdminPanel(() => Navigate("Admin"));
         }
     }

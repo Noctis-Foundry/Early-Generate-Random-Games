@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using GameRandom.DataBaseContexts;
 using GameRandom.Events;
@@ -59,6 +60,13 @@ public class LobbyService
             long lobbyId = GenerateLobbyId();
             var lobbyData = CreateLobbyData(user, lobbyId);
             
+            var admin = new Admins
+            {
+                SteamId = user.SteamId,
+                LobbyId = lobbyId,
+                IsTopAdmin = true
+            };
+            
             // Update lobby ID for the user
             if (!await User.GetInstance().UpdateLobbyId(lobbyId))
             {
@@ -70,6 +78,7 @@ public class LobbyService
             {
                 LobbyId = lobbyId,
                 LobbyData = new List<LobbyData> { lobbyData },
+                AdminsList = new List<Admins> {admin},
                 MembersCount = 1
             };
 
@@ -81,6 +90,7 @@ public class LobbyService
                 return;
             }
             
+            User.GetInstance().SetAdminRules(lobby.AdminsList.FirstOrDefault(e => e.SteamId == user.SteamId) is not null);
             SendLobbyEvent(lobby);
         }
         finally
@@ -183,6 +193,9 @@ public class LobbyService
     {
         var lobby = await _databaseService.GetLobbyById(lobbyId);
 
+        var isAdmin = lobby?.AdminsList.FirstOrDefault(e => e.SteamId == User.GetInstance().GetUserInfo().SteamId) is not null;
+        User.GetInstance().SetAdminRules(isAdmin);
+        
         if (lobby is null)
         {
             _errorService.ShowWindow(new ErrorStruct{ErrorMessage = "Cannot find lobbies data to database", ErrorType = ErrorEnum.Error});

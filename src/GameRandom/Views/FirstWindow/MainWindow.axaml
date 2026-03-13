@@ -19,7 +19,7 @@
                                 <Menu>
                                         <MenuItem Header="Lobby System" Command="{Binding OpenLobbyCommand}"></MenuItem>
                                         <MenuItem Header="Rules" Command="{Binding RulesOpen}"></MenuItem>
-                                        <MenuItem Header="Admin Panel" Command="{Binding AdminPanelOpen}"></MenuItem>
+                                        <MenuItem Header="Admin Panel" Command="{Binding AdminPanelOpen}" x:Name="AdminPanel" IsVisible="False"></MenuItem>
                                 </Menu>
                                 <Grid Grid.Column="1" ColumnDefinitions="Auto, Auto" HorizontalAlignment="Center" ColumnSpacing="5"
                                       VerticalAlignment="Center" Margin="0,0,10, 0" x:Name="LobbyImages">

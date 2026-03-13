@@ -2,7 +2,9 @@ using System;
 using System.Linq;
 using GameRandom.DataBaseContexts;
 using System.Threading.Tasks;
+using GameRandom.Events;
 using GameRandom.Scr.DI;
+using GameRandom.Scr.Events;
 using GameRandom.Scr.Service;
 using Microsoft.EntityFrameworkCore;
 using Steamworks;
@@ -26,6 +28,8 @@ public class User
     /// Get the single User instance
     /// </summary>
     public static User GetInstance() => _userInstance.Value;
+
+    public bool IsAdmin = false;
 
     /// <summary>
     /// Initialize user: load from DB or create new
@@ -74,8 +78,9 @@ public class User
         Console.WriteLine("New user added to DB");
 
         var isCreatingUserGameCell = await _databaseService.AddUserGameAsync(_userInfo);
+        
         _isInitialized = isCreatingUserGameCell;
-
+        
         if (!_isInitialized)
             throw new Exception("Failed to initialize user data and user game cell");
     }
@@ -92,6 +97,14 @@ public class User
         bool isUpdating = await _databaseService.UpdateAsync(_userInfo);
 
         return isUpdating;
+    }
+
+    public void SetAdminRules(bool predicate)
+    {
+        IsAdmin = predicate;
+        
+        if (Di.Container.GetInstance<EventBus>() is EventBus eventBus)
+            eventBus.Publish(new AdminRulesUpdating());
     }
 
     /// <summary>
