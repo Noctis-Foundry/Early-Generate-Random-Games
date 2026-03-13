@@ -230,26 +230,7 @@ public class DatabaseService : IDatabaseService
             return null;
         }
     }
-
-    public async Task<TResult?> ExecuteDbOperation<TResult>(Func<DatabaseService, Task<TResult>> operation,
-        string errorMessage, CancellationToken ct = default) where TResult : class
-    {
-        try
-        {
-            return await operation(this);
-        }
-        catch (OperationCanceledException e)
-        {
-            Logger.Error($"Operation failed {e.Message}");
-            return null;
-        }
-        catch (Exception e)
-        {
-            Logger.Error($"Operation failed {e.Message}");
-            return null;
-        }
-    }
-
+    
     public async Task<List<FinishedGames>?> GetFinishedGames(CancellationToken ct = default)
     {
         try
@@ -337,7 +318,7 @@ public class DatabaseService : IDatabaseService
         {
             await using var appDb = new AppDbContext();
             Lobbies? lobby = await appDb.Lobbies
-                .Include(l => l.LobbyData)
+                .Include(l => l.LobbyData).Include(a => a.AdminsList)
                 .FirstOrDefaultAsync(l => l.LobbyId == lobbyId, ct);
             
             return lobby ?? null;
