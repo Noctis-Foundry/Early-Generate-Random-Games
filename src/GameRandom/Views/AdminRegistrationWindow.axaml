@@ -2,8 +2,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:GameRandom.ViewModels.AdminSystem"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="GameRandom.Views.AdminRegistrationWindow"
+        x:DataType="vm:AdminRegistrationViewModel"
         Title="AdminRegistrationWindow">
     
     <Window.Styles>
@@ -11,25 +13,27 @@
     </Window.Styles>
     
     <DockPanel Classes="WindowContainer">
-        <Border Classes="WindowTopContainer" DockPanel.Dock="Top">
-            <SelectableTextBlock Classes="WindowTextBlock" Text="Admin Panel"/>
+        <Border Classes="WindowTopContainer" DockPanel.Dock="Top" MinWidth="300">
+            <Grid ColumnDefinitions="*, Auto">
+                <TextBlock Classes="WindowTextBlock" Text="Admin Panel" FontSize="16"/>
+                <Button Grid.Column="1" Classes="ProfileButtons" Content="Close" Click="CloseAsyncWindow"
+                        CornerRadius="3"
+                        Margin="0,0,35,0"/>
+            </Grid>
+          
         </Border>
         
-        <DataGrid Margin="20" AutoGenerateColumns="False" Classes="AdminDataGrid">
+        <DataGrid Margin="20" AutoGenerateColumns="False" Classes="AdminDataGrid" 
+                  ItemsSource="{Binding Admins}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="NickName" Width="*"/>
-                <DataGridCheckBoxColumn Header="Admin Status" Width="Auto"/>
+                <DataGridTextColumn Header="NickName" Binding="{Binding UserInfo.Nickname}" Width="*"/>
+                <DataGridCheckBoxColumn Header="Admin Status" Binding="{Binding IsAdmin}" Width="Auto"/>
                 <DataGridTemplateColumn Header="Actions" Width="Auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="X" Classes="WindowButton" Padding="10,5"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Remove" Width="Auto">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Button Content="X" Classes="WindowButton" Padding="10,5"/>
+                            <Button Content="{Binding ButtonText}" 
+                                    Classes="WindowButton" Padding="10,5"
+                                    Command="{Binding ButtonCommand}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

@@ -22,6 +22,14 @@ public class AdminPanelViewModel : ViewModelBase, IDisposable
     
     private CancellationTokenSource _cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
     
+    private bool _isCanShow = false;
+
+    public bool IsCanShow
+    {
+        get => _isCanShow;
+        set => SetProperty(ref _isCanShow, value);
+    }
+
     private RelayCommand? _openWithQueue;
 
     public RelayCommand? OpenWithQueue
@@ -33,7 +41,7 @@ public class AdminPanelViewModel : ViewModelBase, IDisposable
     private Dictionary<int, AdminPanelElementData> _gameProgresses = new();
 
     private ObservableCollection<AdminPanelElementData> _gameList;
-
+    
     public ObservableCollection<AdminPanelElementData> GameList
     {
         get => _gameList;

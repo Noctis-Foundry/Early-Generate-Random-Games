@@ -18,14 +18,17 @@
             <ImageBrush Source="avares://GameRandom/Assets/AppBackground.png" Stretch="Fill"></ImageBrush>
         </Grid.Background>
         
-        <Grid ColumnDefinitions="*, Auto" Width="650" Height="50" Margin="0,10,0, 0"
-              HorizontalAlignment="Center">
+        <Grid ColumnDefinitions="*, Auto, Auto" Height="50" Margin="0,10,0, 0"
+              HorizontalAlignment="Center" ColumnSpacing="10">
             <TextBlock Grid.Row="0" 
                        Text="Completed Games Awaiting Confirmation"
                        Classes="RatingTitle" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             
-            <Button Grid.Column="1" Content="Close" HorizontalAlignment="Center" Click="Close"
-                    VerticalAlignment="Center" Classes="CloseButton" Margin="0,0,0,0"></Button>
+            <Button Grid.Column="1" Content="Registration" HorizontalAlignment="Center" Click="ShowRegistration"
+                    VerticalAlignment="Center" Classes="ProfileButtons" Margin="0,0,0,0"></Button>
+            
+            <Button Grid.Column="2" Content="Close" HorizontalAlignment="Center" Click="Close"
+                    VerticalAlignment="Center" Classes="ProfileButtons" Margin="0,0,0,0"></Button>
         </Grid>
         
         <DataGrid Grid.Row="1" Grid.ColumnSpan="2"
