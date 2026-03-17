@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using GameRandom.DataBaseContexts;
@@ -166,12 +167,41 @@ public class DatabaseService : IDatabaseService
 
         return true;
     }
+
+    public async Task<bool> DeleteItemWithPredicate<TEntity>(Expression<Func<TEntity, bool>> predicate, CancellationToken ct)  where TEntity : class
+    {
+        await using var context = new AppDbContext();
+
+        try
+        {
+            var item = await context.Set<TEntity>().FirstOrDefaultAsync(predicate, ct);
+
+            if (item is null) return true;
+            
+            context.Set<TEntity>().Remove(item);
+            await context.SaveChangesAsync(ct);
+            return true;
+        }
+        catch (OperationCanceledException e)
+        {
+            Logger.Error($"Operation failed {e.Message}");
+            return false;
+        }
+        catch (Exception e)
+        {
+            Logger.Error($"Operation failed {e.Message}");
+            return false;
+        }
+
+        return true;
+    }
     
     public async Task<bool> UpdateAsync<TEntity>(TEntity item, CancellationToken ct = default) where TEntity : class
     {
         try
         {
             await using var context = new AppDbContext();
+            
             context.Set<TEntity>().Update(item);
             await context.SaveChangesAsync(ct);
             return true;

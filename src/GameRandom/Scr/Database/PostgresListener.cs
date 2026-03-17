@@ -19,7 +19,8 @@ public class PostgresListener : IDisposable
             { TableEnum.UserGames, null },
             { TableEnum.GameProgress, null },
             { TableEnum.Users, null },
-            { TableEnum.EndGameTable, null }
+            { TableEnum.EndGameTable, null },
+            { TableEnum.AdminTable, null }
         };
 
     public PostgresListener()
@@ -146,6 +147,7 @@ public enum TableEnum
     UserGames = 2,
     Users = 3,
     EndGameTable = 4,
+    AdminTable = 5
 }
 
 public enum OperationsEnum

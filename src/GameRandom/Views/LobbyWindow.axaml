@@ -70,7 +70,7 @@
                 <Grid RowDefinitions="Auto, Auto" HorizontalAlignment="Center" VerticalAlignment="Center" RowSpacing="15">
                     <Border Classes="WindowTextBorder" MinWidth="260" MaxWidth="260"
                             MinHeight="50" MaxHeight="80">
-                        <TextBlock Text="{Binding CurrentLobbyID, Converter='{StaticResource LongToStringConverter}',
+                        <SelectableTextBlock Text="{Binding CurrentLobbyID, Converter='{StaticResource LongToStringConverter}',
                         ConverterParameter='Lobby ID'}" 
                                    Classes="WindowTextBlock" x:Name="LobbyId"/>
                     </Border>
