@@ -11,8 +11,8 @@
         Title="Choose Game">
 
         <Window.Styles>
-                <Style Selector="TextBlock.WindowTextBlock">
-                        <Setter Property="MaxWidth" Value="230"></Setter>
+                <Style Selector="Border.WindowTextBorder">
+                        <Setter Property="MaxWidth" Value="300"></Setter>
                 </Style>
         </Window.Styles>
         
@@ -22,7 +22,7 @@
                         <TextBlock Text="Choose game" Classes="WindowTextBlock"></TextBlock>
                 </Border>
                 
-                <Grid Classes="WindowGrid" RowDefinitions="Auto, Auto, Auto, Auto, Auto" ColumnDefinitions="Auto, Auto">
+                <Grid Classes="WindowGrid" RowDefinitions="Auto, Auto, Auto, Auto, Auto" ColumnDefinitions="Auto, Auto" MaxWidth="300">
 
                         <!-- Game name -->
                         <Border Grid.Row="0" Grid.Column="0" Classes="WindowTextBorder">

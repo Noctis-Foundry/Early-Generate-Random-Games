@@ -65,6 +65,8 @@ public partial class MainWindow : Window
         _lobbyWindow = new LobbyWindow();
         DataContext = new MainWindowViewModel();
         BindingCommand();
+        
+        EnableAdminPanel();
 
         _changeUserControlAction = Navigate;
         

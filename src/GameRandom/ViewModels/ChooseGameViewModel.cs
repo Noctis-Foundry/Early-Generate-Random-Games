@@ -58,7 +58,7 @@ public class ChooseGameViewModel : ViewModelBase, IDisposable
 
         if (Di.Container.GetInstance<DatabaseService>() is DatabaseService service)
         {
-            UserGame? userGame = await service.GetUserGameAsync(User.GetInstance().GetUserInfo());
+            UserGame? userGame = await service.GetUserGameAsync(User.GetInstance().GetUserId());
 
             if (userGame is null)
                 throw new NullReferenceException("User game is not initialize");

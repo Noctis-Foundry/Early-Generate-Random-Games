@@ -13,6 +13,7 @@ using GameRandom.Service;
 using GameRandom.SteamSDK;
 using GameRandom.SteamSDK.Enums;
 using GameRandom.SteamSDK.UserData;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace GameRandom.ViewModels;
 
@@ -51,6 +52,20 @@ public class CurrentGameStatusViewModel : ViewModelBase
         set => SetProperty(ref _imageBitmap, value);
     }
 
+    public CurrentGameStatusViewModel()
+    {
+        if (Di.Container.GetInstance<PostgresListener>() is not PostgresListener postgresListener)
+            throw new NullReferenceException(nameof(PostgresListener));
+        
+        postgresListener.Subscribe(TableEnum.UserGames, structure =>
+        {
+            if (structure.TableCode == (int)TableEnum.UserGames)
+            {
+                Dispatcher.UIThread.InvokeAsync(async () => await LoadInfo());
+            }
+        });
+    }
+
     public async Task LoadInfo()
     {
         Di.Container.ResolveFieldsFromClassInstance(this);
@@ -59,12 +74,12 @@ public class CurrentGameStatusViewModel : ViewModelBase
 
         if (_databaseService is null) throw new NullReferenceException();
 
-        var userGameInfo = await _databaseService.GetUserGameAsync(userInfo, _cts.Token);
+        var userGameInfo = await _databaseService.GetUserGameAsync(userInfo.SteamId, _cts.Token);
 
         if (userGameInfo is not null && userGameInfo.AppId != 0)
         {
             UserGame = userGameInfo;
-            
+
             var gameInfo = await _databaseService.GetFirstOrDefaultAsync<GameProgresses>
                 (e => e.AppId == userGameInfo.AppId, _cts.Token);
 
@@ -73,18 +88,20 @@ public class CurrentGameStatusViewModel : ViewModelBase
                 Console.WriteLine($"Failed to get gameInfo with appID: {userGameInfo.AppId} from database");
                 throw new NullReferenceException();
             }
-            
+
             AppInfo = gameInfo;
 
             _savedHandler = (sender, args) => UpdateDateTimer();
 
             ImageBitmap = SteamService.Instance.GetImageSyncFromBytes(_appInfo.AppHeaderImage);
-            
+
             _timer = new DispatcherTimer();
             _timer.Interval = TimeSpan.FromMilliseconds(1000);
-            _timer.Tick += _savedHandler; 
+            _timer.Tick += _savedHandler;
             _timer.Start();
         }
+        else
+            LoadEmpty();
     }
 
     public async Task FinishingGame()
@@ -99,16 +116,34 @@ public class CurrentGameStatusViewModel : ViewModelBase
         
         var isAdded = await _finishedGameDialogService.ShowWindowAsync(AppInfo);
 
-        if (isAdded && UserGame is not null)
+        if (isAdded)
         {
-            UserGame.AppId = 0;
+            UserGame = await _databaseService.GetUserGameAsync(User.GetInstance().GetUserId(), _cts.Token);
+            
+            if (UserGame is null)
+                throw new NullReferenceException("User game is not initialized");
+            
+            if (UserGame.AppIdList is not null && UserGame.AppIdList.Count > 0)
+            {
+                UserGame.AppId = UserGame.AppIdList[0];
+                UserGame.AppIdList.RemoveAt(0);
+            }
+            else
+                UserGame.AppId = 0;
+            
             var isUpdate = await _databaseService.UpdateAsync(UserGame, _cts.Token);
             
-            if (isUpdate) 
+            if (isUpdate && UserGame.AppId == 0) 
                 ClearingContent();
         }
     }
 
+    private void LoadEmpty()
+    {
+        AppInfo = new GameProgresses();
+        ImageBitmap = AvaloniaService.Instance.CreateBitmapFromPath("Assets/steamAwatarWithNight.jpg");
+    }
+    
     private void UpdateDateTimer()
     {
         if (_appInfo is not null) 
@@ -117,6 +152,8 @@ public class CurrentGameStatusViewModel : ViewModelBase
 
     public void ClearingContent()
     {
+        LoadEmpty();
+        
         _cts?.Cancel();
         _cts?.Dispose();
         _cts = new CancellationTokenSource();
@@ -132,6 +169,5 @@ public class CurrentGameStatusViewModel : ViewModelBase
         _savedHandler = null;
         _databaseService = null;
         UserGame = null;
-        _appInfo = null;
     }
 }
