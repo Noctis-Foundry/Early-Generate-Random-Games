@@ -2,11 +2,13 @@ using System;
 using System.Linq;
 using GameRandom.DataBaseContexts;
 using System.Threading.Tasks;
+using Avalonia.Threading;
 using GameRandom.Events;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Events;
 using GameRandom.Scr.Service;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Steamworks;
 
 namespace GameRandom.SteamSDK.UserData;
@@ -17,6 +19,7 @@ namespace GameRandom.SteamSDK.UserData;
 public class User
 {
     [Inject] private DatabaseService? _databaseService;
+    [Inject] private PostgresListener? _postgresListener;
 
     private static Lazy<User> _userInstance = new (() => new User());
     private bool _isInitialized = false;
@@ -29,19 +32,21 @@ public class User
     /// </summary>
     public static User GetInstance() => _userInstance.Value;
 
-    public bool IsAdmin = false;
+    public bool IsAdmin { get; private set; }= false;
+    public bool IsTopLevelAdmin { get; private set; } = false;
 
     /// <summary>
     /// Initialize user: load from DB or create new
     /// </summary>
     public async Task InitializeUser()
     {
-        Di.Container.ResolveField(out _databaseService);
+        Di.Container.ResolveFieldsFromClassInstance(this);
 
         if (_databaseService is null)
-        {
             throw new NullReferenceException("Database service is null");
-        }
+        
+        if (_postgresListener is null)
+            throw new NullReferenceException("Postgres listener is null");
         
         var userInfo = await _databaseService.GetUserByUlongId(SteamManager.GetSteamIdAsLong());
 
@@ -49,40 +54,29 @@ public class User
         if (userInfo is not null)
         {
             _userInfo = userInfo;
-            _isInitialized = true;
-    
-            var isAddUserGame = await _databaseService.AddUserGameAsync(_userInfo);
+            
+            var isAddUserGame = await _databaseService.TryGetOrCreateUserGame(_userInfo);
             
             if (!isAddUserGame)
-                throw new Exception("Failed to add user game cell");
-    
-            Console.WriteLine($"User already exists in DB. Nickname: {_userInfo.Nickname}");
-            return;
+                throw new Exception("Failed to add user game cell"); ;
         }
-        
-        // Create new user
-        var user = new Users()
+        else 
+            await CreateUser();
+
+        _postgresListener.Subscribe(TableEnum.AdminTable, e =>
         {
-            SteamId = SteamManager.GetSteamIdAsLong(),
-            Nickname = SteamFriends.GetPersonaName(),
-            LobbyId = 0,
-            AvatarURL = SteamFriends.GetLargeFriendAvatar(SteamManager.GetSteamManager().GetSteamId())
-        };
+            Dispatcher.UIThread.InvokeAsync(async () =>
+            {
+                if (e.TableCode != (int)TableEnum.AdminTable)
+                    return;
+                
+                await UpdateAdminRules();
+            });
+        });
 
-        _userInfo = user;
-
-        bool isAdding = await _databaseService.AddItemAsync(_userInfo);
-        if (!isAdding)
-            throw new Exception("Failed to add new user to database");
-
-        Console.WriteLine("New user added to DB");
-
-        var isCreatingUserGameCell = await _databaseService.AddUserGameAsync(_userInfo);
+        await UpdateAdminRules();
         
-        _isInitialized = isCreatingUserGameCell;
-        
-        if (!_isInitialized)
-            throw new Exception("Failed to initialize user data and user game cell");
+        _isInitialized = true;
     }
 
     /// <summary>
@@ -99,16 +93,57 @@ public class User
         return isUpdating;
     }
 
-    public void SetAdminRules(bool predicate)
+    private async Task UpdateAdminRules()
     {
-        IsAdmin = predicate;
+        if (Di.Container.GetInstance<EventBus>() is not EventBus bus)
+            throw new NullReferenceException("Event bus is null");
         
-        if (Di.Container.GetInstance<EventBus>() is EventBus eventBus)
-            eventBus.Publish(new AdminRulesUpdating());
+        var admin = await _databaseService.GetFirstOrDefaultAsync<Admins>(e => e.SteamId == GetUserId());
+
+        if (admin is null)
+        {
+            IsAdmin = false;
+            IsTopLevelAdmin = false;
+        }
+        else
+        {
+            IsAdmin = true;
+            IsTopLevelAdmin = admin.IsTopAdmin;
+        }
+        
+        bus.Publish(new AdminRulesUpdating());
     }
 
+    private async Task CreateUser()
+    {
+        var user = new Users()
+        {
+            SteamId = SteamManager.GetSteamIdAsLong(),
+            Nickname = SteamFriends.GetPersonaName(),
+            LobbyId = 0,
+            AvatarURL = SteamFriends.GetLargeFriendAvatar(SteamManager.GetSteamManager().GetSteamId())
+        };
+
+        _userInfo = user;
+
+        bool isAdding = await _databaseService.AddItemAsync(_userInfo);
+        
+        if (!isAdding)
+            throw new Exception("Failed to add new user to database");
+
+        Console.WriteLine("New user added to DB");
+
+        var isUserGame = await _databaseService.TryGetOrCreateUserGame(_userInfo);
+        
+        if (!isUserGame)
+            throw new Exception("Failed to create user game");
+            
+    }
+    
     /// <summary>
     /// Get current user information
     /// </summary>
     public Users GetUserInfo() => _userInfo;
+    
+    public ulong GetUserId() => _userInfo.SteamId;
 }

@@ -90,7 +90,6 @@ public class LobbyService
                 return;
             }
             
-            User.GetInstance().SetAdminRules(lobby.AdminsList.FirstOrDefault(e => e.SteamId == user.SteamId) is not null);
             SendLobbyEvent(lobby);
         }
         finally
@@ -194,7 +193,6 @@ public class LobbyService
         var lobby = await _databaseService.GetLobbyById(lobbyId);
 
         var isAdmin = lobby?.AdminsList.FirstOrDefault(e => e.SteamId == User.GetInstance().GetUserInfo().SteamId) is not null;
-        User.GetInstance().SetAdminRules(isAdmin);
         
         if (lobby is null)
         {
