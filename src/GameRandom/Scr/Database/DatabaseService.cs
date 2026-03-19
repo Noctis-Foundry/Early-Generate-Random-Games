@@ -68,7 +68,7 @@ public class DatabaseService : IDatabaseService
         return true;
     }
 
-    public async Task<bool> AddUserGameAsync(Users userInfo, CancellationToken ct = default)
+    public async Task<bool> TryGetOrCreateUserGame(Users userInfo, CancellationToken ct = default)
     {
         try
         {
@@ -302,12 +302,12 @@ public class DatabaseService : IDatabaseService
         }
     }
 
-    public async Task<UserGame?> GetUserGameAsync(Users userData, CancellationToken ct = default)
+    public async Task<UserGame?> GetUserGameAsync(ulong steamId, CancellationToken ct = default)
     {
         try
         {
             await using var appDb = new AppDbContext();
-            return await appDb.UserGames.FirstOrDefaultAsync(e => e.UserId == userData.SteamId, ct);
+            return await appDb.UserGames.FirstOrDefaultAsync(e => e.UserId == steamId, ct);
         }
         catch (OperationCanceledException e)
         {
@@ -362,6 +362,52 @@ public class DatabaseService : IDatabaseService
         {
             Logger.Error($"Operation failed {e.Message}");
             return null;
+        }
+    }
+
+    public async Task<TEntity?> GetFromRowId<TEntity>(int rowId, CancellationToken ct = default) where TEntity : class
+    {
+        try
+        {
+            await using var context = new AppDbContext();
+            var item = await context.Set<TEntity>().FindAsync(rowId, ct);
+
+            return item;
+        }
+        catch (OperationCanceledException e)
+        {
+            Logger.Error($"Operation failed {e.Message}");
+            return null;
+        }
+        catch (Exception e)
+        {
+            Logger.Error($"Operation failed {e.Message}");
+            return null;
+        }
+    }
+    
+    public async Task<bool> CheckInAdminStatus(ulong steamId, CancellationToken ct = default)
+    {
+        try
+        {
+            await using var context = new AppDbContext();
+            
+            var admin = await context.Admins.FirstOrDefaultAsync(a => a.SteamId == steamId, ct);
+
+            if (admin is null || !admin.IsTopAdmin)
+                return false;
+
+            return true;
+        }
+        catch (OperationCanceledException e)
+        {
+            Logger.Error($"Operation failed {e.Message}");
+            return false;
+        }
+        catch (Exception e)
+        {
+            Logger.Error($"Operation failed {e.Message}");
+            return false;
         }
     }
 }

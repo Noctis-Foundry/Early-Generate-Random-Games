@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Text.Json;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace GameRandom.DataBaseContexts;
 
@@ -39,6 +42,10 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<FinishedGames>().HasOne(e => e.GameProgresses).WithMany()
             .HasForeignKey(e => e.GameProgressId );
+
+        modelBuilder.Entity<UserGame>().Property(e => e.AppIdList).HasConversion(
+            v => JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
+            v => JsonSerializer.Deserialize<List<int>>(v, (JsonSerializerOptions?)null));
 
         //TODO: Optimization UserGame Table Post/Fetch
         // modelBuilder.Entity<UserGame>().HasOne(e => e.Users).WithMany().HasForeignKey(e => e.UserId);
@@ -86,6 +93,8 @@ public class UserGame
     public int Id { get; set; }
     public ulong UserId { get; set; } // Взятие листа из базы данных UserGame конкретного пользователя
     public int AppId { get; set; }
+    
+    public List<int>? AppIdList { get; set;}
     
     // public Users? Users { get; set; } // Навигационное свойство
     // public GameProgresses? GameProgresses { get; set; } // Навигационное свойство
