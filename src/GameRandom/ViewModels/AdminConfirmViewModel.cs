@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
@@ -107,21 +108,34 @@ public class AdminConfirmViewModel : ViewModelBase
             gameProgress.FinishTime = default;
             gameProgress.IsFinished = false;
             
-            var user = await _databaseService.GetUserGameAsync(User.GetInstance().GetUserInfo(), cancellationToken);
+            var user = await _databaseService.GetUserGameAsync(gameProgress.PlayerId, cancellationToken);
 
             if (user is null)
                 throw new NullReferenceException("Failed to get user game info");
 
-            user.AppId = gameProgress.AppId;
-
-            bool isUpdated = await _databaseService.UpdateAsync(user, cancellationToken);
-            
-            if (isUpdated)
-                isUpdated = await _databaseService.UpdateAsync(gameProgress, cancellationToken);
-
-            if (!isUpdated)
+            if (user.AppId == 0)
+                user.AppId = gameProgress.AppId;
+            else
             {
-                Logger.Error("Failed to update game progress in the table");
+                if (user.AppIdList is null) 
+                    user.AppIdList = new List<int>();
+                
+                user.AppIdList.Add(gameProgress.AppId);
+            }
+
+            bool isUserGameUpdate = await _databaseService.UpdateAsync(user, cancellationToken);
+
+            if (!isUserGameUpdate)
+            {
+                Logger.Error("Failed to update user game");
+                return;
+            }
+            
+            bool isGameProgressUpdate = await _databaseService.UpdateAsync(gameProgress, cancellationToken);
+            
+            if (!isGameProgressUpdate)
+            {
+                Logger.Error("Failed to update game progresses");
                 return;
             }
 

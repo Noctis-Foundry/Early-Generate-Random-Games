@@ -35,6 +35,8 @@ public partial class AdminPanel : MainWindowUserControlAbstract
 
         if (_errorService is null)
             throw new NullReferenceException(nameof(_errorService));
+        
+        //TODO Prostgres listener
     }
 
     public override void Open()
@@ -66,7 +68,7 @@ public partial class AdminPanel : MainWindowUserControlAbstract
             {
                 using var token = new CancellationTokenSource(TimeSpan.FromSeconds(5));
                 var admin = await service.GetFirstOrDefaultAsync<Admins>(
-                    e => e.SteamId == User.GetInstance().GetUserInfo().SteamId, token.Token);
+                    e => e.SteamId == User.GetInstance().GetUserId(), token.Token);
 
                 if (admin is not null && admin.IsTopAdmin && DataContext is AdminPanelViewModel vm)
                     vm.IsCanShow = true;

@@ -18,6 +18,8 @@ public class AdminRegistrationViewModel : ViewModelBase
     [Inject] private DatabaseService? _databaseService;
     [Inject] private PostgresListener? _postgresListener;
     
+    private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+    
     private ObservableCollection<AdminRegistrationData> _admins;
     public ObservableCollection<AdminRegistrationData> Admins
     {
@@ -62,6 +64,9 @@ public class AdminRegistrationViewModel : ViewModelBase
             return;
         }
         
+        if (!User.GetInstance().IsAdmin)
+            return;
+        
         try
         {
             Admins.Clear();
@@ -95,26 +100,32 @@ public class AdminRegistrationViewModel : ViewModelBase
         if (payloadStructure.TableCode != (int)TableEnum.AdminTable)
             return;
         
-        await LoadData();
+        if (User.GetInstance().IsAdmin || User.GetInstance().IsTopLevelAdmin)
+            await LoadData();
     }
 
     private async Task<List<Users>> NotAdminUsers(Lobbies lobbies)
     {
         var users = new List<Users>();
 
-        foreach (var lobby in lobbies.LobbyData)
+        foreach (var lobbyMember in lobbies.LobbyData)
         {
-            var user = await _databaseService.GetUserByUlongId(lobby.UserId);
-            if (user is null) continue;
+            if (lobbyMember.UserId == User.GetInstance().GetUserId())
+                continue;
             
-            if (lobbies.AdminsList.Exists(e => e.SteamId == lobby.UserId))
+            var user = await _databaseService.GetUserByUlongId(lobbyMember.UserId);
+            
+            if (user is null)
+                continue;
+            
+            if (lobbies.AdminsList.Exists(e => e.SteamId == lobbyMember.UserId))
             {
-                var admin = lobbies.AdminsList.Find(e => e.SteamId == lobby.UserId);
+                var admin = lobbies.AdminsList.Find(e => e.SteamId == lobbyMember.UserId);
                 
                 if (admin is null || admin.IsTopAdmin)
                     continue;
                 
-                Admins.Add(new AdminRegistrationData(user, RemoveAdmin, RemoveAdminCommand(user, admin.IsTopAdmin), true));
+                Admins.Add(new AdminRegistrationData(user, RemoveAdmin, RemoveAdminCommand(user), true));
                 
                 continue;
             }
@@ -129,53 +140,60 @@ public class AdminRegistrationViewModel : ViewModelBase
     {
         return new AsyncRelayCommand( async () => 
         {
-            using var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+            if (!IsHaveRules())
+                return;
             
             if (Di.Container.TryGetInstance<DatabaseService>() is DatabaseService databaseService)
             {
-                var lobbies = await databaseService.GetLobbyById(userInfo.LobbyId, cancellationToken.Token);
-
-                if (lobbies is null)
+                try
                 {
-                    Logger.Error("Lobby is not founded");
+                    var lobbies = await databaseService.GetLobbyById(userInfo.LobbyId, _cancellationTokenSource.Token);
+
+                    if (lobbies is null)
+                    {
+                        Logger.Error("Lobby is not founded");
+                        return;
+                    }
+
+                    lobbies.AdminsList.Add(new Admins
+                    {
+                        SteamId = userInfo.SteamId,
+                        LobbyId = userInfo.LobbyId,
+                        IsTopAdmin = false
+                    });
+
+                    Logger.Info($"Add admin command: Lobby hash code = {lobbies.GetHashCode()}");
+
+                    var isUpdating = await databaseService.UpdateAsync(lobbies, _cancellationTokenSource.Token);
+
+                    if (!isUpdating)
+                        Logger.Error("Failed to add admin");
+                    else
+                        Logger.Info("Admin is added");
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e.Message);
                     return;
                 }
-                
-                lobbies.AdminsList.Add(new Admins
-                {
-                    SteamId = userInfo.SteamId,
-                    LobbyId = userInfo.LobbyId,
-                    IsTopAdmin = false
-                });
-
-                Logger.Info($"Add admin command: Lobby hash code = {lobbies.GetHashCode()}");
-                
-                var isUpdating = await databaseService.UpdateAsync(lobbies, cancellationToken.Token);
-
-                if (!isUpdating)
-                    Logger.Error("Failed to add admin");
-                else
-                    Logger.Info("Admin is added");
             }
             else
                 throw new NullReferenceException("Failed resolve database service");
         });
     }
 
-    private AsyncRelayCommand RemoveAdminCommand(Users userInfo, bool isTopAdmin)
+    private AsyncRelayCommand RemoveAdminCommand(Users userInfo)
     {
-        if (isTopAdmin)
-            return null!;
-
         return new AsyncRelayCommand(async () =>
         {
-            using var cancellationToken = new CancellationTokenSource();
+            if (!IsHaveRules())
+                return;
 
             if (Di.Container.TryGetInstance<DatabaseService>() is DatabaseService databaseService)
             {
                 var isRemoving =
                     await databaseService.DeleteItemWithPredicate<Admins>(e => e.SteamId == userInfo.SteamId,
-                        cancellationToken.Token);
+                        _cancellationTokenSource.Token);
 
                 if (!isRemoving)
                 {
@@ -186,6 +204,19 @@ public class AdminRegistrationViewModel : ViewModelBase
             else
                 throw new NullReferenceException("Failed resolve database service");
         });
+    }
+
+    private bool IsHaveRules()
+    {
+        return User.GetInstance().IsAdmin || User.GetInstance().IsTopLevelAdmin;
+    }
+    
+    public override void Dispose()
+    {
+        _cancellationTokenSource.Cancel();
+        _cancellationTokenSource.Dispose();
+        
+        base.Dispose();
     }
 }
 
