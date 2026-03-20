@@ -32,7 +32,10 @@ public partial class AdminConfirmWindow : WindowAbstract
 
         Dispatcher.UIThread.InvokeAsync(async () =>
         {
-            await vm.ConfirmGame();
+            bool isSuccessfully = await vm.ConfirmGame();
+            
+            if (isSuccessfully)
+                Close();
         });
     }
     private void RejectGame(object? sender, RoutedEventArgs e)
@@ -41,7 +44,10 @@ public partial class AdminConfirmWindow : WindowAbstract
 
         Dispatcher.UIThread.InvokeAsync(async () =>
         {
-            await vm.RejectGame();
+            bool isSuccessfully = await vm.RejectGame();
+            
+            if (isSuccessfully)
+                Close();
         });
     }
 }

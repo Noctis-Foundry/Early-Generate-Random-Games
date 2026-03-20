@@ -58,18 +58,18 @@ public class AdminConfirmViewModel : ViewModelBase
         }
     }
 
-    public async Task ConfirmGame(CancellationToken cancellationToken = default)
+    public async Task<bool> ConfirmGame(CancellationToken cancellationToken = default)
     {
         if (!await _semaphoreConfirmSlim.WaitAsync(0))
         {
             Logger.Error("Failed to acquire semaphore");
-            return;
+            return false;
         }
 
         try
         {
             if (FinishedGame is null || FinishedGame.GameProgresses is null || _databaseService is null)
-                return;
+                return false;
 
             FinishedGame.IsImprove = true;
 
@@ -79,6 +79,8 @@ public class AdminConfirmViewModel : ViewModelBase
             {
                 FinishedGame = null;
             }
+
+            return true;
         }
         catch (Exception e)
         {
@@ -88,14 +90,16 @@ public class AdminConfirmViewModel : ViewModelBase
         {
             _semaphoreConfirmSlim.Release();
         }
+
+        return false;
     }
 
-    public async Task RejectGame(CancellationToken cancellationToken = default)
+    public async Task<bool> RejectGame(CancellationToken cancellationToken = default)
     {
         if (!await _semaphoreRejectSlim.WaitAsync(0))
         {
             Logger.Error("Failed to acquire semaphore");
-            return;
+            return false;
         }
 
         try
@@ -103,7 +107,7 @@ public class AdminConfirmViewModel : ViewModelBase
             var gameProgress = FinishedGame?.GameProgresses;
 
             if (gameProgress is null || FinishedGame is null || _databaseService is null)
-                return;
+                return false;
 
             gameProgress.FinishTime = default;
             gameProgress.IsFinished = false;
@@ -128,7 +132,7 @@ public class AdminConfirmViewModel : ViewModelBase
             if (!isUserGameUpdate)
             {
                 Logger.Error("Failed to update user game");
-                return;
+                return false;
             }
             
             bool isGameProgressUpdate = await _databaseService.UpdateAsync(gameProgress, cancellationToken);
@@ -136,7 +140,7 @@ public class AdminConfirmViewModel : ViewModelBase
             if (!isGameProgressUpdate)
             {
                 Logger.Error("Failed to update game progresses");
-                return;
+                return false;
             }
 
             bool isRemoved = await _databaseService.DeleteItemAsync(FinishedGame);
@@ -145,6 +149,8 @@ public class AdminConfirmViewModel : ViewModelBase
             {
                 FinishedGame = null;
             }
+
+            return true;
         }
         catch (Exception e)
         {
@@ -154,5 +160,7 @@ public class AdminConfirmViewModel : ViewModelBase
         {
             _semaphoreRejectSlim.Release();
         }
+
+        return false;
     }
 }

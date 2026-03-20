@@ -8,9 +8,12 @@ using System.Windows.Input;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using GameRandom.DataBaseContexts;
+using GameRandom.Events;
 using GameRandom.Scr.DI;
+using GameRandom.Scr.Events;
 using GameRandom.Scr.Service;
 using GameRandom.SteamSDK;
+using GameRandom.SteamSDK.UserData;
 
 namespace GameRandom.ViewModels;
 
@@ -19,6 +22,7 @@ public class AdminPanelViewModel : ViewModelBase, IDisposable
     [Inject] private readonly DatabaseService? _databaseService = null!;
     [Inject] private readonly AdminConfirmService? _confirmEndGameService = null!;
     [Inject] private readonly PostgresListener? _postgresListener = null!;
+    [Inject] private readonly EventBus? _eventBus = null!;
     
     private CancellationTokenSource _cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
     
@@ -38,8 +42,6 @@ public class AdminPanelViewModel : ViewModelBase, IDisposable
         set => SetProperty(ref _openWithQueue, value);
     }
 
-    private Dictionary<int, AdminPanelElementData> _gameProgresses = new();
-
     private ObservableCollection<AdminPanelElementData> _gameList;
     
     public ObservableCollection<AdminPanelElementData> GameList
@@ -48,125 +50,128 @@ public class AdminPanelViewModel : ViewModelBase, IDisposable
         set => SetProperty(ref _gameList, value);
     }
 
-    private bool _isInitialized = false;
+    private SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
+
+    private Action<PayloadStructure>? _loadAction;
+    private Action<AdminRulesUpdating>? _updateRules;
 
     public AdminPanelViewModel()
     {
         Di.Container.ResolveFieldsFromClassInstance(this);
 
-        if (_databaseService is null || _confirmEndGameService is null || _postgresListener is null) 
-            throw new NullReferenceException("Failed inject instances");
+        if (_databaseService is null || _confirmEndGameService is null || _postgresListener is null
+            || _eventBus is null) 
+            throw new NullReferenceException("Failed inject instances to admin panel view model");
+
+        _loadAction += p =>
+        {
+            Dispatcher.UIThread.InvokeAsync(async () =>
+            {
+                if (p.TableCode != (int)TableEnum.EndGameTable)
+                    return;
+
+                await LoadGameProgresses();
+            });
+        };
+        
+        _updateRules += _ => CheckIsAdminRules();
         
         _postgresListener.Subscribe(TableEnum.EndGameTable, p =>
         {
-            Dispatcher.UIThread.InvokeAsync(async () => await UpdateData(p));
+           _loadAction.Invoke(p);
         });
+        
+        _eventBus.Subscribe<AdminRulesUpdating>(_updateRules);
     }
     public async Task LoadGameProgresses()
     {
-        if (_isInitialized) return;
-        
-        var gameList = await _databaseService.GetFinishedGames(_cts.Token);
-
-        if (gameList is null)
+        if (!await _semaphoreSlim.WaitAsync(0))
         {
-            Logger.Error("Failed to load game progresses from database");
+            Logger.Warning("Threading is not empty");
             return;
         }
-        
-        OpenWithQueue = new RelayCommand( async () =>
-        {
-            await _confirmEndGameService.ShowWindowAsync(gameList);
-        });
-        
-        GameList = new ObservableCollection<AdminPanelElementData>();
-        
-        foreach (var game in gameList)
-        {
-            if (game.IsImprove)
-                continue;
-            
-            var localGame = game;
-            AsyncRelayCommand openConfirmGameWindow = new AsyncRelayCommand ( async () =>
-            {
-                Logger.Debug($"Opening confirm window for game with id");
 
-                if (Di.Container.GetInstance<AdminConfirmService>() is AdminConfirmService dialogService)
+        try
+        {
+            var gameList = await _databaseService.GetFinishedGames(_cts.Token);
+
+            if (gameList is null)
+            {
+                Logger.Error("Failed to load game progresses from database");
+                return;
+            }
+
+            OpenWithQueue = new RelayCommand(async () => { await _confirmEndGameService.ShowWindowAsync(gameList); });
+
+            GameList = new ObservableCollection<AdminPanelElementData>();
+
+            foreach (var game in gameList)
+            {
+                if (game.IsImprove)
+                    continue;
+
+                var localGame = game;
+                AsyncRelayCommand openConfirmGameWindow = new AsyncRelayCommand(async () =>
                 {
-                    dialogService.ShowWindow(localGame);
-                }
-            });
+                    Logger.Debug($"Opening confirm window for game with id");
 
-            if (game.GameProgresses is null || game.GameProgresses.PlayerId == 0)
-                throw new NullReferenceException("Failed to get data from database");
+                    if (Di.Container.GetInstance<AdminConfirmService>() is AdminConfirmService dialogService)
+                    {
+                        dialogService.ShowWindow(localGame);
+                    }
+                });
 
-            var user = await _databaseService.GetUserByUlongId(game.GameProgresses.PlayerId, _cts.Token);
-            
-            if (user is null) continue;
+                if (game.GameProgresses is null || game.GameProgresses.PlayerId == 0)
+                    throw new NullReferenceException("Failed to get data from database");
 
-            var adminPanelData = new AdminPanelElementData(game, openConfirmGameWindow, user.Nickname);
+                var user = await _databaseService.GetUserByUlongId(game.GameProgresses.PlayerId, _cts.Token);
 
-            if (_gameProgresses.TryAdd(game.GameProgressId, adminPanelData))
-            {
+                if (user is null) continue;
+
+                var adminPanelData = new AdminPanelElementData(game, openConfirmGameWindow, user.Nickname);
+
                 GameList.Add(adminPanelData);
             }
         }
-
-        _isInitialized = true;
+        catch (Exception e)
+        {
+            Logger.Error(e.Message);
+            throw;
+        }
+        finally
+        {
+            _semaphoreSlim.Release();
+        }
     }
-    public async Task UpdateData(PayloadStructure payloadStructure)
+
+    private void CheckIsAdminRules()
     {
-        if (payloadStructure.TableCode != (int)TableEnum.EndGameTable || payloadStructure.OpCode == (int)OperationsEnum.Delete || _databaseService is null)
+        if (!User.GetInstance().IsTopLevelAdmin)
+        {
+            IsCanShow = false;
             return;
-        
-        using var ct = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-        
-        var finishGame = await _databaseService.GetFinishedGamesFromId(payloadStructure.RowId, ct.Token);
-
-        if (finishGame is null || finishGame.GameProgresses is null) return;
-
-        if (_gameProgresses.TryGetValue(finishGame.GameProgressId, out var data))
-        {
-            data.SetGameInfo(finishGame);
-            int index = GameList.IndexOf(GameList.First(x =>
-                x.GameInfo.GameProgressId == data.GameInfo.GameProgressId));
-            
-            GameList[index] = data;
         }
-        
-        AsyncRelayCommand  relayCommand = new AsyncRelayCommand(async () =>
-        {
-            Logger.Debug($"Opening confirm window for game with id");
-            await _confirmEndGameService.ShowWindowAsync(finishGame);
-        });
-        
-        var user = await _databaseService.GetUserByUlongId(finishGame.GameProgresses.PlayerId, ct.Token);
 
-        if (user is null) throw new Exception($"Failed to find user with {finishGame.GameProgresses.PlayerId}");
-        
-        var progress = new AdminPanelElementData(finishGame, relayCommand, user.Nickname);
-        
-        if (_gameProgresses.TryAdd(finishGame.GameProgressId, progress))
-        {
-            GameList.Add(progress);
-            
-            if (_confirmEndGameService is not null && _confirmEndGameService.IsOpen)
-            {
-                _confirmEndGameService.AddNextDialog(finishGame);
-            }
-        }
+        IsCanShow = true;
     }
     
-    public void Dispose()
+    public override void Dispose()
     {
         _cts.Cancel();
         _cts.Dispose();
         _cts = new CancellationTokenSource();
         
-        _gameProgresses.Clear();
         _openWithQueue = null;
         OpenWithQueue = null;
-        _isInitialized = false;
+        
+        if (_updateRules is not null) 
+            _eventBus?.Unsubscribe<AdminRulesUpdating>(_updateRules);
+        
+        if (_loadAction is not null) 
+            _postgresListener?.Unsubscribe(TableEnum.EndGameTable, _loadAction);
+
+        _updateRules = null;
+        _loadAction = null;
     }
 }
 
