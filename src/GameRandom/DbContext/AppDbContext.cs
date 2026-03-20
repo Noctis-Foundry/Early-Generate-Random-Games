@@ -33,6 +33,8 @@ public class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<UserGame>().HasIndex(u => u.UserId).IsUnique();
+
+        modelBuilder.Entity<FinishedGames>().HasIndex(f => f.GameProgressId).IsUnique();
         
         modelBuilder.Entity<Lobbies>().HasMany(u => u.LobbyData).WithOne().HasPrincipalKey(e => e.LobbyId)
             .HasForeignKey(e => e.LobbyId);
