@@ -22,22 +22,24 @@ public class CurrentGameStatusViewModel : ViewModelBase
     [Inject] private DatabaseService? _databaseService = null!;
     [Inject] private FinishedGameDialogService? _finishedGameDialogService = null!;
     [Inject] private ErrorService? _errorService = null!;
-    
+
     private CancellationTokenSource _cts = new CancellationTokenSource();
 
     private TimeSpan _currentTime;
+
     public TimeSpan CurrentTime
     {
         get => _currentTime;
         set => SetProperty(ref _currentTime, value);
     }
-    
+
     private DispatcherTimer? _timer;
 
     private EventHandler? _savedHandler;
     public UserGame? UserGame { get; private set; }
-    
+
     private GameProgresses? _appInfo;
+
     public GameProgresses? AppInfo
     {
         get => _appInfo;
@@ -52,11 +54,13 @@ public class CurrentGameStatusViewModel : ViewModelBase
         set => SetProperty(ref _imageBitmap, value);
     }
 
+    private bool _isFinished = false;
+
     public CurrentGameStatusViewModel()
     {
         if (Di.Container.GetInstance<PostgresListener>() is not PostgresListener postgresListener)
             throw new NullReferenceException(nameof(PostgresListener));
-        
+
         postgresListener.Subscribe(TableEnum.UserGames, structure =>
         {
             if (structure.TableCode == (int)TableEnum.UserGames)
@@ -69,7 +73,7 @@ public class CurrentGameStatusViewModel : ViewModelBase
     public async Task LoadInfo()
     {
         Di.Container.ResolveFieldsFromClassInstance(this);
-        
+
         var userInfo = User.GetInstance().GetUserInfo();
 
         if (_databaseService is null) throw new NullReferenceException();
@@ -108,21 +112,34 @@ public class CurrentGameStatusViewModel : ViewModelBase
     {
         if (_finishedGameDialogService is null || _errorService is null) throw new NullReferenceException();
 
-        if (AppInfo is null)
+        if (_isFinished)
         {
-            _errorService.ShowWindow(new ErrorStruct{ErrorMessage = "Failed to finish game, your game is Empty"});
+            Logger.Warning("Finished game is processing");
             return;
         }
-        
-        var isAdded = await _finishedGameDialogService.ShowWindowAsync(AppInfo);
 
-        if (isAdded)
+        if (AppInfo is null)
         {
+            _errorService.ShowWindow(new ErrorStruct { ErrorMessage = "Failed to finish game, your game is Empty" });
+            return;
+        }
+
+        _isFinished = true;
+
+        try
+        {
+            var isAdded = await _finishedGameDialogService.ShowWindowAsync(AppInfo);
+
+            Logger.Info($"Returned bool with {isAdded} value");
+
+            if (!isAdded)
+                return;
+
             UserGame = await _databaseService.GetUserGameAsync(User.GetInstance().GetUserId(), _cts.Token);
-            
+
             if (UserGame is null)
                 throw new NullReferenceException("User game is not initialized");
-            
+
             if (UserGame.AppIdList is not null && UserGame.AppIdList.Count > 0)
             {
                 UserGame.AppId = UserGame.AppIdList[0];
@@ -130,11 +147,20 @@ public class CurrentGameStatusViewModel : ViewModelBase
             }
             else
                 UserGame.AppId = 0;
-            
+
             var isUpdate = await _databaseService.UpdateAsync(UserGame, _cts.Token);
-            
-            if (isUpdate && UserGame.AppId == 0) 
+
+            if (isUpdate && UserGame.AppId == 0)
                 ClearingContent();
+        }
+        catch (Exception e)
+        {
+            Logger.Warning("Failed to finish game: " + e.Message);
+            return;
+        }
+        finally
+        {
+            _isFinished = false;
         }
     }
 
@@ -143,26 +169,26 @@ public class CurrentGameStatusViewModel : ViewModelBase
         AppInfo = new GameProgresses();
         ImageBitmap = AvaloniaService.Instance.CreateBitmapFromPath("Assets/steamAwatarWithNight.jpg");
     }
-    
+
     private void UpdateDateTimer()
     {
-        if (_appInfo is not null) 
+        if (_appInfo is not null)
             CurrentTime = _appInfo.EndTime - DateTime.Now;
     }
 
     public void ClearingContent()
     {
         LoadEmpty();
-        
+
         _cts?.Cancel();
         _cts?.Dispose();
         _cts = new CancellationTokenSource();
-        
+
         if (_timer != null)
         {
             _timer.Stop();
-            
-            if (_savedHandler is not null) 
+
+            if (_savedHandler is not null)
                 _timer.Tick -= _savedHandler;
         }
 

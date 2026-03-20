@@ -65,6 +65,15 @@ public class ConfirmFinishGameViewModel : ViewModelBase
         GameProgress.Comment = Comment;
         GameProgress.FinishTime = DateTime.UtcNow;
 
+        var game = await _databaseService.GetFinishedGamesFromId(GameProgress.Id);
+
+        if (game is not null)
+        {
+            _errorService?.ShowWindow(new ErrorStruct{ErrorMessage = "This app with game id is finished, skipping game"});
+            IsAdded = true;
+            return true;
+        }
+        
         IsAdded = await _databaseService.AddItemAsync(finishedGame);
 
         if (IsAdded)
