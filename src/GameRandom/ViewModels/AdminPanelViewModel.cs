@@ -75,11 +75,8 @@ public class AdminPanelViewModel : ViewModelBase, IDisposable
         };
         
         _updateRules += _ => CheckIsAdminRules();
-        
-        _postgresListener.Subscribe(TableEnum.EndGameTable, p =>
-        {
-           _loadAction.Invoke(p);
-        });
+
+        _postgresListener.Subscribe(TableEnum.EndGameTable, _loadAction);
         
         _eventBus.Subscribe<AdminRulesUpdating>(_updateRules);
     }
