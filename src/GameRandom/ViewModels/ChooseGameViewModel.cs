@@ -11,7 +11,7 @@ using GameRandom.SteamSDK;
 using GameRandom.SteamSDK.Enums;
 using GameRandom.SteamSDK.UserData;
 
-namespace GameRandom.ViewModels;
+namespace GameRandom.ViewModels.AdminSystem;
 
 public class ChooseGameViewModel : ViewModelBase, IDisposable
 {

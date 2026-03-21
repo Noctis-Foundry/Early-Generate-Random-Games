@@ -11,7 +11,7 @@ using GameRandom.SteamSDK.Enums;
 using GameRandom.SteamSDK.SteamsContexts;
 using GameRandom.SteamSDK.UserData;
 
-namespace GameRandom.ViewModels;
+namespace GameRandom.ViewModels.AdminSystem;
 
 /// <summary>
 /// ViewModel for the main application window. Manages lobby and challenge rules.

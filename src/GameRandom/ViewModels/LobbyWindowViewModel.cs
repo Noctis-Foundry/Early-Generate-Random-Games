@@ -4,7 +4,7 @@ using GameRandom.Scr.DI;
 using GameRandom.Scr.Events;
 using GameRandom.SteamSDK.UserData;
 
-namespace GameRandom.ViewModels;
+namespace GameRandom.ViewModels.AdminSystem;
 
 public class LobbyWindowViewModel : ViewModelBase
 {

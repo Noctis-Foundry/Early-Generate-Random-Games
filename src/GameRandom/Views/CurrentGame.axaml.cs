@@ -5,7 +5,7 @@ using Avalonia.Threading;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Service;
 using GameRandom.SteamSDK;
-using GameRandom.ViewModels;
+using GameRandom.ViewModels.AdminSystem;
 
 namespace GameRandom.Views;
 

@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
-using Avalonia.Interactivity;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using GameRandom.DataBaseContexts;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Service;
+using GameRandom.SteamSDK;
+using GameRandom.SteamSDK.Enums;
 using GameRandom.SteamSDK.UserData;
 
 namespace GameRandom.ViewModels.AdminSystem;
@@ -17,18 +18,21 @@ public class AdminRegistrationViewModel : ViewModelBase
 {
     [Inject] private DatabaseService? _databaseService;
     [Inject] private PostgresListener? _postgresListener;
-    
-    private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(10));
-    
+
+    private CancellationTokenSource _cancellationTokenSource = new(TimeSpan.FromSeconds(5));
+
     private ObservableCollection<AdminRegistrationData> _admins;
+
     public ObservableCollection<AdminRegistrationData> Admins
     {
         get => _admins;
         set => SetProperty(ref _admins, value);
     }
-    
+
     private SemaphoreSlim _semaphoreSlim = new(1, 1);
-    
+    private SemaphoreSlim _isActionSemaphore = new(1, 1);
+    private Action<PayloadStructure> _loadAdminTable;
+
     private const string AddAdmin = "Add admin";
     private const string RemoveAdmin = "Remove admin";
 
@@ -36,26 +40,37 @@ public class AdminRegistrationViewModel : ViewModelBase
 
     public AdminRegistrationViewModel()
     {
+        _admins = new ObservableCollection<AdminRegistrationData>();
         Admins = new ObservableCollection<AdminRegistrationData>();
-        
+
         Di.Container.ResolveFieldsFromClassInstance(this);
 
         if (_databaseService == null)
             throw new NullReferenceException(nameof(_databaseService));
         if (_postgresListener == null)
             throw new NullReferenceException(nameof(_postgresListener));
-        
+
+        InitializeListeners();
+
         Dispatcher.UIThread.InvokeAsync(async () => await LoadData());
-        
-        _postgresListener.Subscribe(TableEnum.AdminTable, e =>
+    }
+
+    private void InitializeListeners()
+    {
+        _loadAdminTable += e =>
         {
             Dispatcher.UIThread.InvokeAsync(async () =>
             {
-                await UpdateData(e);
+                if (e.TableCode != (int)TableEnum.AdminTable)
+                    return;
+
+                await UpdateData();
             });
-        });
+        };
+
+        _postgresListener?.Subscribe(TableEnum.AdminTable, _loadAdminTable);
     }
-    
+
     private async Task LoadData()
     {
         if (!await _semaphoreSlim.WaitAsync(0))
@@ -63,10 +78,10 @@ public class AdminRegistrationViewModel : ViewModelBase
             Logger.Info("Admin is loading");
             return;
         }
-        
-        if (!User.GetInstance().IsAdmin)
+
+        if (!User.GetInstance().IsTopLevelAdmin())
             return;
-        
+
         try
         {
             Admins.Clear();
@@ -78,7 +93,7 @@ public class AdminRegistrationViewModel : ViewModelBase
             _currentLobby = await _databaseService.GetLobbyById(userInfo.LobbyId);
 
             if (_currentLobby == null)
-                throw new Exception("Lobby not found");
+                throw new Exception("Lobby is not found");
 
             foreach (var user in await NotAdminUsers(_currentLobby))
             {
@@ -95,12 +110,9 @@ public class AdminRegistrationViewModel : ViewModelBase
         }
     }
 
-    private async Task UpdateData(PayloadStructure payloadStructure)
+    private async Task UpdateData()
     {
-        if (payloadStructure.TableCode != (int)TableEnum.AdminTable)
-            return;
-        
-        if (User.GetInstance().IsAdmin || User.GetInstance().IsTopLevelAdmin)
+        if (User.GetInstance().IsTopLevelAdmin())
             await LoadData();
     }
 
@@ -112,24 +124,24 @@ public class AdminRegistrationViewModel : ViewModelBase
         {
             if (lobbyMember.UserId == User.GetInstance().GetUserId())
                 continue;
-            
+
             var user = await _databaseService.GetUserByUlongId(lobbyMember.UserId);
-            
+
             if (user is null)
                 continue;
-            
+
             if (lobbies.AdminsList.Exists(e => e.SteamId == lobbyMember.UserId))
             {
                 var admin = lobbies.AdminsList.Find(e => e.SteamId == lobbyMember.UserId);
-                
+
                 if (admin is null || admin.IsTopAdmin)
                     continue;
-                
+
                 Admins.Add(new AdminRegistrationData(user, RemoveAdmin, RemoveAdminCommand(user), true));
-                
+
                 continue;
             }
-            
+
             users.Add(user);
         }
 
@@ -138,14 +150,20 @@ public class AdminRegistrationViewModel : ViewModelBase
 
     private AsyncRelayCommand AddAdminCommand(Users userInfo)
     {
-        return new AsyncRelayCommand( async () => 
+        return new AsyncRelayCommand(async () =>
         {
-            if (!IsHaveRules())
-                return;
-            
-            if (Di.Container.TryGetInstance<DatabaseService>() is DatabaseService databaseService)
+            if (!await _isActionSemaphore.WaitAsync(0))
             {
-                try
+                ShowError("Wait for the previous command to complete");
+                return;
+            }
+
+            try
+            {
+                if (!User.GetInstance().IsTopLevelAdmin())
+                    return;
+
+                if (Di.Container.TryGetInstance<DatabaseService>() is DatabaseService databaseService)
                 {
                     var lobbies = await databaseService.GetLobbyById(userInfo.LobbyId, _cancellationTokenSource.Token);
 
@@ -162,8 +180,6 @@ public class AdminRegistrationViewModel : ViewModelBase
                         IsTopAdmin = false
                     });
 
-                    Logger.Info($"Add admin command: Lobby hash code = {lobbies.GetHashCode()}");
-
                     var isUpdating = await databaseService.UpdateAsync(lobbies, _cancellationTokenSource.Token);
 
                     if (!isUpdating)
@@ -171,14 +187,18 @@ public class AdminRegistrationViewModel : ViewModelBase
                     else
                         Logger.Info("Admin is added");
                 }
-                catch (Exception e)
-                {
-                    Logger.Error(e.Message);
-                    return;
-                }
+                else
+                    throw new NullReferenceException("Failed resolve database service");
             }
-            else
-                throw new NullReferenceException("Failed resolve database service");
+            catch (Exception e)
+            {
+                Logger.Error(e.Message);
+                throw;
+            }
+            finally
+            {
+                _isActionSemaphore.Release();
+            }
         });
     }
 
@@ -186,37 +206,64 @@ public class AdminRegistrationViewModel : ViewModelBase
     {
         return new AsyncRelayCommand(async () =>
         {
-            if (!IsHaveRules())
-                return;
-
-            if (Di.Container.TryGetInstance<DatabaseService>() is DatabaseService databaseService)
+            if (!await _isActionSemaphore.WaitAsync(0))
             {
-                var isRemoving =
-                    await databaseService.DeleteItemWithPredicate<Admins>(e => e.SteamId == userInfo.SteamId,
-                        _cancellationTokenSource.Token);
-
-                if (!isRemoving)
-                {
-                    Logger.Error("Failed to remove admin");
-                    return;
-                }
+                ShowError("Wait for the previous command to complete");
+                return;
             }
-            else
-                throw new NullReferenceException("Failed resolve database service");
+
+            try
+            {
+                if (!User.GetInstance().IsTopLevelAdmin())
+                    return;
+
+                if (Di.Container.TryGetInstance<DatabaseService>() is DatabaseService databaseService)
+                {
+                    var isRemoving =
+                        await databaseService.DeleteItemWithPredicate<Admins>(e => e.SteamId == userInfo.SteamId,
+                            _cancellationTokenSource.Token);
+
+                    if (!isRemoving)
+                    {
+                        Logger.Error("Failed to remove admin");
+                    }
+                }
+                else
+                    throw new NullReferenceException("Failed resolve database service");
+            }
+            catch (Exception e)
+            {
+                Logger.Debug(e.Message);
+            }
+            finally
+            {
+                _isActionSemaphore.Release();
+            }
         });
     }
 
-    private bool IsHaveRules()
+    private void ShowError(string message)
     {
-        return User.GetInstance().IsAdmin || User.GetInstance().IsTopLevelAdmin;
+        if (Di.Container.GetInstance<ErrorService>() is not ErrorService errorService)
+            throw new NullReferenceException(nameof(ErrorService));
+
+        errorService.ShowWindow(new ErrorStruct { ErrorMessage = message, ErrorType = ErrorEnum.Error });
     }
-    
+
     public override void Dispose()
     {
         _cancellationTokenSource.Cancel();
         _cancellationTokenSource.Dispose();
-        
-        base.Dispose();
+
+        _semaphoreSlim.Release();
+
+        _databaseService = null;
+
+        _postgresListener?.Unsubscribe(TableEnum.AdminTable, _loadAdminTable);
+        _postgresListener = null;
+
+        _admins.Clear();
+        Admins.Clear();
     }
 }
 
@@ -225,6 +272,6 @@ public class AdminRegistrationData(Users userInfo, string buttonText, AsyncRelay
     public Users UserInfo { get; private set; } = userInfo;
     public string ButtonText { get; private set; } = buttonText;
     public AsyncRelayCommand ButtonCommand { get; private set; } = buttonCommand;
-    
+
     public bool IsAdmin { get; private set; } = isAdmin;
 }

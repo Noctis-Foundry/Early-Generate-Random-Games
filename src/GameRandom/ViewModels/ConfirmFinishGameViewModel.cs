@@ -11,7 +11,7 @@ using GameRandom.Service;
 using GameRandom.SteamSDK;
 using GameRandom.SteamSDK.Enums;
 
-namespace GameRandom.ViewModels;
+namespace GameRandom.ViewModels.AdminSystem;
 
 public class ConfirmFinishGameViewModel : ViewModelBase
 {

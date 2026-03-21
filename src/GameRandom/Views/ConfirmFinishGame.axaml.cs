@@ -9,7 +9,7 @@ using Avalonia.Media.Imaging;
 using GameRandom.DataBaseContexts;
 using GameRandom.Scr.DI;
 using GameRandom.SteamSDK;
-using GameRandom.ViewModels;
+using GameRandom.ViewModels.AdminSystem;
 using Logger = GameRandom.Scr.Service.Logger;
 
 namespace GameRandom.Views;

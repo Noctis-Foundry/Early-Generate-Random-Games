@@ -410,4 +410,27 @@ public class DatabaseService : IDatabaseService
             return false;
         }
     }
+    
+    public async Task<bool> TransitionRejectGame(FinishedGames finishedGames, GameProgresses gameProgresses, UserGame userGame, CancellationToken ct = default)
+    {
+        await using var db = new AppDbContext();
+        await using var transition = await db.Database.BeginTransactionAsync(ct);
+        
+        try
+        {
+            db.UserGames.Update(userGame);
+            db.GameProgresses.Update(gameProgresses);
+            db.FinishedGames.Remove(finishedGames);
+            
+            await db.SaveChangesAsync(ct);
+            await transition.CommitAsync(ct);
+
+            return true;
+        }
+        catch (Exception e)
+        {
+            await transition.RollbackAsync(ct);
+            throw;
+        }
+    }
 }

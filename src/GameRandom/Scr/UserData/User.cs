@@ -32,8 +32,8 @@ public class User
     /// </summary>
     public static User GetInstance() => _userInstance.Value;
 
-    public bool IsAdmin { get; private set; }= false;
-    public bool IsTopLevelAdmin { get; private set; } = false;
+    private bool _isAdmin = false;
+    private bool _isTopLevelAdmin = false;
 
     /// <summary>
     /// Initialize user: load from DB or create new
@@ -102,13 +102,13 @@ public class User
 
         if (admin is null)
         {
-            IsAdmin = false;
-            IsTopLevelAdmin = false;
+            _isAdmin = false;
+            _isTopLevelAdmin = false;
         }
         else
         {
-            IsAdmin = true;
-            IsTopLevelAdmin = admin.IsTopAdmin;
+            _isAdmin = true;
+            _isTopLevelAdmin = admin.IsTopAdmin;
         }
         
         bus.Publish(new AdminRulesUpdating());
@@ -146,4 +146,8 @@ public class User
     public Users GetUserInfo() => _userInfo;
     
     public ulong GetUserId() => _userInfo.SteamId;
+    
+    public bool IsAdmin() => _isAdmin;
+
+    public bool IsTopLevelAdmin() => _isAdmin && _isTopLevelAdmin;
 }

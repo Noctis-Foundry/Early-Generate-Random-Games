@@ -9,7 +9,7 @@ using GameRandom.Scr.DI;
 using GameRandom.Scr.Service;
 using GameRandom.SteamSDK;
 
-namespace GameRandom.ViewModels;
+namespace GameRandom.ViewModels.AdminSystem;
 
 public class StatisticViewModel : ViewModelBase, IDisposable
 {

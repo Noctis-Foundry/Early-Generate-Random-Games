@@ -2,7 +2,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using GameRandom.Scr.Service;
 
-namespace GameRandom.ViewModels;
+namespace GameRandom.ViewModels.AdminSystem;
 
 public class PostgresListenerViewModel<TCollectionType> : ViewModelBase, IPostgresListener
 {

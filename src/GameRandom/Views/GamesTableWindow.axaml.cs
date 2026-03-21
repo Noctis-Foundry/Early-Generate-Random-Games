@@ -6,7 +6,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using GameRandom.SteamSDK;
 using GameRandom.SteamSDK.UserData;
-using GameRandom.ViewModels;
+using GameRandom.ViewModels.AdminSystem;
 
 namespace GameRandom.Views;
 

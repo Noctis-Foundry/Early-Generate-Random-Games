@@ -4,7 +4,7 @@ using Avalonia.Interactivity;
 using Avalonia.Threading;
 using GameRandom.Service;
 using GameRandom.SteamSDK;
-using GameRandom.ViewModels;
+using GameRandom.ViewModels.AdminSystem;
 using Steamworks;
 
 namespace GameRandom.Views;

@@ -7,7 +7,7 @@ using GameRandom.DataBaseContexts;
 using GameRandom.Scr.Service;
 using GameRandom.SteamSDK.UserData;
 
-namespace GameRandom.ViewModels;
+namespace GameRandom.ViewModels.AdminSystem;
 
 /// <summary>
 /// ViewModel for managing game progress table data with lobby-based filtering.

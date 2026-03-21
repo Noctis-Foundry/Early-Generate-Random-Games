@@ -38,7 +38,7 @@ public partial class AdminRegistrationWindow : WindowAbstract
 
     private void CheckAdminStatus()
     {
-        if (!User.GetInstance().IsAdmin)
+        if (!User.GetInstance().IsTopLevelAdmin())
         {
             if (DataContext is AdminRegistrationViewModel vm)
                 vm.Dispose();

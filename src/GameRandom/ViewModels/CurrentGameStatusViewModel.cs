@@ -15,7 +15,7 @@ using GameRandom.SteamSDK.Enums;
 using GameRandom.SteamSDK.UserData;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
-namespace GameRandom.ViewModels;
+namespace GameRandom.ViewModels.AdminSystem;
 
 public class CurrentGameStatusViewModel : ViewModelBase
 {

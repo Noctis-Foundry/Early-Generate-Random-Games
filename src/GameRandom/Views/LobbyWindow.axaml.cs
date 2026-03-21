@@ -9,7 +9,7 @@ using GameRandom.Scr.Service;
 using GameRandom.SteamSDK;
 using GameRandom.SteamSDK.Enums;
 using GameRandom.SteamSDK.LobbySystem;
-using GameRandom.ViewModels;
+using GameRandom.ViewModels.AdminSystem;
 
 namespace GameRandom.Views.LobbyModalWindow;
 

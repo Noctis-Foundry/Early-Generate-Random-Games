@@ -8,7 +8,7 @@ using GameRandom.Scr.Service;
 using GameRandom.SteamSDK;
 using GameRandom.SteamSDK.Enums;
 
-namespace GameRandom.ViewModels;
+namespace GameRandom.ViewModels.AdminSystem;
 
 public class AbstractTableWindowViewModel<TEntity> : ViewModelBase where TEntity : class
 {

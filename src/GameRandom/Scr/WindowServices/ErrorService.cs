@@ -38,10 +38,16 @@ public class ErrorService : AbstractWindowService<ErrorWindow>
 
     public override void ShowWindow(object? data = null)
     {
-        if (data is not null && data is ErrorStruct errorStruct)
-        {
+        if (data is ErrorStruct errorStruct)
             ShowErrorWindow(errorStruct);
-        }
+    }
+
+    public void ShowWindow(string message, ErrorEnum errorEnum = ErrorEnum.Error)
+    {
+        if (string.IsNullOrEmpty(message))
+            return;
+        
+        ShowErrorWindow(new ErrorStruct{ErrorMessage = message, ErrorType = errorEnum});
     }
 
     private void ShowErrorWindow(ErrorStruct errorStruct)

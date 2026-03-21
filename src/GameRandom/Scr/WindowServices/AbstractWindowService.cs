@@ -27,6 +27,7 @@ public abstract class AbstractWindowService <TWindow>
         if (!ControlWindow.IsActive)
             ControlWindow.Open();
     }
+    
     public virtual async Task ShowWindowAsync(object? data = null)
     {
         if (!ControlWindow.IsActive)

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using GameRandom.DataBaseContexts;
-using GameRandom.ViewModels;
+using GameRandom.ViewModels.AdminSystem;
 using Xunit;
 
 namespace GameRandom.IntegrationTests;

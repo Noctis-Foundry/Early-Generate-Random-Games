@@ -7,7 +7,7 @@ using GameRandom.CoreApp;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 
-namespace GameRandom.ViewModels;
+namespace GameRandom.ViewModels.AdminSystem;
 
 public class RollGameViewModel : ViewModelBase, IDisposable
 {

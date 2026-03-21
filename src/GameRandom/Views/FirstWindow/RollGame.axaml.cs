@@ -14,7 +14,7 @@ using GameRandom.Service;
 using GameRandom.SteamSDK;
 using GameRandom.SteamSDK.Enums;
 using GameRandom.SteamSDK.Factory;
-using GameRandom.ViewModels;
+using GameRandom.ViewModels.AdminSystem;
 
 namespace GameRandom.Views;
 

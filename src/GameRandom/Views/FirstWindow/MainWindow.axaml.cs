@@ -14,7 +14,7 @@ using GameRandom.SteamSDK.Enums;
 using GameRandom.SteamSDK.Factory;
 using GameRandom.SteamSDK.LobbySystem;
 using GameRandom.SteamSDK.UserData;
-using GameRandom.ViewModels;
+using GameRandom.ViewModels.AdminSystem;
 using GameRandom.Views.LobbyModalWindow;
 
 namespace GameRandom.Views;
@@ -220,7 +220,7 @@ public partial class MainWindow : Window
 
     private void EnableAdminPanel()
     {
-        if (!User.GetInstance().IsAdmin)
+        if (!User.GetInstance().IsAdmin())
         {
             AdminPanel.IsVisible = false;
             return;
