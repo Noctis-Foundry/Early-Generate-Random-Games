@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Avalonia.Threading;
 using GameRandom.DataBaseContexts;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Service;
@@ -11,20 +12,38 @@ using GameRandom.SteamSDK;
 
 namespace GameRandom.ViewModels.AdminSystem;
 
-public class StatisticViewModel : ViewModelBase, IDisposable
+public class StatisticViewModel : ViewModelBase
 {
-    [Inject] private DatabaseService? _dbService = null!;
+    [Inject] private DatabaseService? _databaseService = null!;
+    [Inject] private PostgresListener? _postgresListener = null!;
 
+    private Action<PayloadStructure>? _tableListener;
+    
     public List<StatisticCardInfo> StatisticCardInfos { get; private set; } = new();
 
-    public async Task LoadStatisticAsync()
+    public StatisticViewModel()
     {
         Di.Container.ResolveFieldsFromClassInstance(this);
 
-        if (_dbService == null)
-            return;
+        if (_databaseService is null)
+            throw new NullReferenceException(nameof(_databaseService));
+        if (_postgresListener is null)
+            throw new NullReferenceException(nameof(_postgresListener));
 
-        var list = await _dbService.Where<GameProgresses>(e =>
+        _tableListener += e =>
+        {
+            if (e.TableCode != (int)TableEnum.GameProgress)
+                return;
+
+            Dispatcher.UIThread.InvokeAsync(async () => await LoadStatisticAsync());
+        };
+        
+        _postgresListener.Subscribe(TableEnum.GameProgress, _tableListener);
+    }
+    
+    public async Task LoadStatisticAsync()
+    {
+        var list = await _databaseService.Where<GameProgresses>(e =>
             e.PlayerId == SteamManager.GetSteamManager().GetSteamId().m_SteamID);
 
         if (list is null || list.Count == 0)
@@ -36,9 +55,17 @@ public class StatisticViewModel : ViewModelBase, IDisposable
         StatisticCardInfos.Add(new StatisticCardInfo("Finished games count", finishedGamesCount.ToString(), 0, 1));
     }
 
-    public void Dispose()
+    public override void Dispose()
     {
-        _dbService = null;
+        _databaseService = null;
+        
+        if (_tableListener is not null) 
+            _postgresListener?.Unsubscribe(TableEnum.GameProgress, _tableListener);
+        
+        _postgresListener = null;
+        _tableListener = null;
+        
+        StatisticCardInfos.Clear();
     }
 }
 

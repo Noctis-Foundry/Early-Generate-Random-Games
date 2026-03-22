@@ -6,6 +6,7 @@ using System.Threading;
 using GameRandom.CoreApp;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using GameRandom.Scr.Service;
 
 namespace GameRandom.ViewModels.AdminSystem;
 
@@ -37,7 +38,7 @@ public class RollGameViewModel : ViewModelBase, IDisposable
 
     public async Task GenerateGames(int countGames, FilteredData? filteredGamesData, CancellationToken cancellationToken = default)
     {
-        if (!IsValidationGenerateData())
+        if (_generateRandomApps is null || !_generateRandomApps.IsInitialized)
             return;
 
         ClearItems();
@@ -45,11 +46,9 @@ public class RollGameViewModel : ViewModelBase, IDisposable
         try
         {
             cancellationToken.ThrowIfCancellationRequested();
-            
-            while (_iterationCount < IterationLimit && _appInfo.Count < countGames)
-            {
-                _iterationCount++;
 
+            for (int i = 0; i < IterationLimit && _appInfo.Count < countGames; i++)
+            {
                 var gameInfo = _generateRandomApps?.GetRandomGame();
 
                 if (gameInfo is null || _appInfo.Any(e => e.AppData.AppId == gameInfo.AppId))
@@ -69,7 +68,7 @@ public class RollGameViewModel : ViewModelBase, IDisposable
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            Logger.Error("Failed to generate games: " + e.Message);
         }
     }
     
@@ -92,20 +91,17 @@ public class RollGameViewModel : ViewModelBase, IDisposable
         return true;
     }
 
-    private bool IsValidationGenerateData()
-    {
-        return _generateRandomApps.IsInitialized;
-    }
-
     private void ClearItems()
     {
         _appInfo.Clear();
         _iterationCount = 0;
     }
 
-    public void Dispose()
+    public override void Dispose()
     {
-        _generateRandomApps = null;
         ClearItems();
+        
+        //TODO _generateRandomApps.Dispose()
+        _generateRandomApps = null;
     }
 }
