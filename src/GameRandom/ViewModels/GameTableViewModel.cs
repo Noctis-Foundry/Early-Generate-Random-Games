@@ -40,10 +40,9 @@ public class GameTableViewModel : AbstractTableWindowViewModel<GameTableData>
         catch (Exception e)
         {
             Logger.Error(e.Message);
-            return;
         }
     }
-
+    
     /// <summary>
     /// Loads game progress data for each player in the lobby.
     /// </summary>
@@ -55,19 +54,19 @@ public class GameTableViewModel : AbstractTableWindowViewModel<GameTableData>
 
         foreach (var data in lobbyData)
         {
-            var user = await _databaseService.GetUserByUlongId(data.UserId);
+            var (user, gameProgresses) 
+                = await _databaseService.GetGameTableData(data.UserId);
             
-            if (user is null) continue;
+            if (user is null || gameProgresses is null)
+                continue;
             
-            var playerGames = await _databaseService.Where<GameProgresses>(e => e.PlayerId == user.SteamId);
-
-            if (playerGames is null) continue;
-            
-            foreach (var game in playerGames)
+            foreach (var game in gameProgresses)
             {
+                var userNickName = !string.IsNullOrEmpty(user.Nickname) ? user.Nickname : "---";
+                
                 gameTableData.Add(new GameTableData
                 {
-                    PlayerName = user.Nickname,
+                    PlayerName = userNickName,
                     GameInfo = game
                 });
             }
