@@ -1,12 +1,33 @@
-# Project Guidelines
-    
-This is a placeholder of the project guidelines for Junie.
-Replace this text with any project-level instructions for Junie, e.g.:
+# Project rules
 
-* What is the project structure
-* Whether Junie should run tests to check the correctness of the proposed solution
-* How does Junie run tests (once it requires any non-standard approach)
-* Whether Junie should build the project before submitting the result
-* Any code-style related instructions
+Language: C#
+Framework: .NET 10
+Libs: EF, Steamworks
 
-As an option you can ask Junie to create these guidelines for you.
+Guidelines:
+- Follow SOLID
+- Follow MVVM pattern
+- Avoid LINQ allocations in hot paths
+- Prefer Span/Memory for performance
+- No action can be performed without user confirmation (all changes and important steps require approval)
+- All documentation must be written in English
+
+# Git Commit Rules
+
+Multi-line commit:
+feat(auth): add OAuth2 support for Google and GitHub
+
+- Implement OAuth2 authentication flow
+- Add Google OAuth provider integration
+- Add GitHub OAuth provider integration  
+- Update user model to store OAuth credentials
+- Add tests for OAuth authentication
+
+Example for single-line commits:
+
+feat: implement user registration endpoint
+fix(login): handle incorrect password gracefully  
+refactor: extract database layer into separate module
+docs: add installation instructions for Windows
+
+commit types: feat, fix, docs, style, refactor, test, perf, ci, chore 

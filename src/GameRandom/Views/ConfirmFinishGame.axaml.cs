@@ -77,7 +77,7 @@ public partial class ConfirmFinishGame : WindowAbstract
 
         if (DataContext is ConfirmFinishGameViewModel vm)
         {
-            Close(vm.IsAdded);
+            Close(vm.IsUpdated);
             return;
         }
 

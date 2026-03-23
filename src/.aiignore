@@ -1,7 +1,110 @@
-# An .aiignore file follows the same syntax as a .gitignore file.
-# .gitignore documentation: https://git-scm.com/docs/gitignore
-# Junie will ask for explicit approval before view or edit the file or file within a directory listed in .aiignore.
-# Only files contents is protected, Junie is still allowed to view file names even if they are listed in .aiignore.
-# Be aware that the files you included in .aiignore can still be accessed by Junie in two cases:
-# - If Brave Mode is turned on.
-# - If a command has been added to the Allowlist — Junie will not ask for confirmation, even if it accesses - files and folders listed in .aiignore.
+1. Execution Restrictions
+
+AI must not execute or apply changes automatically without explicit confirmation from the developer.
+
+All code modifications must be proposed first and applied only after developer approval.
+
+2. Documentation Language
+
+All documentation, summaries, comments, and code explanations must be written strictly in English.
+
+No other languages are allowed in:
+
+code comments
+summaries
+documentation blocks
+guidelines
+3. Modification Scope
+
+AI must not modify classes that are not explicitly provided in the request.
+
+Allowed modifications:
+
+Only the classes, methods, or files explicitly included in the developer's message.
+
+Forbidden:
+
+Editing unrelated files
+Editing external services
+Editing infrastructure classes
+Editing models not included in the request
+4. Refactoring Restrictions
+
+During refactoring AI must not change existing program logic.
+
+Allowed:
+
+formatting
+code readability improvements
+naming improvements
+documentation additions
+
+Forbidden:
+
+behavioral changes
+altering execution flow
+modifying conditions or algorithms
+changing method responsibilities
+5. API Integrity
+
+AI must not replace or alter existing APIs.
+
+Forbidden actions:
+
+replacing existing services with alternative implementations
+introducing new frameworks or libraries without request
+changing method signatures
+changing return types
+altering service contracts
+6. Logical Error Reporting
+
+If AI detects potential logical errors or risky behavior during review, it must:
+
+Notify the developer
+Explain the issue
+Not modify the logic automatically
+
+All fixes must be approved by the developer before implementation.
+
+7. Architecture Preservation
+
+AI must respect the existing architecture:
+
+AvaloniaUI
+Model–View–ViewModel
+
+Forbidden:
+
+breaking MVVM boundaries
+moving business logic to Views
+creating UI elements directly inside ViewModels
+8. Service Access Rules
+
+Services must be accessed only through the project DI container.
+
+Allowed methods:
+
+[Inject] attribute
+Di.Container.GetInstance<T>()
+Di.Container.ResolveFieldsFromClassInstance(this)
+
+Direct creation of services using new is not allowed.
+
+9. Database Rules
+
+All database operations must go through DatabaseService.
+
+Forbidden:
+
+direct DbContext usage inside ViewModels
+direct SQL queries inside ViewModels
+bypassing the database service layer
+10. Safety Principle
+
+When uncertain about the impact of a change, AI must:
+
+Stop
+Ask the developer for clarification
+Avoid making assumptions.
+
+No speculative modifications are allowed.
