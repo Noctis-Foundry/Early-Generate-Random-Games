@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,9 +19,11 @@ namespace GameRandom.ViewModels.AdminSystem;
 /// </summary>
 public class MainWindowViewModel : ViewModelBase
 {
-    [Inject] private readonly SteamWebApi _steamWebApi = null!;
-    [Inject] private readonly DatabaseService _databaseService = null!;
-    [Inject] private readonly ErrorService _errorService = null!;
+    private const int LobbyUpdateTimeoutSeconds = 5;
+    
+    [Inject] private SteamWebApi? _steamWebApi = null!;
+    [Inject] private DatabaseService? _databaseService = null!;
+    [Inject] private ErrorService? _errorService = null!;
 
     /// <summary>
     /// Command to open the lobby window.
@@ -45,8 +47,14 @@ public class MainWindowViewModel : ViewModelBase
         set => SetProperty(ref _rulesOpen, value);
     }
 
+    /// <summary>
+    /// Command to open the admin panel window.
+    /// </summary>
     private ICommand? _adminPanelOpen;
 
+    /// <summary>
+    /// Gets or sets the command to open the admin panel.
+    /// </summary>
     public ICommand? AdminPanelOpen
     {
         get => _adminPanelOpen;
@@ -63,8 +71,9 @@ public class MainWindowViewModel : ViewModelBase
     /// </summary>
     public HashSet<ProfilerContext> UsersToLobby => _usersToLobby;
 
-    private readonly bool _isInitialized;
-
+    /// <summary>
+    /// Semaphore to ensure thread-safe access to lobby data updates.
+    /// </summary>
     private readonly SemaphoreSlim _semaphore = new(1, 1);
 
     /// <summary>
@@ -74,7 +83,12 @@ public class MainWindowViewModel : ViewModelBase
     {
         Di.Container.ResolveFieldsFromClassInstance(this);
 
-        _isInitialized = true;
+        if (_steamWebApi is null)
+            throw new NullReferenceException("Failed to inject Steam Web Service from di");
+        if (_databaseService is null)
+            throw new NullReferenceException("Failed to inject Database service from di");
+        if (_errorService is null)
+            throw new NullReferenceException("Failed to inject Error service from di");
     }
 
     /// <summary>
@@ -85,33 +99,18 @@ public class MainWindowViewModel : ViewModelBase
     {
         await _semaphore.WaitAsync();
 
-        if (!IsValidationUpdateLobby(tableCode))
-            return;
-
-        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-
-        var userData = User.GetInstance().GetUserInfo();
-
         try
         {
+            if (!IsValidTableCode(tableCode))
+                return;
+
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(LobbyUpdateTimeoutSeconds));
+            var userData = User.GetInstance().GetUserInfo();
+
             if (await GetLobby(userData.LobbyId, cts.Token) is not { } lobbyContexts)
                 return;
 
-            var lobbyData = lobbyContexts.LobbyData;
-
-            for (int i = 0; i < lobbyData.Count; i++)
-            {
-                var profileContext = await _steamWebApi.GetUserData(lobbyData[i].UserId);
-
-                if (profileContext == null)
-                {
-                    _errorService.ShowWindow(new ErrorStruct
-                        { ErrorMessage = "Not found profile context", ErrorType = ErrorEnum.Error });
-                    return;
-                }
-
-                _usersToLobby.Add(profileContext);
-            }
+            await LoadLobbyProfiles(lobbyContexts.LobbyData);
         }
         catch (Exception e)
         {
@@ -123,17 +122,13 @@ public class MainWindowViewModel : ViewModelBase
         }
     }
 
-    private bool IsValidationUpdateLobby(int tableCode)
+    /// <summary>
+    /// Validates whether the table code is correct for lobby operations.
+    /// </summary>
+    /// <param name="tableCode">Table code to validate.</param>
+    /// <returns>True if validation passes; otherwise, false.</returns>
+    private bool IsValidTableCode(int tableCode)
     {
-        if (!_isInitialized)
-        {
-            _errorService.ShowWindow(new ErrorStruct
-            {
-                ErrorMessage = "Not initialized MainWindowViewModel, Cant update lobby", ErrorType = ErrorEnum.Error
-            });
-            return false;
-        }
-
         if ((TableEnum)tableCode != TableEnum.Lobby)
         {
             _errorService.ShowWindow(new ErrorStruct
@@ -144,6 +139,33 @@ public class MainWindowViewModel : ViewModelBase
         return true;
     }
 
+    /// <summary>
+    /// Loads profile information for all users in the lobby.
+    /// </summary>
+    /// <param name="lobbyData">List of lobby users to load profiles for.</param>
+    private async Task LoadLobbyProfiles(List<LobbyData> lobbyData)
+    {
+        foreach (var lobbyUser in lobbyData)
+        {
+            var profileContext = await _steamWebApi.GetUserData(lobbyUser.UserId);
+            
+            if (profileContext == null)
+            {
+                _errorService.ShowWindow(new ErrorStruct
+                    { ErrorMessage = "Not found profile context", ErrorType = ErrorEnum.Error });
+                return;
+            }
+
+            _usersToLobby.Add(profileContext);
+        }
+    }
+
+    /// <summary>
+    /// Retrieves lobby information from the database.
+    /// </summary>
+    /// <param name="lobbyId">Lobby identifier.</param>
+    /// <param name="cts">Cancellation token for the operation.</param>
+    /// <returns>Lobby context if found; otherwise, null.</returns>
     private async Task<Lobbies?> GetLobby(long lobbyId, CancellationToken cts)
     {
         var lobbyContexts = await _databaseService.GetLobbyById(lobbyId, cts);
@@ -178,14 +200,13 @@ public class MainWindowViewModel : ViewModelBase
             RulesOpen = new RelayCommand(func);
     }
 
+    /// <summary>
+    /// Binds the admin panel opening command to the specified action.
+    /// </summary>
+    /// <param name="func">Action executed when opening the admin panel.</param>
     public void BindingAdminPanel(Action func)
     {
         if (AdminPanelOpen is null)
             AdminPanelOpen = new RelayCommand(func);
-    }
-
-    public override void Dispose()
-    {
-        base.Dispose();
     }
 }
