@@ -11,6 +11,7 @@ Guidelines:
 - Prefer Span/Memory for performance
 - No action can be performed without user confirmation (all changes and important steps require approval)
 - All documentation must be written in English
+- Do not add "Co-authored-by: Junie <junie@jetbrains.com>" to git commits unless explicitly requested by the user.
 
 # Git Commit Rules
 
