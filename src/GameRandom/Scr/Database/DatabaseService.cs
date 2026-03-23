@@ -433,4 +433,58 @@ public class DatabaseService : IDatabaseService
             throw;
         }
     }
+
+    public async Task<bool> TransitionFinishGame(FinishedGames finishedGames, GameProgresses gameProgresses, CancellationToken token = default)
+    {
+        await using var db = new AppDbContext();
+        await using var transition = await db.Database.BeginTransactionAsync(token);
+
+        try
+        {
+            if (await db.FinishedGames
+                    .FirstOrDefaultAsync(e => e.GameProgressId == gameProgresses.Id, token) is not null)
+            {
+                Logger.Debug($"Database is have finished game with gameProgressId {gameProgresses.Id}");
+                return true;
+            }
+            
+            db.FinishedGames.Add(finishedGames);
+            db.GameProgresses.Update(gameProgresses);
+            await db.SaveChangesAsync(token);
+            await transition.CommitAsync(token);
+
+            return true;
+        }
+        catch (Exception e)
+        {
+            Logger.Error("Failed to transition add finish game" + e.Message);
+            await transition.RollbackAsync(token);
+            return false;
+        }
+    }
+
+    public async Task<(Users?, List<GameProgresses>?)> GetGameTableData(ulong userId, CancellationToken ct = default)
+    {
+        await using var db = new AppDbContext();
+
+        try
+        {
+            var user = db.Users.FirstOrDefault(e => e.SteamId == userId);
+
+            if (user is null)
+                throw new NullReferenceException("User is not find");
+
+            var gameProgress = await db.GameProgresses.Where(e => e.PlayerId == userId).ToListAsync(ct);
+
+            if (gameProgress.Count <= 0)
+                throw new NullReferenceException("Failed to find player gameProgress");
+            
+            return (user, gameProgress);
+        }
+        catch (Exception e)
+        {
+            Logger.Debug("Failed to get data: " + e.Message);
+            return (null, null);
+        }
+    }
 }
