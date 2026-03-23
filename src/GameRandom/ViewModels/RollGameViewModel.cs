@@ -10,25 +10,53 @@ using GameRandom.Scr.Service;
 
 namespace GameRandom.ViewModels.AdminSystem;
 
-public class RollGameViewModel : ViewModelBase, IDisposable
+/// <summary>
+/// ViewModel for the logic of rolling (generating) random games.
+/// </summary>
+public class RollGameViewModel : ViewModelBase
 {
+    /// <summary>
+    /// List of generated games with their information and images.
+    /// </summary>
     private List<AppInfo> _appInfo = new();
+    
+    /// <summary>
+    /// List of generated games for UI display.
+    /// </summary>
     public List<AppInfo> AppInfo => _appInfo;
     
+    /// <summary>
+    /// Interface for generating random applications.
+    /// </summary>
     private IGenApp? _generateRandomApps;
     
+    /// <summary>
+    /// Maximum number of iterations to find suitable games.
+    /// </summary>
     private const int IterationLimit = 500;
     
+    /// <summary>
+    /// Current number of iterations.
+    /// </summary>
     private int _iterationCount;
 
+    /// <summary>
+    /// Flag indicating whether filtering is used during generation.
+    /// </summary>
     private bool _isFilter = false;
 
+    /// <summary>
+    /// Property for enabling/disabling filtering. Updates UI via SetProperty.
+    /// </summary>
     public bool IsFilter
     {
         get => _isFilter;
         set => SetProperty(ref _isFilter, value);
     }
 
+    /// <summary>
+    /// Constructor. Initializes the random application generator if not in design mode.
+    /// </summary>
     public RollGameViewModel()
     {
         if (Design.IsDesignMode) return;
@@ -36,6 +64,12 @@ public class RollGameViewModel : ViewModelBase, IDisposable
         _generateRandomApps = new GenerateRandomApps();
     }
 
+    /// <summary>
+    /// Generates the specified number of games considering filters.
+    /// </summary>
+    /// <param name="countGames">Number of games to retrieve.</param>
+    /// <param name="filteredGamesData">Filtering data.</param>
+    /// <param name="cancellationToken">Operation cancellation token.</param>
     public async Task GenerateGames(int countGames, FilteredData? filteredGamesData, CancellationToken cancellationToken = default)
     {
         if (_generateRandomApps is null || !_generateRandomApps.IsInitialized)
@@ -45,25 +79,14 @@ public class RollGameViewModel : ViewModelBase, IDisposable
 
         try
         {
-            cancellationToken.ThrowIfCancellationRequested();
-
             for (int i = 0; i < IterationLimit && _appInfo.Count < countGames; i++)
             {
-                var gameInfo = _generateRandomApps?.GetRandomGame();
+                cancellationToken.ThrowIfCancellationRequested();
 
-                if (gameInfo is null || _appInfo.Any(e => e.AppData.AppId == gameInfo.AppId))
-                    continue;
-
-                if (IsFilter && filteredGamesData is not null)
-                    if (!FilterGame(gameInfo, filteredGamesData))
-                        continue;
-
-                var imageBytes = await SteamService.Instance.GetImageBytes(gameInfo.HeaderImage);
-
-                if (imageBytes == null)
-                    continue;
-
-                _appInfo.Add(new AppInfo(gameInfo, imageBytes));
+                var appInfo = await GenerateAppInfo(filteredGamesData);
+                
+                if (appInfo is not null)
+                    _appInfo.Add(appInfo);
             }
         }
         catch (Exception e)
@@ -71,12 +94,37 @@ public class RollGameViewModel : ViewModelBase, IDisposable
             Logger.Error("Failed to generate games: " + e.Message);
         }
     }
+
+    /// <summary>
+    /// Generates information for a single random game and loads its image.
+    /// </summary>
+    /// <param name="filteredGamesData">Filtering data.</param>
+    /// <returns>AppInfo object or null if the game failed filtering or an error occurred.</returns>
+    private async Task<AppInfo?> GenerateAppInfo(FilteredData? filteredGamesData)
+    {
+        var gameInfo = _generateRandomApps?.GetRandomGame();
+
+        if (gameInfo is null || _appInfo.Any(e => e.AppData.AppId == gameInfo.AppId))
+            return null;
+
+        if (IsFilter && filteredGamesData is not null)
+            if (!FilterGame(gameInfo, filteredGamesData))
+                return null;
+
+        var imageBytes = await SteamService.Instance.GetImageBytes(gameInfo.HeaderImage);
+
+        if (imageBytes == null)
+            return null;
+        
+        return new AppInfo(gameInfo, imageBytes);
+    }
     
     /// <summary>
-    /// Confirms with user before stopping ongoing game roll operation.
+    /// Checks if the game matches the specified filters (categories, genres, years).
     /// </summary>
-    /// <returns>True if operation can proceed, false if canceled.</returns>
-
+    /// <param name="savedGame">Game data.</param>
+    /// <param name="filter">Active filters.</param>
+    /// <returns>True if the game matches the filters, otherwise False.</returns>
     private bool FilterGame(AppSavedContext savedGame, FilteredData filter)
     {
         if (filter.Categories.Count > 0 && !filter.Categories.Any(c => savedGame.AppCategories.Contains(c)))
@@ -91,12 +139,18 @@ public class RollGameViewModel : ViewModelBase, IDisposable
         return true;
     }
 
+    /// <summary>
+    /// Clears the list of games and resets the iteration counter.
+    /// </summary>
     private void ClearItems()
     {
         _appInfo.Clear();
         _iterationCount = 0;
     }
 
+    /// <summary>
+    /// Disposes of ViewModel resources.
+    /// </summary>
     public override void Dispose()
     {
         ClearItems();
