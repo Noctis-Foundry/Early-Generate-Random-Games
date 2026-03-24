@@ -18,6 +18,8 @@ namespace GameRandom.Views;
 
 public partial class AdminRegistrationWindow : WindowAbstract
 {
+    private Action? _savedHandler;
+    
     public AdminRegistrationWindow()
     {
         InitializeComponent();
@@ -25,8 +27,24 @@ public partial class AdminRegistrationWindow : WindowAbstract
         if (Design.IsDesignMode)
             return;
         
-        DataContext = new AdminRegistrationViewModel();
+        InitializeViewModel();
+        InitializeListener();
+
+        WindowStartupLocation = WindowStartupLocation.CenterScreen;
+    }
+
+    private void InitializeViewModel()
+    {
+        var vm = new AdminRegistrationViewModel();
         
+        _savedHandler += () => ProcessingWindowShow(vm);
+        
+        vm.StartProcessing += _savedHandler;
+        
+        DataContext = vm;
+    }
+    private void InitializeListener()
+    {
         if (Di.Container.GetInstance<EventBus>() is not EventBus eventBus)
             throw new NullReferenceException(nameof(EventBus));
         
@@ -35,7 +53,6 @@ public partial class AdminRegistrationWindow : WindowAbstract
             Dispatcher.UIThread.InvokeAsync(CheckAdminStatus);
         });
     }
-
     private void CheckAdminStatus()
     {
         if (!User.GetInstance().IsTopLevelAdmin())
@@ -50,7 +67,12 @@ public partial class AdminRegistrationWindow : WindowAbstract
     private void CloseAsyncWindow(object? sender, RoutedEventArgs e)
     {
         if (DataContext is AdminRegistrationViewModel vm)
+        {
+            if (vm.StartProcessing is not null && _savedHandler is not null) 
+                vm.StartProcessing -= _savedHandler;
+            
             vm.Dispose();
+        }
         
         Close();
     }

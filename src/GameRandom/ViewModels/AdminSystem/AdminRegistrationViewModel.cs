@@ -11,6 +11,7 @@ using GameRandom.Scr.Service;
 using GameRandom.SteamSDK;
 using GameRandom.SteamSDK.Enums;
 using GameRandom.SteamSDK.UserData;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace GameRandom.ViewModels.AdminSystem;
 
@@ -30,9 +31,9 @@ public class AdminRegistrationViewModel : ViewModelBase
     [Inject] private PostgresListener? _postgresListener;
 
     /// <summary>
-    /// Cancellation token source for asynchronous operations.
+    /// Cancellation token timeout
     /// </summary>
-    private CancellationTokenSource _cancellationTokenSource = new(TimeSpan.FromSeconds(5));
+    private const int DatabaseTimeoutSec = 5;
 
     private ObservableCollection<AdminRegistrationData> _admins;
 
@@ -124,6 +125,9 @@ public class AdminRegistrationViewModel : ViewModelBase
         if (!User.GetInstance().IsTopLevelAdmin())
             return;
 
+        IsProcess = true;
+        StartProcessing?.Invoke();
+        
         try
         {
             Admins.Clear();
@@ -149,6 +153,7 @@ public class AdminRegistrationViewModel : ViewModelBase
         finally
         {
             _semaphoreSlim.Release();
+            IsProcess = false;
         }
     }
 
@@ -207,7 +212,7 @@ public class AdminRegistrationViewModel : ViewModelBase
 
         Admins.Add(new AdminRegistrationData(user, RemoveAdmin, RemoveAdminCommand(user), true));
     }
-    
+
     /// <summary>
     /// Creates a command to grant administrative rights to a user.
     /// </summary>
@@ -223,6 +228,9 @@ public class AdminRegistrationViewModel : ViewModelBase
                 return;
             }
 
+            IsProcess = true;
+            StartProcessing?.Invoke();
+
             try
             {
                 if (!User.GetInstance().IsTopLevelAdmin())
@@ -230,27 +238,8 @@ public class AdminRegistrationViewModel : ViewModelBase
 
                 if (Di.Container.TryGetInstance<DatabaseService>() is DatabaseService databaseService)
                 {
-                    var lobbies = await databaseService.GetLobbyById(userInfo.LobbyId, _cancellationTokenSource.Token);
+                    await UpdateLobby(userInfo, databaseService);
 
-                    if (lobbies is null)
-                    {
-                        Logger.Error("Lobby is not founded");
-                        return;
-                    }
-
-                    lobbies.AdminsList.Add(new Admins
-                    {
-                        SteamId = userInfo.SteamId,
-                        LobbyId = userInfo.LobbyId,
-                        IsTopAdmin = false
-                    });
-
-                    var isUpdating = await databaseService.UpdateAsync(lobbies, _cancellationTokenSource.Token);
-
-                    if (!isUpdating)
-                        Logger.Error("Failed to add admin");
-                    else
-                        Logger.Info("Admin is added");
                 }
                 else
                     throw new NullReferenceException("Failed resolve database service");
@@ -263,8 +252,36 @@ public class AdminRegistrationViewModel : ViewModelBase
             finally
             {
                 _isActionSemaphore.Release();
+                IsProcess = false;
             }
         });
+    }
+
+    private async Task UpdateLobby(Users userInfo, DatabaseService databaseService)
+    {
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(DatabaseTimeoutSec));
+
+        var lobbies = await databaseService.GetLobbyById(userInfo.LobbyId, cts.Token);
+
+        if (lobbies is null)
+        {
+            Logger.Error("Lobby is not founded");
+            return;
+        }
+
+        lobbies.AdminsList.Add(new Admins
+        {
+            SteamId = userInfo.SteamId,
+            LobbyId = userInfo.LobbyId,
+            IsTopAdmin = false
+        });
+
+        var isUpdating = await databaseService.UpdateAsync(lobbies, cts.Token);
+
+        if (!isUpdating)
+            Logger.Error("Failed to add admin");
+        else
+            Logger.Info("Admin is added");
     }
 
     /// <summary>
@@ -276,30 +293,24 @@ public class AdminRegistrationViewModel : ViewModelBase
     {
         return new AsyncRelayCommand(async () =>
         {
+            if (!User.GetInstance().IsTopLevelAdmin())
+                return;
+            
             if (!await _isActionSemaphore.WaitAsync(0))
             {
                 ShowError("Wait for the previous command to complete");
                 return;
             }
 
+            IsProcess = true;
+            StartProcessing?.Invoke();
+
             try
             {
-                if (!User.GetInstance().IsTopLevelAdmin())
-                    return;
-
-                if (Di.Container.TryGetInstance<DatabaseService>() is DatabaseService databaseService)
-                {
-                    var isRemoving =
-                        await databaseService.DeleteItemWithPredicate<Admins>(e => e.SteamId == userInfo.SteamId,
-                            _cancellationTokenSource.Token);
-
-                    if (!isRemoving)
-                    {
-                        Logger.Error("Failed to remove admin");
-                    }
-                }
-                else
+                if (Di.Container.TryGetInstance<DatabaseService>() is not DatabaseService databaseService)
                     throw new NullReferenceException("Failed resolve database service");
+
+                await DeleteAdminRules(databaseService, userInfo);
             }
             catch (Exception e)
             {
@@ -308,8 +319,23 @@ public class AdminRegistrationViewModel : ViewModelBase
             finally
             {
                 _isActionSemaphore.Release();
+                IsProcess = false;
             }
         });
+    }
+
+    private async Task DeleteAdminRules(DatabaseService databaseService, Users userInfo)
+    {
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(DatabaseTimeoutSec));
+
+        var isRemoving =
+            await databaseService.DeleteItemWithPredicate<Admins>(e => e.SteamId == userInfo.SteamId,
+                cts.Token);
+
+        if (!isRemoving)
+        {
+            Logger.Error("Failed to remove admin");
+        }
     }
 
     /// <summary>
@@ -330,11 +356,6 @@ public class AdminRegistrationViewModel : ViewModelBase
     /// </summary>
     public override void Dispose()
     {
-        _cancellationTokenSource.Cancel();
-        _cancellationTokenSource.Dispose();
-
-        _semaphoreSlim.Release();
-
         _databaseService = null;
 
         _postgresListener?.Unsubscribe(TableEnum.AdminTable, _loadAdminTable);
