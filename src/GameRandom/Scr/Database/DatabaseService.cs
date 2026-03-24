@@ -20,6 +20,22 @@ public interface IDatabaseService
 
 public class DatabaseService : IDatabaseService
 {
+    private readonly DbContextOptions<AppDbContext>? _options;
+
+    public DatabaseService()
+    {
+    }
+
+    public DatabaseService(DbContextOptions<AppDbContext> options)
+    {
+        _options = options;
+    }
+
+    private AppDbContext CreateContext()
+    {
+        return _options != null ? new AppDbContext(_options) : new AppDbContext();
+    }
+
     private static readonly HashSet<Type> _restrictedAddTypes = new()
     {
         typeof(UserGame)
@@ -33,7 +49,7 @@ public class DatabaseService : IDatabaseService
     
     public async Task<bool> AddItemAsync<TEntity>(TEntity item, CancellationToken ct = default) where TEntity : class
     {
-        await using var db = new AppDbContext();
+        await using var db = CreateContext();
 
         if (_restrictedAddTypes.Contains(item.GetType()))
             throw new NotSupportedException($"Type {typeof(TEntity).Name} is restricted. Use Get{typeof(TEntity).Name}Async method");
@@ -72,7 +88,7 @@ public class DatabaseService : IDatabaseService
     {
         try
         {
-            await using var db = new AppDbContext();
+            await using var db = CreateContext();
 
             if (await db.UserGames.AnyAsync(e => e.UserId == userInfo.SteamId, ct))
                 return true;
@@ -104,7 +120,7 @@ public class DatabaseService : IDatabaseService
     {
         try
         {
-            await using var context = new AppDbContext();
+            await using var context = CreateContext();
             var list = await context.Set<TEntity>().AsNoTracking().ToListAsync(ct);
             
             return list.FirstOrDefault(predicate);
@@ -129,7 +145,7 @@ public class DatabaseService : IDatabaseService
         
         try
         {
-            await using var context = new AppDbContext();
+            await using var context = CreateContext();
             return await context.Set<TEntity>().AsNoTracking().ToListAsync(ct);
         }
         catch (OperationCanceledException e)
@@ -146,7 +162,7 @@ public class DatabaseService : IDatabaseService
     
     public async Task<bool>  DeleteItemAsync<TEntity>(TEntity item, CancellationToken ct = default) where TEntity : class
     {
-        await using var context = new AppDbContext();
+        await using var context = CreateContext();
 
         try
         {
@@ -170,7 +186,7 @@ public class DatabaseService : IDatabaseService
 
     public async Task<bool> DeleteItemWithPredicate<TEntity>(Expression<Func<TEntity, bool>> predicate, CancellationToken ct)  where TEntity : class
     {
-        await using var context = new AppDbContext();
+        await using var context = CreateContext();
 
         try
         {
@@ -200,7 +216,7 @@ public class DatabaseService : IDatabaseService
     {
         try
         {
-            await using var context = new AppDbContext();
+            await using var context = CreateContext();
             
             context.Set<TEntity>().Update(item);
             await context.SaveChangesAsync(ct);
@@ -228,7 +244,7 @@ public class DatabaseService : IDatabaseService
     {
         try
         {
-            await using var context = new AppDbContext();
+            await using var context = CreateContext();
             var list = await context.Set<TEntity>().AsNoTracking().ToListAsync(ct);
 
             if (list.Count <= 0)
@@ -265,7 +281,7 @@ public class DatabaseService : IDatabaseService
     {
         try
         {
-            await using var db = new AppDbContext();
+            await using var db = CreateContext();
             return await db.FinishedGames
                 .Include(x => x.GameProgresses)
                 .ToListAsync(ct);
@@ -286,7 +302,7 @@ public class DatabaseService : IDatabaseService
     {
         try
         {
-            await using var db = new AppDbContext();
+            await using var db = CreateContext();
             return await db.FinishedGames.Include(e => e.GameProgresses).FirstOrDefaultAsync(g => g.Id == rowId, ct);
 
         }
@@ -306,7 +322,7 @@ public class DatabaseService : IDatabaseService
     {
         try
         {
-            await using var appDb = new AppDbContext();
+            await using var appDb = CreateContext();
             return await appDb.UserGames.FirstOrDefaultAsync(e => e.UserId == steamId, ct);
         }
         catch (OperationCanceledException e)
@@ -325,7 +341,7 @@ public class DatabaseService : IDatabaseService
     {
         try
         {
-            await using var appDb = new AppDbContext();
+            await using var appDb = CreateContext();
             Users? user = await appDb.Users.FirstOrDefaultAsync(u => u.SteamId == steamId, ct);
 
             return user ?? null;
@@ -346,7 +362,7 @@ public class DatabaseService : IDatabaseService
     {
         try
         {
-            await using var appDb = new AppDbContext();
+            await using var appDb = CreateContext();
             Lobbies? lobby = await appDb.Lobbies
                 .Include(l => l.LobbyData).Include(a => a.AdminsList)
                 .FirstOrDefaultAsync(l => l.LobbyId == lobbyId, ct);
@@ -369,7 +385,7 @@ public class DatabaseService : IDatabaseService
     {
         try
         {
-            await using var context = new AppDbContext();
+            await using var context = CreateContext();
             var item = await context.Set<TEntity>().FindAsync(rowId, ct);
 
             return item;
@@ -390,7 +406,7 @@ public class DatabaseService : IDatabaseService
     {
         try
         {
-            await using var context = new AppDbContext();
+            await using var context = CreateContext();
             
             var admin = await context.Admins.FirstOrDefaultAsync(a => a.SteamId == steamId, ct);
 

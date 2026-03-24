@@ -19,9 +19,20 @@ public class AppDbContext : DbContext
     public DbSet<Admins> Admins { get; set; }
     
     private string? _hostPath = "";
+    
+    public AppDbContext()
+    {
+    }
+
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+    {
+    }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
+        if (optionsBuilder.IsConfigured)
+            return;
+        
         _hostPath = Environment.GetEnvironmentVariable("GAMERANDOM_DB_CONNECT");
         
         if (_hostPath is null)
