@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -11,12 +12,19 @@ namespace GameRandom.Views;
 
 public partial class CurrentGame : WindowAbstract
 {
+    [Inject] private SteamService? _steamService;
+    
     public CurrentGame()
     {
         InitializeComponent();
         DataContext = new CurrentGameStatusViewModel();
 
         WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
+        Di.Container.ResolveField(out _steamService);
+
+        if (_steamService is null)
+            throw new NullReferenceException("Failed to inject steam service from di");
     }
     
     public override void Open(Window? parent = null)
@@ -44,7 +52,7 @@ public partial class CurrentGame : WindowAbstract
     {
         if (DataContext is not CurrentGameStatusViewModel vm) return;
 
-        var url = SteamService.Instance.AppSteamPage(vm.UserGame.AppId);
+        var url = _steamService.AppSteamPage(vm.UserGame.AppId);
 
         Process.Start(new ProcessStartInfo
         {

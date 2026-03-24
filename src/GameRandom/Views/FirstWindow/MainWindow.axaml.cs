@@ -29,6 +29,7 @@ public partial class MainWindow : Window
     [Inject] private readonly EventBus _eventBus = null!;
     [Inject] private readonly UserControlFactory _controlFactory = null!;
     [Inject] private readonly MainWindowFactory _mainWindowFactory = null!;
+    [Inject] private readonly SteamService? _steamService;
 
     /// <summary>
     /// Registry for user control factories mapped by navigation keys.
@@ -164,6 +165,9 @@ public partial class MainWindow : Window
         Di.Container.RegisterSingleInstance(new FinishedGameDialogService(mainWindow));
 
         Di.Container.ResolveFieldsFromClassInstance(this);
+
+        if (_steamService is null)
+            throw new NullReferenceException();
     }
 
     /// <summary>
@@ -201,7 +205,7 @@ public partial class MainWindow : Window
             LobbyImages.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
             var image = _mainWindowFactory.CreateImageInGrid(LobbyImages, imageCount);
 
-            image.Source = await SteamService.Instance.GetImage(profile.avatarUrl, cts.Token);
+            image.Source = await _steamService.GetImage(profile.avatarUrl, cts.Token);
             imageCount++;
         }
     }

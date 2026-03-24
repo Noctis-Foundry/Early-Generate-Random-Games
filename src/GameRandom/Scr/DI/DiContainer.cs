@@ -31,6 +31,11 @@ namespace GameRandom.Scr.DI
             _instanceService[typeof(TInterface)] = instance;
         }
 
+        public void Unregister<TInterface>()
+        {
+            _instanceService.Remove(typeof(TInterface));
+        }
+
         #endregion
 
         /// <summary>

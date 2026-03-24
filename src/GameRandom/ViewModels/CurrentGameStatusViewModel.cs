@@ -25,6 +25,7 @@ public class CurrentGameStatusViewModel : ViewModelBase
     [Inject] private FinishedGameDialogService? _finishedGameDialogService;
     [Inject] private PostgresListener? _postgresListener;
     [Inject] private ErrorService? _errorService;
+    [Inject] private SteamService? _steamService;
 
     private const int DatabaseOperationDelay = 5;
 
@@ -156,7 +157,7 @@ public class CurrentGameStatusViewModel : ViewModelBase
 
         AppInfo = gameInfo;
 
-        ImageBitmap = SteamService.Instance.GetImageSyncFromBytes(_appInfo.AppHeaderImage);
+        ImageBitmap = _steamService.GetImageSyncFromBytes(_appInfo.AppHeaderImage);
 
         return true;
     }
@@ -320,6 +321,9 @@ public class CurrentGameStatusViewModel : ViewModelBase
 
         if (_errorService is null)
             throw new NullReferenceException("ErrorService was not injected");
+
+        if (_steamService is null)
+            throw new NullReferenceException("Steam service was not injected");
     }
 
     /// <summary>

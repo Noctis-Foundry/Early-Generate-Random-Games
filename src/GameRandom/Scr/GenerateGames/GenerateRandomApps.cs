@@ -20,8 +20,13 @@ public class GenerateRandomApps : IGenApp
 
     public bool IsInitialized { get; private set; } = false;
     
-    public GenerateRandomApps()
+    public GenerateRandomApps(string? localPath = null)
     {
+        if (localPath != null)
+        {
+            _localPath = localPath;
+        }
+
         Console.WriteLine($"Path to json file: {_localPath}");
         
         if (!File.Exists(_localPath))   

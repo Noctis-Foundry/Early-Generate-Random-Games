@@ -22,6 +22,7 @@ public partial class RollGame : MainWindowUserControlAbstract
 {
     [Inject] private ErrorService? _errorService = null!;
     [Inject] private ConfirmService? _confirmDialog = null!;
+    [Inject] private SteamService? _steamService;
 
     private ChooseGameWindow? _chooseGameWindow = new();
     private FilterGameWindow? _filterGameWindow = new();
@@ -41,7 +42,7 @@ public partial class RollGame : MainWindowUserControlAbstract
     public RollGame()
     {
         InitializeComponent();
-        DataContext = new RollGameViewModel();
+        DataContext = new RollGameViewModel(new GenerateRandomApps());
 
         if (Design.IsDesignMode)
             return;
@@ -52,6 +53,9 @@ public partial class RollGame : MainWindowUserControlAbstract
 
         if (_errorService is null || _confirmDialog is null)
             throw new NullReferenceException();
+
+        if (_steamService is null)
+            throw new NullReferenceException(nameof(_steamService));
     }
 
     public override void Close(object? sender, RoutedEventArgs e)
@@ -168,7 +172,7 @@ public partial class RollGame : MainWindowUserControlAbstract
     /// </summary>
     private void InitDictionaryWithComponents(GridElements gridElements, AppInfo app)
     {
-        Bitmap? bitmap = SteamService.Instance.GetImageSyncFromBytes(app.ImageBytes);
+        Bitmap? bitmap = _steamService.GetImageSyncFromBytes(app.ImageBytes);
 
         if (bitmap is null)
             throw new NullReferenceException("Failed to get bitmap from bytes");

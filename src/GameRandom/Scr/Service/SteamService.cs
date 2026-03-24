@@ -10,14 +10,6 @@ namespace GameRandom.SteamSDK;
 
 public class SteamService
 {
-    private static Lazy<SteamService> _instance = new(() => new SteamService());
-    
-    public static SteamService Instance => _instance.Value;
-
-    private SteamService()
-    {
-    }
-
     public async Task<Bitmap?> GetImage(string imageUrl, CancellationToken cancellationToken = default)
     {
         using var imageClient = new HttpClient();

@@ -57,5 +57,6 @@ sealed class Program
         Di.Container.RegisterSingleInstance(new SteamWebApi());
         Di.Container.RegisterSingleInstance(new PostgresListener());
         Di.Container.RegisterSingleInstance(new UserControlFactory());
+        Di.Container.RegisterSingleInstance(new SteamService());
     }
 }

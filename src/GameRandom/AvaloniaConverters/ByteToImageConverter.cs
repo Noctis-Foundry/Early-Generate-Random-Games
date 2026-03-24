@@ -3,6 +3,7 @@ using System.Globalization;
 using Avalonia.Data.Converters;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using GameRandom.Scr.DI;
 using GameRandom.SteamSDK;
 
 namespace GameRandom.AvaloniaConverters;
@@ -15,7 +16,10 @@ public class ByteToImageConverter : IValueConverter
         
         if (value is byte[])
         {
-            Bitmap? bitmap = SteamService.Instance.GetImageSyncFromBytes(value as byte[]);
+            if (Di.Container.GetInstance<SteamService>() is not SteamService steamService)
+                throw new NullReferenceException(nameof(SteamService));
+            
+            Bitmap? bitmap = steamService.GetImageSyncFromBytes(value as byte[]);
             
             if (bitmap == null)
                 return empty;

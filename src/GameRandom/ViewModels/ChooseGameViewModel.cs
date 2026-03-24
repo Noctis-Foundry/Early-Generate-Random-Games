@@ -21,6 +21,7 @@ public class ChooseGameViewModel : ViewModelBase
 {
     [Inject] private DatabaseService? _databaseService = null!;
     [Inject] private ErrorService? _errorService = null!;
+    [Inject] private SteamService? _steamService;
     
     private const int DefaultGameDurationDays = 30;
     private const int DatabaseOperationDelay = 5;
@@ -49,6 +50,8 @@ public class ChooseGameViewModel : ViewModelBase
             throw new NullReferenceException("DatabaseService is not initialized.");
         if (_errorService is null)
             throw new NullReferenceException("ErrorService is not initialized.");
+        if (_steamService is null)
+            throw new NullReferenceException("Steam service is not initialized.");
     }
     
     /// <summary>
@@ -92,7 +95,7 @@ public class ChooseGameViewModel : ViewModelBase
     /// <exception cref="NullReferenceException">Thrown when bitmap conversion fails.</exception>
     private byte[] ConvertAppImageToWebp()
     {
-        var bitmap = SteamService.Instance.GetImageSyncFromBytes(_appInfo!.ImageBytes) 
+        var bitmap = _steamService.GetImageSyncFromBytes(_appInfo!.ImageBytes) 
             ?? throw new NullReferenceException("Failed to load bitmap from image bytes.");
         
         return AvaloniaService.Instance.ConvertToWebpBytes(bitmap);

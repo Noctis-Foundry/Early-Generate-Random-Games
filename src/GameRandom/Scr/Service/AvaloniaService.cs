@@ -108,4 +108,9 @@ public class AvaloniaService
         using var ms = new MemoryStream(bytes);
         return new Bitmap(ms);
     }
+
+    internal static void Reset()
+    {
+        _lazyAvalonia = new(() => new AvaloniaService());
+    }
 }

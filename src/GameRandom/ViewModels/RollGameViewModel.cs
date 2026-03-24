@@ -6,6 +6,7 @@ using System.Threading;
 using GameRandom.CoreApp;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using GameRandom.Scr.DI;
 using GameRandom.Scr.Service;
 
 namespace GameRandom.ViewModels.AdminSystem;
@@ -15,6 +16,7 @@ namespace GameRandom.ViewModels.AdminSystem;
 /// </summary>
 public class RollGameViewModel : ViewModelBase
 {
+    [Inject] private SteamService? _steamService;
     /// <summary>
     /// List of generated games with their information and images.
     /// </summary>
@@ -57,11 +59,16 @@ public class RollGameViewModel : ViewModelBase
     /// <summary>
     /// Constructor. Initializes the random application generator if not in design mode.
     /// </summary>
-    public RollGameViewModel()
+    public RollGameViewModel(IGenApp generateRandomApps)
     {
         if (Design.IsDesignMode) return;
-        
-        _generateRandomApps = new GenerateRandomApps();
+
+        _generateRandomApps = generateRandomApps;
+
+        Di.Container.ResolveField(out _steamService);
+
+        if (_steamService is null)
+            throw new NullReferenceException("Failed to inject Steam service from DI");
     }
 
     /// <summary>
@@ -111,7 +118,7 @@ public class RollGameViewModel : ViewModelBase
             if (!FilterGame(gameInfo, filteredGamesData))
                 return null;
 
-        var imageBytes = await SteamService.Instance.GetImageBytes(gameInfo.HeaderImage);
+        var imageBytes = await _steamService.GetImageBytes(gameInfo.HeaderImage);
 
         if (imageBytes == null)
             return null;
