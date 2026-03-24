@@ -1,4 +1,9 @@
+using System;
 using Avalonia.Controls;
+using Avalonia.Threading;
+using GameRandom.Scr.DI;
+using GameRandom.Scr.Service;
+using GameRandom.ViewModels.AdminSystem;
 
 namespace GameRandom.SteamSDK;
 
@@ -40,5 +45,19 @@ public abstract class WindowAbstract : Window
         IsActive = false;
         e.Cancel = true;
         IsClosing = false;
+    }
+    
+    protected void ProcessingWindowShow(ViewModelBase viewModelBase)
+    {
+        if (Di.Container.GetInstance<TaskWaiterWindow>() is not TaskWaiterWindow window)
+            throw new NullReferenceException(nameof(window));
+        
+        Dispatcher.UIThread.InvokeAsync(async () =>
+        {
+            var isCompleted = await window.ShowAsyncWaiter(viewModelBase.IsProcessing, this);
+            
+            if (isCompleted)
+                Logger.Debug("Processing is end");
+        });
     }
 }
