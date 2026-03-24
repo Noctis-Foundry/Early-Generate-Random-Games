@@ -13,6 +13,14 @@ Guidelines:
 - All documentation must be written in English
 - Do not add "Co-authored-by: Junie <junie@jetbrains.com>" to git commits unless explicitly requested by the user.
 
+# Testing Guidelines
+
+- Unit tests must be located in the `GameRandom.UnitTests` project.
+- The folder structure in `GameRandom.UnitTests` must match the main project's folder structure (e.g., unit tests for the `Service` folder must be placed in a `Service` folder within the `GameRandom.UnitTests` project).
+- Integration tests must be located in the `GameRandom.IntegrationTests` project.
+- All new tests must be documented in the `docs` folder at the root of the project. 
+- Use `UnitTestsDoc.md` for Unit tests and `IntegrationTestsDoc.md` for Integration tests. Create these files if they do not exist.
+
 # Git Commit Rules
 
 Multi-line commit:
