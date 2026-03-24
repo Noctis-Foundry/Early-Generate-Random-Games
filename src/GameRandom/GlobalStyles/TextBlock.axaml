@@ -8,12 +8,12 @@
 
     <!-- Add Styles Here -->
     <Style Selector="TextBlock">
-        <Setter Property="FontFamily" Value="{DynamicResource 'Rye-Font'}"></Setter>
+        <!-- <Setter Property="FontFamily" Value="{DynamicResource 'Rye-Font'}"></Setter> -->
         <Setter Property="Foreground" Value="#1a1c1c"></Setter>
     </Style>
     
     <Style Selector="SelectableTextBlock">
-        <Setter Property="FontFamily" Value="{DynamicResource 'Rye-Font'}"></Setter>
+        <!-- <Setter Property="FontFamily" Value="{DynamicResource 'Rye-Font'}"></Setter> -->
         <Setter Property="Foreground" Value="#1a1c1c"></Setter>
     </Style>
 </Styles>

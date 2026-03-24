@@ -1,0 +1,34 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="350" d:DesignHeight="150"
+        MinHeight="150" MaxHeight="150"
+        MinWidth="350" MaxWidth="350"
+        x:Class="GameRandom.Views.TaskLoading"
+        Title="TaskLoading">
+
+    <Window.Styles>
+        <StyleInclude Source="/GlobalStyles/ContextWindowsStyle.axaml" />
+
+        <Style Selector="ProgressBar.LoadingProgress">
+            <Setter Property="Foreground" Value="#bb9e67" />
+            <Setter Property="Background" Value="{StaticResource TextBlockBackground}" />
+            <Setter Property="Height" Value="20" />
+            <Setter Property="CornerRadius" Value="4" />
+        </Style>
+    </Window.Styles>
+
+    <DockPanel Classes="WindowContainer">
+        <Grid Classes="WindowGrid">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="15">
+                <Border Classes="WindowTextBorder">
+                    <TextBlock Classes="WindowTextBlock" Text="Please wait" FontSize="14" />
+                </Border>
+
+                <ProgressBar Classes="LoadingProgress" IsIndeterminate="True" Width="300" />
+            </StackPanel>
+        </Grid>
+    </DockPanel>
+
+</Window>
