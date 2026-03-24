@@ -1,6 +1,11 @@
 # ChangeLog
 
 ## [2026-03-24]
+- feat(infra): add task waiter window service for handling async task loading indicators
+- feat(ui): add task loading view and update global styles for text blocks
+- refactor(mvvm): implement processing state tracking in ViewModels
+- feat(admin): integrate task waiter in AdminRegistration and fix CancellationTokenSource lifecycle bug
+- chore: add TaskViewLoading project structure for task loading visualization
 - refactor: Update Junie rules
 - fix: update database service and app context for better testability
 - docs: add documentation for unit and integration tests
