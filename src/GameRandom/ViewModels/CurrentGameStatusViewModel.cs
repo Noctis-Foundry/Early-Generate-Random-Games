@@ -10,9 +10,9 @@ using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using GameRandom.DataBaseContexts;
 using GameRandom.Service;
-using GameRandom.SteamSDK;
-using GameRandom.SteamSDK.Enums;
-using GameRandom.SteamSDK.UserData;
+using GameRandom.Src;
+using GameRandom.Src.Enums;
+using GameRandom.Src.UserData;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace GameRandom.ViewModels.AdminSystem;
@@ -106,6 +106,9 @@ public class CurrentGameStatusViewModel : ViewModelBase
             return;
         }
 
+        IsProcess = true;
+        StartProcessing?.Invoke();
+        
         try
         {
             var userGameInfo = await GetUserGameFromUserId(User.GetInstance().GetUserId());
@@ -121,6 +124,7 @@ public class CurrentGameStatusViewModel : ViewModelBase
         }
         finally
         {
+            IsProcess = false;
             _loadInfoSemaphore.Release();
         }
     }
@@ -210,8 +214,11 @@ public class CurrentGameStatusViewModel : ViewModelBase
         try
         {
             var isAdded = await _finishedGameDialogService.ShowWindowAsync(AppInfo);
-
+            
             if (!isAdded) return;
+            
+            IsProcess = true;
+            StartProcessing?.Invoke();
 
             var isUpdate = await ChangeUserGame();
 
@@ -224,6 +231,7 @@ public class CurrentGameStatusViewModel : ViewModelBase
         }
         finally
         {
+            IsProcess = false;
             _finishSemaphore.Release();
         }
     }
@@ -365,5 +373,7 @@ public class CurrentGameStatusViewModel : ViewModelBase
         _databaseService = null;
         _errorService = null;
         _postgresListener = null;
+        
+        base.Dispose();
     }
 }

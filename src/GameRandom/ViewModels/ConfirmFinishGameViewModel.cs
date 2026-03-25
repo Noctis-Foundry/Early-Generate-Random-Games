@@ -6,8 +6,8 @@ using GameRandom.DataBaseContexts;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Service;
 using GameRandom.Service;
-using GameRandom.SteamSDK;
-using GameRandom.SteamSDK.Enums;
+using GameRandom.Src;
+using GameRandom.Src.Enums;
 
 namespace GameRandom.ViewModels.AdminSystem;
 
@@ -87,18 +87,33 @@ public class ConfirmFinishGameViewModel : ViewModelBase
     {
         if (!IsRequiredParameters()) return false;
 
-        var finishedGame = CreateFinishedGame();
-        UpdatingGameProgress();
-
-        using var cancellationTokenSource = new CancellationTokenSource(DatabaseOperationSecDelay);
+        IsProcess = true;
+        StartProcessing?.Invoke();
         
-        IsUpdated = await _databaseService?.TransitionFinishGame(
-            finishedGame,
-            GameProgress,
-            cancellationTokenSource.Token);
+        try
+        {
+            var finishedGame = CreateFinishedGame();
+            UpdatingGameProgress();
 
-        ShowResultWindow(IsUpdated);
-        return IsUpdated;
+            using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(DatabaseOperationSecDelay));
+
+            IsUpdated = await _databaseService?.TransitionFinishGame(
+                finishedGame,
+                GameProgress,
+                cancellationTokenSource.Token);
+
+            ShowResultWindow(IsUpdated);
+            return IsUpdated;
+        }
+        catch (Exception e)
+        {
+            Logger.Debug("Fail finished game: " + e.Message);
+            return false;
+        }
+        finally
+        {
+            IsProcess = false;
+        }
     }
 
     /// <summary>
@@ -185,5 +200,7 @@ public class ConfirmFinishGameViewModel : ViewModelBase
 
         _databaseService = null;
         _errorService = null;
+        
+        base.Dispose();
     }
 }
