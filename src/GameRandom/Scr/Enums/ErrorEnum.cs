@@ -1,4 +1,4 @@
-﻿namespace GameRandom.SteamSDK.Enums;
+﻿namespace GameRandom.Src.Enums;
 
 public enum ErrorEnum
 {

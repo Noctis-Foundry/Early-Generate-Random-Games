@@ -9,10 +9,10 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Service;
-using GameRandom.SteamSDK;
-using GameRandom.SteamSDK.Enums;
-using GameRandom.SteamSDK.LobbySystem;
-using GameRandom.SteamSDK.UserData;
+using GameRandom.Src;
+using GameRandom.Src.Enums;
+using GameRandom.Src.LobbySystem;
+using GameRandom.Src.UserData;
 using GameRandom.Views;
 
 namespace GameRandom;

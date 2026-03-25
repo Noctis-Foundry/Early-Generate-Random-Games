@@ -8,7 +8,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using GameRandom.Service;
-using GameRandom.SteamSDK;
+using GameRandom.Src;
 
 namespace GameRandom.CoreApp;
 

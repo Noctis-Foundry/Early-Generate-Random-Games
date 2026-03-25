@@ -5,9 +5,9 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Service;
-using GameRandom.SteamSDK.SteamsContexts;
+using GameRandom.Src.SteamsContexts;
 
-namespace GameRandom.SteamSDK;
+namespace GameRandom.Src;
 
 public class SteamWebApi
 {

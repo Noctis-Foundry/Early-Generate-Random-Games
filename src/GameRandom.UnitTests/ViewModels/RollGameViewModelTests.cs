@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using GameRandom.CoreApp;
 using GameRandom.Scr.DI;
-using GameRandom.SteamSDK;
+using GameRandom.Src;
 using GameRandom.ViewModels.AdminSystem;
 using Xunit;
 

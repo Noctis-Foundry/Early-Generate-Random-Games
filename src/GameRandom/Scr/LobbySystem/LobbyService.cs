@@ -7,10 +7,10 @@ using GameRandom.Events;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Events;
 using GameRandom.Scr.Service;
-using GameRandom.SteamSDK.Enums;
-using GameRandom.SteamSDK.UserData;
+using GameRandom.Src.Enums;
+using GameRandom.Src.UserData;
 
-namespace GameRandom.SteamSDK.LobbySystem;
+namespace GameRandom.Src.LobbySystem;
 
 /// <summary>
 /// Lobby management service for multiplayer game sessions

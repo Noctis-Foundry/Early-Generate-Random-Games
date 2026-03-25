@@ -4,11 +4,11 @@ using GameRandom.Scr.DI;
 using GameRandom.Scr.Events;
 using GameRandom.Scr.Service;
 using GameRandom.Service;
-using GameRandom.SteamSDK;
-using GameRandom.SteamSDK.Factory;
+using GameRandom.Src;
+using GameRandom.Src.Factory;
 using System.Threading.Tasks;
-using GameRandom.SteamSDK.LobbySystem;
-using GameRandom.SteamSDK.UserData;
+using GameRandom.Src.LobbySystem;
+using GameRandom.Src.UserData;
 
 namespace GameRandom;
 

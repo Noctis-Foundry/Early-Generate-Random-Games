@@ -1,4 +1,4 @@
-using GameRandom.SteamSDK;
+using GameRandom.Src;
 using Xunit;
 
 namespace GameRandom.UnitTests.Services;

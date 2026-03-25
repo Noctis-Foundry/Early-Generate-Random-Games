@@ -5,9 +5,9 @@ using GameRandom.Scr.Service;
 using Steamworks;
 using System.Threading.Tasks;
 using GameRandom.DataBaseContexts;
-using GameRandom.SteamSDK.UserData;
+using GameRandom.Src.UserData;
 
-namespace GameRandom.SteamSDK;
+namespace GameRandom.Src;
 
 public class SteamManager
 {

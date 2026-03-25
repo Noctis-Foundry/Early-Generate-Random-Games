@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Steamworks;
 
-namespace GameRandom.SteamSDK.UserData;
+namespace GameRandom.Src.UserData;
 
 /// <summary>
 /// Singleton class for managing current Steam user data

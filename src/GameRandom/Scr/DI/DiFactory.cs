@@ -13,7 +13,7 @@ public class DiFactory
 
     /// <summary>
     /// Creates and registers a single instance of the specified class.
-    /// Calls <see cref="GameRandom.SteamSDK.DI.Register.Init"/> with one initialize argument.
+    /// Calls <see cref="GameRandom.Src.DI.Register.Init"/> with one initialize argument.
     /// </summary>
     /// <typeparam name="TClass">The concrete class type to register.</typeparam>
     /// <typeparam name="T1">The type of the first initialization argument.</typeparam>
@@ -28,7 +28,7 @@ public class DiFactory
 
     /// <summary>
     /// Creates and registers a single instance implementing a specific interface.
-    /// Calls <see cref="GameRandom.SteamSDK.DI.Register.Init"/> with one initialization argument.
+    /// Calls <see cref="GameRandom.Src.DI.Register.Init"/> with one initialization argument.
     /// </summary>
     /// <typeparam name="TInterface">The interface to register the instance as.</typeparam>
     /// <typeparam name="TClass">The concrete class implementing the interface.</typeparam>
@@ -44,7 +44,7 @@ public class DiFactory
 
     /// <summary>
     /// Creates and registers a single instance of the specified class.
-    /// Calls <see cref="GameRandom.SteamSDK.DI.Register.Init"/> with two initialization arguments.
+    /// Calls <see cref="GameRandom.Src.DI.Register.Init"/> with two initialization arguments.
     /// </summary>
     /// <typeparam name="TClass">The concrete class type to register.</typeparam>
     /// <typeparam name="T1">The type of the first initialization argument.</typeparam>
@@ -61,7 +61,7 @@ public class DiFactory
 
     /// <summary>
     /// Creates and registers a single instance implementing a specific interface.
-    /// Calls <see cref="GameRandom.SteamSDK.DI.Register.Init"/> with two initialization arguments.
+    /// Calls <see cref="GameRandom.Src.DI.Register.Init"/> with two initialization arguments.
     /// </summary>
     /// <typeparam name="TInterface">The interface to register the instance as.</typeparam>
     /// <typeparam name="TClass">The concrete class implementing the interface.</typeparam>

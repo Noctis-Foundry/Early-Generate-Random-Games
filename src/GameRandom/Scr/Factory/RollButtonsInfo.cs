@@ -2,7 +2,7 @@ using System;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.Input;
 
-namespace GameRandom.SteamSDK.Factory;
+namespace GameRandom.Src.Factory;
 
 public class RollButtonsInfo(Button button, Image image, RelayCommand command) : IDisposable
 {

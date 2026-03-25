@@ -1,6 +1,6 @@
 using Avalonia.Media;
 
-namespace GameRandom.SteamSDK;
+namespace GameRandom.Src;
 
 public static class Colors
 {

@@ -1,6 +1,6 @@
 using System;
 
-namespace GameRandom.SteamSDK.Factory;
+namespace GameRandom.Src.Factory;
 
 public class UserControlFactory
 {

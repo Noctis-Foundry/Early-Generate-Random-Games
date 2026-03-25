@@ -4,7 +4,7 @@ using Avalonia.Data.Converters;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using GameRandom.Scr.DI;
-using GameRandom.SteamSDK;
+using GameRandom.Src;
 
 namespace GameRandom.AvaloniaConverters;
 

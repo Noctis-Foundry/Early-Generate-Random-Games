@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
 using GameRandom.Scr.Service;
 
-namespace GameRandom.SteamSDK;
+namespace GameRandom.Src;
 
 public class SteamService
 {
