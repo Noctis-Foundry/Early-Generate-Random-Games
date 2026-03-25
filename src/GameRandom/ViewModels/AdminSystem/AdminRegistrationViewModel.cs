@@ -8,9 +8,9 @@ using CommunityToolkit.Mvvm.Input;
 using GameRandom.DataBaseContexts;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Service;
-using GameRandom.SteamSDK;
-using GameRandom.SteamSDK.Enums;
-using GameRandom.SteamSDK.UserData;
+using GameRandom.Src;
+using GameRandom.Src.Enums;
+using GameRandom.Src.UserData;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace GameRandom.ViewModels.AdminSystem;
@@ -361,8 +361,13 @@ public class AdminRegistrationViewModel : ViewModelBase
         _postgresListener?.Unsubscribe(TableEnum.AdminTable, _loadAdminTable);
         _postgresListener = null;
 
+        _loadAdminTable = null!;
+        
+
         _admins.Clear();
         Admins.Clear();
+        
+        base.Dispose();
     }
 }
 

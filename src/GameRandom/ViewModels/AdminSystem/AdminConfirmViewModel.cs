@@ -6,9 +6,9 @@ using Avalonia.Media.Imaging;
 using GameRandom.DataBaseContexts;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Service;
-using GameRandom.SteamSDK;
-using GameRandom.SteamSDK.Enums;
-using GameRandom.SteamSDK.UserData;
+using GameRandom.Src;
+using GameRandom.Src.Enums;
+using GameRandom.Src.UserData;
 
 namespace GameRandom.ViewModels.AdminSystem;
 
@@ -222,7 +222,6 @@ public class AdminConfirmViewModel : ViewModelBase
     /// </summary>
     public override void Dispose()
     {
-        _actionSlim.Release();
         _actionSlim.Dispose();
 
         FinishedGame = null;
@@ -232,5 +231,7 @@ public class AdminConfirmViewModel : ViewModelBase
         NickName = null;
 
         _databaseService = null;
+        
+        base.Dispose();
     }
 }

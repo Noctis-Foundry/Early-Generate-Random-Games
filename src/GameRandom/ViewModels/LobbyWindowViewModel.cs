@@ -2,7 +2,7 @@
 using GameRandom.Events;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Events;
-using GameRandom.SteamSDK.UserData;
+using GameRandom.Src.UserData;
 
 namespace GameRandom.ViewModels.AdminSystem;
 

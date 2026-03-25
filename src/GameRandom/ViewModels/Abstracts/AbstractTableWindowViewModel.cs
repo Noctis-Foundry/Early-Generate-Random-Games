@@ -5,8 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Service;
-using GameRandom.SteamSDK;
-using GameRandom.SteamSDK.Enums;
+using GameRandom.Src;
+using GameRandom.Src.Enums;
 
 namespace GameRandom.ViewModels.AdminSystem;
 
@@ -16,8 +16,6 @@ public class AbstractTableWindowViewModel<TEntity> : ViewModelBase where TEntity
     [Inject] protected ObservableConverter? _observableConverter = null!;
     [Inject] protected ErrorService? _errorService = null!;
     protected ObservableCollection<TEntity>? _tableData;
-    
-    protected CancellationTokenSource _cts = new();
 
     public ObservableCollection<TEntity>? TableData
     {
@@ -25,6 +23,8 @@ public class AbstractTableWindowViewModel<TEntity> : ViewModelBase where TEntity
         set => SetProperty(ref _tableData, value);
     }
 
+    private const int DatabaseTimeoutSec = 4;
+    
     public AbstractTableWindowViewModel()
     {
         Di.Container.ResolveFieldsFromClassInstance(this);
@@ -36,9 +36,11 @@ public class AbstractTableWindowViewModel<TEntity> : ViewModelBase where TEntity
 
         List<TEntity>? tableList = new();
 
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(DatabaseTimeoutSec));
+        
         tableList = predicate is null
-            ? await _databaseService.GetTableListAsync<TEntity>(_cts.Token)
-            : await _databaseService.Where(predicate, _cts.Token);
+            ? await _databaseService.GetTableListAsync<TEntity>(cts.Token)
+            : await _databaseService.Where(predicate, cts.Token);
 
         if (tableList is null)
         {
@@ -53,5 +55,20 @@ public class AbstractTableWindowViewModel<TEntity> : ViewModelBase where TEntity
     protected bool IsNotValidateInjectingData()
     {
         return _databaseService is null && _observableConverter is null && _errorService is null;
+    }
+
+    public override void Dispose()
+    {
+        _databaseService = null;
+        _observableConverter = null;
+        _errorService = null;
+        
+        _tableData?.Clear();
+        _tableData = null;
+        
+        TableData?.Clear();
+        TableData = null;
+        
+        base.Dispose();
     }
 }

@@ -8,7 +8,7 @@ using Avalonia.Threading;
 using GameRandom.DataBaseContexts;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Service;
-using GameRandom.SteamSDK;
+using GameRandom.Src;
 
 namespace GameRandom.ViewModels.AdminSystem;
 

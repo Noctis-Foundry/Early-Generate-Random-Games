@@ -10,8 +10,8 @@ using GameRandom.Events;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Events;
 using GameRandom.Scr.Service;
-using GameRandom.SteamSDK;
-using GameRandom.SteamSDK.UserData;
+using GameRandom.Src;
+using GameRandom.Src.UserData;
 
 namespace GameRandom.ViewModels.AdminSystem;
 
@@ -256,6 +256,8 @@ public class AdminPanelViewModel : ViewModelBase
 
         _updateRules = null!;
         _loadAction = null!;
+        
+        base.Dispose();
     }
 }
 

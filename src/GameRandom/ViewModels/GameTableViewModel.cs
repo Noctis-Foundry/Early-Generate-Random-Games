@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using GameRandom.DataBaseContexts;
 using GameRandom.Scr.Service;
-using GameRandom.SteamSDK.UserData;
+using GameRandom.Src.UserData;
 
 namespace GameRandom.ViewModels.AdminSystem;
 
@@ -23,7 +23,10 @@ public class GameTableViewModel : AbstractTableWindowViewModel<GameTableData>
         if (IsNotValidateInjectingData()) throw new NullReferenceException();
         
         var userData = User.GetInstance().GetUserInfo();
-        
+
+        IsProcess = true;
+        StartProcessing?.Invoke();
+
         try
         {
             var lobbies = await _databaseService.GetLobbyById(userData.LobbyId);
@@ -32,14 +35,18 @@ public class GameTableViewModel : AbstractTableWindowViewModel<GameTableData>
                 return;
 
             var gameTable = await LoadGroupTableData(lobbies.LobbyData);
-            
+
             if (gameTable is null) return;
-            
+
             TableData = new ObservableCollection<GameTableData>(gameTable);
         }
         catch (Exception e)
         {
             Logger.Error(e.Message);
+        }
+        finally
+        {
+            IsProcess = false;
         }
     }
     

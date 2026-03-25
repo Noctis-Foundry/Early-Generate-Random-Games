@@ -18,20 +18,20 @@ public class FilterGameViewModel : ViewModelBase
     /// <summary>
     /// Available game categories loaded from JSON.
     /// </summary>
-    private ObservableCollection<string> categories = new();
-    public ObservableCollection<string> Categories => categories;
+    private ObservableCollection<string> _categories = new();
+    public ObservableCollection<string> Categories => _categories;
 
     /// <summary>
     /// Available game genres loaded from JSON.
     /// </summary>
-    private ObservableCollection<string> genres = new();
-    public ObservableCollection<string> Genres => genres;
+    private ObservableCollection<string> _genres = new();
+    public ObservableCollection<string> Genres => _genres;
     
     /// <summary>
     /// Available release years for games.
     /// </summary>
-    private List<int> years = Enumerable.Range(2003, DateTime.Now.Year - 2003 + 1).ToList();
-    public List<int> Years => years;
+    private List<int> _years = Enumerable.Range(2003, DateTime.Now.Year - 2003 + 1).ToList();
+    public List<int> Years => _years;
 
     #endregion
     
@@ -105,7 +105,7 @@ public class FilterGameViewModel : ViewModelBase
                 var categoriesList = JsonSerializer.Deserialize<List<string>>(File.ReadAllText(categoriesPath));
                 if (categoriesList != null)
                 {
-                    categories = new ObservableCollection<string>(categoriesList);
+                    _categories = new ObservableCollection<string>(categoriesList);
                 }
             }
 
@@ -114,7 +114,7 @@ public class FilterGameViewModel : ViewModelBase
                 var genresList = JsonSerializer.Deserialize<List<string>>(File.ReadAllText(genresPath));
                 if (genresList != null)
                 {
-                    genres = new ObservableCollection<string>(genresList);
+                    _genres = new ObservableCollection<string>(genresList);
                 }
             }
         }
@@ -140,9 +140,24 @@ public class FilterGameViewModel : ViewModelBase
     /// </summary>
     public override void Dispose()
     {
+        _selectedCategories.Clear();
+        _selectedGenres.Clear();
+        _selectedYears.Clear();
+        
         SelectedCategories.Clear();
         SelectedGenres.Clear();
         SelectedYears.Clear();
+        
+        _categories.Clear();
+        _genres.Clear();
+        _years.Clear();
+        
+        Years.Clear();
+        Genres.Clear();
+        Categories.Clear();
+        
+        
+        base.Dispose();
     }
 }
 
