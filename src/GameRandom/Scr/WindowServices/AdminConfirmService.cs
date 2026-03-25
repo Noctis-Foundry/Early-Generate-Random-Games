@@ -3,14 +3,19 @@ using Avalonia.Controls;
 using GameRandom.DataBaseContexts;
 using GameRandom.Views;
 
-namespace GameRandom.SteamSDK;
+namespace GameRandom.Src;
 using System.Threading.Tasks;
 
-public class AdminConfirmService(Window owner) : AbstractWindowService<AdminConfirmWindow>(owner)
+public class AdminConfirmService : AbstractWindowService<AdminConfirmWindow>
 {
     private Queue<FinishedGames>? _dialogQueue = new();
     public bool IsOpen { get; private set; } = false;
 
+    public AdminConfirmService(Window owner) : base(owner)
+    {
+        ControlWindow.Closing += (_, _) => ClosingWindow();
+    }
+    
     public override void ShowWindow(object? data = null)
     {
         if (data is FinishedGames gameInfo && !ControlWindow.IsActive)
@@ -50,7 +55,7 @@ public class AdminConfirmService(Window owner) : AbstractWindowService<AdminConf
         return true;
     }
 
-    protected override void ClosingWindow()
+    private void ClosingWindow()
     {
         if (NextDialog())
         {
@@ -59,6 +64,5 @@ public class AdminConfirmService(Window owner) : AbstractWindowService<AdminConf
         }
         
         IsOpen = false;
-        base.ClosingWindow();
     }
 }

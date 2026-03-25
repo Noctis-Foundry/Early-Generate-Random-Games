@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using GameRandom.Views;
 
-namespace GameRandom.SteamSDK;
+namespace GameRandom.Src;
 
 public class ConfirmService(Window owner)
 {

@@ -5,7 +5,7 @@ using Avalonia.Logging;
 using GameRandom.DataBaseContexts;
 using GameRandom.Views;
 
-namespace GameRandom.SteamSDK;
+namespace GameRandom.Src;
 
 public class FinishedGameDialogService (Window owner) : AbstractWindowService<ConfirmFinishGame>(owner)
 {

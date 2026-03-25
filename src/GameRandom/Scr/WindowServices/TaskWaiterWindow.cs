@@ -5,7 +5,7 @@ using Avalonia.Controls;
 using GameRandom.Scr.Service;
 using GameRandom.Views;
 
-namespace GameRandom.SteamSDK;
+namespace GameRandom.Src;
 
 public class TaskWaiterWindow(Window ownerWindow) : AbstractWindowService<TaskLoading>(ownerWindow), ITaskWaiter
 {

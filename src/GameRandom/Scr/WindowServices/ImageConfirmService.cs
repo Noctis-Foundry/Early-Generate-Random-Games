@@ -4,7 +4,7 @@ using Avalonia.Media.Imaging;
 using GameRandom.Scr.DI;
 using GameRandom.Views;
 
-namespace GameRandom.SteamSDK;
+namespace GameRandom.Src;
 
 public class ImageConfirmService(Window owner) : AbstractWindowService<ConfirmImage>(owner)
 {

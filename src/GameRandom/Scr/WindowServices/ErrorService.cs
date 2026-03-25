@@ -5,10 +5,10 @@ using Avalonia.Controls;
 using Avalonia.Threading;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Service;
-using GameRandom.SteamSDK.Enums;
+using GameRandom.Src.Enums;
 using GameRandom.Views;
 
-namespace GameRandom.SteamSDK;
+namespace GameRandom.Src;
 
 public class ErrorService : AbstractWindowService<ErrorWindow>
 {
@@ -17,6 +17,8 @@ public class ErrorService : AbstractWindowService<ErrorWindow>
     public ErrorService(Window owner) : base(owner)
     {
         GlobalExceptionHandler();
+        
+        ControlWindow.Closing += (sender, args) => ClosingWindow();
     }
 
     private void GlobalExceptionHandler()
@@ -59,10 +61,10 @@ public class ErrorService : AbstractWindowService<ErrorWindow>
         }
         
         ControlWindow.ChangeTextOnModal(errorStruct.ErrorMessage, errorStruct.ErrorType);
-        ControlWindow.Open();
+        ControlWindow.Show();
     }
 
-    protected override void ClosingWindow()
+    protected void ClosingWindow()
     {
         TryGoNext();
     }
