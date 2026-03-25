@@ -10,16 +10,14 @@ using GameRandom.Events;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Events;
 using GameRandom.Scr.Service;
-using GameRandom.SteamSDK;
-using GameRandom.SteamSDK.UserData;
+using GameRandom.Src;
+using GameRandom.Src.UserData;
 using GameRandom.ViewModels.AdminSystem;
 
 namespace GameRandom.Views;
 
-public partial class AdminRegistrationWindow : WindowAbstract
+public sealed partial class AdminRegistrationWindow : WindowBase<AdminRegistrationViewModel>
 {
-    private Action? _savedHandler;
-    
     public AdminRegistrationWindow()
     {
         InitializeComponent();
@@ -28,51 +26,24 @@ public partial class AdminRegistrationWindow : WindowAbstract
             return;
         
         InitializeViewModel();
-        InitializeListener();
+        InitializeProcessingHandler();
+        InitializeEventBusListener<AdminRulesUpdating>(CheckAdminStatus);
 
         WindowStartupLocation = WindowStartupLocation.CenterScreen;
     }
-
-    private void InitializeViewModel()
-    {
-        var vm = new AdminRegistrationViewModel();
-        
-        _savedHandler += () => ProcessingWindowShow(vm);
-        
-        vm.StartProcessing += _savedHandler;
-        
-        DataContext = vm;
-    }
-    private void InitializeListener()
-    {
-        if (Di.Container.GetInstance<EventBus>() is not EventBus eventBus)
-            throw new NullReferenceException(nameof(EventBus));
-        
-        eventBus.Subscribe<AdminRulesUpdating>(_ =>
-        {
-            Dispatcher.UIThread.InvokeAsync(CheckAdminStatus);
-        });
-    }
+    
     private void CheckAdminStatus()
     {
         if (!User.GetInstance().IsTopLevelAdmin())
         {
-            if (DataContext is AdminRegistrationViewModel vm)
-                vm.Dispose();
-            
+            Dispose();
             Close();
         }
-            
     }
+
     private void CloseAsyncWindow(object? sender, RoutedEventArgs e)
     {
-        if (DataContext is AdminRegistrationViewModel vm)
-        {
-            if (vm.StartProcessing is not null && _savedHandler is not null) 
-                vm.StartProcessing -= _savedHandler;
-            
-            vm.Dispose();
-        }
+        Dispose();
         
         Close();
     }

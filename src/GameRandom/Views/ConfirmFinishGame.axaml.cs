@@ -8,33 +8,39 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
 using GameRandom.DataBaseContexts;
 using GameRandom.Scr.DI;
-using GameRandom.SteamSDK;
+using GameRandom.Src;
 using GameRandom.ViewModels.AdminSystem;
 using Logger = GameRandom.Scr.Service.Logger;
 
 namespace GameRandom.Views;
 
-public partial class ConfirmFinishGame : WindowAbstract
+public sealed partial class ConfirmFinishGame : WindowBase<ConfirmFinishGameViewModel>
 {
-    private ConfirmFinishGameViewModel? _viewModel;
-
+    private EventHandler<TextChangingEventArgs>? _textChanging;
+    
     public ConfirmFinishGame()
     {
         InitializeComponent();
-        _viewModel = new ConfirmFinishGameViewModel();
-        DataContext = _viewModel;
+        InitializeViewModel();
+        InitializeCommentListener();
+        InitializeProcessingHandler();
+        
+        WindowStartupLocation = WindowStartupLocation.CenterScreen;
+    }
 
-        CommentBox.TextChanging += (sender, args) =>
+    private void InitializeCommentListener()
+    {
+        _textChanging = (sender, args) =>
         {
             if (DataContext is ConfirmFinishGameViewModel vm && sender is TextBox textBox)
             {
                 vm.Comment = textBox.Text;
             }
         };
-        
-        WindowStartupLocation = WindowStartupLocation.CenterScreen;
-    }
 
+        CommentBox.TextChanging += _textChanging;
+    }
+    
     public async Task<bool> ShowAsync(Window owner, GameProgresses gameInfo)
     {
         IsClosing = false;
@@ -45,9 +51,9 @@ public partial class ConfirmFinishGame : WindowAbstract
     
     private async void OnSaveEditClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        if (_viewModel != null)
+        if (DataContext is ConfirmFinishGameViewModel vm)
         {
-           var isEdit = await _viewModel.SaveEditAsync();
+           var isEdit = await vm.SaveEditAsync();
            
            if (isEdit) Close();
         }
@@ -72,15 +78,24 @@ public partial class ConfirmFinishGame : WindowAbstract
     {
         if (IsClosing) return;
         
-        e.Cancel = true;
         IsClosing = true;
-
+        
         if (DataContext is ConfirmFinishGameViewModel vm)
         {
             Close(vm.IsUpdated);
+            Dispose();
             return;
         }
-
+        
+        Dispose();
         Close(false);
+    }
+
+    public override void Dispose()
+    {
+        CommentBox.TextChanging -= _textChanging;
+        _textChanging = null;
+        
+        base.Dispose();
     }
 }

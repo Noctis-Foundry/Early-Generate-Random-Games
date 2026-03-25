@@ -3,7 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using GameRandom.Service;
-using GameRandom.SteamSDK;
+using GameRandom.Src;
 using GameRandom.ViewModels.AdminSystem;
 using Steamworks;
 
@@ -21,7 +21,6 @@ public partial class ProfileContent : MainWindowUserControlAbstract
         if (Design.IsDesignMode)
         {
             StatisticContent.Content = new StatisticControl();
-            return;
         }
     }
 
@@ -59,14 +58,16 @@ public partial class ProfileContent : MainWindowUserControlAbstract
     {
         _changeWindowAction = null;
         ProfileImage.Source = null;
+        
         DataContext = null;
         
         _currentGame?.ProfileClosed();
+        _statisticContent.Dispose();
     }
 
     private void OpenActivityGame(object? sender, RoutedEventArgs e)
     {
         _currentGame = new CurrentGame();
-        _currentGame.Open();
+        _currentGame.Show();
     }
 }

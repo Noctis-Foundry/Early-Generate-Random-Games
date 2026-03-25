@@ -1,16 +1,17 @@
 using System;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
-using GameRandom.SteamSDK;
-using GameRandom.SteamSDK.UserData;
+using GameRandom.Src;
+using GameRandom.Src.UserData;
 using GameRandom.ViewModels.AdminSystem;
 
 namespace GameRandom.Views;
 
-public partial class GamesTableWindow : WindowAbstract
+public sealed partial class GamesTableWindow : WindowBase<StatisticGameTableViewModel>
 {
     public GamesTableWindow()
     {
@@ -19,15 +20,18 @@ public partial class GamesTableWindow : WindowAbstract
         if (Design.IsDesignMode)
             return;
         
-        DataContext = new StatisticGameTableViewModel();
+        InitializeViewModel();
+        InitializeProcessingHandler();
     }
 
-    public override void Open(Window? parent = null)
+    public override void Show()
     {
-        base.Open(parent);
-        
         if (DataContext is StatisticGameTableViewModel statisticGameTableViewModel)
-            Dispatcher.UIThread.InvokeAsync(async () => await statisticGameTableViewModel.LoadData(e => e.PlayerId == User.GetInstance().GetUserInfo().SteamId));
+        {
+            Dispatcher.UIThread.InvokeAsync(async () => await statisticGameTableViewModel.LoadData());
+        }
+        
+        base.Show();
     }
 
     protected override void OnClosing(WindowClosingEventArgs e)
@@ -35,6 +39,6 @@ public partial class GamesTableWindow : WindowAbstract
         base.OnClosing(e);
         
         if (DataContext is StatisticGameTableViewModel statisticGameTableViewModel)
-            statisticGameTableViewModel.UnloadTable();
+            statisticGameTableViewModel.Dispose();
     }
 }

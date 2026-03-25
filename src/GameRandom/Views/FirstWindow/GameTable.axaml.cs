@@ -4,7 +4,7 @@ using Avalonia.Interactivity;
 using Avalonia.Threading;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Service;
-using GameRandom.SteamSDK;
+using GameRandom.Src;
 using GameRandom.ViewModels.AdminSystem;
 
 namespace GameRandom.Views;
@@ -33,6 +33,8 @@ public partial class GameTable : MainWindowUserControlAbstract
         
         DataContext = new GameTableViewModel();
         Di.Container.ResolveFieldsFromClassInstance(this);
+        
+        InitializeProcessingHandler();
 
         _savedDelegate = e => 
         {
@@ -97,15 +99,13 @@ public partial class GameTable : MainWindowUserControlAbstract
 
         if (Di.Container.TryGetInstance<PostgresListener>() is PostgresListener listener)
         {
-            listener.Unsubscribe(TableEnum.GameProgress, _savedDelegate);
+            if (_savedDelegate is not null) 
+                listener.Unsubscribe(TableEnum.GameProgress, _savedDelegate);
         }
-
-        _savedDelegate = null;
         
+        _savedDelegate = null;
         _errorService = null!;
         
-        GC.Collect();
-        GC.WaitForPendingFinalizers();
-        GC.Collect();
+        base.Dispose();
     }
 }

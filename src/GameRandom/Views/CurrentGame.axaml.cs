@@ -1,51 +1,44 @@
 using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Service;
-using GameRandom.SteamSDK;
+using GameRandom.Src;
 using GameRandom.ViewModels.AdminSystem;
 
 namespace GameRandom.Views;
 
-public partial class CurrentGame : WindowAbstract
+public sealed partial class CurrentGame : WindowBase<CurrentGameStatusViewModel>
 {
     [Inject] private SteamService? _steamService;
     
     public CurrentGame()
     {
         InitializeComponent();
-        DataContext = new CurrentGameStatusViewModel();
+        InitializeViewModel();
+        InitializeDiContainer();
+        InitializeProcessingHandler();
 
         WindowStartupLocation = WindowStartupLocation.CenterOwner;
-
-        Di.Container.ResolveField(out _steamService);
-
-        if (_steamService is null)
-            throw new NullReferenceException("Failed to inject steam service from di");
     }
-    
-    public override void Open(Window? parent = null)
+
+    public override void Show()
     {
-        base.Open(parent);
-        
-        Di.Container.ResolveFieldsFromClassInstance(this);
-        
-        if (DataContext is CurrentGameStatusViewModel viewModel)
+        base.Show();
+
+        if (DataContext is CurrentGameStatusViewModel vm)
         {
-            Dispatcher.UIThread.InvokeAsync(async () =>
-            {
-                await viewModel.LoadInfo();
-            });
+            Dispatcher.UIThread.InvokeAsync(async () => await vm.LoadInfo());
         }
     }
 
     public void ProfileClosed()
     {
-        if (DataContext is CurrentGameStatusViewModel vm)
-            vm.ClearingContent();
+        Dispose();
+        Close();
     }
 
     private void ShowSteamStore(object? sender, RoutedEventArgs e)
@@ -66,5 +59,23 @@ public partial class CurrentGame : WindowAbstract
         if (DataContext is not CurrentGameStatusViewModel vm) return;
 
         await vm.FinishingGame();
+    }
+
+    protected override void InitializeDiContainer()
+    {
+        Di.Container.ResolveField(out _steamService);
+
+        if (_steamService is null)
+            throw new NullReferenceException("Failed to inject steam service from di");
+    }
+
+    public override void Dispose()
+    {
+        _steamService = null;
+        
+        if (DataContext is CurrentGameStatusViewModel vm)
+            vm.Dispose();
+        
+        base.Dispose();
     }
 }

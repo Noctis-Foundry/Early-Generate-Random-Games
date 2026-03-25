@@ -9,11 +9,11 @@ using GameRandom.Scr.DI;
 using GameRandom.Scr.Events;
 using GameRandom.Scr.Service;
 using GameRandom.Service;
-using GameRandom.SteamSDK;
-using GameRandom.SteamSDK.Enums;
-using GameRandom.SteamSDK.Factory;
-using GameRandom.SteamSDK.LobbySystem;
-using GameRandom.SteamSDK.UserData;
+using GameRandom.Src;
+using GameRandom.Src.Enums;
+using GameRandom.Src.Factory;
+using GameRandom.Src.LobbySystem;
+using GameRandom.Src.UserData;
 using GameRandom.ViewModels.AdminSystem;
 using GameRandom.Views.LobbyModalWindow;
 
@@ -218,8 +218,8 @@ public partial class MainWindow : Window
     {
         if (DataContext is MainWindowViewModel vm)
         {
-            vm.BindingOpenLobbyCommand(() => _lobbyWindow.Open());
-            vm.BindingRulesWindow(() => _rules.Open());
+            vm.BindingOpenLobbyCommand(() => _lobbyWindow.Show());
+            vm.BindingRulesWindow(() => _rules.Show());
         }
     }
 

@@ -5,22 +5,23 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using GameRandom.CoreApp;
-using GameRandom.SteamSDK;
+using GameRandom.Src;
 using GameRandom.ViewModels.AdminSystem;
 
 namespace GameRandom.Views;
 
-public partial class FilterGameWindow : WindowAbstract
+public sealed partial class FilterGameWindow : WindowBase<FilterGameViewModel>
 {
     public FilterGameWindow()
     {
         InitializeComponent();
-        DataContext = new FilterGameViewModel();
+        InitializeViewModel();
     }
-
-    private void Close(object? sender, RoutedEventArgs e)
+    
+    private void CloseWindow(object? sender, RoutedEventArgs e)
     {
-        CloseWindow();
+        Dispose();
+        Close();
     }
 
     public FilteredData? GetFilters()

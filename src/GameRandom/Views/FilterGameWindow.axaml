@@ -35,7 +35,7 @@
         <Border DockPanel.Dock="Top" Background="#2D2D30" BorderBrush="#3F3F46" BorderThickness="0,0,0,1" Padding="16,12">
             <Grid ColumnDefinitions="*,Auto">
                 <TextBlock Text="Фильтры игр" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" Classes="FilteredBox"/>
-                <Button Grid.Column="1" Content="✕" Width="32" Height="32" Click="Close"/>
+                <Button Grid.Column="1" Content="✕" Width="32" Height="32" Click="CloseWindow"/>
             </Grid>
         </Border>
         

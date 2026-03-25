@@ -4,12 +4,12 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using GameRandom.DataBaseContexts;
-using GameRandom.SteamSDK;
+using GameRandom.Src;
 using GameRandom.ViewModels.AdminSystem;
 
 namespace GameRandom.Views;
 
-public partial class AdminConfirmWindow : WindowAbstract
+public partial class AdminConfirmWindow : Window
 {
     public AdminConfirmWindow()
     {

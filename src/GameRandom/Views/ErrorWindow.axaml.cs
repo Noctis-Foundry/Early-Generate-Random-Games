@@ -2,12 +2,13 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media;
-using GameRandom.SteamSDK;
-using GameRandom.SteamSDK.Enums;
+using GameRandom.Src;
+using GameRandom.Src.Enums;
+using GameRandom.ViewModels.AdminSystem;
 
 namespace GameRandom.Views;
 
-public partial class ErrorWindow : WindowAbstract
+public partial class ErrorWindow : WindowBase<ViewModelBase>
 {
     private ErrorEnum _currentErrorType;
     
@@ -28,9 +29,21 @@ public partial class ErrorWindow : WindowAbstract
         ErrorButton.Content = errorType == ErrorEnum.Critical ? "Close app" : "Ok"; 
     }
     
-
     private void MessageBoxButtonAction(object? sender, RoutedEventArgs e)
     {
-        CloseWindow();
+        Close();
+    }
+
+    protected override void OnClosing(WindowClosingEventArgs e)
+    {
+        if (IsClosing)
+            return;
+
+        IsClosing = true;
+        IsActive = false;
+        
+        Hide();
+
+        e.Cancel = true;
     }
 }

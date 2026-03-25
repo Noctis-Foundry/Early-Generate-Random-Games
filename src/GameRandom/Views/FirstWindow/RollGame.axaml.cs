@@ -11,9 +11,9 @@ using GameRandom.CoreApp;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Service;
 using GameRandom.Service;
-using GameRandom.SteamSDK;
-using GameRandom.SteamSDK.Enums;
-using GameRandom.SteamSDK.Factory;
+using GameRandom.Src;
+using GameRandom.Src.Enums;
+using GameRandom.Src.Factory;
 using GameRandom.ViewModels.AdminSystem;
 
 namespace GameRandom.Views;
@@ -23,8 +23,7 @@ public partial class RollGame : MainWindowUserControlAbstract
     [Inject] private ErrorService? _errorService = null!;
     [Inject] private ConfirmService? _confirmDialog = null!;
     [Inject] private SteamService? _steamService;
-
-    private ChooseGameWindow? _chooseGameWindow = new();
+    
     private FilterGameWindow? _filterGameWindow = new();
 
     private List<RollButtonsInfo> _buttonsInfo = new();
@@ -61,10 +60,8 @@ public partial class RollGame : MainWindowUserControlAbstract
     public override void Close(object? sender, RoutedEventArgs e)
     {
         _changeWindowAction?.Invoke("Main");
-
-        if (DataContext is not RollGameViewModel viewModel) return;
-
-        viewModel.Dispose();
+        
+        Dispose();
     }
 
     /// <summary>
@@ -92,7 +89,8 @@ public partial class RollGame : MainWindowUserControlAbstract
     /// </summary>
     private void GoToFilter(object? sender, RoutedEventArgs e)
     {
-        _filterGameWindow?.Open();
+        _filterGameWindow = new FilterGameWindow();
+        _filterGameWindow.Show();
     }
 
     /// <summary>
@@ -181,12 +179,28 @@ public partial class RollGame : MainWindowUserControlAbstract
 
         RelayCommand appCommand = new RelayCommand(() =>
         {
-            _chooseGameWindow?.Open();
-            _chooseGameWindow?.LoadData(app.AppData, app.ImageBytes);
+            var chooseGameWindow = new ChooseGameWindow();
+            chooseGameWindow.Show();
+            chooseGameWindow.LoadData(app.AppData, app.ImageBytes);
         });
 
         gridElements.Button.Command = appCommand;
 
         _buttonsInfo.Add(new RollButtonsInfo(gridElements.Button, gridElements.Image, appCommand));
+    }
+    
+    public override void Dispose()
+    {
+        _filterGameWindow?.Close();
+        
+        _rollSemaphore?.Dispose();
+        _buttonsInfo.Clear();
+        
+        if (DataContext is RollGameViewModel viewModel)
+            viewModel.Dispose();
+
+        _errorService = null;
+        _confirmDialog = null;
+        _steamService = null;
     }
 }

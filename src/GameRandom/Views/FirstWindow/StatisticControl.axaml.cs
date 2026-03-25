@@ -8,7 +8,7 @@ using GameRandom.ViewModels.AdminSystem;
 
 namespace GameRandom.Views;
 
-public partial class StatisticControl : UserControl
+public partial class StatisticControl : UserControl, IDisposable
 {
     private GamesTableWindow? _gameTableWindow;
 
@@ -36,12 +36,6 @@ public partial class StatisticControl : UserControl
                 FactoryNewCard(cardInfo);
             }
         });
-    }
-
-    public void Close()
-    {
-        if (DataContext is StatisticViewModel statisticViewModel)
-            statisticViewModel.Dispose();
     }
 
     private void FactoryNewCard(StatisticCardInfo cardInfo)
@@ -86,6 +80,14 @@ public partial class StatisticControl : UserControl
             return;
         }
 
-        _gameTableWindow.Open();
+        _gameTableWindow.Show();
+    }
+
+    public void Dispose()
+    {
+        if (DataContext is StatisticViewModel vm)
+            vm.Dispose();
+        
+        _gameTableWindow?.Close();
     }
 }

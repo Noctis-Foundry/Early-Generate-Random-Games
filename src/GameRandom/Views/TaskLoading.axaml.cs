@@ -2,12 +2,12 @@ using System;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using GameRandom.SteamSDK;
+using GameRandom.Src;
 using GameRandom.ViewModels.AdminSystem.ContextWindowViewModels;
 
 namespace GameRandom.Views;
 
-public partial class TaskLoading : WindowAbstract
+public sealed partial class TaskLoading : WindowBase<TaskProcessingViewModel>
 {
     private Action? _savedCloseHandler;
     
@@ -33,11 +33,14 @@ public partial class TaskLoading : WindowAbstract
         if (IsClosing) return;
 
         IsClosing = true;
-        e.Cancel = true;
         Close(true);
     }
-
     private void CloseProcessingWindow()
+    {
+        Dispose();
+        Close(true);
+    }
+    public override void Dispose()
     {
         if (DataContext is TaskProcessingViewModel vm)
         {
@@ -46,14 +49,12 @@ public partial class TaskLoading : WindowAbstract
 
             vm.Dispose();
         }
-
+        
         WaitBar.IsIndeterminate = false;
         
         DataContext = null;
         _savedCloseHandler = null;
 
         Owner = null;
-        
-        Close(true);
     }
 }

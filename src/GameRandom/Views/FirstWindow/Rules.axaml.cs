@@ -7,12 +7,13 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using GameRandom.Scr.DI;
-using GameRandom.SteamSDK;
-using GameRandom.SteamSDK.Enums;
+using GameRandom.Src;
+using GameRandom.Src.Enums;
+using GameRandom.ViewModels.AdminSystem;
 
 namespace GameRandom.Views;
 
-public partial class Rules : WindowAbstract
+public partial class Rules : WindowBase<ViewModelBase>
 {
     private bool _isEnglish = false;
     private Dictionary<string, string> _currentLocalization = new();
@@ -27,7 +28,20 @@ public partial class Rules : WindowAbstract
     
     private void Close(Object? sender, RoutedEventArgs e)
     {
-        CloseWindow();
+        Close();
+    }
+
+    protected override void OnClosing(WindowClosingEventArgs e)
+    {
+        if (IsClosing)
+            return;
+
+        IsClosing = true;
+        IsActive = false;
+        
+        Hide();
+
+        e.Cancel = true;
     }
 
     private void LoadLocalization(string language)

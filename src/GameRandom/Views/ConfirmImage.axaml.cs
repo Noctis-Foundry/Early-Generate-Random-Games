@@ -6,22 +6,17 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
-using GameRandom.SteamSDK;
+using GameRandom.Src;
 using GameRandom.ViewModels.AdminSystem;
 
 namespace GameRandom.Views;
 
-public partial class ConfirmImage : WindowAbstract
+public sealed partial class ConfirmImage : WindowBase<ConfirmImageViewModel>
 {
     public ConfirmImage()
     {
         InitializeComponent();
-        DataContext = new ConfirmImageViewModel();
-
-        Closing += (sender, args) =>
-        {
-            OnClosing(args);
-        };
+        InitializeViewModel();
         
         WindowStartupLocation = WindowStartupLocation.CenterScreen;
     }
@@ -71,9 +66,11 @@ public partial class ConfirmImage : WindowAbstract
         if (DataContext is ConfirmImageViewModel vm)
         {
             Close(vm.ImageBitmap);
+            Dispose();
             return;
         }
             
+        Dispose();
         Close();
     }
 }
