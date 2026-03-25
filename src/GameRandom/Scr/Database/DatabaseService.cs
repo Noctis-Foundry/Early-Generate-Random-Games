@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using GameRandom.DataBaseContexts;
-using GameRandom.SteamSDK.UserData;
+using GameRandom.Src.UserData;
 using Microsoft.EntityFrameworkCore;
 using Steamworks;
 
@@ -501,6 +501,36 @@ public class DatabaseService : IDatabaseService
         {
             Logger.Debug("Failed to get data: " + e.Message);
             return (null, null);
+        }
+    }
+
+    public async Task<bool> ChooseGameTransition(GameProgresses gameInfo, ulong steamId, CancellationToken ct = default)
+    {
+        await using var db = new AppDbContext();
+        await using var transaction = await db.Database.BeginTransactionAsync(ct);
+
+        try
+        {
+            db.GameProgresses.Add(gameInfo);
+
+            var userGame = await db.UserGames.FirstOrDefaultAsync(e => e.UserId == steamId, ct);
+
+            if (userGame is null)
+                throw new NullReferenceException(nameof(UserGame));
+
+            userGame.AppId = gameInfo.AppId;
+            
+            db.UserGames.Update(userGame);
+            await db.SaveChangesAsync(ct);
+            await transaction.CommitAsync(ct);
+
+            return true;
+        }
+        catch (Exception e)
+        {
+            Logger.Error("Failed to load changes to database: " + e.Message);
+            await transaction.RollbackAsync(ct);
+            return false;
         }
     }
 }

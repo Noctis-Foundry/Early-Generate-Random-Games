@@ -7,9 +7,9 @@ using GameRandom.DataBaseContexts;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Service;
 using GameRandom.Service;
-using GameRandom.SteamSDK;
-using GameRandom.SteamSDK.Enums;
-using GameRandom.SteamSDK.UserData;
+using GameRandom.Src;
+using GameRandom.Src.Enums;
+using GameRandom.Src.UserData;
 
 namespace GameRandom.ViewModels.AdminSystem;
 
@@ -25,6 +25,8 @@ public class ChooseGameViewModel : ViewModelBase
     
     private const int DefaultGameDurationDays = 30;
     private const int DatabaseOperationDelay = 5;
+
+    private SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
     
     private AppInfo? _appInfo;
 
@@ -62,30 +64,44 @@ public class ChooseGameViewModel : ViewModelBase
     /// <exception cref="NullReferenceException">Thrown when AppInfo or UserGame is null.</exception>
     public async Task<bool> ChooseGame()
     {
+        if (!await _semaphoreSlim.WaitAsync(0))
+        {
+            Logger.Error("Thread is not empty");
+            return false;
+        }
+        
         if (_appInfo is null)
             throw new NullReferenceException("AppInfo is null. Cannot choose game without loaded app information.");
 
-        using var cts = new CancellationTokenSource(DatabaseOperationDelay);
+        IsProcess = true;
+        StartProcessing?.Invoke();
         
-        var userGame = await _databaseService.GetUserGameAsync(User.GetInstance().GetUserId(), cts.Token) 
-            ?? throw new NullReferenceException("User game is not initialized.");
-
-        if (!ValidateUserCanStartNewGame(userGame))
-            return false;
-
-        var webpBytes = ConvertAppImageToWebp();
-        var gameInfo = CreateGameProgress(webpBytes);
-
-        if (!await _databaseService.AddItemAsync(gameInfo,  cts.Token))
+        try
         {
-            _errorService?.ShowWindow("Failed to add game to database");
+            if (!await ValidateUserCanStartNewGame())
+                return false;
+            
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(DatabaseOperationDelay));
+            
+            var webpBytes = ConvertAppImageToWebp();
+            var gameInfo = CreateGameProgress(webpBytes);
+
+            var isAdd = await _databaseService.ChooseGameTransition(gameInfo, User.GetInstance().GetUserId(), cts.Token);
+            
+            ShowResult(isAdd);
+            
+            return isAdd;
+        }
+        catch (Exception e)
+        {
+            Logger.Error("Failed to choose game: " + e.Message);
             return false;
         }
-
-        userGame.AppId = _appInfo.AppData.AppId;
-        await _databaseService.UpdateAsync(userGame,  cts.Token);
-
-        return true;
+        finally
+        {
+            IsProcess = false;
+            _semaphoreSlim.Release();
+        }
     }
 
     /// <summary>
@@ -99,6 +115,14 @@ public class ChooseGameViewModel : ViewModelBase
             ?? throw new NullReferenceException("Failed to load bitmap from image bytes.");
         
         return AvaloniaService.Instance.ConvertToWebpBytes(bitmap);
+    }
+
+    private void ShowResult(bool isAdded)
+    {
+        if (isAdded)
+            _errorService?.ShowWindow("Game is successful added");
+        if (!isAdded)
+            _errorService?.ShowWindow("Failed to added game to database");
     }
 
     /// <summary>
@@ -132,18 +156,30 @@ public class ChooseGameViewModel : ViewModelBase
     /// </summary>
     /// <param name="userGame">Current user game state.</param>
     /// <returns>True if the user can start a new game; otherwise, false.</returns>
-    private bool ValidateUserCanStartNewGame(UserGame userGame)
+    private async Task<bool> ValidateUserCanStartNewGame()
     {
-        if (userGame.AppId == 0)
-            return true;
-        
-        _errorService?.ShowWindow(new ErrorStruct
+        try
         {
-            ErrorMessage = "Failed to set new game. Finish your current game",
-            ErrorType = ErrorEnum.Message
-        });
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(DatabaseOperationDelay));
+            
+            var userGame = await _databaseService.GetUserGameAsync(User.GetInstance().GetUserId(), cts.Token);
+            
+            if (userGame.AppId == 0)
+                return true;
 
-        return false;
+            _errorService?.ShowWindow(new ErrorStruct
+            {
+                ErrorMessage = "Failed to set new game. Finish your current game",
+                ErrorType = ErrorEnum.Message
+            });
+
+            return false;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return false;
+        }
     }
 
     /// <summary>
@@ -176,7 +212,12 @@ public class ChooseGameViewModel : ViewModelBase
     {
         AppInfo = null;
         
+        _semaphoreSlim.Dispose();
+        
         _databaseService = null;
+        _steamService = null;
         _errorService = null;
+        
+        base.Dispose();
     }
 }
