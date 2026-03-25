@@ -26,7 +26,7 @@
                     <TextBlock Classes="WindowTextBlock" Text="Please wait" FontSize="14" />
                 </Border>
 
-                <ProgressBar Classes="LoadingProgress" IsIndeterminate="True" Width="300" />
+                <ProgressBar Classes="LoadingProgress" IsIndeterminate="True" x:Name="WaitBar" Width="300" />
             </StackPanel>
         </Grid>
     </DockPanel>

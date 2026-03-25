@@ -28,16 +28,27 @@ public partial class TaskLoading : WindowAbstract
         vm.InitializeTimer(isProcessing);
     }
 
+    protected override void OnClosing(WindowClosingEventArgs e)
+    {
+        if (IsClosing) return;
+
+        IsClosing = true;
+        e.Cancel = true;
+        Close(true);
+    }
+
     private void CloseProcessingWindow()
     {
         if (DataContext is TaskProcessingViewModel vm)
         {
-            if (_savedCloseHandler is not null) 
+            if (_savedCloseHandler is not null)
                 vm.UnsubscribeClosing(_savedCloseHandler);
-            
+
             vm.Dispose();
         }
 
+        WaitBar.IsIndeterminate = false;
+        
         DataContext = null;
         _savedCloseHandler = null;
 
