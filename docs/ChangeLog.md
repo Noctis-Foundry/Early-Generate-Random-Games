@@ -1,5 +1,23 @@
 # ChangeLog
 
+## [2026-03-25]
+- refactor: migrate from WindowAbstract to WindowBase with generic ViewModel support
+- refactor: add lifecycle management (IsActive, IsClosing flags) to WindowBase
+- refactor: add built-in processing handler initialization and helper methods to WindowBase
+- refactor: update all window classes to inherit from WindowBase<TViewModel>
+- fix(game-selection): add transaction support with rollback capability to DatabaseService
+- fix(game-selection): improve cancellation token handling (use TimeSpan.FromSeconds)
+- fix(game-selection): add SemaphoreSlim to prevent concurrent game selection
+- fix(game-selection): refactor ValidateUserCanStartNewGame to async method
+- fix: resolve CurrentGameWindow data loading issue with TaskWaiter integration
+- fix: resolve CancellationTokenSource initialization in ConfirmFinishGameViewModel
+- refactor(viewmodels): integrate TaskWaiter across all ViewModels
+- refactor(viewmodels): fix CancellationTokenSource usage in AbstractTableWindowViewModel
+- refactor(viewmodels): improve resource management with proper Dispose implementations
+- refactor(window-services): simplify AbstractWindowService with primary constructor
+- refactor(window-services): update AdminConfirmService and ErrorService event handling
+- refactor: update namespace from GameRandom.SteamSDK to GameRandom.Src across entire codebase
+
 ## [2026-03-24]
 - feat(infra): add task waiter window service for handling async task loading indicators
 - feat(ui): add task loading view and update global styles for text blocks
