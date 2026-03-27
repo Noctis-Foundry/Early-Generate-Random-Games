@@ -93,6 +93,9 @@ public class AdminPanelViewModel : ViewModelBase
             return;
         }
 
+        IsProcess = true;
+        StartProcessing?.Invoke();
+        
         try
         {
             var gameList = await GetFinishedGame();
@@ -122,6 +125,7 @@ public class AdminPanelViewModel : ViewModelBase
         }
         finally
         {
+            IsProcess = false;
             _semaphoreSlim.Release();
         }
     }

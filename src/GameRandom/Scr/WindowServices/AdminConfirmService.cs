@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Avalonia.Controls;
 using GameRandom.DataBaseContexts;
+using GameRandom.Scr.Service;
 using GameRandom.Views;
 
 namespace GameRandom.Src;
@@ -23,6 +24,9 @@ public class AdminConfirmService : AbstractWindowService<AdminConfirmWindow>
             ControlWindow = new();
             ControlWindow.LoadData(gameInfo);
         }
+        
+        if (data is null)
+            Logger.Error("Admin confirm service get empty data");
     }
 
     public override async Task ShowWindowAsync(object? data = null)

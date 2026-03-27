@@ -9,15 +9,13 @@ using GameRandom.ViewModels.AdminSystem;
 
 namespace GameRandom.Views;
 
-public partial class AdminConfirmWindow : Window
+public sealed partial class AdminConfirmWindow : WindowBase<AdminConfirmViewModel>
 {
     public AdminConfirmWindow()
     {
         InitializeComponent();
-        
-        DataContext = new AdminConfirmViewModel();
+        InitializeViewModel();
     }
-
     public async void LoadData(FinishedGames elementData)
     {
         Show();
@@ -25,7 +23,6 @@ public partial class AdminConfirmWindow : Window
         if (DataContext is AdminConfirmViewModel vm)
             await vm.UpdateElementData(elementData);
     }
-
     private void ConfirmGame(object? sender, RoutedEventArgs e)
     {
         if (DataContext is not AdminConfirmViewModel vm) return;
