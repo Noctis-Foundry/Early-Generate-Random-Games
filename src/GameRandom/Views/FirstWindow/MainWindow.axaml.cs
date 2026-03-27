@@ -161,7 +161,6 @@ public partial class MainWindow : Window
         Di.Container.RegisterSingleInstance(new ErrorService(mainWindow));
         Di.Container.RegisterSingleInstance(new ConfirmService(mainWindow));
         Di.Container.RegisterSingleInstance(new AdminConfirmService(mainWindow));
-        Di.Container.RegisterSingleInstance(new ImageConfirmService(mainWindow));
         Di.Container.RegisterSingleInstance(new FinishedGameDialogService(mainWindow));
         Di.Container.RegisterSingleInstance(new TaskWaiterWindow(mainWindow));
 
