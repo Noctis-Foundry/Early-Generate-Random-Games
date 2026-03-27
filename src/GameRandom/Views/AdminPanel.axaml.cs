@@ -17,8 +17,11 @@ namespace GameRandom.Views;
 public partial class AdminPanel : MainWindowUserControlAbstract
 {
     [Inject] private ErrorService? _errorService = null!;
+    [Inject] private PostgresListener? _postgresListener;
     private AdminRegistrationWindow _registrationWindow;
     private const string CloseTarget = "Main";
+
+    private Action<PayloadStructure> _savedHandler;
     
     public AdminPanel()
     {
@@ -27,16 +30,19 @@ public partial class AdminPanel : MainWindowUserControlAbstract
         if (Design.IsDesignMode)
             return;
         
+        InitializeProcessingHandler();
         DataContext = new AdminPanelViewModel();
         
         HideAdminPanel();
 
-        Di.Container.ResolveField(out _errorService);
+        Di.Container.ResolveFieldsFromClassInstance(this);
 
         if (_errorService is null)
             throw new NullReferenceException(nameof(_errorService));
+        if (_postgresListener is null)
+            throw new NullReferenceException(nameof(_postgresListener));
         
-        //TODO Prostgres listener
+        InitializePostgresListener();
     }
 
     public override void Open()
@@ -56,6 +62,8 @@ public partial class AdminPanel : MainWindowUserControlAbstract
         {
             vm.Dispose();
         }
+        
+        UnsubscribeListener();
         
         _changeWindowAction?.Invoke(CloseTarget);
     }
@@ -78,7 +86,23 @@ public partial class AdminPanel : MainWindowUserControlAbstract
                 throw new NullReferenceException(nameof(DatabaseService));
         });
     }
+    private void InitializePostgresListener()
+    {
+        _savedHandler = structure =>
+        {
+            if (structure.TableCode == (int)TableEnum.AdminTable)
+                return;
 
+            HideAdminPanel();
+        };
+        
+        _postgresListener?.Subscribe(TableEnum.AdminTable, _savedHandler);
+    }
+
+    private void UnsubscribeListener()
+    {
+        _postgresListener?.Unsubscribe(TableEnum.AdminTable, _savedHandler);
+    }
     private async void ShowRegistration(object? sender, RoutedEventArgs e)
     {
         if (DataContext is AdminPanelViewModel { IsCanShow: false })
