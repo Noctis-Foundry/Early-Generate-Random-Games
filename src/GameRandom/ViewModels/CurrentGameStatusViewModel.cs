@@ -77,7 +77,7 @@ public class CurrentGameStatusViewModel : ViewModelBase
         set => SetProperty(ref _imageBitmap, value);
     }
 
-    private bool _isProcessing = false;
+    public bool IsEmpty = true;
 
     #endregion
 
@@ -116,7 +116,11 @@ public class CurrentGameStatusViewModel : ViewModelBase
             bool isFind = await InitializeAppInfo(userGameInfo.AppId);
 
             if (isFind)
+            {
                 StartTimer();
+                IsEmpty = false;
+            }
+               
         }
         catch (Exception e)
         {
@@ -189,6 +193,7 @@ public class CurrentGameStatusViewModel : ViewModelBase
     {
         AppInfo = new GameProgresses();
         ImageBitmap = AvaloniaService.Instance.CreateBitmapFromPath("Assets/steamAwatarWithNight.jpg");
+        IsEmpty = true;
         
         _timer?.Stop();
         _timer?.Tick -= _savedHandler;

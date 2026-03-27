@@ -56,8 +56,15 @@ public sealed partial class CurrentGame : WindowBase<CurrentGameStatusViewModel>
 
     private async void FinishedGame(object? sender, RoutedEventArgs e)
     {
-        if (DataContext is not CurrentGameStatusViewModel vm) return;
+        if (DataContext is not CurrentGameStatusViewModel vm)
+            return;
 
+        if (vm.IsEmpty)
+        {
+            ShowMessage("Game is empty");
+            return;
+        }
+        
         await vm.FinishingGame();
     }
 
