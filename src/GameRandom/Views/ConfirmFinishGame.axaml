@@ -6,13 +6,18 @@
         x:Class="GameRandom.Views.ConfirmFinishGame"
         x:DataType="vm:ConfirmFinishGameViewModel"
         Title="Confirm Finish Game"
-        Width="700" Height="400"
+        Width="800" Height="400"
         CanResize="False">
 
     <Design.DataContext>
         <vm:ConfirmFinishGameViewModel />
     </Design.DataContext>
-
+    
+    <Window.Styles>
+        <Style Selector="Button.WindowButton">
+        </Style>
+    </Window.Styles>
+    
     <DockPanel Classes="WindowContainer">
         <!-- Header -->
         <Border Classes="WindowTopContainer" DockPanel.Dock="Top">
@@ -34,17 +39,17 @@
             </Border>
         </Grid>
 
-        <Grid DockPanel.Dock="Right" RowDefinitions="Auto, Auto" HorizontalAlignment="Right" VerticalAlignment="Center">
+        <Grid RowDefinitions="Auto, Auto" HorizontalAlignment="Right" VerticalAlignment="Center" Classes="WindowGrid">
             <!-- Image -->
             <Border Classes="WindowImageBorder" HorizontalAlignment="Center">
                 <Image Classes="WindowHeaderImage" Source="{Binding ImageBitmap}" />
             </Border>
 
             <!-- Buttons -->
-            <Grid Grid.Row="1" ColumnDefinitions="Auto,Auto" ColumnSpacing="15" HorizontalAlignment="Center"
-                  Margin="0,0,15,0">
-                <Button Classes="WindowButton" Grid.Column="0" Content="Save Edit" Click="OnSaveEditClick" />
-                <Button Classes="WindowButton" Grid.Column="1" Content="Choose Image" Click="OnChooseImageClick" />
+            <Grid Grid.Row="1" ColumnDefinitions="Auto, Auto, Auto" Margin="0,0,10,0" ColumnSpacing="5"> 
+                <Button Classes="WindowButton" Grid.Column="0" FontSize="13" Content="Choose File Image" Click="ChooseImageFromFile"/>
+                <Button Classes="WindowButton" Grid.Column="1" FontSize="13" Content="Paste from clipboard" Click="ChooseImageFromClipboard"></Button>
+                <Button Classes="WindowButton" Grid.Column="2" Content="Save Edit" Click="OnSaveEditClick" />
             </Grid>
         </Grid>
     </DockPanel>

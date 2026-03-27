@@ -127,6 +127,14 @@ public abstract class WindowBase<TViewModel> : Window, IDisposable where TViewMo
     {
         
     }
+
+    protected TViewModel GetViewModel()
+    {
+        if (DataContext is TViewModel vm)
+            return vm;
+
+        return null!;
+    }
     
     /// <summary>
     /// Disposes window resources and resets state.

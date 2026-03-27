@@ -188,6 +188,11 @@ public class ConfirmFinishGameViewModel : ViewModelBase
         return true;
     }
 
+    public void SetBitmap(Bitmap imageBitmap)
+    {
+        ImageBitmap = imageBitmap;
+    }
+
     /// <summary>
     /// Releases resources and cancels any ongoing operations.
     /// </summary>

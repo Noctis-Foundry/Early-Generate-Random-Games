@@ -8,6 +8,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
 using GameRandom.DataBaseContexts;
 using GameRandom.Scr.DI;
+using GameRandom.Scr.Service;
 using GameRandom.Src;
 using GameRandom.ViewModels.AdminSystem;
 using Logger = GameRandom.Scr.Service.Logger;
@@ -25,7 +26,7 @@ public sealed partial class ConfirmFinishGame : WindowBase<ConfirmFinishGameView
         InitializeCommentListener();
         InitializeProcessingHandler();
         
-        WindowStartupLocation = WindowStartupLocation.CenterScreen;
+        WindowStartupLocation = WindowStartupLocation.CenterOwner;
     }
 
     private void InitializeCommentListener()
@@ -59,21 +60,37 @@ public sealed partial class ConfirmFinishGame : WindowBase<ConfirmFinishGameView
         }
     }
 
-    private async void OnChooseImageClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    private async void ChooseImageFromFile(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        if (Di.Container.GetInstance<ImageConfirmService>() is ImageConfirmService imageConfirmService)
-        {
-            Bitmap? bitmap = await imageConfirmService.ShowWindowAsync();
+        var imageConfirmService = GetImageConfirm();
 
-            if (bitmap != null && DataContext is ConfirmFinishGameViewModel viewModel)
-            {
-                viewModel.ImageBitmap = bitmap;
-            }
-            else
-                Logger.Error("bitmap from image confirm is null");
+        var bitmap = await imageConfirmService.ConfirmFromFile(StorageProvider);
+        
+        if (bitmap is not null && GetViewModel() is { } vm)
+        {
+            vm.ImageBitmap = bitmap;
+        }
+    }
+    private async void ChooseImageFromClipboard(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        var imageConfirmService = GetImageConfirm();
+
+        var bitmap = await imageConfirmService.PasteFromClipboardAsync(Clipboard);
+        
+        if (bitmap is not null && GetViewModel() is { } vm)
+        {
+            vm.ImageBitmap = bitmap;
         }
     }
 
+    private ImageConfirmService GetImageConfirm()
+    {
+        if (Di.Container.GetInstance<ImageConfirmService>() is not ImageConfirmService imageConfirmService)
+            throw new NullReferenceException(nameof(ImageConfirmService));
+
+        return imageConfirmService;
+    }
+    
     protected override void OnClosing(WindowClosingEventArgs e)
     {
         if (IsClosing) return;
