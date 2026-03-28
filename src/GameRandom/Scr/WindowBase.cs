@@ -16,6 +16,11 @@ namespace GameRandom.Src;
 public abstract class WindowBase<TViewModel> : Window, IDisposable where TViewModel : ViewModelBase, new()
 {
     /// <summary>
+    /// Task runner for launch methods with try/catch structure
+    /// </summary>
+    [Inject] protected TaskRunner TaskRunner = null!;
+    
+    /// <summary>
     /// Saved handler for processing operations.
     /// </summary>
     protected Action SavedProcessingHandler;
@@ -123,9 +128,18 @@ public abstract class WindowBase<TViewModel> : Window, IDisposable where TViewMo
         base.OnClosing(e);
     }
 
+    /// <summary>
+    /// Method for initialize all dependencies via IoC container
+    /// Is base initialize all dependence from class instance
+    /// Check in null TaskRunner dependency
+    /// </summary>
+    /// <exception cref="NullReferenceException"></exception>
     protected virtual void InitializeDiContainer()
     {
-        
+        Di.Container.ResolveFieldsFromClassInstance(this);
+
+        if (TaskRunner == null)
+            throw new NullReferenceException("Failed to inject Task Runner");
     }
 
     protected TViewModel GetViewModel()
