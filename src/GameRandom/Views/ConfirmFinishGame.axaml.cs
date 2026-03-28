@@ -96,6 +96,7 @@ public sealed partial class ConfirmFinishGame : WindowBase<ConfirmFinishGameView
         if (IsClosing) return;
         
         IsClosing = true;
+        IsActive = false;
         
         if (DataContext is ConfirmFinishGameViewModel vm)
         {

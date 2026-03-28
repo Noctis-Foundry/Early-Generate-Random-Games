@@ -19,7 +19,7 @@ public class AdminConfirmService : AbstractWindowService<AdminConfirmWindow>
     
     public override void ShowWindow(object? data = null)
     {
-        if (data is FinishedGames gameInfo && !ControlWindow.IsActive)
+        if (data is FinishedGames gameInfo)
         {
             ControlWindow = new();
             ControlWindow.LoadData(gameInfo);
@@ -27,6 +27,9 @@ public class AdminConfirmService : AbstractWindowService<AdminConfirmWindow>
         
         if (data is null)
             Logger.Error("Admin confirm service get empty data");
+        
+        if (ControlWindow.IsActive)
+            Logger.Error("Window is active, failed to open");
     }
 
     public override async Task ShowWindowAsync(object? data = null)

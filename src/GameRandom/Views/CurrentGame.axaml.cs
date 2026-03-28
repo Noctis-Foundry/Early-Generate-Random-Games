@@ -65,12 +65,12 @@ public sealed partial class CurrentGame : WindowBase<CurrentGameStatusViewModel>
             return;
         }
         
-        await vm.FinishingGame();
+        await TaskRunner.LaunchMethodWithTaskWaiter(async () => await vm.FinishingGame());
     }
 
     protected override void InitializeDiContainer()
     {
-        Di.Container.ResolveField(out _steamService);
+        base.InitializeDiContainer();
 
         if (_steamService is null)
             throw new NullReferenceException("Failed to inject steam service from di");
