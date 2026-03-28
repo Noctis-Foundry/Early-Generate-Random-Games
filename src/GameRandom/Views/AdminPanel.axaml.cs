@@ -29,19 +29,12 @@ public partial class AdminPanel : MainWindowUserControlAbstract
         
         if (Design.IsDesignMode)
             return;
-        
-        InitializeProcessingHandler();
+
+        IsInitializeTaskWaiter = true;
         DataContext = new AdminPanelViewModel();
         
         HideAdminPanel();
-
-        Di.Container.ResolveFieldsFromClassInstance(this);
-
-        if (_errorService is null)
-            throw new NullReferenceException(nameof(_errorService));
-        if (_postgresListener is null)
-            throw new NullReferenceException(nameof(_postgresListener));
-        
+        InitializeDiContainer();
         InitializePostgresListener();
     }
 
@@ -123,5 +116,15 @@ public partial class AdminPanel : MainWindowUserControlAbstract
         {
             _errorService?.ShowWindow($"Failed to show registration window {exception.Message}");
         }
+    }
+
+    private void InitializeDiContainer()
+    {
+        Di.Container.ResolveFieldsFromClassInstance(this);
+
+        if (_errorService is null)
+            throw new NullReferenceException(nameof(_errorService));
+        if (_postgresListener is null)
+            throw new NullReferenceException(nameof(_postgresListener));
     }
 }

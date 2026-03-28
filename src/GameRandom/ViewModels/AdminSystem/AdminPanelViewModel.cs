@@ -12,6 +12,7 @@ using GameRandom.Scr.Events;
 using GameRandom.Scr.Service;
 using GameRandom.Src;
 using GameRandom.Src.UserData;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace GameRandom.ViewModels.AdminSystem;
 
@@ -24,9 +25,10 @@ public class AdminPanelViewModel : ViewModelBase
     [Inject] private readonly AdminConfirmService? _confirmEndGameService = null!;
     [Inject] private readonly PostgresListener? _postgresListener = null!;
     [Inject] private readonly EventBus? _eventBus = null!;
-    
-    private CancellationTokenSource _cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
-    
+
+    private const int MaxSemaphoreWaitTime = 0;
+    private const int DatabaseTimeoutSec = 5;
+
     private bool _isCanShow = false;
 
     /// <summary>
@@ -50,7 +52,7 @@ public class AdminPanelViewModel : ViewModelBase
     }
 
     private ObservableCollection<AdminPanelElementData> _gameList;
-    
+
     /// <summary>
     /// Collection of game data displayed in the admin panel.
     /// </summary>
@@ -79,6 +81,8 @@ public class AdminPanelViewModel : ViewModelBase
         EnsureServicesInjected();
 
         InitializeListeners();
+
+        GameList = new ObservableCollection<AdminPanelElementData>();
     }
 
     /// <summary>
@@ -87,41 +91,40 @@ public class AdminPanelViewModel : ViewModelBase
     /// <returns>A task representing the asynchronous operation.</returns>
     public async Task LoadGameProgresses()
     {
-        if (!await _semaphoreSlim.WaitAsync(0))
+        if (!await _semaphoreSlim.WaitAsync(MaxSemaphoreWaitTime))
         {
-            Logger.Warning("Threading is not empty");
+            Logger.Debug("Failed enter to method. Thread is not empty");
             return;
         }
-
-        IsProcess = true;
-        StartProcessing?.Invoke();
         
+        StartTaskWaiter();
+
         try
         {
-            var gameList = await GetFinishedGame();
-            
-            if (gameList is null) return;
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(DatabaseTimeoutSec));
+
+            if (await GetFinishedGame(cts.Token) is not { } gameList)
+                return;
 
             OpenWithQueue = new RelayCommand(async () => { await _confirmEndGameService.ShowWindowAsync(gameList); });
-
-            GameList = new ObservableCollection<AdminPanelElementData>();
+            GameList.Clear();
 
             foreach (var game in gameList)
             {
                 if (!IterationRequired(game))
                     continue;
-                
-                var user = await _databaseService.GetUserByUlongId(game.GameProgresses.PlayerId, _cts.Token);
+
+                var user = await _databaseService.GetUserByUlongId(game.GameProgresses.PlayerId, cts.Token);
 
                 if (user is null) continue;
-                
-                if (CreateAdminData(user, game) is { } adminPanelData) 
+
+                if (CreateAdminData(user, game) is { } adminPanelData)
                     GameList.Add(adminPanelData);
             }
         }
         catch (Exception e)
         {
-            Logger.Error(e.Message);
+            Logger.Error($"Failed load game progresses. Exception: {e}");
         }
         finally
         {
@@ -134,16 +137,16 @@ public class AdminPanelViewModel : ViewModelBase
     /// Retrieves the list of finished games from the database.
     /// </summary>
     /// <returns>A task that returns a list of finished games, or null if loading fails.</returns>
-    private async Task<List<FinishedGames>?> GetFinishedGame()
+    private async Task<List<FinishedGames>?> GetFinishedGame(CancellationToken cts = default)
     {
-        var gameList = await _databaseService.GetFinishedGames(_cts.Token);
+        var gameList = await _databaseService.GetFinishedGames(cts);
 
         if (gameList is null)
         {
             Logger.Error("Failed to load game progresses from database");
             return null;
         }
-        
+
         return gameList;
     }
 
@@ -162,7 +165,7 @@ public class AdminPanelViewModel : ViewModelBase
 
         return true;
     }
-    
+
     /// <summary>
     /// Ensures that all injected services are properly initialized.
     /// </summary>
@@ -190,22 +193,24 @@ public class AdminPanelViewModel : ViewModelBase
     /// <returns>A new <see cref="AdminPanelElementData"/> object, or null if data is invalid.</returns>
     private AdminPanelElementData? CreateAdminData(Users user, FinishedGames game)
     {
-        AsyncRelayCommand openConfirmGameWindow = new AsyncRelayCommand(async () =>
+        RelayCommand openConfirmGameWindow = new RelayCommand(() =>
         {
             Logger.Debug($"Opening confirm window for game with id");
-
+            
             if (Di.Container.GetInstance<AdminConfirmService>() is AdminConfirmService dialogService)
             {
                 dialogService.ShowWindow(game);
             }
+            else
+                Logger.Error("Failed to inject admin confirm service");
         });
 
         if (string.IsNullOrEmpty(user.Nickname))
             return null;
-                
+
         return new AdminPanelElementData(game, openConfirmGameWindow, user.Nickname);
     }
-    
+
     /// <summary>
     /// Checks if the current user has admin rules and updates <see cref="IsCanShow"/>.
     /// </summary>
@@ -235,32 +240,28 @@ public class AdminPanelViewModel : ViewModelBase
                 await LoadGameProgresses();
             });
         };
-        
+
         _updateRules += _ => CheckIsAdminRules();
 
         _postgresListener?.Subscribe(TableEnum.EndGameTable, _loadAction);
-        
+
         _eventBus?.Subscribe<AdminRulesUpdating>(_updateRules);
     }
-    
+
     /// <summary>
     /// Releases resources used by the <see cref="AdminPanelViewModel"/>.
     /// </summary>
     public override void Dispose()
     {
-        _cts.Cancel();
-        _cts.Dispose();
-        _cts = new CancellationTokenSource();
-        
         _openWithQueue = null;
         OpenWithQueue = null;
-        
+
         _eventBus?.Unsubscribe<AdminRulesUpdating>(_updateRules);
         _postgresListener?.Unsubscribe(TableEnum.EndGameTable, _loadAction);
 
         _updateRules = null!;
         _loadAction = null!;
-        
+
         base.Dispose();
     }
 }
@@ -271,7 +272,7 @@ public class AdminPanelViewModel : ViewModelBase
 /// <param name="gameInfo">Information about the finished game.</param>
 /// <param name="openCommand">Command to open the confirmation window.</param>
 /// <param name="nickname">The player's nickname.</param>
-public class AdminPanelElementData(FinishedGames gameInfo, AsyncRelayCommand  openCommand, string nickname)
+public class AdminPanelElementData(FinishedGames gameInfo, RelayCommand openCommand, string nickname)
 {
     /// <summary>
     /// Gets information about the finished game.
@@ -281,7 +282,7 @@ public class AdminPanelElementData(FinishedGames gameInfo, AsyncRelayCommand  op
     /// <summary>
     /// Gets the command to open the game confirmation window.
     /// </summary>
-    public AsyncRelayCommand  OpenCommand { get; private set; } = openCommand;
+    public RelayCommand OpenCommand { get; private set; } = openCommand;
 
     /// <summary>
     /// Gets the player's nickname.
