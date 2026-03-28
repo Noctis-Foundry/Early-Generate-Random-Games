@@ -1,5 +1,19 @@
 # ChangeLog
 
+## [2026-03-28]
+- feat(core): add TaskRunner service for error handling
+- refactor(base): integrate TaskRunner into base classes
+- refactor(admin): improve AdminPanel error handling and lifecycle
+- fix(windows): improve window lifecycle and error handling
+- refactor: remove ConfirmImage window and migrate to service-based approach
+- feat(image): implement ImageConfirmService with file and clipboard support
+- refactor(windows): integrate ImageConfirmService into ConfirmFinishGame
+- fix(admin): add error handling and processing state management
+- feat(admin): add PostgreSQL listener for AdminPanel
+- fix(current-game): add empty state validation
+- style: update window styles and positioning
+- chore: remove binary AppImage file
+
 ## [2026-03-25]
 - refactor: migrate from WindowAbstract to WindowBase with generic ViewModel support
 - refactor: add lifecycle management (IsActive, IsClosing flags) to WindowBase
