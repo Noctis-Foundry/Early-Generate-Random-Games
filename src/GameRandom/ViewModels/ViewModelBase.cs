@@ -6,10 +6,12 @@ using GameRandom.Scr.DI;
 using GameRandom.Scr.Service;
 using GameRandom.Views;
 
-namespace GameRandom.ViewModels.AdminSystem;
+namespace GameRandom.ViewModels.AdminConfirmSystem;
 
 public class ViewModelBase : ObservableObject, IDisposable
 {
+    [Inject] protected TaskRunner? TaskRunner;
+    
     public Action? StartProcessing { get; set; }
 
     protected bool IsProcess;
@@ -18,6 +20,19 @@ public class ViewModelBase : ObservableObject, IDisposable
     {
         IsProcess = true;
         StartProcessing?.Invoke();
+    }
+
+    protected virtual void InitializeDiContainer()
+    {
+        Di.Container.ResolveFieldsFromClassInstance(this);
+
+        if (TaskRunner is null)
+            throw new NullReferenceException();
+    }
+
+    protected void CloseTaskWaiter()
+    {
+        IsProcess = false;
     }
     
     public virtual void Dispose()

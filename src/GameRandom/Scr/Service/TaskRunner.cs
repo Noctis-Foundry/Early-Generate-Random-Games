@@ -7,36 +7,58 @@ namespace GameRandom.Scr.Service;
 
 public class TaskRunner
 {
-    public async Task LaunchMethodWithTaskWaiter(Func<Task> func, CancellationToken cts = default)
+    public async Task<bool> Run(Func<Task> func)
     {
         try
         {
             await func.Invoke();
+            return true;
         }
         catch (Exception e)
         {
             Logger.Error($"Failed to complete method with error: {e.Message}");
+            return false;
         }
     }
-    public async Task LaunchMethodWithTaskWaiter(Func<Task> func, SemaphoreSlim semaphoreSlim, int waitTime, CancellationToken cts = default)
+    public async Task<bool> RunWithSemaphore(Func<Task> func, SemaphoreSlim semaphoreSlim, int waitTime)
     {
-        if (!await semaphoreSlim.WaitAsync(waitTime, cts))
+        if (!await semaphoreSlim.WaitAsync(waitTime))
         {
             Logger.Warning("Failed to acquire semaphoreSlim lock for method");
-            return;
+            return false;
         }
 
         try
         {
             await func.Invoke();
+            return true;
         }
         catch (Exception e)
         {
             Logger.Error($"Failed to complete method with error: {e.Message}");
+            return false;
         }
         finally
         {
             semaphoreSlim.Release();
+        }
+    }
+
+    public async Task<bool> RunWithFinallyAction(Func<Task> func, Action closeWaiter)
+    {
+        try
+        {
+            await func.Invoke();
+            return true;
+        }
+        catch (Exception e)
+        {
+            Logger.Error($"Failed to complete method with error: {e.Message}");
+            return false;
+        }
+        finally
+        {
+            closeWaiter?.Invoke();
         }
     }
 }
