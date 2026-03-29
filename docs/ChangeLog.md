@@ -1,5 +1,10 @@
 # ChangeLog
 
+## [2026-03-30]
+- refactor(viewmodels): reorganize admin system into AdminConfirmSystem folder
+- refactor(admin): extract business logic from AdminConfirmViewModel
+- feat(service): enhance TaskRunner with new execution methods
+
 ## [2026-03-28]
 - feat(core): add TaskRunner service for error handling
 - refactor(base): integrate TaskRunner into base classes
