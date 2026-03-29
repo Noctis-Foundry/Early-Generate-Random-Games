@@ -9,7 +9,7 @@ using Avalonia.Controls;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Service;
 
-namespace GameRandom.ViewModels.AdminSystem;
+namespace GameRandom.ViewModels.AdminConfirmSystem;
 
 /// <summary>
 /// ViewModel for the logic of rolling (generating) random games.

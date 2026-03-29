@@ -1,6 +1,6 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:GameRandom.ViewModels.AdminSystem"
+        xmlns:vm="using:GameRandom.ViewModels.AdminConfirmSystem"
         x:Class="GameRandom.Views.ProfileContent"
         Width="1000" Height="460"
         MinWidth="1000" MinHeight="460"

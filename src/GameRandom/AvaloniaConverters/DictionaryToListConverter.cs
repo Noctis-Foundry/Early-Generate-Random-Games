@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Avalonia.Data.Converters;
-using GameRandom.ViewModels.AdminSystem;
+using GameRandom.ViewModels.AdminConfirmSystem;
 
 namespace GameRandom.AvaloniaConverters;
 

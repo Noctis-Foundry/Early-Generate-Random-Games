@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text.Json;
 using GameRandom.Scr.Service;
 
-namespace GameRandom.ViewModels.AdminSystem;
+namespace GameRandom.ViewModels.AdminConfirmSystem;
 
 /// <summary>
 /// ViewModel for managing game filtering options such as categories, genres, and years.

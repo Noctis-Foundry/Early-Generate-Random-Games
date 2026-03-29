@@ -1,7 +1,7 @@
 using System;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using GameRandom.ViewModels.AdminSystem;
+using GameRandom.ViewModels.AdminConfirmSystem;
 
 namespace GameRandom;
 

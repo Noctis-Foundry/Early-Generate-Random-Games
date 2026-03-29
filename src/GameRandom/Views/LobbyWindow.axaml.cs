@@ -9,7 +9,7 @@ using GameRandom.Scr.Service;
 using GameRandom.Src;
 using GameRandom.Src.Enums;
 using GameRandom.Src.LobbySystem;
-using GameRandom.ViewModels.AdminSystem;
+using GameRandom.ViewModels.AdminConfirmSystem;
 
 namespace GameRandom.Views.LobbyModalWindow;
 

@@ -12,7 +12,7 @@ using GameRandom.Src.Enums;
 using GameRandom.Src.SteamsContexts;
 using GameRandom.Src.UserData;
 
-namespace GameRandom.ViewModels.AdminSystem;
+namespace GameRandom.ViewModels.AdminConfirmSystem;
 
 /// <summary>
 /// ViewModel for the main application window. Manages lobby and challenge rules.

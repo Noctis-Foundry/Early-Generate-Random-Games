@@ -12,7 +12,7 @@ using GameRandom.Scr.Events;
 using GameRandom.Scr.Service;
 using GameRandom.Src;
 using GameRandom.Src.UserData;
-using GameRandom.ViewModels.AdminSystem;
+using GameRandom.ViewModels.AdminConfirmSystem;
 
 namespace GameRandom.Views;
 

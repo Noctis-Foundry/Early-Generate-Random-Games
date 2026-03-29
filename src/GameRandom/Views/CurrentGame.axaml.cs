@@ -7,7 +7,7 @@ using Avalonia.Threading;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Service;
 using GameRandom.Src;
-using GameRandom.ViewModels.AdminSystem;
+using GameRandom.ViewModels.AdminConfirmSystem;
 
 namespace GameRandom.Views;
 
@@ -65,7 +65,7 @@ public sealed partial class CurrentGame : WindowBase<CurrentGameStatusViewModel>
             return;
         }
         
-        await TaskRunner.LaunchMethodWithTaskWaiter(async () => await vm.FinishingGame());
+        await TaskRunner.Run(async () => await vm.FinishingGame());
     }
 
     protected override void InitializeDiContainer()

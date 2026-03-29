@@ -9,7 +9,7 @@ using Avalonia.Markup.Xaml;
 using GameRandom.Scr.DI;
 using GameRandom.Src;
 using GameRandom.Src.Enums;
-using GameRandom.ViewModels.AdminSystem;
+using GameRandom.ViewModels.AdminConfirmSystem;
 
 namespace GameRandom.Views;
 

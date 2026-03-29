@@ -11,7 +11,7 @@ using GameRandom.Src;
 using GameRandom.Src.Enums;
 using GameRandom.Src.UserData;
 
-namespace GameRandom.ViewModels.AdminSystem;
+namespace GameRandom.ViewModels.AdminConfirmSystem;
 
 /// <summary>
 /// ViewModel for choosing and setting up a game from the random selection.

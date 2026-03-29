@@ -4,7 +4,7 @@ using GameRandom.Scr.DI;
 using GameRandom.Scr.Events;
 using GameRandom.Src.UserData;
 
-namespace GameRandom.ViewModels.AdminSystem;
+namespace GameRandom.ViewModels.AdminConfirmSystem;
 
 public class LobbyWindowViewModel : ViewModelBase
 {

@@ -11,7 +11,7 @@ using System.Linq;
 using System.Threading;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
-namespace GameRandom.ViewModels.AdminSystem;
+namespace GameRandom.ViewModels.AdminConfirmSystem;
 
 public class StatisticGameTableViewModel : AbstractTableWindowViewModel<GameProgresses>
 {

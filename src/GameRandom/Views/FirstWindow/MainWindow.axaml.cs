@@ -14,7 +14,7 @@ using GameRandom.Src.Enums;
 using GameRandom.Src.Factory;
 using GameRandom.Src.LobbySystem;
 using GameRandom.Src.UserData;
-using GameRandom.ViewModels.AdminSystem;
+using GameRandom.ViewModels.AdminConfirmSystem;
 using GameRandom.Views.LobbyModalWindow;
 
 namespace GameRandom.Views;

@@ -3,7 +3,7 @@ using Avalonia.Interactivity;
 using GameRandom.CoreApp;
 using GameRandom.Scr.Service;
 using GameRandom.Src;
-using GameRandom.ViewModels.AdminSystem;
+using GameRandom.ViewModels.AdminConfirmSystem;
 
 namespace GameRandom.Views;
 

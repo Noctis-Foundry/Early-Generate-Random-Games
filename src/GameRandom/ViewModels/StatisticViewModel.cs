@@ -10,7 +10,7 @@ using GameRandom.Scr.DI;
 using GameRandom.Scr.Service;
 using GameRandom.Src;
 
-namespace GameRandom.ViewModels.AdminSystem;
+namespace GameRandom.ViewModels.AdminConfirmSystem;
 
 /// <summary>
 /// ViewModel for the statistics screen.

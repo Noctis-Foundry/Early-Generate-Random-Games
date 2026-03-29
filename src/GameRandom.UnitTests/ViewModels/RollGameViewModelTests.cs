@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using GameRandom.CoreApp;
 using GameRandom.Scr.DI;
 using GameRandom.Src;
-using GameRandom.ViewModels.AdminSystem;
+using GameRandom.ViewModels.AdminConfirmSystem;
 using Xunit;
 
 namespace GameRandom.UnitTests.ViewModels;

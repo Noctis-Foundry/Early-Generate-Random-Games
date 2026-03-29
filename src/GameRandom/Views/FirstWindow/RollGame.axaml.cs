@@ -14,7 +14,7 @@ using GameRandom.Service;
 using GameRandom.Src;
 using GameRandom.Src.Enums;
 using GameRandom.Src.Factory;
-using GameRandom.ViewModels.AdminSystem;
+using GameRandom.ViewModels.AdminConfirmSystem;
 
 namespace GameRandom.Views;
 

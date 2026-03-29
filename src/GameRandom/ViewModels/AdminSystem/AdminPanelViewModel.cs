@@ -14,7 +14,7 @@ using GameRandom.Src;
 using GameRandom.Src.UserData;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace GameRandom.ViewModels.AdminSystem;
+namespace GameRandom.ViewModels.AdminConfirmSystem;
 
 /// <summary>
 /// ViewModel for the admin panel, responsible for managing finished game processes and admin rules.

@@ -9,7 +9,7 @@ using GameRandom.Service;
 using GameRandom.Src;
 using GameRandom.Src.Enums;
 
-namespace GameRandom.ViewModels.AdminSystem;
+namespace GameRandom.ViewModels.AdminConfirmSystem;
 
 /// <summary>
 /// ViewModel responsible for confirming that a game has been finished.

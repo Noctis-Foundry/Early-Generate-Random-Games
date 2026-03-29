@@ -1,6 +1,6 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:GameRandom.ViewModels.AdminSystem">
+        xmlns:vm="using:GameRandom.ViewModels.AdminConfirmSystem">
     
     <Design.PreviewWith>
         <Border Width="600" Height="400">

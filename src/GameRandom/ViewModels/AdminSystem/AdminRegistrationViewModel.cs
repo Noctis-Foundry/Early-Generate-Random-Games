@@ -13,7 +13,7 @@ using GameRandom.Src.Enums;
 using GameRandom.Src.UserData;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace GameRandom.ViewModels.AdminSystem;
+namespace GameRandom.ViewModels.AdminConfirmSystem;
 
 /// <summary>
 /// ViewModel for managing admin registration and permissions within a lobby.

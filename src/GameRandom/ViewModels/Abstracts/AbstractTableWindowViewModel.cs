@@ -8,7 +8,7 @@ using GameRandom.Scr.Service;
 using GameRandom.Src;
 using GameRandom.Src.Enums;
 
-namespace GameRandom.ViewModels.AdminSystem;
+namespace GameRandom.ViewModels.AdminConfirmSystem;
 
 public class AbstractTableWindowViewModel<TEntity> : ViewModelBase where TEntity : class
 {

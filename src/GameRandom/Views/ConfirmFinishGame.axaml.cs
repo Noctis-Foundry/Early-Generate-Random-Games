@@ -10,7 +10,7 @@ using GameRandom.DataBaseContexts;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Service;
 using GameRandom.Src;
-using GameRandom.ViewModels.AdminSystem;
+using GameRandom.ViewModels.AdminConfirmSystem;
 using Logger = GameRandom.Scr.Service.Logger;
 
 namespace GameRandom.Views;

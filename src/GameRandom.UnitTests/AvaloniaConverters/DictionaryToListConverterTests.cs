@@ -4,7 +4,8 @@ using System.Globalization;
 using GameRandom.AvaloniaConverters;
 using GameRandom.DataBaseContexts;
 using CommunityToolkit.Mvvm.Input;
-using GameRandom.ViewModels.AdminSystem;
+using GameRandom.Scr.Service;
+using GameRandom.ViewModels.AdminConfirmSystem;
 using Xunit;
 
 namespace GameRandom.UnitTests.AvaloniaConverters;
@@ -17,7 +18,7 @@ public class DictionaryToListConverterTests
     public void Convert_Dictionary_ShouldReturnList()
     {
         var gameInfo = new FinishedGames();
-        var command = new AsyncRelayCommand(() => System.Threading.Tasks.Task.CompletedTask);
+        var command = new RelayCommand(() => Console.WriteLine("Convert dictionary test click"));
         var data = new AdminPanelElementData(gameInfo, command, "Player1");
         
         var dict = new Dictionary<int, AdminPanelElementData>

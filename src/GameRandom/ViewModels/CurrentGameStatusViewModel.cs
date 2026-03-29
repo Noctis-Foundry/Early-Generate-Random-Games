@@ -15,7 +15,7 @@ using GameRandom.Src.Enums;
 using GameRandom.Src.UserData;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
-namespace GameRandom.ViewModels.AdminSystem;
+namespace GameRandom.ViewModels.AdminConfirmSystem;
 
 public class CurrentGameStatusViewModel : ViewModelBase
 {
