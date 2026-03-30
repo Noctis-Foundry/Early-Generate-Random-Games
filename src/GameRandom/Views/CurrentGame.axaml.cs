@@ -80,9 +80,6 @@ public sealed partial class CurrentGame : WindowBase<CurrentGameStatusViewModel>
     {
         _steamService = null;
         
-        if (DataContext is CurrentGameStatusViewModel vm)
-            vm.Dispose();
-        
         base.Dispose();
     }
 }
