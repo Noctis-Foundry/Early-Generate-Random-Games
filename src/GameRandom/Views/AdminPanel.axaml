@@ -38,7 +38,7 @@
                   ItemsSource="{Binding GameList}"
                   IsReadOnly="True">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Player" Binding="{Binding NickName}" Width="150"/>
+                <DataGridTextColumn Header="Player" Binding="{Binding  Nickname}" Width="150"/>
                 <DataGridTextColumn Header="Game" Binding="{Binding GameInfo.GameProgresses.AppName,
                 FallbackValue='Failed to find game name'}" Width="*"/>
                 <DataGridTextColumn Header="Completed Date" Binding="{Binding GameInfo.GameProgresses.AppName,
