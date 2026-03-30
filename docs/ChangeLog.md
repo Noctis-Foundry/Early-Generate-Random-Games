@@ -1,5 +1,17 @@
 # ChangeLog
 
+## [2026-03-31]
+- refactor(service): organize TaskRunner methods and add XML documentation
+- refactor(viewmodel): massive reorganization of ViewModels into system-based directories
+- refactor(admin): split AdminPanel and AdminRegistration into specialized services and factories
+- refactor(current-game): fix bug causing double disposal of classes and reorganize system
+- refactor(choose-game): reorganize ChooseGame system with dedicated actions and interfaces
+- refactor(confirm-finish): reorganize ConfirmFinishGame system with dedicated actions and interfaces
+- refactor(tables): reorganize Tables and Statistics systems with standardized structure
+- refactor(base): move base ViewModels to BaseClasses folder
+- test(converters): update DictionaryToListConverter and its unit tests
+- docs: update project documentation to reflect new structure
+
 ## [2026-03-30]
 - refactor(viewmodels): reorganize admin system into AdminConfirmSystem folder
 - refactor(admin): extract business logic from AdminConfirmViewModel
