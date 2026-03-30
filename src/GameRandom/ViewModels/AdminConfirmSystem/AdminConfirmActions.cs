@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using GameRandom.DataBaseContexts;
-using GameRandom.Scr.DI;
-using GameRandom.Scr.Service;
-using GameRandom.Src;
 using GameRandom.Src.Enums;
 using GameRandom.ViewModels.AdminConfirmSystem.Interface;
 
@@ -109,5 +106,7 @@ public sealed class AdminConfirmActions : BaseModelService, IAdminConfirm
     public override void Dispose()
     {
         _semaphoreSlim.Dispose();
+        
+        base.Dispose();
     }
 }

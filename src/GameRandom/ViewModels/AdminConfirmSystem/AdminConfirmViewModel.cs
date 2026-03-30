@@ -56,6 +56,7 @@ public sealed class AdminConfirmViewModel : ViewModelBase
     public AdminConfirmViewModel()
     {
         InitializeDiContainer();
+        InitializeSemaphoreSlim();
     }
 
     /// <summary>
