@@ -1,43 +1,55 @@
 # FilterGame System
 
 ## Overview
-Modal window system for configuring game selection filters by categories, genres, and release years.
+Game filtering system for configuring selection criteria by categories, genres, and release years. Loads filter options from JSON files and provides data structure for filter validation.
 
 ## Files
-- `FilterGameViewModel.cs` - ViewModel with filter data
-- `FilterGameWindow.axaml` - UI layout
-- `FilterGameWindow.axaml.cs` - Code-behind logic
+- `FilterGameViewModel.cs` - ViewModel with filter data and selection management
+- `FilteredData.cs` - Data structure for filter selections (embedded in ViewModel file)
 
 ## Purpose
-- Configure game selection criteria
-- Multi-select categories, genres, and years
-- Validate games against selected filters
-- Provide random year selection from filtered list
+- Load available categories and genres from JSON assets
+- Manage multi-select filter collections
+- Provide filter data structure for game validation
+- Generate year range from 2003 to current year
 
 ## ViewModel (FilterGameViewModel)
 
-### Collections
+**Namespace**: `GameRandom.ViewModels.BaseClasses`
+
+**Inheritance**: Extends `ViewModelBase`
+
+### Data Sources
 
 #### Categories (ObservableCollection<string>)
-Game modes and Steam features:
-- **Game Modes**: Single-player, Multi-player, Co-op, MMO, PvP, etc.
-- **Steam Features**: Achievements, Cloud, Trading Cards, Workshop, etc.
-- **Additional**: Captions, Commentary, Stats, Level Editor, etc.
+Loaded from `Assets/Jsons/categories.json`
 
-**Total**: 47 predefined categories
+**Content**: Game modes and Steam features
+- Game Modes: Single-player, Multi-player, Co-op, MMO, PvP
+- Steam Features: Achievements, Cloud, Trading Cards, Workshop
+- Additional: Captions, Commentary, Stats, Level Editor
+
+**Total**: 47 categories (loaded from JSON)
 
 #### Genres (ObservableCollection<string>)
-Game genres:
+Loaded from `Assets/Jsons/genres.json`
+
+**Content**: Game genres
 - Action, Adventure, Casual, Free to Play, Indie
 - Massively Multiplayer, Racing, RPG, Simulation
 - Sports, Strategy, Early Access
 
-**Total**: 12 genres
+**Total**: 12 genres (loaded from JSON)
 
 #### Years (List<int>)
-Release years from 2003 to current year.
+Generated programmatically from 2003 to current year.
 
-**Generation**: `Enumerable.Range(2003, DateTime.Now.Year - 2003 + 1)`
+**Generation**: 
+```csharp
+Enumerable.Range(2003, DateTime.Now.Year - 2003 + 1).ToList()
+```
+
+**Example**: For 2024, generates [2003, 2004, ..., 2024]
 
 ### Selected Items
 
@@ -52,18 +64,77 @@ User-selected year filters.
 
 ### Methods
 
-#### GetCategory() → FilteredData
-Returns current filter selections.
+#### Constructor
+Initializes ViewModel and loads filter data from JSON files.
 
-**Returns**: FilteredData object with all selections
+```csharp
+public FilterGameViewModel()
+{
+    LoadDataFromJson();
+}
+```
 
-#### Dispose()
-Clears all selected items.
+#### LoadDataFromJson() (private)
+Loads categories and genres from JSON asset files.
+
+**File Paths**:
+- Categories: `Assets/Jsons/categories.json`
+- Genres: `Assets/Jsons/genres.json`
+
+**Process**:
+1. Constructs file paths using `AppContext.BaseDirectory`
+2. Checks file existence
+3. Deserializes JSON to `List<string>`
+4. Converts to `ObservableCollection<string>`
+5. Assigns to Categories/Genres properties
+
+**Error Handling**: 
+- Logs error via Logger.Error()
+- Throws exception on failure
+
+**Example JSON Structure**:
+```json
+[
+  "Single-player",
+  "Multi-player",
+  "Co-op",
+  "Achievements"
+]
+```
+
+#### GetFilters() → FilteredData
+Returns current filter selections as FilteredData object.
+
+**Returns**: New FilteredData instance with selected items
+
+```csharp
+public FilteredData GetFilters()
+{
+    return new FilteredData(SelectedCategories, SelectedGenres, SelectedYears);
+}
+```
+
+#### Dispose() (override)
+Clears all collections and releases resources.
+
+**Actions**:
+1. Clears selected item lists (backing fields and properties)
+2. Clears data source collections (Categories, Genres, Years)
+3. Calls base.Dispose()
+
+**Cleared Collections**:
+- _selectedCategories, SelectedCategories
+- _selectedGenres, SelectedGenres
+- _selectedYears, SelectedYears
+- _categories, Categories
+- _genres, Genres
+- _years, Years
 
 ## FilteredData Class
 
-### Purpose
-Container for filter selections.
+**Namespace**: `GameRandom.ViewModels.BaseClasses` (same file as ViewModel)
+
+**Type**: Record-style class with primary constructor
 
 ### Properties
 ```csharp
@@ -74,193 +145,190 @@ List<int> Years
 
 ### Constructor
 ```csharp
-FilteredData(List<string> categories, List<string> genres, List<int> years)
+public class FilteredData(List<string> categories, List<string> genres, List<int> years)
 ```
-
-## Window (FilterGameWindow)
-
-### UI Structure
-
-#### Header
-- Title: "Фильтры игр"
-- Close button (✕)
-
-#### Content Grid
-Three sections with labels and multi-select ListBoxes:
-1. **Categories** - Max height 200
-2. **Genres** - Max height 150
-3. **Years** - Max height 150
-
-### Window Properties
-- Size: 800x600
-- Min: 600x500
-- Max: 1000x750
-- Background: Dark theme (#1E1E1E)
-
-### Methods
-
-#### Close(object? sender, RoutedEventArgs e)
-Closes filter window.
-
-#### CheckFilters(AppSavedContext apps) → bool
-Validates game against selected filters.
 
 **Parameters**:
-- `apps` - Game context to validate
+- `categories` - Selected category filters
+- `genres` - Selected genre filters
+- `years` - Selected year filters
 
-**Logic**:
-1. Get selected filters from ViewModel
-2. If categories selected, check if game has any matching category
-3. If genres selected, check if game has any matching genre
-4. Return true if all checks pass
+## JSON Asset Files
 
-**Returns**: 
-- `true` - Game matches filters
-- `false` - Game doesn't match or ViewModel unavailable
+### categories.json
+**Location**: `Assets/Jsons/categories.json`
 
-**Example**:
-```csharp
-if (filterWindow.CheckFilters(gameContext))
-{
-    // Game passes filters
-    AddToResults(gameContext);
-}
-```
-
-#### GetYear() → int
-Returns random year from selected years or default range.
-
-**Logic**:
-1. Get selected years from ViewModel
-2. If years selected, return random from selection
-3. Otherwise return random year 2003-2026
-
-**Returns**: Random year (int)
+**Format**: JSON array of strings
 
 **Example**:
-```csharp
-int year = filterWindow.GetYear();
-var game = gameService.GetRandomGame(year);
+```json
+[
+  "Single-player",
+  "Multi-player",
+  "Co-op",
+  "Achievements",
+  "Steam Cloud",
+  "Trading Cards"
+]
 ```
 
-## Styles
+### genres.json
+**Location**: `Assets/Jsons/genres.json`
 
-### ListBox.FilteredBox
-- Background: #2D2D30
-- Border: #3F3F46, thickness 1
+**Format**: JSON array of strings
 
-### ListBoxItem.FilteredBox
-- Padding: 8,4
-
-### ListBoxItem:selected
-- Background: #C1185A (pink)
-
-### TextBlock.FilteredBox
-- Foreground: GhostWhite
-
-### ListBox TextBlock
-- Foreground: PaleVioletRed
+**Example**:
+```json
+[
+  "Action",
+  "Adventure",
+  "RPG",
+  "Strategy",
+  "Simulation"
+]
+```
 
 ## Usage Pattern
 
-### Configuration
+### Initialization
 ```csharp
-var filterWindow = new FilterGameWindow();
-filterWindow.Open();
-
-// User selects filters and closes window
+var filterViewModel = new FilterGameViewModel();
+// Categories and genres automatically loaded from JSON
+// Years automatically generated
 ```
 
-### Game Generation with Filters
+### User Selection (via UI binding)
 ```csharp
-// Check if filtering enabled
-if (filterCheckBox.IsChecked == true)
+// User selects items in UI (ListBox multi-select)
+filterViewModel.SelectedCategories = new List<string> { "Single-player", "Achievements" };
+filterViewModel.SelectedGenres = new List<string> { "Action", "RPG" };
+filterViewModel.SelectedYears = new List<int> { 2020, 2021, 2022 };
+```
+
+### Retrieving Filter Data
+```csharp
+var filters = filterViewModel.GetFilters();
+
+// Use filters for game validation
+foreach (var game in games)
 {
-    // Get random year from filter
-    var year = filterWindow.GetYear();
-    var game = gameService.GetRandomGame(year);
+    bool matchesCategories = filters.Categories.Count == 0 || 
+        filters.Categories.Any(c => game.Categories.Contains(c));
     
-    // Validate game against filters
-    if (!filterWindow.CheckFilters(game))
-        continue; // Skip this game
+    bool matchesGenres = filters.Genres.Count == 0 || 
+        filters.Genres.Any(g => game.Genres.Contains(g));
     
-    // Game passes filters
-    AddGame(game);
+    bool matchesYears = filters.Years.Count == 0 || 
+        filters.Years.Contains(game.ReleaseYear);
+    
+    if (matchesCategories && matchesGenres && matchesYears)
+    {
+        // Game passes filters
+        filteredGames.Add(game);
+    }
 }
 ```
 
-### Complete Integration
+## Filter Validation Logic
+
+### Empty Selection Behavior
+Empty selection for a filter type means "no filter" for that category:
+- Empty Categories → All categories accepted
+- Empty Genres → All genres accepted
+- Empty Years → All years accepted
+
+### Matching Logic
+Uses `Any()` for OR logic within each filter type:
+
+**Category Matching**:
 ```csharp
-while (games.Count < targetCount && iterations < maxIterations)
-{
-    var year = useFilters 
-        ? filterWindow.GetYear() 
-        : Random.Shared.Next(2003, 2026);
-    
-    var game = GetRandomGame(year);
-    
-    if (game == null) continue;
-    
-    if (useFilters && !filterWindow.CheckFilters(game))
-        continue;
-    
-    games.Add(game);
-    iterations++;
-}
+bool matchesCategories = selectedCategories.Count == 0 || 
+    selectedCategories.Any(c => game.Categories.Contains(c));
 ```
 
-## Filter Logic
-
-### Category Matching
-Uses `Any()` to check if game has at least one selected category:
+**Genre Matching**:
 ```csharp
-selectedCategories.Any(c => game.Categories.Contains(c))
+bool matchesGenres = selectedGenres.Count == 0 || 
+    selectedGenres.Any(g => game.Genres.Contains(g));
 ```
 
-### Genre Matching
-Uses `Any()` to check if game has at least one selected genre:
+**Year Matching**:
 ```csharp
-selectedGenres.Any(g => game.Genres.Contains(g))
+bool matchesYears = selectedYears.Count == 0 || 
+    selectedYears.Contains(game.ReleaseYear);
 ```
 
-### Year Selection
-Random selection from filtered years or default range.
-
-## Integration with RollGame
-
-RollGame uses FilterGameWindow for:
-1. **Filter Configuration**: User opens window via "Filters" button
-2. **Year Selection**: GetYear() provides filtered random year
-3. **Game Validation**: CheckFilters() validates generated games
-
-**Flow**:
-```
-User clicks "Filters" → Configure selections → Close window
-User enables filter checkbox → Click "Search"
-→ For each game: GetYear() → Generate → CheckFilters() → Add if valid
+**Combined Logic** (AND between filter types):
+```csharp
+bool passesFilters = matchesCategories && matchesGenres && matchesYears;
 ```
 
-## Best Practices
+## Integration Points
 
-1. **Open Once**: Create window instance once, reuse for multiple generations
-2. **Check Enabled**: Only call filter methods when filtering is enabled
-3. **Validate Results**: Always check CheckFilters() return value
-4. **Handle Empty**: GetYear() handles empty selection gracefully
-5. **Dispose ViewModel**: Call Dispose() when done with filters
+### RollGame System
+RollGame uses FilterGameViewModel for game selection filtering:
+1. User configures filter selections via UI
+2. RollGame retrieves filters via GetFilters()
+3. Generated games validated against filter criteria
+4. Only matching games displayed to user
+
+### UI Binding
+ViewModel properties designed for XAML data binding:
+```xml
+<ListBox ItemsSource="{Binding Categories}" 
+         SelectedItems="{Binding SelectedCategories}"
+         SelectionMode="Multiple"/>
+
+<ListBox ItemsSource="{Binding Genres}" 
+         SelectedItems="{Binding SelectedGenres}"
+         SelectionMode="Multiple"/>
+
+<ListBox ItemsSource="{Binding Years}" 
+         SelectedItems="{Binding SelectedYears}"
+         SelectionMode="Multiple"/>
+```
+
+## Error Handling
+
+### JSON Loading Errors
+- Logs error message via Logger.Error()
+- Throws exception to caller
+- Includes exception message in log
+
+**Example Error Log**:
+```
+Error loading filter data: Could not find file 'categories.json'
+```
+
+### File Not Found
+- Silently skips missing files
+- Collections remain empty if JSON not found
+- No exception thrown for missing files
 
 ## Features
 
-- **Multi-Select**: Select multiple categories, genres, and years
-- **Visual Feedback**: Selected items highlighted in pink
-- **Flexible Filtering**: Empty selection = no filter for that category
-- **Year Range**: Automatically includes current year
-- **Dark Theme**: Consistent with application style
-- **Reusable**: Window can be opened/closed multiple times
+- **JSON-Based Configuration**: Categories and genres loaded from external files
+- **Dynamic Year Range**: Automatically includes current year
+- **Observable Collections**: UI-friendly data binding support
+- **Multi-Select Support**: Lists allow multiple selections
+- **Flexible Filtering**: Empty selection = no filter
+- **MVVM Pattern**: Clean separation of data and UI
+- **Memory Management**: Proper disposal of collections
+- **Error Logging**: Comprehensive error reporting
+
+## Best Practices
+
+1. **Dispose Properly**: Call Dispose() when done with ViewModel
+2. **Handle Empty Filters**: Check for empty collections before validation
+3. **Validate JSON Files**: Ensure categories.json and genres.json exist
+4. **Use GetFilters()**: Don't access selected collections directly
+5. **Thread Safety**: ViewModel not thread-safe, use on UI thread only
 
 ## Limitations
 
-- No "Select All" / "Clear All" buttons
 - No filter persistence between sessions
-- No filter presets/saving
-- Categories and genres are hardcoded
-- Year range starts at 2003 (hardcoded)
+- No filter presets or saving functionality
+- Year range hardcoded to start at 2003
+- JSON files must exist at startup
+- Not thread-safe (UI thread only)
+- No validation of JSON content structure

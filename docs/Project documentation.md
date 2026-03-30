@@ -27,6 +27,11 @@ Modal error dialog service with queuing and global exception handling. Displays 
 
 [Detailed Documentation](ClassesAndSystems/ErrorService.md)
 
+### ConfirmService
+Thread-safe confirmation dialog service for user decision prompts. Prevents multiple simultaneous dialogs and provides Yes/No confirmation interface.
+
+[Detailed Documentation](ClassesAndSystems/ConfirmService.md)
+
 ## UI Systems
 
 ### Main Window
@@ -34,38 +39,82 @@ Primary application window managing navigation, lobby integration, and global UI
 
 [Detailed Documentation](ClassesAndSystems/MainWindow.md)
 
-### RollGame
-Random game selection interface with dynamic grid layout and filtering capabilities. Generates up to 5 random games from Steam library with optional year/category filters and displays them with clickable images. Uses FilterGameSystem for advanced filtering.
+### RollGame System
+Random game selection system with filtering capabilities. Generates 1-5 random games from Steam library with optional category, genre, and year filters using MVVM pattern.
 
-[Detailed Documentation](ClassesAndSystems/RollGame.md) | [Filter System](ClassesAndSystems/FilterGameSystem.md)
+[Detailed Documentation](ClassesAndSystems/RollGame.md)
 
-### Current Game Status
-Modal window displaying active game session information with animated visuals. Shows game name, dates, time tracking, and action buttons for Steam integration.
+### Filter Game System
+Game filtering system for configuring selection criteria by categories, genres, and release years. Loads filter options from JSON files and provides data structure for filter validation.
+
+[Detailed Documentation](ClassesAndSystems/FilterGameSystem.md)
+
+### Current Game Status System
+Real-time game session tracking system displaying current game information with automatic database synchronization. Uses PostgreSQL listener for live updates and timer-based countdown display.
 
 [Detailed Documentation](ClassesAndSystems/CurrentGameStatusSystem.md)
 
-### Global Styles
+### Game Table System
+Real-time game progress table displaying completion status for all players in current lobby. Features automatic updates via PostgresListener, lobby-based filtering, and abstract base class architecture.
+
+[Detailed Documentation](ClassesAndSystems/GameTableSystem.md)
+
+### Lobby System
+Lobby management system for multiplayer game sessions. Groups players into isolated lobbies with automatic member tracking, event-driven updates, and real-time lobby ID display.
+
+[Detailed Documentation](ClassesAndSystems/LobbyService.md)
+
+## ViewModel Architecture
+
+### MVVM Pattern
+All ViewModels follow MVVM pattern with separated business logic. ViewModels are organized in system-specific folders with Interface/ subdirectories and service action classes.
+
+### Base Classes
+- **ViewModelBase** - Base class for all ViewModels with INotifyPropertyChanged
+- **BaseModelService** - Base class for service action classes
+- **AbstractTableWindowViewModel<T>** - Abstract base for table ViewModels
+
+### System Structure
+Each ViewModel system contains:
+- **Interface/** - Interface definitions (e.g., IAdminConfirm, IChooseGame)
+- **[System]Actions.cs** - Service class implementing business logic
+- **[System]ViewModel.cs** - ViewModel for UI binding and state management
+
+### Implemented Systems
+- AdminConfirmSystem - Game completion approval workflow
+- ChooseGameSystem - Game selection and database persistence
+- ConfirmFinishGameSystem - Game completion with screenshot/comment
+- CurrentGameStatusSystem - Real-time game session tracking
+- FilterGameSystem - Game filter configuration
+- LobbySystem - Lobby management and display
+- RollGameViewModel - Random game generation
+- StatisticSystem - Player statistics display
+- TablesSystem - Game progress tables
+
+## Global Styles
 Application-wide XAML style definitions for consistent UI appearance.
 
-#### Button Style
+### Button Style
 Global button styling with Rye-Font, size 16, dark gray text on light gray background.
 
 [Detailed Documentation](ClassesAndSystems/GlobalStyles/ButtonStyle.md)
 
-#### CheckBox Style
+### CheckBox Style
 Comprehensive checkbox styling with animated gradient borders, rounded corners, and state-specific appearances using Anime Ace font.
 
 [Detailed Documentation](ClassesAndSystems/GlobalStyles/CheckBoxStyle.md)
 
-#### MenuItem Style
+### MenuItem Style
 Menu item styling with WhiteSmoke text and DarkSeaGreen hover effect using Anime Ace font.
 
 [Detailed Documentation](ClassesAndSystems/GlobalStyles/MenuItemStyle.md)
 
-#### TextBlock Style
+### TextBlock Style
 Global text styling with Rye-Font and dark gray color for all TextBlock controls.
 
 [Detailed Documentation](ClassesAndSystems/GlobalStyles/TextBlockStyle.md)
+
+## Navigation and Content
 
 ### Main Window Content
 Primary navigation hub with three large image-based buttons (Table, Profile, Roll). Features animated rotating gradient borders on hover.

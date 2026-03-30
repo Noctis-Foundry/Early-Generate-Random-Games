@@ -1,304 +1,290 @@
 # Current Game Status System
 
 ## Overview
-UI system for displaying current game session information including game name, dates, time spent, and action buttons. Uses MVVM pattern with Avalonia UI.
+Real-time game session tracking system displaying current game information with automatic database synchronization. Uses MVVM pattern with Avalonia UI, PostgreSQL listener for live updates, and timer-based countdown display.
 
 ## Purpose
-- Display active game session details
-- Show time tracking information
-- Provide quick access to Steam page
-- Check game running status
+- Display active game session details with real-time updates
+- Show countdown timer until game completion deadline
+- Track game progress and completion status
+- Provide game finishing workflow with screenshot and comment submission
+- Automatically sync with database changes via PostgreSQL LISTEN/NOTIFY
 
 ## Components
 
-### CurrentGame.axaml (View)
-Modal window displaying game session information.
-
-**Layout**: 400x300 window with 2-column grid
-
-**Left Column** (Game Info):
-- Game name
-- Start date
-- Current date
-- Time spent
-- End date
-
-**Right Column** (Visual & Actions):
-- Game cover image (140px width, spans 4 rows)
-- Action buttons (Steam, Check status)
-
-**Design**:
-- Gray background container
-- Dark info cards (#444444)
-- White text, centered
-- Animated rotating gradient border on image
-
 ### CurrentGameStatusViewModel.cs (ViewModel)
-ViewModel managing game status data and business logic.
+ViewModel managing game status with real-time updates and timer functionality.
 
-**Properties**:
-- `database` (DatabaseService) - Injected database service
+**Namespace**: `GameRandom.ViewModels.BaseClasses`
 
-**Methods**:
-- `LoadInfo()` - Loads game information (currently empty)
+**Injected Dependencies**:
+- `DatabaseService` - Database operations
+- `FinishedGameDialogService` - Game completion dialog
+- `PostgresListener` - Real-time database change notifications
+- `ErrorService` - Error message display
+- `SteamService` - Image loading from bytes
 
-**Data Model**:
-- `GameStatusInfo` - Placeholder for game status data
+**Key Properties**:
+- `CurrentTime` (TimeSpan) - Remaining time until game deadline
+- `AppInfo` (GameProgresses) - Current game information
+- `ImageBitmap` (Bitmap) - Game header image
+- `UserGame` (UserGame) - User's game state
+- `IsEmpty` (bool) - Indicates if no active game
 
-### CurrentGameStatusStyle.axaml (Styles)
-XAML styles defining visual appearance.
+**Core Methods**:
 
-**Style Classes**:
+#### LoadInfo() → Task
+Loads current user's game information and initializes timer.
 
-**GameInfoContainer** (DockPanel)
-- Background: Gray
-- Margin: 5px
+**Flow**:
+1. Acquires semaphore lock (1 second timeout)
+2. Retrieves UserGame from database by user ID
+3. Loads GameProgresses data by AppId
+4. Converts game header image from bytes to Bitmap
+5. Starts countdown timer if game found
+6. Sets IsEmpty = false on success
 
-**GameInfoGrid** (Grid)
-- Alignment: Center
-- Row/Column spacing: 8px
+**Error Handling**: Logs errors, releases semaphore in finally block
 
-**GameInfoItem** (Border)
-- Background: #444444
-- Corner radius: 4px
-- Padding: 8px, 5px
+#### FinishingGame() → Task
+Initiates game completion workflow.
 
-**GameInfoText** (TextBlock)
-- Foreground: White
-- Font size: 14px
-- Centered alignment
-- Text wrapping enabled
-- Max width: 200px
-- Max height: 80px
+**Flow**:
+1. Acquires finish semaphore lock
+2. Validates AppInfo is not null
+3. Opens FinishedGameDialogService for screenshot/comment
+4. Updates UserGame in database (moves to next game or clears)
+5. Clears content if no more games in queue
 
-**GameImageBorder** (Border)
-- Border thickness: 1px
-- Corner radius: 4px
-- Animated rotating conic gradient (3s loop)
-- Colors: White → Silver → Gray
+**Database Update Logic**:
+- If AppIdList has games: Set AppId to first item, remove from list
+- If AppIdList empty: Set AppId to 0 (no active game)
 
-**GameInfoButton** (Button)
-- Background: #555555
-- Foreground: White
-- Font size: 14px
-- Padding: 8px, 5px
-- Corner radius: 4px
-- Hover: Animated gradient border
+#### ClearingContent()
+Resets view to empty state.
 
-### CurrentGame.axaml.cs (Code-behind)
-Minimal code-behind with initialization only.
+**Actions**:
+- Loads empty GameProgresses
+- Sets default placeholder image
+- Stops and unsubscribes timer
+- Clears UserGame reference
 
-## UI Elements
+**Private Helper Methods**:
 
-### Information Display
+#### InitializeAppInfo(int appId) → Task<bool>
+Loads game data from database by AppId.
 
-**GameName** (TextBlock)
-- Example: "Name: Dead cells"
-- Displays current game title
+**Returns**: true if game found, false otherwise
 
-**StartDate** (TextBlock)
-- Example: "Start: 24.04.2026"
-- Shows session start date
+#### GetUserGameFromUserId(ulong steamId) → Task<UserGame>
+Retrieves UserGame entity for specified Steam ID.
 
-**TodayDate** (TextBlock)
-- Example: "Today: 26.04.2026"
-- Current date reference
+**Throws**: NullReferenceException if not found
 
-**TimeSpent** (TextBlock)
-- Example: "Time: 30day 14h 52m"
-- Total time played
+#### PostgresLoadInfo(PayloadStructure payload) → Task
+Handles database change notifications.
 
-**EndDate** (TextBlock)
-- Example: "End date: 24.05.2026"
-- Expected completion date
+**Logic**:
+1. Retrieves updated UserGame by RowId
+2. Validates it belongs to current user
+3. Calls LoadInfo() to refresh display
 
-### Action Buttons
+#### StartTimer()
+Initializes DispatcherTimer for countdown display.
 
-**Steam Button**
-- Opens game's Steam store page
-- TODO: Implementation pending
+**Configuration**:
+- Interval: 1000ms (1 second)
+- Handler: UpdateDateTimer()
+- Stops existing timer before starting new one
 
-**Check Status Button**
-- Verifies if game is currently running
-- TODO: Implementation pending
+#### UpdateDateTimer()
+Updates CurrentTime property with remaining time.
 
-## Visual Features
+**Calculation**: `AppInfo.EndTime - DateTime.Now`
 
-### Animated Border
-Rotating conic gradient animation on game image:
-- Duration: 3 seconds
-- Infinite loop
-- Gradient: White → Silver → Gray
-- Rotation: 0° to 360°
+## Real-Time Synchronization
 
-### Hover Effects
-Button hover state shows animated gradient border matching image animation.
+### PostgreSQL Listener Integration
+
+**Subscription**: Subscribes to `UserGames` table changes
+
+**Event Handler**:
+```csharp
+_listener += structure =>
+{
+    if (structure.TableCode == (int)TableEnum.UserGames)
+    {
+        Dispatcher.UIThread.InvokeAsync(async () => await PostgresLoadInfo(structure));
+    }
+};
+
+_postgresListener.Subscribe(TableEnum.UserGames, _listener);
+```
+
+**Behavior**:
+- Listens for INSERT/UPDATE/DELETE on UserGames table
+- Automatically refreshes display when user's game changes
+- Ensures UI stays synchronized across multiple clients
+- Uses UI thread dispatcher for thread-safe updates
+
+## Timer System
+
+### Countdown Display
+
+**Implementation**: DispatcherTimer with 1-second interval
+
+**Purpose**: Shows remaining time until game completion deadline
+
+**Update Logic**:
+```csharp
+private void UpdateDateTimer()
+{
+    if (AppInfo is not null)
+        CurrentTime = _appInfo.EndTime - DateTime.Now;
+}
+```
+
+**Lifecycle**:
+- Started when game info loaded successfully
+- Stopped when game finished or content cleared
+- Properly disposed to prevent memory leaks
 
 ## Data Flow
 
+### Initial Load
 ```
-Database → ViewModel.LoadInfo() → View Properties → UI Display
+ViewModel.LoadInfo() → GetUserGameFromUserId() → InitializeAppInfo() → StartTimer() → UI Update
+```
+
+### Real-Time Updates
+```
+Database Change → PostgresListener → PostgresLoadInfo() → LoadInfo() → UI Refresh
+```
+
+### Game Completion
+```
+FinishingGame() → FinishedGameDialogService → ChangeUserGame() → Database Update → ClearingContent()
 ```
 
 ## Usage Example
 
-### Opening Window
+### Initialization
 ```csharp
-var gameWindow = new CurrentGame();
-gameWindow.DataContext = new CurrentGameStatusViewModel();
-await gameWindow.ShowDialog(mainWindow);
-```
-
-### Loading Game Data
-```csharp
-public class CurrentGameStatusViewModel : ViewModelBase
-{
-    [Inject] private DatabaseService database = null!;
-    
-    public string GameName { get; set; }
-    public DateTime StartDate { get; set; }
-    public DateTime EndDate { get; set; }
-    public TimeSpan TimeSpent { get; set; }
-    
-    public async void LoadInfo()
-    {
-        var userGame = await database.GetUserGameByAppId(currentAppId);
-        
-        if (userGame != null)
-        {
-            GameName = userGame.AppName;
-            StartDate = userGame.BeginData ?? DateTime.Now;
-            EndDate = userGame.EndData ?? DateTime.Now;
-            TimeSpent = EndDate - StartDate;
-        }
-    }
-}
+var viewModel = new CurrentGameStatusViewModel();
+await viewModel.LoadInfo();
 ```
 
 ### Binding in XAML
 ```xml
-<TextBlock Text="{Binding GameName}" Classes="GameInfoText"/>
-<TextBlock Text="{Binding StartDate, StringFormat='Start: {0:dd.MM.yyyy}'}" Classes="GameInfoText"/>
-<TextBlock Text="{Binding TimeSpent, StringFormat='Time: {0:dd}day {0:hh}h {0:mm}m'}" Classes="GameInfoText"/>
+<TextBlock Text="{Binding AppInfo.AppName}"/>
+<TextBlock Text="{Binding AppInfo.BeginTime, StringFormat='Start: {0:dd.MM.yyyy}'}"/>
+<TextBlock Text="{Binding CurrentTime, StringFormat='Time left: {0:dd}d {0:hh}h {0:mm}m'}"/>
+<Image Source="{Binding ImageBitmap}"/>
+<Button Command="{Binding FinishingGame}" Content="Finish Game"/>
+```
+
+### Manual Refresh
+```csharp
+await viewModel.LoadInfo();
+```
+
+### Finishing Game
+```csharp
+await viewModel.FinishingGame();
+// Opens dialog for screenshot and comment
+// Updates database automatically
+// Clears display if no more games
 ```
 
 ## Integration Points
 
 ### Database Service
-Retrieves game session data via injected DatabaseService.
+- `GetUserGameAsync(ulong steamId, CancellationToken)` - Retrieves user's current game
+- `GetFirstOrDefaultAsync<GameProgresses>(predicate, CancellationToken)` - Loads game details
+- `UpdateAsync(UserGame, CancellationToken)` - Updates game queue
+- `GetFromRowId<UserGame>(int rowId, CancellationToken)` - Loads entity by row ID
 
-### Steam Integration
-- Steam button opens game store page
-- Check status verifies game running state
+### FinishedGameDialogService
+Opens modal dialog for game completion:
+- Screenshot upload
+- Comment submission
+- Creates FinishedGames database entry
 
-### Time Tracking
-Calculates and displays time spent based on start/end dates.
+### PostgresListener
+Real-time database change notifications:
+- Subscribes to UserGames table
+- Triggers automatic UI refresh
+- Ensures multi-client synchronization
 
-## Current State
+### SteamService
+Image processing:
+- `GetImageSyncFromBytes(byte[])` - Converts game header bytes to Bitmap
 
-### Implemented
-- UI layout and styling
-- Animated visual effects
-- Basic window structure
-- ViewModel skeleton
+## Thread Safety
 
-### TODO
-- LoadInfo() implementation
-- GameStatusInfo data model
-- Steam button functionality
-- Check status button logic
-- Data binding setup
-- Time calculation logic
+### Semaphores
 
-## Potential Enhancements
+**_loadInfoSemaphore** (SemaphoreSlim 1,1)
+- Prevents concurrent LoadInfo() calls
+- 1-second timeout on acquisition
+- Released in finally block
 
-### ViewModel Implementation
+**_finishSemaphore** (SemaphoreSlim 1,1)
+- Prevents concurrent FinishingGame() calls
+- Shows "Processing" message if locked
+- Released in finally block
+
+### UI Thread Dispatching
+PostgreSQL listener callbacks use `Dispatcher.UIThread.InvokeAsync()` for thread-safe UI updates.
+
+## Database Entities
+
+### GameProgresses
 ```csharp
-public class CurrentGameStatusViewModel : ViewModelBase
+public class GameProgresses
 {
-    [Inject] private DatabaseService database = null!;
-    
-    private string _gameName;
-    public string GameName
-    {
-        get => _gameName;
-        set => SetProperty(ref _gameName, value);
-    }
-    
-    private string _startDate;
-    public string StartDate
-    {
-        get => _startDate;
-        set => SetProperty(ref _startDate, value);
-    }
-    
-    private string _timeSpent;
-    public string TimeSpent
-    {
-        get => _timeSpent;
-        set => SetProperty(ref _timeSpent, value);
-    }
-    
-    public async void LoadInfo(int appId)
-    {
-        var game = await database.GetUserGameByAppId(appId);
-        
-        if (game != null)
-        {
-            GameName = $"Name: {game.AppName}";
-            StartDate = $"Start: {game.BeginData:dd.MM.yyyy}";
-            
-            var timeSpan = DateTime.Now - (game.BeginData ?? DateTime.Now);
-            TimeSpent = $"Time: {timeSpan.Days}day {timeSpan.Hours}h {timeSpan.Minutes}m";
-        }
-    }
-    
-    public void OpenSteamPage()
-    {
-        // Open Steam store page
-        Process.Start(new ProcessStartInfo
-        {
-            FileName = $"steam://store/{appId}",
-            UseShellExecute = true
-        });
-    }
-    
-    public async Task<bool> CheckGameStatus()
-    {
-        // Check if game is running via Steam API
-        return SteamApps.BIsAppInstalled(new AppId_t((uint)appId));
-    }
+    public int Id { get; set; }
+    public int AppId { get; set; }
+    public string AppName { get; set; }
+    public byte[] AppHeaderImage { get; set; }
+    public DateTime BeginTime { get; set; }
+    public DateTime EndTime { get; set; }
+    public DateTime FinishTime { get; set; }
+    public bool IsFinished { get; set; }
+    public string Comment { get; set; }
+    public int Grade { get; set; }
+    public ulong PlayerId { get; set; }
 }
 ```
 
-### GameStatusInfo Model
+### UserGame
 ```csharp
-public class GameStatusInfo
+public class UserGame
 {
-    public int AppId { get; set; }
-    public string GameName { get; set; }
-    public DateTime StartDate { get; set; }
-    public DateTime EndDate { get; set; }
-    public TimeSpan TimeSpent { get; set; }
-    public bool IsRunning { get; set; }
-    public string ImageUrl { get; set; }
+    public int Id { get; set; }
+    public ulong UserId { get; set; }
+    public int AppId { get; set; }  // Current active game
+    public List<int>? AppIdList { get; set; }  // Queue of pending games
 }
 ```
 
 ## Features
 
-- **Clean UI**: Dark theme with clear information hierarchy
-- **Visual Appeal**: Animated gradient borders
-- **Responsive Layout**: Grid-based flexible layout
-- **MVVM Pattern**: Separation of concerns
-- **DI Integration**: Injected database service
-- **Extensible**: Easy to add new info fields
+- **Real-Time Updates**: PostgreSQL LISTEN/NOTIFY integration
+- **Countdown Timer**: Live display of remaining time
+- **Thread-Safe**: Semaphore-based concurrency control
+- **Automatic Sync**: Multi-client database synchronization
+- **Game Queue**: Automatic progression to next game
+- **Completion Workflow**: Integrated screenshot and comment submission
+- **MVVM Pattern**: Clean separation of concerns
+- **DI Integration**: Fully injected dependencies
+- **Error Handling**: Comprehensive try-catch with logging
+- **Memory Management**: Proper disposal of timers and resources
 
-## Limitations
+## Error Handling
 
-- Hardcoded example data in XAML
-- No data binding implemented
-- Button actions not implemented
-- No error handling
-- Static image source
-- No real-time updates
+- Semaphore timeout logging
+- Database operation failures logged
+- Null reference validation
+- User-friendly error messages via ErrorService
+- Graceful degradation on missing data

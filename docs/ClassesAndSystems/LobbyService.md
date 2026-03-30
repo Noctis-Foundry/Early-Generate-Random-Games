@@ -1,28 +1,111 @@
-# LobbyService
+# Lobby System
 
 ## Overview
-`LobbyService` manages multiplayer game sessions by grouping players into lobbies. This filtering system ensures players only see information relevant to their current group, preventing clutter when playing with friends.
+Lobby management system for multiplayer game sessions. Groups players into isolated lobbies with automatic member tracking and event-driven updates.
 
-## Purpose
-Lobbies filter players into separate groups, allowing:
-- Isolated game sessions for friend groups
-- Clean UI with only relevant player information
-- Top panel avatar display showing current lobby members
-- Event-driven updates via EventBus (LobbyUpdate event)
+## Components
 
-## Dependencies
+### LobbyService
+Core service managing lobby operations and state.
+
+### LobbyWindowViewModel
+ViewModel for lobby UI displaying current lobby ID with real-time updates.
+
+## LobbyWindowViewModel
+
+**Namespace**: `GameRandom.ViewModels.AdminConfirmSystem`
+
+**Inheritance**: Extends `ViewModelBase`
+
+### Purpose
+Manages lobby window UI state and displays current user's lobby ID.
+
+### Properties
+
+#### CurrentLobbyID (long)
+Displays current user's lobby identifier.
+
+**Binding**: Two-way data binding with UI
+
+**Default**: 0 (DefaultIdMessage)
+
+**Updates**: Automatically via EventBus subscription
+
+### Constants
+
+**DefaultIdMessage = 0**
+Displayed when user has no active lobby.
+
+### Constructor
+
+**Process**:
+1. Checks if in design mode (returns early if true)
+2. Calls GetCurrentId() to initialize lobby ID
+3. Subscribes to EventBus for LobbyUpdate events
+4. Updates CurrentLobbyID when lobby changes
+
+**EventBus Subscription**:
+```csharp
+if (Di.Container.GetInstance<EventBus>() is EventBus eventBus)
+{
+    eventBus.Subscribe<LobbyUpdate>(e => GetCurrentId());
+}
+```
+
+### Methods
+
+#### GetCurrentId() (private)
+Retrieves and updates current lobby ID from user info.
+
+**Process**:
+1. Gets user info from User.GetInstance()
+2. Checks if LobbyId > 0
+3. Sets CurrentLobbyID to LobbyId or DefaultIdMessage (0)
+
+**Logic**:
+```csharp
+var userInfo = User.GetInstance().GetUserInfo();
+CurrentLobbyID = userInfo.LobbyId > 0 ? userInfo.LobbyId : DefaultIdMessage;
+```
+
+### Event Handling
+
+**LobbyUpdate Event**:
+- Triggered when lobby state changes
+- Automatically calls GetCurrentId()
+- Updates UI via property binding
+
+**Event Flow**:
+```
+Lobby created/joined/left
+  ↓
+LobbyService publishes LobbyUpdate
+  ↓
+EventBus notifies subscribers
+  ↓
+ViewModel.GetCurrentId()
+  ↓
+CurrentLobbyID updated
+  ↓
+UI refreshes
+```
+
+## LobbyService
+
+**Purpose**: Manages lobby lifecycle and membership operations
+
+### Dependencies
 - `DatabaseService` - Database operations
 - `EventBus` - Publishes LobbyUpdate events
 - `ErrorService` - Error handling and user notifications
 - `User` - Current user information
 
-## Constants
+### Constants
 - `EmptyLobbyId = 0` - No lobby assigned
 - `DisconnectedLobbyId = -1` - User disconnected state
 
-## Core Methods
-
-### StartApp()
+### Core Methods
+#### StartApp()
 Initializes application by loading current user's lobby and sending initial LobbyUpdate event.
 
 **Flow**:
@@ -30,7 +113,7 @@ Initializes application by loading current user's lobby and sending initial Lobb
 2. Find user's lobby by ID
 3. Publish LobbyUpdate event
 
-### CreateLobby()
+#### CreateLobby()
 Creates a new lobby for the current user.
 
 **Flow**:
@@ -47,7 +130,7 @@ Creates a new lobby for the current user.
 - Prevents concurrent lobby creation
 - Rolls back user lobby ID on database failure
 
-### ConnectToLobby(long lobbyId)
+#### ConnectToLobby(long lobbyId)
 Connects user to an existing lobby.
 
 **Parameters**:
@@ -66,7 +149,7 @@ Connects user to an existing lobby.
 - Rejects EmptyLobbyId (0)
 - Verifies lobby exists before connection
 
-### DisconnectFromLobby()
+#### DisconnectFromLobby()
 Removes user from current lobby.
 
 **Flow**:
@@ -82,29 +165,29 @@ Removes user from current lobby.
 - Automatically deletes empty lobbies
 - Notifies remaining members via LobbyUpdate event
 
-## Private Helper Methods
+### Private Helper Methods
 
-### GetCurrentUserAsync()
+#### GetCurrentUserAsync()
 Retrieves current user with null safety check.
 
-### FindLobbyAsync(long lobbyId)
+#### FindLobbyAsync(long lobbyId)
 Fetches lobby from database by ID with error handling.
 
-### SendLobbyEvent(Lobbies? lobbies)
+#### SendLobbyEvent(Lobbies? lobbies)
 Publishes LobbyUpdate event to EventBus with lobby member data.
 
-### DisconnectIfInLobby(Users userInfo)
+#### DisconnectIfInLobby(Users userInfo)
 Disconnects user from current lobby if already in one.
 
-### GenerateLobbyId()
+#### GenerateLobbyId()
 Generates random unique lobby ID (1 to long.MaxValue).
 
-### CreateLobbyData(Users userInfo, long lobbyId)
+#### CreateLobbyData(Users userInfo, long lobbyId)
 Creates LobbyData entry for user-lobby association.
 
-## Event System
+### Event System
 
-### LobbyUpdate Event
+#### LobbyUpdate Event
 Published via EventBus when lobby state changes:
 - User joins lobby
 - User leaves lobby
@@ -113,16 +196,16 @@ Published via EventBus when lobby state changes:
 
 **Payload**: `List<LobbyData>` - Current lobby members
 
-**Subscribers**: UI systems (avatar display panel, member lists)
+**Subscribers**: UI systems (avatar display panel, member lists, LobbyWindowViewModel)
 
-## State Management
+### State Management
 - `_isCreating` - Prevents concurrent lobby creation
 - User lobby ID states:
   - `0` - No lobby
   - `-1` - Disconnected
   - `> 0` - Active lobby ID
 
-## Usage Example
+### Usage Example
 ```csharp
 // Create new lobby
 await lobbyService.CreateLobby();
@@ -135,124 +218,27 @@ await lobbyService.DisconnectFromLobby();
 ```
 
 ## UI Integration
+
+### LobbyWindowViewModel Usage
+
+**Initialization**:
+```csharp
+var viewModel = new LobbyWindowViewModel();
+// CurrentLobbyID automatically populated
+```
+
+**XAML Binding**:
+```xml
+<TextBlock Text="{Binding CurrentLobbyID}"/>
+<!-- Displays lobby ID or 0 if no lobby -->
+```
+
+**Automatic Updates**:
+- ViewModel subscribes to LobbyUpdate events
+- CurrentLobbyID updates when lobby changes
+- UI refreshes automatically via binding
+
+### Top Panel Integration
 Top panel displays lobby members using avatars, updated automatically via LobbyUpdate event subscriptions.
 
 ---
-
-## LobbyWindow
-
-### Purpose
-Modal window providing UI for lobby creation and connection. Visualizes LobbyService operations with manga-style theming.
-
-### Layout
-- Size: 1000x550
-- Background: RandomGame.png with black overlay (70% opacity)
-- Centered on screen
-- Title: "LOBBY CONNECTION"
-
-### UI Structure
-
-**Header**:
-- Title: "LOBBY MANAGER"
-- Black background with white bottom border
-- Bold Arial font, size 24
-
-**Create Lobby Section**:
-- Title: "CREATE NEW LOBBY"
-- Lobby ID display (bound to CurrentLobbyID)
-- "CREATE LOBBY" button
-- Black background with white borders
-
-**Separator**: White horizontal line
-
-**Connect Section**:
-- Title: "CONNECT TO EXISTING LOBBY"
-- Instruction text
-- Lobby ID input (TextBox, max 20 digits)
-- "CONNECT" button
-
-### Code-behind (LobbyWindow.axaml.cs)
-
-**Injected Dependencies**:
-- `_eventBus` (EventBus) - Event system
-- `_lobbyService` (LobbyService) - Lobby operations
-- `_errorService` (ErrorService) - Error display
-
-**Fields**:
-- `MaxLenghtId = 18` - Maximum lobby ID length
-
-**Constructor**:
-1. Initialize component
-2. Create CreateLobbyViewModel
-3. Set DataContext
-4. Register ViewModel in DI
-5. Resolve dependencies
-6. Validate injected services
-
-**Methods**:
-
-**OnLobbyIdChanging(object sender, TextChangedEventArgs e)**
-- Filters input to digits only
-- Validates lobby ID format
-- Updates TextBox text
-
-**Connect(object? sender, RoutedEventArgs e)**
-- Parses lobby ID from IdBox
-- Calls LobbyService.ConnectToLobby()
-- Shows error if parsing fails
-
-**Create(object? sender, RoutedEventArgs e)**
-- Calls LobbyService.CreateLobby()
-- Updates CurrentLobbyID via ViewModel
-
-### ViewModel Integration
-
-**CreateLobbyViewModel**:
-- `CurrentLobbyID` property - Displays created lobby ID
-- Bound to lobby ID label
-- Updated after lobby creation
-
-### Workflow
-
-**Create Lobby**:
-```
-User clicks "CREATE LOBBY" → LobbyService.CreateLobby() →
-Generate ID → Save to DB → Update ViewModel.CurrentLobbyID →
-UI displays new lobby ID
-```
-
-**Connect to Lobby**:
-```
-User enters lobby ID → Clicks "CONNECT" → Parse ID →
-LobbyService.ConnectToLobby(id) → Validate lobby →
-Add user to lobby → Update DB → Publish LobbyUpdate event
-```
-
-### Features
-
-- **Input Validation**: Digits-only lobby ID
-- **Visual Feedback**: Displays created lobby ID
-- **Error Handling**: Shows errors via ErrorService
-- **Manga Theme**: Black/white aesthetic
-- **DI Integration**: All services injected
-- **Event-Driven**: Updates via EventBus
-
-### Integration Example
-
-```csharp
-// Open from MainWindow menu
-public void OpenLobbyWindow()
-{
-    var lobbyWindow = new LobbyWindow();
-    lobbyWindow.ShowDialog(this);
-}
-```
-
-### Limitations
-
-- No lobby list/browser
-- Manual ID entry required
-- No validation of lobby existence before connect attempt
-- No disconnect button
-- Hardcoded max ID length
-- No lobby member preview

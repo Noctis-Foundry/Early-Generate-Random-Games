@@ -1,297 +1,274 @@
 # Game Table System
 
 ## Overview
-UserControl displaying real-time game progress table for all players in lobby. Features manga-style theming, automatic updates via PostgresListener, and lobby-based filtering.
+Real-time game progress table displaying completion status for all players in current lobby. Features automatic updates via PostgresListener, lobby-based filtering, and abstract base class architecture.
 
 ## Purpose
-- Display game progress for all lobby members
-- Real-time updates via database notifications
+- Display game progress for lobby members
+- Real-time synchronization via database notifications
 - Filter games by lobby membership
-- Show completion status and dates
-- Manga-inspired visual design
+- Show player names, games, completion status, and dates
+- Provide abstract base for table ViewModels
 
-## Layout
-
-### Background
-- RandomGame.png image (80% opacity)
-- Black overlay (60% opacity)
-- Manga aesthetic
-
-### Structure
-
-**Header** (Border):
-- Title: "GAME PROGRESS TABLE"
-- Font size: 28px, Bold, White
-- Close button (top-right)
-- Black background with white borders
-
-**Column Headers** (Border):
-- PLAYER (150px width)
-- GAME (150px width)
-- STATUS (150px width)
-- START DATE (150px width)
-- END DATE (150px width)
-- Black background with white borders
-
-**Content Area** (ScrollViewer):
-- Height: 300px
-- Scrollable ListBox
-- Semi-transparent black background
-- White borders between rows
-
-### Data Display
-
-Each row shows:
-- **PlayerID** - Steam user ID
-- **AppName** - Game title
-- **IsFinished** - Completion status (converted via BoolConverter)
-- **BeginTime** - Start date
-- **EndTime** - End date
-
-## Code-behind (GameTable.axaml.cs)
-
-### Injected Dependencies
-- `_databaseService` (DatabaseService) - Data operations
-- `_converter` (ObservableConverter) - Collection conversion
-- `_errorService` (ErrorService) - Error display
-
-### Fields
-- `_cts` (CancellationTokenSource) - Async cancellation
-- `_savedDelegate` (Action<PayloadStructure>) - Database event handler
-- `_onShowContent` (Action<string>) - Navigation callback
-
-### Constructor
-
-**Process**:
-1. Initialize component
-2. Resolve DI dependencies
-3. Create GameTableViewModel
-4. Skip if design mode
-5. Start InitializeTable() task
-6. Create database event delegate
-7. Subscribe to PostgresListener (GameTable events)
-8. Trigger initial table update
-
-### Methods
-
-**InitializeTable()**
-Loads initial game progress data.
-
-**Process**:
-1. Query all GameProgresses from database
-2. Update table on UI thread
-3. Handle errors via ErrorService
-
-**AddListener(Action<string> onChangeContent)**
-Registers navigation callback.
-
-**Close(object? sender, RoutedEventArgs e)**
-Navigates to "Main" page.
-
-**SubscribeToUpdateTable(int tableCode)**
-Handles database change notifications.
-
-**Process**:
-1. Validate table code (must be GameTable)
-2. Get current user info
-3. Load all game progresses
-4. Filter by lobby membership:
-   - If no lobby (ID ≤ 0): Show only user's games
-   - If in lobby: Show all lobby members' games (TODO)
-5. Update table with filtered data
-
-**Lobby Filtering Logic**:
-```csharp
-if (userInfo.LobbyID <= 0)
-    finallyList = gameList.Where(x => x.PlayerID == userInfo.SteamID).ToList();
-else
-{
-    // Get lobby members
-    Lobbies? lobbies = await _databaseService.GetLobbyById(userInfo.LobbyID);
-    
-    // TODO: Filter by lobby members
-    // Currently shows only user's games
-    finallyList = gameList.Where(x => x.PlayerID == userInfo.SteamID).ToList();
-}
-```
-
-**UpdateTable(List<GameProgresses> gameProgress)**
-Updates ViewModel with new data.
-
-**Dispose()**
-Cleanup on control disposal.
-
-**Process**:
-1. Null navigation callback
-2. Unsubscribe from PostgresListener
-3. Null saved delegate
-4. Null injected services
-5. Cancel async tasks
-6. Dispose CancellationTokenSource
-7. Force garbage collection
-
-## ViewModel
+## ViewModel Architecture
 
 ### GameTableViewModel
 
+**Namespace**: `GameRandom.ViewModels.AdminConfirmSystem`
+
+**Inheritance**: Extends `AbstractTableWindowViewModel<GameTableData>`
+
+**Type Parameter**: `GameTableData` - Row data model
+
+### AbstractTableWindowViewModel<T>
+
+**Base Class**: Provides common table functionality
+
 **Properties**:
-- `GameProgress` (ObservableCollection<GameProgresses>) - Bound to ListBox
+- `TableData` (ObservableCollection<T>) - Bound to UI
+- `IsProcess` (bool) - Loading indicator
+- `StartProcessing` (Action) - Processing event
 
-**Data Binding**:
-```xml
-<ListBox ItemsSource="{Binding GameProgress}">
-    <DataTemplate>
-        <TextBlock Text="{Binding AppName}"/>
-        <TextBlock Text="{Binding IsFinished, Converter={StaticResource BoolConverter}}"/>
-    </DataTemplate>
-</ListBox>
-```
+**Injected Services** (protected):
+- `_databaseService` (DatabaseService) - Database operations
 
-## BoolConverter
+**Abstract Methods**:
+- `LoadData(Func<T, bool>? predicate)` - Must be implemented by derived classes
 
-### Purpose
-Converts boolean IsFinished to display text.
+**Helper Methods**:
+- `IsNotValidateInjectingData()` - Validates injected services
 
-**Conversion**:
-- `true` → "Finished" or "✓"
-- `false` → "In Progress" or "✗"
+### Core Methods
 
-## Real-Time Updates
+#### LoadData(Func<GameTableData, bool>? predicate) → Task (override)
+Loads game progress data for all players in current user's lobby.
 
-### Database Notification Flow
-```
-Database change → PostgresListener → EventBus → 
-SubscribeToUpdateTable() → Filter by lobby → 
-UpdateTable() → UI refresh
-```
+**Parameters**:
+- `predicate` - Optional filter (not used in current implementation)
 
-### Subscription
+**Process**:
+1. Validates injected services via IsNotValidateInjectingData()
+2. Gets current user info from User.GetInstance()
+3. Sets IsProcess = true and invokes StartProcessing event
+4. Retrieves lobby by user's LobbyId
+5. Validates lobby exists and has members
+6. Calls LoadGroupTableData() with lobby members
+7. Converts result to ObservableCollection
+8. Assigns to TableData property
+9. Catches and logs exceptions
+10. Sets IsProcess = false in finally block
+
+**Early Exit Conditions**:
+- Lobby is null
+- LobbyData.Count <= 0
+
+#### LoadGroupTableData(List<LobbyData> lobbyData) → Task<List<GameTableData>?>
+Loads game progress for each lobby member.
+
+**Parameters**:
+- `lobbyData` - List of lobby members
+
+**Returns**: List of GameTableData or null if no data
+
+**Process**:
+1. Creates empty GameTableData list
+2. Iterates through each lobby member:
+   - Calls `_databaseService.GetGameTableData(userId)`
+   - Retrieves (user, gameProgresses) tuple
+   - Skips if user or gameProgresses is null
+   - Iterates through user's games:
+     - Extracts nickname (or "---" if empty)
+     - Creates GameTableData entry
+     - Adds to result list
+3. Returns complete list
+
+**Nickname Handling**:
 ```csharp
-listener.Subscribe(TableEnum.GameTable, payload =>
-{
-    Dispatcher.UIThread.InvokeAsync(() => 
-        SubscribeToUpdateTable(payload.TableCode));
-});
+var userNickName = !string.IsNullOrEmpty(user.Nickname) ? user.Nickname : "---";
 ```
 
-## Features
+## Data Models
 
-- **Real-Time Updates**: Automatic refresh on database changes
-- **Lobby Filtering**: Shows relevant games based on lobby
-- **Scrollable**: Handles large game lists
-- **Manga Theme**: Black/white aesthetic with borders
-- **Error Handling**: Comprehensive error display
-- **Resource Cleanup**: Proper disposal pattern
-- **Async Loading**: Non-blocking initialization
+### GameTableData
 
-## Integration Example
+**Purpose**: Represents single row in game progress table
 
-```csharp
-var factory = new UserControlFactory();
-var gameTable = factory.CreateUserControl<GameTable>(pageName =>
-{
-    NavigateToPage(pageName);
-});
+**Properties**:
 
-gameTable.Open();
-contentArea.Content = gameTable;
-```
+#### PlayerName (string)
+Player's display name.
 
-## Workflow
+**Default**: Empty string
+
+**Fallback**: "---" if user nickname is null or empty
+
+#### GameInfo (GameProgresses)
+Complete game progress information.
+
+**Type**: GameProgresses entity
+
+**Contains**:
+- AppId (int) - Steam application ID
+- AppName (string) - Game title
+- AppHeaderImage (byte[]) - Game cover image
+- BeginTime (DateTime) - Start date
+- EndTime (DateTime) - Expected completion date
+- FinishTime (DateTime) - Actual completion date
+- IsFinished (bool) - Completion status
+- Comment (string) - User comment
+- Grade (int) - User rating
+- PlayerId (ulong) - Steam user ID
+
+### LobbyData
+
+**Purpose**: Represents lobby membership
+
+**Properties**:
+- UserId (ulong) - Steam user ID
+- LobbyId (long) - Lobby identifier
+
+### Users
+
+**Relevant Properties**:
+- SteamID (ulong) - User identifier
+- Nickname (string) - Display name
+- LobbyId (long) - Current lobby
+
+## Data Flow
 
 ### Initial Load
 ```
-Constructor → InitializeTable() → Load all games →
-Filter by user → Update UI
+ViewModel.LoadData()
+  ↓
+Get current user info
+  ↓
+Retrieve lobby by LobbyId
+  ↓
+LoadGroupTableData(lobby.LobbyData)
+  ↓
+For each lobby member:
+  ↓
+  GetGameTableData(userId)
+  ↓
+  Extract user and games
+  ↓
+  Create GameTableData entries
+  ↓
+Convert to ObservableCollection
+  ↓
+Assign to TableData property
+  ↓
+UI updates via data binding
 ```
 
-### Database Update
+### Lobby Filtering
 ```
-Game added/updated → PostgresListener notification →
-SubscribeToUpdateTable() → Reload games → Filter → Update UI
+User joins lobby
+  ↓
+User.LobbyId updated in database
+  ↓
+Next LoadData() call
+  ↓
+GetLobbyById(user.LobbyId)
+  ↓
+Load games for all lobby members
+  ↓
+Display in table
 ```
 
-### Lobby Join
-```
-User joins lobby → LobbyID updated → Next table update →
-Filter by lobby members → Show all lobby games
-```
+## Usage Example
 
-## Limitations
-
-- Lobby filtering not fully implemented (TODO)
-- Currently shows only user's games even in lobby
-- No sorting options
-- No search/filter UI
-- No pagination for large datasets
-- Aggressive garbage collection (may impact performance)
-- No column resizing
-- Fixed column widths
-
-## Potential Improvements
-
+### Basic Usage
 ```csharp
-// Implement lobby filtering
-if (userInfo.LobbyID > 0)
-{
-    var lobbies = await _databaseService.GetLobbyById(userInfo.LobbyID);
-    var memberIds = lobbies.LobbyData.Select(ld => ld.UserId).ToList();
-    
-    finallyList = gameList
-        .Where(x => memberIds.Contains(x.PlayerID))
-        .ToList();
-}
+var viewModel = new GameTableViewModel();
+await viewModel.LoadData();
 
-// Add sorting
-public void SortByColumn(string columnName, bool ascending)
+// Access table data
+foreach (var row in viewModel.TableData)
 {
-    var sorted = ascending
-        ? GameProgress.OrderBy(g => GetPropertyValue(g, columnName))
-        : GameProgress.OrderByDescending(g => GetPropertyValue(g, columnName));
-    
-    GameProgress = new ObservableCollection<GameProgresses>(sorted);
-}
-
-// Add filtering
-public void FilterByStatus(bool? isFinished)
-{
-    var filtered = _allGames.Where(g => 
-        !isFinished.HasValue || g.IsFinished == isFinished.Value);
-    
-    GameProgress = new ObservableCollection<GameProgresses>(filtered);
-}
-
-// Add pagination
-public void LoadPage(int pageNumber, int pageSize)
-{
-    var page = _allGames
-        .Skip((pageNumber - 1) * pageSize)
-        .Take(pageSize)
-        .ToList();
-    
-    GameProgress = new ObservableCollection<GameProgresses>(page);
+    Console.WriteLine($"{row.PlayerName}: {row.GameInfo.AppName} - {row.GameInfo.IsFinished}");
 }
 ```
 
-## Testing
+### UI Binding
+```xml
+<DataGrid ItemsSource="{Binding TableData}">
+    <DataGrid.Columns>
+        <DataGridTextColumn Header="Player" Binding="{Binding PlayerName}"/>
+        <DataGridTextColumn Header="Game" Binding="{Binding GameInfo.AppName}"/>
+        <DataGridCheckBoxColumn Header="Finished" Binding="{Binding GameInfo.IsFinished}"/>
+        <DataGridTextColumn Header="Start" Binding="{Binding GameInfo.BeginTime, StringFormat='dd.MM.yyyy'}"/>
+        <DataGridTextColumn Header="End" Binding="{Binding GameInfo.EndTime, StringFormat='dd.MM.yyyy'}"/>
+    </DataGrid.Columns>
+</DataGrid>
+```
 
+### Manual Refresh
 ```csharp
-[Test]
-public async Task TestTableLoading()
-{
-    var gameTable = new GameTable();
-    await Task.Delay(1000); // Wait for initialization
-    
-    var vm = gameTable.DataContext as GameTableViewModel;
-    Assert.IsNotNull(vm.GameProgress);
-    Assert.IsTrue(vm.GameProgress.Count > 0);
-}
+// Reload table data
+await viewModel.LoadData();
+```
 
-[Test]
-public void TestLobbyFiltering()
+## Integration Points
+
+### DatabaseService
+
+**GetLobbyById(long lobbyId) → Task<Lobbies?>**
+Retrieves lobby with member list.
+
+**GetGameTableData(ulong userId) → Task<(Users?, List<GameProgresses>?)>**
+Returns user info and their game progress list.
+
+**Returns**: Tuple of (Users, List<GameProgresses>)
+
+### User Singleton
+
+**User.GetInstance().GetUserInfo() → UserInfo**
+Provides current user information including LobbyId.
+
+### AbstractTableWindowViewModel<T>
+
+Base class providing:
+- TableData property for UI binding
+- IsProcess loading indicator
+- Service injection validation
+- Common table functionality
+
+## Error Handling
+
+### Service Validation
+```csharp
+if (IsNotValidateInjectingData()) 
+    throw new NullReferenceException();
+```
+- Validates DatabaseService injection
+- Throws exception if not injected
+
+### Null Handling
+- Skips lobby members with null user data
+- Skips lobby members with null game progress
+- Returns empty list if no valid data
+
+### Exception Catching
+```csharp
+try
 {
-    // Test filtering logic
-    var userGames = games.Where(g => g.PlayerID == userId).ToList();
-    Assert.AreEqual(expectedCount, userGames.Count);
+    // Load data logic
+}
+catch (Exception e)
+{
+    Logger.Error(e.Message);
+}
+finally
+{
+    IsProcess = false;
 }
 ```
+- Catches all exceptions during load
+- Logs error message
+- Always resets IsProcess flag
+
+### Early Exit
+- Returns if lobby is null
+- Returns if lobby has no members
+- No exception thrown for empty lobbies

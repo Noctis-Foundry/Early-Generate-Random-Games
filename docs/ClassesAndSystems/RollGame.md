@@ -1,334 +1,365 @@
-# RollGame
+# RollGame System
 
 ## Overview
-User control for random game selection interface. Displays dynamically generated game options with filtering capabilities using MVVM pattern.
-
-## Files
-- `RollGame.axaml` - UI layout
-- `RollGame.axaml.cs` - Code-behind with UI logic
-- `RollGameViewModel.cs` - Business logic and data management
+Random game selection system with filtering capabilities. Generates 1-5 random games from Steam library with optional category, genre, and year filters. Uses MVVM pattern with separated ViewModel logic.
 
 ## Purpose
-- Random game generation from Steam library
-- Visual game selection interface with dynamic grid
-- Filter integration for targeted selection
-- MVVM architecture with separated concerns
+- Generate random games from Steam library
+- Apply optional filters (categories, genres, years)
+- Display game selection interface
+- Prevent duplicate game selection
+- Limit generation attempts to prevent infinite loops
 
-## UI Structure
+## ViewModel (RollGameViewModel)
 
-### Header Section
-- Title: "GAME RANDOMIZER"
-- Filter button: Opens FilterGameWindow
-- Close button: Returns to main content
+**Namespace**: `GameRandom.ViewModels.AdminConfirmSystem`
 
-### Content Panel
-- Dynamic game grid (up to 4 games)
-- Game images with click handlers
-- Control panel with:
-  - Search button
-  - Count input (1-4)
-  - Filter checkbox (bound to ViewModel)
+**Inheritance**: Extends `ViewModelBase`
 
-## Architecture
+### Injected Dependencies
+- `SteamService` - Image loading from URLs
 
-### View (RollGame.axaml.cs)
-**Properties**:
-```csharp
-private ErrorService? _errorService
-private ConfirmService? _confirmDialog
-private ChooseGameWindow? _chooseGameWindow
-private FilterGameWindow? _filterGameWindow
-private List<RollButtonsInfo> _buttonsInfo
-private GifImage? _loadGif
-private SemaphoreSlim _rollSemaphore
-```
+### Constructor Parameters
+- `IGenApp generateRandomApps` - Game generation service
 
-**Constants**:
-- `DefaultCountApp = 1`
-- `IterationDelayMilliseconds = 500`
-- `maxCountGames = 4`
+### Properties
 
-### ViewModel (RollGameViewModel)
-**Properties**:
-```csharp
-private List<AppInfo> _appInfo
-private IGenApp? _generateRandomApps
-private bool _isFilter
-private int _iterationCount
-```
+#### AppInfo (List<AppInfo>)
+List of generated games with data and images.
 
-**Constants**:
-- `IterationLimit = 500`
+**Access**: Read-only property exposing private `_appInfo` list
 
-## Methods
+#### IsFilter (bool)
+Flag indicating whether filtering is enabled.
 
-### View Methods (RollGame.axaml.cs)
+**Binding**: Two-way data binding with UI CheckBox
 
-#### GenerateGame(object? sender, RoutedEventArgs e)
-Event handler for game generation button click.
+**Default**: false
 
-**Process**:
-1. Check semaphore availability (non-blocking)
-2. Show error if generation already in progress
-3. Parse game count from CountApp TextBox
-4. Setup grid layout via SetupGrid()
-5. Get filters from FilterGameWindow
-6. Call ViewModel.GenerateGames()
-7. Generate UI elements via GenerateUi()
-8. Release semaphore in finally block
+### Constants
 
-**Thread Safety**: Uses SemaphoreSlim to prevent concurrent operations
+**IterationLimit = 500**
+Maximum attempts to find suitable games before stopping.
 
-#### GenerateUi()
-Creates UI elements for generated games with animation delay.
+**Purpose**: Prevents infinite loops when filters are too restrictive
 
-**Process**:
-1. Get MainWindowFactory instance
-2. Iterate through ViewModel.AppInfo
-3. Create button/image grid elements
-4. Initialize components via InitDictionaryWithComponents()
-5. Delay 500ms between iterations for visual effect
-6. Remove loading GIF when complete
-
-#### SetupGrid(int countGames)
-Configures grid layout for specified game count.
-
-**Actions**:
-- Clears existing grid children and column definitions
-- Creates column definitions for each game
-- Adds animated loading GIF to grid
-
-#### InitDictionaryWithComponents(GridElements, AppInfo)
-Associates game data with UI components.
-
-**Process**:
-1. Convert image bytes to Bitmap
-2. Set image source
-3. Create RelayCommand for button click
-4. Command opens ChooseGameWindow with game data
-5. Store button info in _buttonsInfo list
-
-#### TextBoxEventsInit()
-Configures count input validation.
-
-**Validation**: Clamps input to 1-4 range (maxCountGames)
-
-#### GoToFilter(object? sender, RoutedEventArgs e)
-Opens filter configuration window.
-
-#### Close(object? sender, RoutedEventArgs e)
-Navigates back to main content and disposes ViewModel.
-
-**Process**:
-1. Invoke navigation action to "Main"
-2. Dispose ViewModel resources
-
-### ViewModel Methods (RollGameViewModel)
+### Core Methods
 
 #### GenerateGames(int countGames, FilteredData? filteredGamesData, CancellationToken cancellationToken)
-Main game generation logic.
+Generates specified number of random games with optional filtering.
 
 **Parameters**:
-- `countGames` - Number of games to generate (1-4)
-- `filteredGamesData` - Optional filter criteria
+- `countGames` - Number of games to generate (1-5)
+- `filteredGamesData` - Optional filter criteria (categories, genres, years)
 - `cancellationToken` - Cancellation support
 
 **Process**:
-1. Validate initialization via IsValidationGenerateData()
-2. Clear previous data
-3. Check cancellation token
-4. Loop until IterationLimit (500) or countGames reached:
-   - Get random game from IGenApp
-   - Skip if null or duplicate AppId
-   - Apply filters if IsFilter enabled
-   - Load game image bytes asynchronously
-   - Add to _appInfo list
-5. Handle exceptions
+1. Validates `_generateRandomApps` is initialized
+2. Clears previous results via ClearItems()
+3. Loops up to IterationLimit (500) or until countGames reached:
+   - Checks cancellation token
+   - Calls GenerateAppInfo() for single game
+   - Adds non-null results to _appInfo list
+4. Catches and logs exceptions
 
-**Iteration Limit**: 500 attempts to prevent infinite loops
+**Iteration Logic**:
+```csharp
+for (int i = 0; i < IterationLimit && _appInfo.Count < countGames; i++)
+```
 
-#### FilterGame(AppSavedContext savedGame, FilteredData filter)
-Checks if game matches filter criteria.
+**Early Exit**: Returns immediately if generator not initialized
 
-**Returns**: `bool` - True if game passes all filters
+#### GenerateAppInfo(FilteredData? filteredGamesData) → Task<AppInfo?>
+Generates single random game with validation and filtering.
 
-**Filter Logic**:
-- Categories: Game must contain at least one selected category
-- Genres: Game must contain at least one selected genre
-- Years: Game release year must match selected years
+**Returns**: AppInfo object or null if game rejected
 
-#### IsValidationGenerateData()
-Validates that game generator is initialized.
+**Process**:
+1. Get random game from `_generateRandomApps.GetRandomGame()`
+2. Skip if null or duplicate AppId
+3. Apply filters if IsFilter enabled
+4. Load image bytes from Steam via `_steamService.GetImageBytes()`
+5. Skip if image loading fails
+6. Create and return AppInfo object
 
-**Returns**: `bool` - _generateRandomApps.IsInitialized
+**Duplicate Prevention**:
+```csharp
+if (_appInfo.Any(e => e.AppData.AppId == gameInfo.AppId))
+    return null;
+```
 
-#### ClearItems()
+**Filter Application**:
+```csharp
+if (IsFilter && filteredGamesData is not null)
+    if (!FilterGame(gameInfo, filteredGamesData))
+        return null;
+```
+
+#### FilterGame(AppSavedContext savedGame, FilteredData filter) → bool
+Validates game against filter criteria.
+
+**Parameters**:
+- `savedGame` - Game data to validate
+- `filter` - Active filter criteria
+
+**Returns**: true if game passes all filters, false otherwise
+
+**Filter Logic** (AND between types, OR within type):
+
+**Categories**:
+```csharp
+if (filter.Categories.Count > 0 && !filter.Categories.Any(c => savedGame.AppCategories.Contains(c)))
+    return false;
+```
+- Empty list = no filter
+- Game must have at least one matching category
+
+**Genres**:
+```csharp
+if (filter.Genres.Count > 0 && !filter.Genres.Any(g => savedGame.AppGenres.Contains(g)))
+    return false;
+```
+- Empty list = no filter
+- Game must have at least one matching genre
+
+**Years**:
+```csharp
+if (filter.Years.Count > 0 && !filter.Years.Any(y => y == savedGame.AppReleaseYear))
+    return false;
+```
+- Empty list = no filter
+- Game release year must match one of selected years
+
+#### ClearItems() (private)
 Resets generation state.
 
 **Actions**:
-- Clears _appInfo list
-- Resets _iterationCount to 0
+- Clears `_appInfo` list
+- Resets `_iterationCount` to 0
 
-## UI Components
+#### Dispose() (override)
+Cleanup resources.
 
-### Layout Structure
-```
-DockPanel (Background: RandomGame.png)
-├── Border.HeaderBorder (Top)
-│   └── Grid
-│       ├── TextBlock "GAME RANDOMIZER"
-│       ├── Button "Filters" (GoToFilter)
-│       └── Button "✕" (Close)
-├── StackPanel.ContentPanel
-│   ├── Grid (GamesGrid) - Dynamic columns
-│   │   └── Border.GameBorder × N
-│   │       └── Button.RandomButton
-│   │           └── Image.GameImages
-│   └── Border.ContentBorder
-│       └── Grid
-│           ├── Button.GenerateButton "Search"
-│           ├── Border.InputBorder
-│           │   └── MaskedTextBox (CountApp)
-│           └── CheckBox "filter" (IsFilter binding)
-```
+**Actions**:
+- Calls ClearItems()
+- Nulls `_generateRandomApps` reference
+- Calls base.Dispose()
 
-### Key Style Classes
-- **HeaderBorder**: Top panel with gradient border
-- **CloseButton**: Close button with hover animation
-- **ContentPanel**: Main content container
-- **GameBorder**: Individual game card border
-- **RandomButton**: Transparent button for game selection
-- **GameImages**: Game cover images
-- **GenerateButton**: Search button (Height: 60)
-- **InputBorder**: Count input container (60×60)
-- **CountInput**: Numeric input (Font: 36, bold)
+## Data Structures
 
-## Data Flow
+### AppInfo
+Container for game data and image.
 
-### Generation Flow
-```
-User clicks Search
-  ↓
-View: GenerateGame() - Acquire semaphore
-  ↓
-View: SetupGrid() - Configure layout
-  ↓
-ViewModel: GenerateGames() - Generate game data
-  ↓
-View: GenerateUi() - Create UI elements
-  ↓
-View: Release semaphore
+**Properties**:
+- `AppData` (AppSavedContext) - Game metadata
+- `ImageBytes` (byte[]) - Game header image
+
+**Constructor**:
+```csharp
+public AppInfo(AppSavedContext appData, byte[] imageBytes)
 ```
 
-### Filter Flow
+### AppSavedContext
+Game metadata from JSON catalog.
+
+**Properties**:
+- `AppId` (int) - Steam application ID
+- `AppName` (string) - Game title
+- `HeaderImage` (string) - Image URL
+- `AppCategories` (List<string>) - Game categories
+- `AppGenres` (List<string>) - Game genres
+- `AppReleaseYear` (int) - Release year
+
+### FilteredData
+Filter criteria container.
+
+**Properties**:
+- `Categories` (List<string>) - Selected categories
+- `Genres` (List<string>) - Selected genres
+- `Years` (List<int>) - Selected years
+
+## Generation Flow
+
+### Standard Generation
 ```
-ViewModel.IsFilter = true (CheckBox binding)
+User triggers generation
   ↓
-GenerateGames() checks IsFilter
+ViewModel.GenerateGames(count, filters)
   ↓
-FilterGame() validates each game
+ClearItems() - Reset state
   ↓
-Only matching games added to AppInfo
+Loop (max 500 iterations):
+  ↓
+  GenerateAppInfo(filters)
+    ↓
+    Get random game from IGenApp
+    ↓
+    Check for duplicates
+    ↓
+    Apply filters (if enabled)
+    ↓
+    Load image bytes
+    ↓
+    Create AppInfo
+  ↓
+  Add to _appInfo list
+  ↓
+  Check if count reached
+  ↓
+Return results
 ```
 
-## Usage Flow
+### With Filtering
+```
+IsFilter = true
+  ↓
+GenerateAppInfo() calls FilterGame()
+  ↓
+Check categories (OR logic)
+  ↓
+Check genres (OR logic)
+  ↓
+Check years (exact match)
+  ↓
+Return true/false
+  ↓
+If false: Skip game, continue loop
+If true: Load image and add to results
+```
 
-1. User opens RollGame control
-2. Optionally configures filters via "Filters" button
-3. Sets game count (1-4) in input field
-4. Checks filter checkbox if filtering desired
-5. Clicks "Search" button
-6. Loading GIF displays during generation
-7. Games appear with 500ms delay between each
-8. User clicks game image to view details in ChooseGameWindow
+## Usage Example
+
+### Basic Generation
+```csharp
+var genApp = new GenerateRandomApps();
+var viewModel = new RollGameViewModel(genApp);
+
+// Generate 3 random games without filters
+await viewModel.GenerateGames(3, null);
+
+// Access results
+foreach (var game in viewModel.AppInfo)
+{
+    Console.WriteLine($"{game.AppData.AppName} ({game.AppData.AppId})");
+}
+```
+
+### With Filtering
+```csharp
+var viewModel = new RollGameViewModel(genApp);
+viewModel.IsFilter = true;
+
+var filters = new FilteredData(
+    categories: new List<string> { "Single-player", "Achievements" },
+    genres: new List<string> { "Action", "RPG" },
+    years: new List<int> { 2020, 2021, 2022 }
+);
+
+await viewModel.GenerateGames(5, filters);
+```
+
+### Cancellation Support
+```csharp
+var cts = new CancellationTokenSource();
+cts.CancelAfter(TimeSpan.FromSeconds(10));
+
+try
+{
+    await viewModel.GenerateGames(5, filters, cts.Token);
+}
+catch (OperationCanceledException)
+{
+    Logger.Info("Generation cancelled");
+}
+```
 
 ## Integration Points
 
-### View Dependencies (Injected)
-- `ErrorService` - Error message display
-- `ConfirmService` - User confirmation dialogs
+### IGenApp Interface
+Game generation service providing random game selection.
 
-### View Dependencies (Instantiated)
-- `ChooseGameWindow` - Game details display
-- `FilterGameWindow` - Filter configuration
-- `MainWindowFactory` - Grid layout and GIF creation
-- `SteamService` - Image conversion
+**Required Methods**:
+- `GetRandomGame()` → AppSavedContext - Returns random game from catalog
+- `IsInitialized` (property) - Indicates if service is ready
 
-### ViewModel Dependencies
-- `IGenApp` (GenerateRandomApps) - Random game generation
-- `SteamService` - Image byte loading
+### SteamService
+Image loading service.
 
-### Navigation
-- Extends `MainWindowUserControlAbstract`
-- Uses `_changeWindowAction` for navigation
-- Navigates to "Main" on close
+**Used Methods**:
+- `GetImageBytes(string url)` → Task<byte[]> - Downloads image from URL
 
-### Data Binding
-- `IsFilter` property bound to CheckBox
-- Two-way binding for filter state
+### FilterGameViewModel
+Provides filter data via GetFilters() method.
+
+**Integration**:
+```csharp
+var filterViewModel = new FilterGameViewModel();
+var filters = filterViewModel.GetFilters();
+await rollGameViewModel.GenerateGames(count, filters);
+```
 
 ## Error Handling
 
-### View Level
-- Shows error if generation already in progress
-- Throws NullReferenceException if services not injected
-- Throws NullReferenceException if bitmap conversion fails
-- Always releases semaphore in finally block
-
-### ViewModel Level
-- Validates initialization before generation
-- Skips games with null image bytes
-- Catches and logs all exceptions during generation
-- Supports cancellation token (though not currently used)
-
-## Thread Safety
-
-### Concurrency Control
-- **SemaphoreSlim**: Prevents multiple simultaneous operations
-- **Non-blocking Check**: Uses `WaitAsync(0)` to check availability
-- **Error Display**: Shows error message if generation in progress
-
-### Current Behavior
+### Initialization Validation
+```csharp
+if (_generateRandomApps is null || !_generateRandomApps.IsInitialized)
+    return;
 ```
-User clicks Generate (operation in progress) →
-Semaphore unavailable →
-Show error message →
-Return without starting new operation
+- Returns early if generator not ready
+- No exception thrown
+
+### Null Handling
+- Null games from generator are skipped
+- Null image bytes cause game to be skipped
+- No exceptions thrown for individual game failures
+
+### Exception Catching
+```csharp
+try
+{
+    // Generation loop
+}
+catch (Exception e)
+{
+    Logger.Error("Failed to generate games: " + e.Message);
+}
 ```
+- Catches all exceptions during generation
+- Logs error message
+- Returns partial results if any games generated
 
-### Resource Cleanup
-- Semaphore released in finally block
-- ViewModel disposed on close
+### Cancellation
+```csharp
+cancellationToken.ThrowIfCancellationRequested();
+```
+- Checks cancellation token each iteration
+- Throws OperationCanceledException if cancelled
 
-## Disposal
+## Features
 
-### View Disposal
-- Calls ViewModel.Dispose() on close
-- Retains window references (not disposed)
+- **Duplicate Prevention**: Checks AppId before adding games
+- **Iteration Limit**: Maximum 500 attempts prevents infinite loops
+- **Flexible Filtering**: Optional category/genre/year filters with OR logic
+- **Async Image Loading**: Non-blocking image downloads
+- **Cancellation Support**: CancellationToken parameter
+- **MVVM Pattern**: Clean separation of concerns
+- **Null Safety**: Graceful handling of null results
+- **Error Logging**: Comprehensive error reporting
+- **Data Binding**: IsFilter property for UI integration
 
-### ViewModel Disposal
-- Clears _generateRandomApps reference
-- Clears _appInfo list
-- Resets _iterationCount
+## Performance Considerations
 
-## Key Features
+### Iteration Limit
+- Prevents infinite loops with restrictive filters
+- 500 attempts should be sufficient for most filter combinations
+- May return fewer games than requested if limit reached
 
-1. **MVVM Separation**: Business logic in ViewModel, UI logic in View
-2. **Thread Safety**: Semaphore prevents concurrent generation
-3. **Visual Feedback**: Loading GIF and staggered game appearance
-4. **Flexible Filtering**: Optional category/genre/year filters
-5. **Iteration Limit**: Prevents infinite loops (500 attempts)
-6. **Dynamic Layout**: Grid adjusts to game count (1-4)
-7. **Dependency Injection**: Services injected via Di.Container
-8. **Data Binding**: IsFilter property bound to CheckBox
+### Image Loading
+- Async loading prevents UI blocking
+- Failed image loads skip game (no retry)
+- Network errors logged but don't stop generation
 
-## Best Practices
-
-1. Use semaphore for concurrent operation control
-2. Release semaphore in finally block
-3. Validate count input (1-4 range)
-4. Use iteration limit to prevent infinite loops
-5. Handle null image bytes gracefully
-6. Dispose ViewModel on close
-7. Separate UI and business logic (MVVM)
-8. Use RelayCommand for button actions
+### Memory Management
+- ClearItems() called before each generation
+- Dispose() clears all references
+- Image bytes stored in memory (consider caching for large sets)
