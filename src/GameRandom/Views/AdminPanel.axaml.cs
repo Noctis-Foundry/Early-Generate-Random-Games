@@ -55,14 +55,8 @@ public partial class AdminPanel : MainWindowUserControlAbstract
 
     public override void Close(object? sender, RoutedEventArgs e)
     {
-        if (DataContext is AdminPanelViewModel vm)
-        {
-            vm.Dispose();
-        }
-        
-        UnsubscribeListener();
-        
         _changeWindowAction?.Invoke(CloseTarget);
+        Dispose();
     }
 
     private void HideAdminPanel()
@@ -125,5 +119,17 @@ public partial class AdminPanel : MainWindowUserControlAbstract
             throw new NullReferenceException(nameof(_errorService));
         if (_postgresListener is null)
             throw new NullReferenceException(nameof(_postgresListener));
+    }
+
+    public override void Dispose()
+    {
+        _cts.Cancel();
+        _cts.Dispose();
+        
+        UnsubscribeListener();
+
+        _changeWindowAction = null!;
+        
+        base.Dispose();
     }
 }
