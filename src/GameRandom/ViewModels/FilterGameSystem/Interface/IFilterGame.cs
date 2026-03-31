@@ -2,6 +2,6 @@ namespace GameRandom.ViewModels.FilterGameSystem.Interface;
 
 public interface IFilterGame
 {
-    public void LoadDataFromJson();
+    public FilterLoadData LoadDataFromJson();
     public void Dispose();
 }

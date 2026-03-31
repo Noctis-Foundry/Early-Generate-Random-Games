@@ -1,6 +1,6 @@
 ﻿namespace GameRandom.Src.SteamsContexts;
 
-public class ProfilerContext
+public class ProfileContext
 {
     public ulong MemberID;
     public string avatarUrl;

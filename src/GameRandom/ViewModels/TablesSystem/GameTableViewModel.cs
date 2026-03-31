@@ -24,8 +24,7 @@ public class GameTableViewModel : AbstractTableWindowViewModel<GameTableData>
         
         var userData = User.GetInstance().GetUserInfo();
 
-        IsProcess = true;
-        StartProcessing?.Invoke();
+        StartTaskWaiter();
 
         try
         {
@@ -46,7 +45,7 @@ public class GameTableViewModel : AbstractTableWindowViewModel<GameTableData>
         }
         finally
         {
-            IsProcess = false;
+            CloseTaskWaiter();
         }
     }
     

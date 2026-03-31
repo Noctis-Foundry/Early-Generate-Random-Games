@@ -14,18 +14,9 @@ namespace GameRandom.ViewModels.AdminConfirmSystem;
 /// <summary>
 /// ViewModel for the logic of rolling (generating) random games.
 /// </summary>
-public class RollGameViewModel : ViewModelBase
+public sealed class RollGameViewModel : ViewModelBase
 {
-    [Inject] private SteamService? _steamService;
-    /// <summary>
-    /// List of generated games with their information and images.
-    /// </summary>
-    private List<AppInfo> _appInfo = new();
-    
-    /// <summary>
-    /// List of generated games for UI display.
-    /// </summary>
-    public List<AppInfo> AppInfo => _appInfo;
+    [Inject] private SteamService _steamService = null!;
     
     /// <summary>
     /// Interface for generating random applications.
@@ -35,13 +26,24 @@ public class RollGameViewModel : ViewModelBase
     /// <summary>
     /// Maximum number of iterations to find suitable games.
     /// </summary>
-    private const int IterationLimit = 500;
+    private const int IterationLimit = 150;
     
     /// <summary>
     /// Current number of iterations.
     /// </summary>
     private int _iterationCount;
 
+    #region BindingProperty
+
+    /// <summary>
+    /// List of generated games with their information and images.
+    /// </summary>
+    private List<AppInfo> _appInfo = new();
+    /// <summary>
+    /// List of generated games for UI display.
+    /// </summary>
+    public List<AppInfo> AppInfo => _appInfo;
+    
     /// <summary>
     /// Flag indicating whether filtering is used during generation.
     /// </summary>
@@ -56,6 +58,9 @@ public class RollGameViewModel : ViewModelBase
         set => SetProperty(ref _isFilter, value);
     }
 
+    #endregion
+    
+    
     /// <summary>
     /// Constructor. Initializes the random application generator if not in design mode.
     /// </summary>
@@ -65,10 +70,16 @@ public class RollGameViewModel : ViewModelBase
 
         _generateRandomApps = generateRandomApps;
 
-        Di.Container.ResolveField(out _steamService);
+        InitializeDiContainer();
+        
+    }
+
+    protected override void InitializeDiContainer()
+    {
+        base.InitializeDiContainer();
 
         if (_steamService is null)
-            throw new NullReferenceException("Failed to inject Steam service from DI");
+            throw new NullReferenceException();
     }
 
     /// <summary>
@@ -77,7 +88,7 @@ public class RollGameViewModel : ViewModelBase
     /// <param name="countGames">Number of games to retrieve.</param>
     /// <param name="filteredGamesData">Filtering data.</param>
     /// <param name="cancellationToken">Operation cancellation token.</param>
-    public async Task GenerateGames(int countGames, FilteredData? filteredGamesData, CancellationToken cancellationToken = default)
+    public async Task GenerateGames(int countGames, FilterOutputData? filteredGamesData, CancellationToken cancellationToken = default)
     {
         if (_generateRandomApps is null || !_generateRandomApps.IsInitialized)
             return;
@@ -107,7 +118,7 @@ public class RollGameViewModel : ViewModelBase
     /// </summary>
     /// <param name="filteredGamesData">Filtering data.</param>
     /// <returns>AppInfo object or null if the game failed filtering or an error occurred.</returns>
-    private async Task<AppInfo?> GenerateAppInfo(FilteredData? filteredGamesData)
+    private async Task<AppInfo?> GenerateAppInfo(FilterOutputData? filteredGamesData)
     {
         var gameInfo = _generateRandomApps?.GetRandomGame();
 
@@ -132,7 +143,7 @@ public class RollGameViewModel : ViewModelBase
     /// <param name="savedGame">Game data.</param>
     /// <param name="filter">Active filters.</param>
     /// <returns>True if the game matches the filters, otherwise False.</returns>
-    private bool FilterGame(AppSavedContext savedGame, FilteredData filter)
+    private bool FilterGame(AppSavedContext savedGame, FilterOutputData filter)
     {
         if (filter.Categories.Count > 0 && !filter.Categories.Any(c => savedGame.AppCategories.Contains(c)))
             return false;

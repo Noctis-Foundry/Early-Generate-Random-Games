@@ -51,7 +51,7 @@ public class RollGameIntegrationTests : IDisposable
         _viewModel.IsFilter = true;
         // Let's assume we have at least one game from 2020 or later in temp_apps.json
         // Or we can pick a year that we know exists in the file.
-        var filter = new FilteredData(new(), new(), new() { 2020, 2021, 2022, 2023, 2024 });
+        var filter = new FilterOutputData(new(), new(), new() { 2020, 2021, 2022, 2023, 2024 });
 
         // Act
         await _viewModel.GenerateGames(3, filter);
@@ -67,7 +67,7 @@ public class RollGameIntegrationTests : IDisposable
     public async Task GenerateGames_With_Genres_Filter_Should_Onlyy_Return_Matching_Games()
     {
         _viewModel.IsFilter = true;
-        var filter = new FilteredData(new(), new() {"Action", "RPG"}, new());
+        var filter = new FilterOutputData(new(), new() {"Action", "RPG"}, new());
 
         await _viewModel.GenerateGames(3, filter);
 
@@ -81,7 +81,7 @@ public class RollGameIntegrationTests : IDisposable
     public async Task GenerateGames_With_Categories_Filter_Should_Onlyy_Return_Matching_Games()
     {
         _viewModel.IsFilter = true;
-        var filter = new FilteredData(new() { "Single-player" }, new(), new());
+        var filter = new FilterOutputData(new() { "Single-player" }, new(), new());
 
         await _viewModel.GenerateGames(3, filter);
 
@@ -95,7 +95,7 @@ public class RollGameIntegrationTests : IDisposable
     public async Task GenerateGames_With_All_Filter_Should_Onlyy_Return_Matching_Games()
     {
         _viewModel.IsFilter = true;
-        var filter = new FilteredData(new() { "Single-player" }, new() {"Action", "RPG"}, new() { 2020, 2021, 2022, 2023, 2024 });
+        var filter = new FilterOutputData(new() { "Single-player" }, new() {"Action", "RPG"}, new() { 2020, 2021, 2022, 2023, 2024 });
 
         await _viewModel.GenerateGames(3, filter);
 

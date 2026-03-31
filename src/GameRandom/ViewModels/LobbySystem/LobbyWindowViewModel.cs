@@ -1,16 +1,21 @@
-﻿using Avalonia.Controls;
+﻿using System;
+using Avalonia.Controls;
 using GameRandom.Events;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Events;
+using GameRandom.Src.LobbySystem;
 using GameRandom.Src.UserData;
 
 namespace GameRandom.ViewModels.AdminConfirmSystem;
 
-public class LobbyWindowViewModel : ViewModelBase
+public sealed class LobbyWindowViewModel : ViewModelBase
 {
-    private const long  DefaultIdMessage = 0;
+    [Inject] private EventBus _eventBus = null!;
+    [Inject] private LobbyService _lobbyService = null!;
 
-    private long  _currentLobbyId;
+    private const long DefaultIdMessage = 0;
+
+    private long _currentLobbyId;
 
     public long CurrentLobbyID
     {
@@ -22,18 +27,60 @@ public class LobbyWindowViewModel : ViewModelBase
     {
         if (Design.IsDesignMode)
             return;
-        
-        GetCurrentId();
 
-        if (Di.Container.GetInstance<EventBus>() is EventBus eventBus)
+        InitializeDiContainer();
+
+        GetCurrentId();
+        
+        _eventBus.Subscribe<LobbyUpdate>(e => GetCurrentId());
+    }
+
+    protected override void InitializeDiContainer()
+    {
+        base.InitializeDiContainer();
+
+        if (_eventBus is null)
+            throw new NullReferenceException(nameof(_eventBus));
+        if (_lobbyService is null)
+            throw new NullReferenceException(nameof(_lobbyService));
+    }
+
+    public void ConnectToLobby(string id)
+    {
+        StartTaskWaiter();
+        
+        try
         {
-            eventBus.Subscribe<LobbyUpdate>(e => GetCurrentId());
+            if (long.TryParse(id, out var lobbyId))
+            {
+                TaskRunner.RunWithDispatcherAsync(async () => await _lobbyService.ConnectToLobby(lobbyId));
+            }
+            else
+                ErrorService.ShowWindow("Failed connect to lobby. Not correct id");
+        }
+        finally
+        {
+            CloseTaskWaiter();
+        }
+    }
+    
+    public void CreateNewLobby()
+    {
+        StartTaskWaiter();
+
+        try
+        {
+            TaskRunner.RunWithDispatcherAsync(async () => await _lobbyService.CreateLobby());
+        }
+        finally
+        {
+            CloseTaskWaiter();
         }
     }
 
     private void GetCurrentId()
     {
         var userInfo = User.GetInstance().GetUserInfo();
-        CurrentLobbyID = userInfo.LobbyId > 0 ? userInfo.LobbyId: DefaultIdMessage;
+        CurrentLobbyID = userInfo.LobbyId > 0 ? userInfo.LobbyId : DefaultIdMessage;
     }
 }
