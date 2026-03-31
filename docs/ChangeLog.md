@@ -1,6 +1,11 @@
 # ChangeLog
-
 ## [2026-03-31]
+- fix(admin): fix critical memory leak in async event handlers in AdminConfirmWindow using CancellationToken
+- fix(game): prevent NullReferenceException in ShowSteamStore in CurrentGame and ChooseGame
+- refactor(view): standardize window disposal pattern and SetInactive logic across all views
+- refactor(arch): reorganize project structure, move MainWindowViewModel and update namespaces
+- feat(task): enhance TaskRunner with RunWithDispatcherSync/Async for UI thread support
+- refactor: clean up redundant interfaces (IRollGame, IStatistic) and action classes (GameTableActions)
 - refactor(service): organize TaskRunner methods and add XML documentation
 - refactor(viewmodel): massive reorganization of ViewModels into system-based directories
 - refactor(admin): split AdminPanel and AdminRegistration into specialized services and factories
