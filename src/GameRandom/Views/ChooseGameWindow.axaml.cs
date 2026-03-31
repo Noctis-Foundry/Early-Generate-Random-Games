@@ -38,12 +38,10 @@ public sealed partial class ChooseGameWindow : WindowBase<ChooseGameViewModel>
             viewModel.ShowSteamStore();
     }
 
-    private async void ChooseGame(object? sender, RoutedEventArgs e)
+    private void ChooseGame(object? sender, RoutedEventArgs e)
     {
         if (DataContext is not ChooseGameViewModel viewModel) return;
 
-        bool isAdd = await viewModel.ChooseGame();
-
-        Logger.Debug($"Choose game is {isAdd}");
+        TaskRunner.RunWithDispatcherAsync(async () => await viewModel.ChooseGame());
     }
 }

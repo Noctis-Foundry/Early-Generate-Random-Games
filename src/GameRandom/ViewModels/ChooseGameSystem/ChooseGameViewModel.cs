@@ -80,6 +80,12 @@ public sealed class ChooseGameViewModel : ViewModelBase
     /// </summary>
     public void ShowSteamStore()
     {
+        if (_appInfo is null)
+        {
+            ErrorService.ShowWindow("Failed to open steam store. App info not founded");
+            return;
+        }
+        
         var url = $"https://store.steampowered.com/app/{_appInfo?.AppData.AppId}";
         Process.Start(new ProcessStartInfo
         {

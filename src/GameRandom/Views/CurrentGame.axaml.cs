@@ -13,7 +13,7 @@ namespace GameRandom.Views;
 
 public sealed partial class CurrentGame : WindowBase<CurrentGameStatusViewModel>
 {
-    [Inject] private SteamService? _steamService;
+    [Inject] private SteamService _steamService;
     
     public CurrentGame()
     {
@@ -45,6 +45,12 @@ public sealed partial class CurrentGame : WindowBase<CurrentGameStatusViewModel>
     {
         if (DataContext is not CurrentGameStatusViewModel vm) return;
 
+        if (vm.UserGame is null)
+        {
+            ShowMessage("Game is empty");
+            return;
+        }
+
         var url = _steamService.AppSteamPage(vm.UserGame.AppId);
 
         Process.Start(new ProcessStartInfo
@@ -54,7 +60,7 @@ public sealed partial class CurrentGame : WindowBase<CurrentGameStatusViewModel>
         });
     }
 
-    private async void FinishedGame(object? sender, RoutedEventArgs e)
+    private void FinishedGame(object? sender, RoutedEventArgs e)
     {
         if (DataContext is not CurrentGameStatusViewModel vm)
             return;
@@ -65,7 +71,7 @@ public sealed partial class CurrentGame : WindowBase<CurrentGameStatusViewModel>
             return;
         }
         
-        await TaskRunner.Run(async () => await vm.FinishingGame());
+        TaskRunner.RunWithDispatcherAsync(async () => await vm.FinishingGame());
     }
 
     protected override void InitializeDiContainer()
