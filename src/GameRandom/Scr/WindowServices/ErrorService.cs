@@ -16,26 +16,7 @@ public class ErrorService : AbstractWindowService<ErrorWindow>
 
     public ErrorService(Window owner) : base(owner)
     {
-        GlobalExceptionHandler();
-        
         ControlWindow.Closing += (sender, args) => ClosingWindow();
-    }
-
-    private void GlobalExceptionHandler()
-    {
-        AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
-        {
-            if (args.ExceptionObject is Exception exception)
-            {
-                SaveInvokeOnUI(() => ShowWindow(new ErrorStruct{ErrorMessage = exception.Message, ErrorType = ErrorEnum.Error}));
-            }
-        };
-
-        TaskScheduler.UnobservedTaskException += (sender, args) =>
-        {
-            SaveInvokeOnUI(() => ShowWindow(new ErrorStruct{ErrorMessage = args.Exception.Message, ErrorType = ErrorEnum.Error}));
-            args.SetObserved();
-        };
     }
 
     public override void ShowWindow(object? data = null)
@@ -67,12 +48,6 @@ public class ErrorService : AbstractWindowService<ErrorWindow>
     protected void ClosingWindow()
     {
         TryGoNext();
-    }
-
-
-    private void SaveInvokeOnUI(Action action)
-    {
-        Dispatcher.UIThread.Post(action);
     }
 
     private void TryGoNext()

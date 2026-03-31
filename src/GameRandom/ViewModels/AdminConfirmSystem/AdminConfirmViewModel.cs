@@ -63,8 +63,9 @@ public sealed class AdminConfirmViewModel : ViewModelBase
     /// Updates the view model data with the provided finished game information.
     /// </summary>
     /// <param name="elementData">The finished game data to display.</param>
+    /// <param name="cts"></param>
     /// <exception cref="NullReferenceException">Thrown if database service or user is not found.</exception>
-    public async Task UpdateElementData(FinishedGames elementData)
+    public async Task UpdateElementData(FinishedGames elementData, CancellationToken cts = default)
     {
         if (elementData.GameProgresses is null) return;
         
@@ -74,7 +75,7 @@ public sealed class AdminConfirmViewModel : ViewModelBase
         if (databaseService is null)
             throw new NullReferenceException(nameof(databaseService));
         
-        var user = await databaseService.GetUserByUlongId(elementData.GameProgresses.PlayerId);
+        var user = await databaseService.GetUserByUlongId(elementData.GameProgresses.PlayerId, cts);
 
         if (user is null)
             throw new NullReferenceException(nameof(user));

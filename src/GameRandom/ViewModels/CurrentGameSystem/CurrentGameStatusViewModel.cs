@@ -25,8 +25,6 @@ public sealed class CurrentGameStatusViewModel : ViewModelBase
     private ICurrentGameLoad _currentGameLoad = new CurrentGameLoad();
     private ICurrentGameFinish _currentGameFinish = new CurrentGameFinish();
     
-    private const int DatabaseOperationDelay = 5;
-    
     private SemaphoreSlim _finishSemaphore = new SemaphoreSlim(1, 1);
     
     private const int TimerIterationDelay = 1000;
@@ -35,9 +33,11 @@ public sealed class CurrentGameStatusViewModel : ViewModelBase
     private EventHandler? _savedHandler;
     private Action<PayloadStructure>? _listener;
 
-    private TimeSpan _currentTime;
+    private const int DelayAfterUserGameChange = 500;
 
     #region BindingProperty
+    private TimeSpan _currentTime;
+    
     /// <summary>
     /// The current remaining time until the game ends.
     /// </summary>
@@ -93,10 +93,10 @@ public sealed class CurrentGameStatusViewModel : ViewModelBase
     /// </summary>
     public async Task LoadInfo()
     {
-        if (!await SemaphoreSlimWaitAsync())
-            return;
-
         if (AppInfo is not null)
+            return;
+        
+        if (!await SemaphoreSlimWaitAsync())
             return;
         
         LoadEmpty();
@@ -118,8 +118,6 @@ public sealed class CurrentGameStatusViewModel : ViewModelBase
         IsEmpty = false;
     }
 
-    #region FinishedGame
-
     /// <summary>
     /// Starts the process of finishing the current game.
     /// </summary>
@@ -130,19 +128,13 @@ public sealed class CurrentGameStatusViewModel : ViewModelBase
         
         if (!IsCanStartFinishingGame()) return;
 
-        StartTaskWaiter();
-
-        var result = await TaskRunner.RunWithFinallyActionT(() => _currentGameFinish.FinishingGame(AppInfo),
-            CloseTaskWaiterWithSemaphore); //AppInfo is checking in IsCanStartFinishingGame 
+        var result = await TaskRunner.RunWithFinallyActionT(() => _currentGameFinish.FinishingGame(AppInfo), 
+            () => SemaphoreSlim.Release()); //AppInfo is checking in IsCanStartFinishingGame 
 
         if (result.Success && result.Value is not null)
         {
             UserGame = result.Value;
-
-            if (UserGame.AppId == 0)
-                ClearingContent();
-            else
-                _ = Dispatcher.UIThread.InvokeAsync(async () => await LoadInfo());
+            ClearingContent();
         }
     }
 
@@ -179,8 +171,6 @@ public sealed class CurrentGameStatusViewModel : ViewModelBase
         UserGame = null;
     }
 
-    #endregion
-
     #region Initialization and Helpers
 
     protected override void InitializeDiContainer()
@@ -200,7 +190,22 @@ public sealed class CurrentGameStatusViewModel : ViewModelBase
         {
             if (structure.TableCode == (int)TableEnum.UserGames)
             {
-                Dispatcher.UIThread.InvokeAsync(async () => await LoadInfo());
+                Dispatcher.UIThread.InvokeAsync(async () =>
+                {
+                    if (Di.Container.GetInstance<DatabaseService>() is not DatabaseService databaseService)
+                        throw new NullReferenceException("Failed to inject database dependence");
+
+                    CancellationTokenSource cts =
+                        new CancellationTokenSource(TimeSpan.FromSeconds(DatabaseOperationDelay));
+                    
+                    var userGame = await databaseService.GetFromRowId<UserGame>(structure.RowId, cts.Token);
+
+                    if (userGame is null || userGame.UserId != User.GetInstance().GetUserId())
+                        return;
+                    
+                    await Task.Delay(DelayAfterUserGameChange);
+                    await LoadInfo();
+                });
             }
         };
 
@@ -212,7 +217,7 @@ public sealed class CurrentGameStatusViewModel : ViewModelBase
     /// </summary>
     private void LoadEmpty()
     {
-        AppInfo = new GameProgresses();
+        AppInfo = null;
         ImageBitmap = AvaloniaService.Instance.CreateBitmapFromPath("Assets/steamAwatarWithNight.jpg");
         IsEmpty = true;
         

@@ -14,7 +14,7 @@ public class SteamWebApi
     private const string ApiKey = "74FCA50C2D6D2C3ACF641458D135AA3A";
     private readonly HttpClient _client = new HttpClient();
     
-    public async Task<ProfilerContext?> GetUserData(ulong userId)
+    public async Task<ProfileContext?> GetUserData(ulong userId)
     {
         try
         {
@@ -42,7 +42,7 @@ public class SteamWebApi
             var player = players[0];
             var avatar = player.GetProperty("avatar").ToString();
         
-            var profileCtx = new ProfilerContext
+            var profileCtx = new ProfileContext
             {
                 avatarUrl = avatar,
                 MemberID = userId,

@@ -11,7 +11,7 @@ namespace GameRandom.Src;
 
 public abstract class MainWindowUserControlAbstract : UserControl, IDisposable
 {
-    [Inject] private TaskRunner? TaskRunner;
+    [Inject] protected TaskRunner TaskRunner = null!;
     
     protected Action<string>? _changeWindowAction;
     protected Action SavedProcessingHandler;

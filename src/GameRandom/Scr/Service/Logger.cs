@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Threading.Tasks;
+using GameRandom.Src;
+using GameRandom.Src.Enums;
 
 namespace GameRandom.Scr.Service;
 
 public static class Logger //To:Do Connect Error window to logger
 {
+    
     public static void Info(string msg)
     {
         Console.ForegroundColor = ConsoleColor.Green;
@@ -26,11 +30,5 @@ public static class Logger //To:Do Connect Error window to logger
     {
         Console.ForegroundColor = ConsoleColor.Gray;
         Console.WriteLine(msg);
-    }
-
-    public static void Message()
-    {
-        Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine();
     }
 }

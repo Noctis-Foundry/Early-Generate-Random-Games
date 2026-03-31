@@ -22,6 +22,7 @@ sealed class Program
     public static void Main(string[] args)
     { 
         InitializeDependenceInjection();
+        GlobalExceptionHandler();
         
         try
         {
@@ -60,5 +61,22 @@ sealed class Program
         Di.Container.RegisterSingleInstance(new SteamService());
         Di.Container.RegisterSingleInstance(new ImageConfirmService());
         Di.Container.RegisterSingleInstance(new TaskRunner());
+    }
+    
+    private static void GlobalExceptionHandler()
+    {
+        AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
+        {
+            if (args.ExceptionObject is Exception exception)
+            {
+                Logger.Error("UnhandledException: " + exception.Message);
+            }
+        };
+
+        TaskScheduler.UnobservedTaskException += (sender, args) =>
+        {
+            Logger.Error("UnobservedTaskException: " + args.Exception.Message);
+            args.SetObserved();
+        };
     }
 }

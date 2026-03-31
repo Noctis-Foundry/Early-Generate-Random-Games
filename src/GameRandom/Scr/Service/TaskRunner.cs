@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Threading;
+using GameRandom.Src;
 
 namespace GameRandom.Scr.Service;
 
@@ -169,4 +170,54 @@ public class TaskRunner
     }
 
     #endregion
+    
+    public bool RunWithDispatcherSync(Action action)
+    {
+        try
+        {
+            Dispatcher.UIThread.Post(action);
+            return true;
+        }
+        catch (Exception e)
+        {
+            Logger.Error($"Failed to complete action: {e.Message}");
+            return false;
+        }
+    }
+    
+    public bool RunWithDispatcherAsync(Func<Task> action, Action? finallyAction = null)
+    {
+        try
+        {
+            _ = Dispatcher.UIThread.InvokeAsync(action);
+            return true;
+        }
+        catch (Exception e)
+        {
+            Logger.Error($"Failed to complete action: {e.Message}");
+            return false;
+        }
+        finally
+        {
+            finallyAction?.Invoke();
+        }
+    }
+
+    public bool RunWithDispatcherAsyncWithReturnTask(Func<Task> action, Action? finallyAction = null)
+    {
+        try
+        {
+            Dispatcher.UIThread.InvokeAsync(async () => action);
+            return true;
+        }
+        catch (Exception e)
+        {
+            Logger.Error($"Failed to complete action: {e.Message}");
+            return false;
+        }
+        finally
+        {
+            finallyAction?.Invoke();
+        }
+    }
 }
