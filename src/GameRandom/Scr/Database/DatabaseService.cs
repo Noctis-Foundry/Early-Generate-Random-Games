@@ -282,8 +282,8 @@ public class DatabaseService : IDatabaseService
         try
         {
             await using var db = CreateContext();
-            return await db.FinishedGames
-                .Include(x => x.GameProgresses)
+            return await db.FinishedGames.Where(e => !e.IsImprove)
+                .Include(x => x.GameProgresses).AsNoTracking()
                 .ToListAsync(ct);
         }
         catch (OperationCanceledException e)

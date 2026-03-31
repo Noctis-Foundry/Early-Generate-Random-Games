@@ -24,14 +24,14 @@ public class AdminPanelLoadService : BaseModelService, IAdminLoad
     {
         var finallyList = new List<AdminPanelElementData>();
 
-        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(DefaultDatabaseTimeLimitSecond));
+        using var cts = new CancellationTokenSource();
 
         if (await GetFinishedGame(cts.Token) is not { } gameList)
             return null!;
 
         foreach (var game in gameList)
         {
-            if (!IterationRequired(game))
+            if (!IterationRequired(game)) //Check game in null
                 continue;
 
             var user = await DatabaseService.GetUserByUlongId(game.GameProgresses.PlayerId, cts.Token);

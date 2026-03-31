@@ -22,6 +22,8 @@ public partial class AdminPanel : MainWindowUserControlAbstract
     private AdminRegistrationWindow _registrationWindow;
     private const string CloseTarget = "Main";
 
+    private CancellationTokenSource _cts = new CancellationTokenSource();
+
     private Action<PayloadStructure> _savedHandler;
     
     public AdminPanel()
@@ -44,9 +46,9 @@ public partial class AdminPanel : MainWindowUserControlAbstract
     {
         if (DataContext is AdminPanelViewModel vm)
         {
-            Dispatcher.UIThread.InvokeAsync(async () =>
+            TaskRunner.RunWithDispatcherAsync(async () =>
             {
-                await vm.LoadGameProgresses();
+                await vm.LoadGameProgresses().WithCancellation(_cts.Token);
             });
         }
     }
@@ -115,7 +117,6 @@ public partial class AdminPanel : MainWindowUserControlAbstract
             await _registrationWindow.ShowDialog(window);
         });
     }
-
     protected sealed override void InitializeDiContainer()
     {
         Di.Container.ResolveFieldsFromClassInstance(this);
