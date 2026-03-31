@@ -1,3 +1,6 @@
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -11,17 +14,25 @@ namespace GameRandom.Views;
 
 public sealed partial class AdminConfirmWindow : WindowBase<AdminConfirmViewModel>
 {
+    private Task _currentThread;
+    private CancellationTokenSource _cts = new CancellationTokenSource();
+    
     public AdminConfirmWindow()
     {
         InitializeComponent();
         InitializeViewModel();
+        InitializeDiContainer();
     }
-    public async void LoadData(FinishedGames elementData)
+    
+    public void LoadData(FinishedGames elementData)
     {
         Show();
-        
-        if (DataContext is AdminConfirmViewModel vm)
-            await vm.UpdateElementData(elementData);
+
+        TaskRunner.RunWithDispatcherAsyncWithReturnTask(async () =>
+        {
+            if (DataContext is AdminConfirmViewModel vm)
+                await vm.UpdateElementData(elementData, _cts.Token).WithCancellation(_cts.Token);
+        });
     }
     private void ConfirmGame(object? sender, RoutedEventArgs e)
     {
@@ -46,5 +57,13 @@ public sealed partial class AdminConfirmWindow : WindowBase<AdminConfirmViewMode
             if (isSuccessfully)
                 Close();
         });
+    }
+
+    public override void Dispose() //Base dispose clearing data from view model
+    {
+        _cts.Cancel();
+        _cts.Dispose();
+        
+        base.Dispose();
     }
 }
