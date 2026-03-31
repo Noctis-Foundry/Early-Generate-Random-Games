@@ -87,7 +87,7 @@ public partial class GameTable : MainWindowUserControlAbstract
     private void UpdateTableData()
     {
         if (DataContext is GameTableViewModel vm)
-            Dispatcher.UIThread.InvokeAsync(async () => await vm.LoadData());
+            TaskRunner.RunWithDispatcherAsync(() => vm.LoadData());
     }
     
     /// <summary>

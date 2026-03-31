@@ -39,9 +39,7 @@ public partial class ErrorWindow : WindowBase<ViewModelBase>
         if (IsClosing)
             return;
 
-        IsClosing = true;
-        IsActive = false;
-        
+        SetInactive();
         Hide();
 
         e.Cancel = true;

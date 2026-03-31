@@ -25,6 +25,7 @@ public sealed partial class ConfirmFinishGame : WindowBase<ConfirmFinishGameView
         InitializeViewModel();
         InitializeCommentListener();
         InitializeProcessingHandler();
+        InitializeDiContainer();
         
         WindowStartupLocation = WindowStartupLocation.CenterOwner;
     }
@@ -50,37 +51,47 @@ public sealed partial class ConfirmFinishGame : WindowBase<ConfirmFinishGameView
         return await ShowDialog<bool>(owner);
     }
     
-    private async void OnSaveEditClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    private void OnSaveEditClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        if (DataContext is ConfirmFinishGameViewModel vm)
+        TaskRunner.RunWithDispatcherAsync(async () =>
         {
-           var isEdit = await vm.SaveEditAsync();
-           
-           if (isEdit) Close();
-        }
+            if (DataContext is ConfirmFinishGameViewModel vm)
+            {
+                var isEdit = await vm.SaveEditAsync();
+
+                if (isEdit) Close();
+            }
+        });
+
     }
 
-    private async void ChooseImageFromFile(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    private void ChooseImageFromFile(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        var imageConfirmService = GetImageConfirm();
-
-        var bitmap = await imageConfirmService.ConfirmFromFile(StorageProvider);
-        
-        if (bitmap is not null && GetViewModel() is { } vm)
+        TaskRunner.RunWithDispatcherAsync(async () =>
         {
-            vm.ImageBitmap = bitmap;
-        }
+            var imageConfirmService = GetImageConfirm();
+
+            var bitmap = await imageConfirmService.ConfirmFromFile(StorageProvider);
+        
+            if (bitmap is not null && GetViewModel() is { } vm)
+            {
+                vm.ImageBitmap = bitmap;
+            }
+        });
     }
-    private async void ChooseImageFromClipboard(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    private void ChooseImageFromClipboard(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        var imageConfirmService = GetImageConfirm();
-
-        var bitmap = await imageConfirmService.PasteFromClipboardAsync(Clipboard);
-        
-        if (bitmap is not null && GetViewModel() is { } vm)
+        TaskRunner.RunWithDispatcherAsync(async () =>
         {
-            vm.ImageBitmap = bitmap;
-        }
+            var imageConfirmService = GetImageConfirm();
+
+            var bitmap = await imageConfirmService.PasteFromClipboardAsync(Clipboard);
+        
+            if (bitmap is not null && GetViewModel() is { } vm)
+            {
+                vm.ImageBitmap = bitmap;
+            }
+        });
     }
 
     private ImageConfirmService GetImageConfirm()
@@ -114,6 +125,6 @@ public sealed partial class ConfirmFinishGame : WindowBase<ConfirmFinishGameView
         CommentBox.TextChanging -= _textChanging;
         _textChanging = null;
         
-        base.Dispose();
+        base.Dispose(); //Call view model dispose
     }
 }

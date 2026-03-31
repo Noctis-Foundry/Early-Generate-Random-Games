@@ -98,7 +98,12 @@ public partial class RollGame : MainWindowUserControlAbstract
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    private async void GenerateGame(object? sender, RoutedEventArgs e)
+    private void GenerateGame(object? sender, RoutedEventArgs e)
+    {
+        TaskRunner.RunWithDispatcherAsync(async () => await GenerateGameAsync());
+    }
+
+    private async Task GenerateGameAsync()
     {
         if (!await _rollSemaphore.WaitAsync(0))
         {

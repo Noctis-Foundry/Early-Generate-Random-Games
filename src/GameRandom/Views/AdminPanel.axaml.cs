@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -30,11 +31,12 @@ public partial class AdminPanel : MainWindowUserControlAbstract
         if (Design.IsDesignMode)
             return;
 
+        InitializeDiContainer();
+        
         IsInitializeTaskWaiter = true;
         DataContext = new AdminPanelViewModel();
         
         HideAdminPanel();
-        InitializeDiContainer();
         InitializePostgresListener();
     }
 
@@ -63,21 +65,22 @@ public partial class AdminPanel : MainWindowUserControlAbstract
 
     private void HideAdminPanel()
     {
-        Dispatcher.UIThread.InvokeAsync(async () =>
+        TaskRunner.RunWithDispatcherAsync(HidePanel);
+    }
+    private async Task HidePanel()
+    {
+        if (Di.Container.TryGetInstance<DatabaseService>() is DatabaseService service)
         {
-            if (Di.Container.TryGetInstance<DatabaseService>() is DatabaseService service)
-            {
-                using var token = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-                var admin = await service.GetFirstOrDefaultAsync<Admins>(
-                    e => e.SteamId == User.GetInstance().GetUserId(), token.Token);
+            using var token = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+            var admin = await service.GetFirstOrDefaultAsync<Admins>(
+                e => e.SteamId == User.GetInstance().GetUserId(), token.Token);
 
-                if (admin is not null && admin.IsTopAdmin && DataContext is AdminPanelViewModel vm)
-                    vm.IsCanShow = true;
+            if (admin is not null && admin.IsTopAdmin && DataContext is AdminPanelViewModel vm)
+                vm.IsCanShow = true;
 
-            }
-            else
-                throw new NullReferenceException(nameof(DatabaseService));
-        });
+        }
+        else
+            throw new NullReferenceException(nameof(DatabaseService));
     }
     private void InitializePostgresListener()
     {
@@ -91,34 +94,29 @@ public partial class AdminPanel : MainWindowUserControlAbstract
         
         _postgresListener?.Subscribe(TableEnum.AdminTable, _savedHandler);
     }
-
     private void UnsubscribeListener()
     {
         _postgresListener?.Unsubscribe(TableEnum.AdminTable, _savedHandler);
     }
-    private async void ShowRegistration(object? sender, RoutedEventArgs e)
+    private void ShowRegistration(object? sender, RoutedEventArgs e)
     {
         if (DataContext is AdminPanelViewModel { IsCanShow: false })
             return;
-        
-        try
+
+        TaskRunner.RunWithDispatcherAsync(async () =>
         {
             _registrationWindow = new AdminRegistrationWindow();
-            
+
             var window = TopLevel.GetTopLevel(this) as Window;
 
             if (window is null)
                 return;
 
             await _registrationWindow.ShowDialog(window);
-        }
-        catch (Exception exception)
-        {
-            _errorService?.ShowWindow($"Failed to show registration window {exception.Message}");
-        }
+        });
     }
 
-    private void InitializeDiContainer()
+    protected sealed override void InitializeDiContainer()
     {
         Di.Container.ResolveFieldsFromClassInstance(this);
 

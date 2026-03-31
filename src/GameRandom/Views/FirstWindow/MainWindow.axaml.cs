@@ -25,9 +25,9 @@ namespace GameRandom.Views;
 public partial class MainWindow : Window
 {
     [Inject] private readonly LobbyService _lobby = null!;
-    [Inject] private readonly PostgresListener _postgres = null!;
     [Inject] private readonly EventBus _eventBus = null!;
     [Inject] private readonly UserControlFactory _controlFactory = null!;
+    [Inject] private readonly PostgresListener _postgresListener = null!;
     [Inject] private readonly MainWindowFactory _mainWindowFactory = null!;
     [Inject] private readonly SteamService? _steamService;
 
@@ -143,7 +143,7 @@ public partial class MainWindow : Window
     {
         LobbyImages.Children.Clear();
 
-        _postgres.Subscribe(TableEnum.Lobby,
+        _postgresListener.Subscribe(TableEnum.Lobby,
             e => UpdateLobby(e.TableCode));
 
         if (_lobby == null)
@@ -178,9 +178,12 @@ public partial class MainWindow : Window
     {
         if (DataContext is not MainWindowViewModel vm) return;
 
+        if (tableCode != (int)TableEnum.Lobby)
+            return;
+        
         Dispatcher.UIThread.InvokeAsync(async () =>
         {
-            await vm.UpdateLobby(tableCode);
+            await vm.UpdateLobby();
             await UpdateAvatarGrid();
         });
     }

@@ -24,7 +24,7 @@ public sealed partial class FilterGameWindow : WindowBase<FilterGameViewModel>
         Close();
     }
 
-    public FilteredData? GetFilters()
+    public FilterOutputData? GetFilters()
     {
         if (DataContext is FilterGameViewModel viewModel)
             return viewModel.GetFilters();

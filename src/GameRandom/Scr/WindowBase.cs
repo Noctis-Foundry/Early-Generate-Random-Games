@@ -112,6 +112,12 @@ public abstract class WindowBase<TViewModel> : Window, IDisposable where TViewMo
         });
     }
 
+    protected void SetInactive()
+    {
+        IsClosing = true;
+        IsActive = false;
+    }
+    
     /// <summary>
     /// Handles window closing event and performs cleanup.
     /// </summary>
