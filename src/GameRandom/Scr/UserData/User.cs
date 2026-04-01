@@ -18,11 +18,11 @@ namespace GameRandom.Src.UserData;
 /// </summary>
 public class User
 {
-    [Inject] private DatabaseService? _databaseService;
-    [Inject] private PostgresListener? _postgresListener;
+    [Inject] private DatabaseService _databaseService = null!;
+    [Inject] private DatabaseTransitionService _transitionService = null!;
+    [Inject] private PostgresListener _postgresListener = null!;
 
     private static Lazy<User> _userInstance = new (() => new User());
-    private bool _isInitialized = false;
     private Users _userInfo;
     
     private User() { }
@@ -40,6 +40,17 @@ public class User
     /// </summary>
     public async Task InitializeUser()
     {
+        InitializeDependence();
+
+        await GetUserDataOrCreate();
+
+        InitializePostgresListener();
+
+        await UpdateAdminRules();
+    }
+
+    private void InitializeDependence()
+    {
         Di.Container.ResolveFieldsFromClassInstance(this);
 
         if (_databaseService is null)
@@ -47,50 +58,19 @@ public class User
         
         if (_postgresListener is null)
             throw new NullReferenceException("Postgres listener is null");
-        
-        var userInfo = await _databaseService.GetUserByUlongId(SteamManager.GetSteamIdAsLong());
 
-        // If user exists in DB
-        if (userInfo is not null)
-        {
-            _userInfo = userInfo;
-            
-            var isAddUserGame = await _databaseService.TryGetOrCreateUserGame(_userInfo);
-            
-            if (!isAddUserGame)
-                throw new Exception("Failed to add user game cell"); ;
-        }
-        else 
-            await CreateUser();
-
-        _postgresListener.Subscribe(TableEnum.AdminTable, e =>
-        {
-            Dispatcher.UIThread.InvokeAsync(async () =>
-            {
-                if (e.TableCode != (int)TableEnum.AdminTable)
-                    return;
-                
-                await UpdateAdminRules();
-            });
-        });
-
-        await UpdateAdminRules();
-        
-        _isInitialized = true;
+        if (_transitionService is null)
+            throw new NullReferenceException("Transition service is null");
     }
-
+    
     /// <summary>
     /// Update lobby ID for current user
     /// </summary>
     public async Task<bool> UpdateLobbyId(long lobbyId)
     {
-        if (_databaseService is null) return false;
-        
         _userInfo.LobbyId = lobbyId;
         
-        bool isUpdating = await _databaseService.UpdateAsync(_userInfo);
-
-        return isUpdating;
+        return await _databaseService.UpdateAsync(_userInfo);
     }
 
     private async Task UpdateAdminRules()
@@ -126,18 +106,45 @@ public class User
 
         _userInfo = user;
 
-        bool isAdding = await _databaseService.AddItemAsync(_userInfo);
-        
-        if (!isAdding)
-            throw new Exception("Failed to add new user to database");
+        var isReady = await _transitionService.TransitionAddUser(user);
 
-        Console.WriteLine("New user added to DB");
+        if (!isReady)
+            throw new NullReferenceException("failed to create user");
+        else
+            Logger.Debug("User is successes created");
 
-        var isUserGame = await _databaseService.TryGetOrCreateUserGame(_userInfo);
-        
-        if (!isUserGame)
-            throw new Exception("Failed to create user game");
+    }
+
+    private async Task GetUserDataOrCreate()
+    {
+        var userInfo = await _databaseService.GetUserByUlongId(SteamManager.GetSteamIdAsLong());
+
+        // If user exists in DB
+        if (userInfo is not null)
+        {
+            _userInfo = userInfo;
             
+            var isAddUserGame = await _databaseService.TryGetOrCreateUserGame(_userInfo);
+            
+            if (!isAddUserGame)
+                throw new Exception("Failed to add user game cell"); ;
+        }
+        else 
+            await CreateUser();
+    }
+    
+    private void InitializePostgresListener()
+    {
+        _postgresListener.Subscribe(TableEnum.AdminTable, e =>
+        {
+            Dispatcher.UIThread.InvokeAsync(async () =>
+            {
+                if (e.TableCode != (int)TableEnum.AdminTable)
+                    return;
+                
+                await UpdateAdminRules();
+            });
+        });
     }
     
     /// <summary>

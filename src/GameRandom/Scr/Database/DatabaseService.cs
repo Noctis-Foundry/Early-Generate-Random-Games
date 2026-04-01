@@ -426,58 +426,6 @@ public class DatabaseService : IDatabaseService
             return false;
         }
     }
-    
-    public async Task<bool> TransitionRejectGame(FinishedGames finishedGames, GameProgresses gameProgresses, UserGame userGame, CancellationToken ct = default)
-    {
-        await using var db = new AppDbContext();
-        await using var transition = await db.Database.BeginTransactionAsync(ct);
-        
-        try
-        {
-            db.UserGames.Update(userGame);
-            db.GameProgresses.Update(gameProgresses);
-            db.FinishedGames.Remove(finishedGames);
-            
-            await db.SaveChangesAsync(ct);
-            await transition.CommitAsync(ct);
-
-            return true;
-        }
-        catch (Exception e)
-        {
-            await transition.RollbackAsync(ct);
-            throw;
-        }
-    }
-
-    public async Task<bool> TransitionFinishGame(FinishedGames finishedGames, GameProgresses gameProgresses, CancellationToken token = default)
-    {
-        await using var db = new AppDbContext();
-        await using var transition = await db.Database.BeginTransactionAsync(token);
-
-        try
-        {
-            if (await db.FinishedGames
-                    .FirstOrDefaultAsync(e => e.GameProgressId == gameProgresses.Id, token) is not null)
-            {
-                Logger.Debug($"Database is have finished game with gameProgressId {gameProgresses.Id}");
-                return true;
-            }
-            
-            db.FinishedGames.Add(finishedGames);
-            db.GameProgresses.Update(gameProgresses);
-            await db.SaveChangesAsync(token);
-            await transition.CommitAsync(token);
-
-            return true;
-        }
-        catch (Exception e)
-        {
-            Logger.Error("Failed to transition add finish game" + e.Message);
-            await transition.RollbackAsync(token);
-            return false;
-        }
-    }
 
     public async Task<(Users?, List<GameProgresses>?)> GetGameTableData(ulong userId, CancellationToken ct = default)
     {
@@ -504,33 +452,26 @@ public class DatabaseService : IDatabaseService
         }
     }
 
-    public async Task<bool> ChooseGameTransition(GameProgresses gameInfo, ulong steamId, CancellationToken ct = default)
-    {
-        await using var db = new AppDbContext();
-        await using var transaction = await db.Database.BeginTransactionAsync(ct);
+  
 
+    private async Task<(bool isSuccses, T? value)> RunTasks<T>(Func<Task<T>> task, Action? catchAction = null)
+    {
         try
         {
-            db.GameProgresses.Add(gameInfo);
-
-            var userGame = await db.UserGames.FirstOrDefaultAsync(e => e.UserId == steamId, ct);
-
-            if (userGame is null)
-                throw new NullReferenceException(nameof(UserGame));
-
-            userGame.AppId = gameInfo.AppId;
-            
-            db.UserGames.Update(userGame);
-            await db.SaveChangesAsync(ct);
-            await transaction.CommitAsync(ct);
-
-            return true;
+            var result = await task.Invoke();
+            return (true, result);
+        }
+        catch (OperationCanceledException e)
+        {
+            Logger.Error($"Operation failed {e.Message}");
+            catchAction?.Invoke();
+            return (false, default);
         }
         catch (Exception e)
         {
-            Logger.Error("Failed to load changes to database: " + e.Message);
-            await transaction.RollbackAsync(ct);
-            return false;
+            Logger.Error($"Operation failed {e.Message}");
+            catchAction?.Invoke();
+            return (false, default);
         }
     }
 }
