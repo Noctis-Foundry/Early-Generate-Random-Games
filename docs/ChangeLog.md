@@ -1,4 +1,9 @@
 # ChangeLog
+## [2026-04-01]
+- fix(TaskRunner): handle async Task execution in sync context
+- refactor(database): extract transition logic into DatabaseTransitionService
+- refactor: update ViewModels and WindowBase for improved lifecycle management
+
 ## [2026-03-31]
 - fix(admin): fix critical memory leak in async event handlers in AdminConfirmWindow using CancellationToken
 - fix(game): prevent NullReferenceException in ShowSteamStore in CurrentGame and ChooseGame
