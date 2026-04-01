@@ -1,4 +1,7 @@
 # ChangeLog
+## [2026-04-02]
+- refactor: rename Scr folder to Scripts for better naming convention
+
 ## [2026-04-01]
 - fix(TaskRunner): handle async Task execution in sync context
 - refactor(database): extract transition logic into DatabaseTransitionService
