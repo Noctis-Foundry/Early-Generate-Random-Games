@@ -189,7 +189,7 @@ public class TaskRunner
     {
         try
         {
-            _ = Dispatcher.UIThread.InvokeAsync(action);
+            Dispatcher.UIThread.InvokeAsync(async () => await action.Invoke());
             return true;
         }
         catch (Exception e)
@@ -203,7 +203,7 @@ public class TaskRunner
         }
     }
 
-    public bool RunWithDispatcherAsyncWithReturnTask(Func<Task> action, Action? finallyAction = null)
+    public bool RunWithDispatcherAsyncWithReturnTask<T>(Task<T> action, Action? finallyAction = null)
     {
         try
         {
