@@ -52,8 +52,7 @@ public abstract class WindowBase<TViewModel> : Window, IDisposable where TViewMo
         if (IsActive)
             return;
 
-        IsActive = true;
-        IsClosing = false;
+        SetActivity();
         
         base.Show();
     }
@@ -118,6 +117,12 @@ public abstract class WindowBase<TViewModel> : Window, IDisposable where TViewMo
         IsActive = false;
     }
     
+    protected void SetActivity()
+    {
+        IsClosing = false;
+        IsActive = true;
+    }
+    
     /// <summary>
     /// Handles window closing event and performs cleanup.
     /// </summary>
@@ -126,14 +131,13 @@ public abstract class WindowBase<TViewModel> : Window, IDisposable where TViewMo
         if (IsClosing)
             return;
 
-        IsClosing = true;
-        IsActive = false;
+        SetInactive();
         
         Dispose();
         
         base.OnClosing(e);
     }
-
+    
     /// <summary>
     /// Method for initialize all dependencies via IoC container
     /// Is base initialize all dependence from class instance

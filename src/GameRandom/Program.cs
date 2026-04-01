@@ -54,6 +54,7 @@ sealed class Program
         Di.Container.RegisterSingleInstance(new EventBus());
         Di.Container.RegisterSingleInstance(new ObservableConverter());
         Di.Container.RegisterSingleInstance(new DatabaseService());
+        Di.Container.RegisterSingleInstance(new DatabaseTransitionService());
         Di.Container.RegisterSingleInstance(new MainWindowFactory());
         Di.Container.RegisterSingleInstance(new SteamWebApi());
         Di.Container.RegisterSingleInstance(new PostgresListener());

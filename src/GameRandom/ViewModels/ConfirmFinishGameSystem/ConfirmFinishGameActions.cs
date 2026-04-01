@@ -3,6 +3,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
 using GameRandom.DataBaseContexts;
+using GameRandom.Scr.DI;
+using GameRandom.Scr.Service;
 using GameRandom.Service;
 using GameRandom.ViewModels.AdminConfirmSystem;
 using GameRandom.ViewModels.ConfirmFinishGameSystem.Interface;
@@ -11,6 +13,14 @@ namespace GameRandom.ViewModels.ConfirmFinishGameSystem;
 
 public sealed class ConfirmFinishGameActions : BaseModelService, IConfirmFinishGame
 {
+    [Inject] private DatabaseTransitionService _transitionService = null!;
+
+    public ConfirmFinishGameActions() : base()
+    {
+        if (_transitionService is null)
+            throw new NullReferenceException("Failed to inject dependence 'transition service'");
+    }
+    
     public async Task<bool> SaveEditAsync(GameProgresses gameInfo, string comment, Bitmap image)
     {
         var finishedGame = CreateFinishedGame(gameInfo, image);
@@ -18,7 +28,7 @@ public sealed class ConfirmFinishGameActions : BaseModelService, IConfirmFinishG
 
         using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(DefaultDatabaseTimeLimitSecond));
 
-        var IsUpdated = await DatabaseService.TransitionFinishGame(
+        var IsUpdated = await _transitionService.TransitionFinishGame(
             finishedGame,
             gameInfo,
             cancellationTokenSource.Token);

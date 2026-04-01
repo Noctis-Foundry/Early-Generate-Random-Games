@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using GameRandom.CoreApp;
 using GameRandom.DataBaseContexts;
 using GameRandom.Scr.DI;
+using GameRandom.Scr.Service;
 using GameRandom.Service;
 using GameRandom.Src;
 using GameRandom.Src.Enums;
@@ -16,8 +17,15 @@ namespace GameRandom.ViewModels.ChooseGameSystem;
 public sealed class ChooseGameActions : BaseModelService, IChooseGame
 {
     [Inject] private readonly SteamService _steamService = null!;
+    [Inject] private readonly DatabaseTransitionService _transitionService = null!;
     private const int DefaultGameDurationDays = 30;
     private const int NoGameId = 0;
+
+    public ChooseGameActions() : base()
+    {
+        if (_transitionService is null)
+            throw new NullReferenceException("Failed to inject dependence 'transition service'");
+    }
     
     public async Task<bool> ChooseGame(AppInfo appInfo)
     {
@@ -29,7 +37,7 @@ public sealed class ChooseGameActions : BaseModelService, IChooseGame
         var webpBytes = ConvertAppImageToWebp(appInfo);
         var gameInfo = CreateGameProgress(webpBytes, appInfo);
 
-        var isAdd = await DatabaseService.ChooseGameTransition(gameInfo, User.GetInstance().GetUserId(), cts.Token);
+        var isAdd = await _transitionService.ChooseGameTransition(gameInfo, User.GetInstance().GetUserId(), cts.Token);
 
         ShowResult(isAdd);
 

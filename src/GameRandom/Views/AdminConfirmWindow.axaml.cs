@@ -28,10 +28,13 @@ public sealed partial class AdminConfirmWindow : WindowBase<AdminConfirmViewMode
     {
         Show();
 
-        TaskRunner.RunWithDispatcherAsyncWithReturnTask(async () =>
+        if (TaskRunner is null)
+            throw new NullReferenceException(nameof(TaskRunner));
+
+        TaskRunner.RunWithDispatcherAsync(async () =>
         {
             if (DataContext is AdminConfirmViewModel vm)
-                await vm.UpdateElementData(elementData, _cts.Token).WithCancellation(_cts.Token);
+                await vm.UpdateElementData(elementData, _cts.Token);
         });
     }
     private void ConfirmGame(object? sender, RoutedEventArgs e)

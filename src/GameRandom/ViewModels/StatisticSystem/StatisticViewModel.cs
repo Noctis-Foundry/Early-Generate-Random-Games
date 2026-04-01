@@ -60,13 +60,13 @@ public class StatisticViewModel : ViewModelBase
     {
         _tableListener += e =>
         {
-            if (e.TableCode != (int)TableEnum.GameProgress)
+            if (e.TableCode != (int)TableEnum.EndGameTable)
                 return;
 
             Dispatcher.UIThread.InvokeAsync(async () => await LoadStatisticAsync());
         };
         
-        _postgresListener.Subscribe(TableEnum.GameProgress, _tableListener);
+        _postgresListener.Subscribe(TableEnum.EndGameTable, _tableListener);
     }
     
     /// <summary>
