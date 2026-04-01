@@ -4,11 +4,12 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
+using GameRandom.Scr.DI;
 using GameRandom.Scr.Service;
 
 namespace GameRandom.Src;
 
-public class SteamService
+public class SteamService : DependenceBase
 {
     public async Task<Bitmap?> GetImage(string imageUrl, CancellationToken cancellationToken = default)
     {

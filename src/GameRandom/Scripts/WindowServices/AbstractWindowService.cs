@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using GameRandom.Scr.DI;
 
 namespace GameRandom.Src;
 
-public abstract class AbstractWindowService<TWindow>(Window ownerWindow)
+public abstract class AbstractWindowService<TWindow>(Window ownerWindow) : DependenceBase
     where TWindow : Window, new()
 {
     protected readonly Window OwnerWindow = ownerWindow;

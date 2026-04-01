@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using GameRandom.DataBaseContexts;
+using GameRandom.Scr.DI;
 using GameRandom.Src.UserData;
 using Microsoft.EntityFrameworkCore;
 using Steamworks;
@@ -18,7 +19,7 @@ public interface IDatabaseService
     Task<bool> DeleteItemAsync<TEntity>(TEntity item, CancellationToken ct = default) where TEntity : class;
 }
 
-public class DatabaseService : IDatabaseService
+public class DatabaseService : DependenceBase, IDatabaseService
 {
     private readonly DbContextOptions<AppDbContext>? _options;
 
@@ -303,7 +304,9 @@ public class DatabaseService : IDatabaseService
         try
         {
             await using var db = CreateContext();
-            return await db.FinishedGames.Include(e => e.GameProgresses).FirstOrDefaultAsync(g => g.Id == rowId, ct);
+            return await db.FinishedGames.Where(e => e.Id == rowId)
+                .Include(e => e.GameProgresses)
+                .FirstOrDefaultAsync(e => e.Id == rowId, ct);
 
         }
         catch (OperationCanceledException e)
@@ -363,7 +366,7 @@ public class DatabaseService : IDatabaseService
         try
         {
             await using var appDb = CreateContext();
-            Lobbies? lobby = await appDb.Lobbies
+            Lobbies? lobby = await appDb.Lobbies.Where(e => e.LobbyId == lobbyId)
                 .Include(l => l.LobbyData).Include(a => a.AdminsList)
                 .FirstOrDefaultAsync(l => l.LobbyId == lobbyId, ct);
             

@@ -4,10 +4,11 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Labs.Gif;
 using Avalonia.Media.Imaging;
+using GameRandom.Scr.DI;
 
 namespace GameRandom.Service;
 
-public class MainWindowFactory
+public class MainWindowFactory : DependenceBase
 {
     public void ChangeGrid(int countImage, Grid grid)
     {

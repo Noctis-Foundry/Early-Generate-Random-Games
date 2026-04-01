@@ -11,10 +11,11 @@
 
     <ItemGroup>
         <Folder Include="Models\"/>
-        <Folder Include="Scr\Events\"/>
+        <Folder Include="Scripts\Events\" />
         <Content Include="Assets\Localization\**">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
+        <Folder Include="Scripts\MainWindowServices\" />
         <None Include="Assets\Jsons\temp_apps.json">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>

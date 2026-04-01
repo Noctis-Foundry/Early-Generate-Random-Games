@@ -22,7 +22,7 @@ namespace GameRandom.Views;
 /// <summary>
 /// Primary application window managing navigation, lobby system, and UI state.
 /// </summary>
-public partial class MainWindow : Window
+public partial class MainWindow : WindowBase<MainWindowViewModel>
 {
     [Inject] private readonly LobbyService _lobby = null!;
     [Inject] private readonly EventBus _eventBus = null!;
@@ -57,6 +57,7 @@ public partial class MainWindow : Window
             return;
 
         RegisterServiceWithMainWindowOwnerAndResolve(this);
+        InitializeDiContainer();
         
         _eventBus.Subscribe<AdminRulesUpdating>(_ =>
         {
@@ -91,6 +92,48 @@ public partial class MainWindow : Window
         _preloadRegister.RegisterNewObject("Table",
             () => _controlFactory.CreateUserControl<GameTable>(_changeUserControlAction));
     }
+
+    #region InitializeDependence
+
+    /// <summary>
+    /// Registers services with DI container and resolves dependencies.
+    /// </summary>
+    /// <param name="mainWindow">The main window instance.</param>
+    private void RegisterServiceWithMainWindowOwnerAndResolve(Window mainWindow)
+    {
+        Di.Container.RegisterSingleInstance(new ErrorService(mainWindow));
+        Di.Container.RegisterSingleInstance(new ConfirmService(mainWindow));
+        Di.Container.RegisterSingleInstance(new AdminConfirmService(mainWindow));
+        Di.Container.RegisterSingleInstance(new FinishedGameDialogService(mainWindow));
+        Di.Container.RegisterSingleInstance(new TaskWaiterWindow(mainWindow));
+    }
+
+    
+    protected sealed override void InitializeDiContainer()
+    {
+        base.InitializeDiContainer();
+
+        if (_lobby is null)
+            throw new NullReferenceException(nameof(_lobby));
+
+        if (_eventBus is null)
+            throw new NullReferenceException(nameof(_eventBus));
+
+        if (_controlFactory is null)
+            throw new NullReferenceException(nameof(_controlFactory));
+
+        if (_postgresListener is null)
+            throw new NullReferenceException(nameof(_postgresListener));
+
+        if (_mainWindowFactory is null)
+            throw new NullReferenceException(nameof(_mainWindowFactory));
+
+        if (_steamService is null)
+            throw new NullReferenceException(nameof(_steamService));
+    }
+
+    #endregion
+  
 
     /// <summary>
     /// Initializes window event subscriptions.
@@ -151,30 +194,12 @@ public partial class MainWindow : Window
 
         Dispatcher.UIThread.InvokeAsync(async () => { await _lobby.StartApp(); });
     }
-
-    /// <summary>
-    /// Registers services with DI container and resolves dependencies.
-    /// </summary>
-    /// <param name="mainWindow">The main window instance.</param>
-    private void RegisterServiceWithMainWindowOwnerAndResolve(Window mainWindow)
-    {
-        Di.Container.RegisterSingleInstance(new ErrorService(mainWindow));
-        Di.Container.RegisterSingleInstance(new ConfirmService(mainWindow));
-        Di.Container.RegisterSingleInstance(new AdminConfirmService(mainWindow));
-        Di.Container.RegisterSingleInstance(new FinishedGameDialogService(mainWindow));
-        Di.Container.RegisterSingleInstance(new TaskWaiterWindow(mainWindow));
-
-        Di.Container.ResolveFieldsFromClassInstance(this);
-
-        if (_steamService is null)
-            throw new NullReferenceException();
-    }
-
+   
     /// <summary>
     /// Updates lobby data and avatar grid on UI thread.
     /// </summary>
     /// <param name="tableCode">Database table code for validation.</param>
-    private void UpdateLobby(int tableCode)
+    private void UpdateLobby(int tableCode) //TODO create class with saving current lobby data and update lobby with event from event bus
     {
         if (DataContext is not MainWindowViewModel vm) return;
 

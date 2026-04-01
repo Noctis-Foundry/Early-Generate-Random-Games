@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using GameRandom.Scr.DI;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
 using Npgsql;
 
 namespace GameRandom.Scr.Service;
 
-public class PostgresListener : IDisposable
+public class PostgresListener : DependenceBase, IDisposable
 {
     private NpgsqlConnection _connection;
     private const string HostPath = "Host=80.93.62.153;Database=steamdata;Username=users;Password=ninokuriko212410";

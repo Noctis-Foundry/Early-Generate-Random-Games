@@ -2,11 +2,12 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Threading;
+using GameRandom.Scr.DI;
 using GameRandom.Src;
 
 namespace GameRandom.Scr.Service;
 
-public class TaskRunner
+public class TaskRunner : DependenceBase
 {
     #region Run Methods
 

@@ -2,10 +2,11 @@ using System.Threading.Tasks;
 using Avalonia.Input.Platform;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
+using GameRandom.Scr.DI;
 
 namespace GameRandom.Scr.Service;
 
-public class ImageConfirmService : IImageConfirm
+public class ImageConfirmService : DependenceBase, IImageConfirm
 {
     /// <summary>
     /// Opens a file picker dialog to select an image from the file system.

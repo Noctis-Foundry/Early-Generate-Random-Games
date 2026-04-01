@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GameRandom.Scr.Service;
 
-public class DatabaseTransitionService
+public class DatabaseTransitionService : DependenceBase
 {
     [Inject] private DatabaseService _databaseService = null!;
 

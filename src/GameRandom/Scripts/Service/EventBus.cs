@@ -5,7 +5,7 @@ using GameRandom.Scr.DI;
 
 namespace GameRandom.Scr.Events;
 
-public class EventBus
+public class EventBus : DependenceBase
 {
     private readonly Dictionary<Type, Delegate> _events = new();
 

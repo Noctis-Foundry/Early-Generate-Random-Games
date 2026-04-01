@@ -35,18 +35,8 @@ public partial class GameTable : MainWindowUserControlAbstract
         Di.Container.ResolveFieldsFromClassInstance(this);
         
         InitializeProcessingHandler();
-
-        _savedDelegate = e => 
-        {
-            Dispatcher.UIThread.InvokeAsync(() => SubscribeToUpdateTable(e.TableCode));
-        };
-        
-        if (Di.Container.TryGetInstance<PostgresListener>() is PostgresListener listener)
-        {
-            listener.Subscribe(TableEnum.GameProgress, _savedDelegate);
-        }
-        
-        Dispatcher.UIThread.InvokeAsync(() => SubscribeToUpdateTable((int)TableEnum.GameProgress));
+        InitializePostgresListener();
+        UpdateTableData();
     }
 
     /// <summary>
@@ -70,15 +60,19 @@ public partial class GameTable : MainWindowUserControlAbstract
     /// Handles table update notifications from database listener.
     /// </summary>
     /// <param name="tableCode">Code identifying which table was updated.</param>
-    private void SubscribeToUpdateTable(int tableCode)
+    private void InitializePostgresListener()
     {
-        if (tableCode != (int)TableEnum.GameProgress)
+        _savedDelegate = e => 
         {
-            Logger.Info("Failed to update table, not correctly table code");
-            return;
-        }
+            if (e.OpCode == (int)TableEnum.GameProgress)
+            
+            UpdateTableData();
+        };
         
-        UpdateTableData();
+        if (Di.Container.TryGetInstance<PostgresListener>() is PostgresListener listener)
+        {
+            listener.Subscribe(TableEnum.GameProgress, _savedDelegate);
+        }
     }
 
     /// <summary>
