@@ -1,4 +1,9 @@
 # ChangeLog
+## [2026-04-03]
+- refactor(di): restructure DI system with improved architecture
+- feat(di): integrate StartAppProvider for centralized dependency registration
+- refactor: update codebase for new DI system
+
 ## [2026-04-02]
 - refactor: rename Scr folder to Scripts for better naming convention
 
