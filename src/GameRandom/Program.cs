@@ -7,6 +7,7 @@ using GameRandom.Service;
 using GameRandom.Src;
 using GameRandom.Src.Factory;
 using System.Threading.Tasks;
+using GameRandom.DependenceInjectSystem.Providers;
 using GameRandom.Src.LobbySystem;
 using GameRandom.Src.UserData;
 
@@ -50,18 +51,8 @@ sealed class Program
 
     private static void InitializeDependenceInjection()
     {
-        Di.Container.RegisterSingleInstance(new DiFactory());
-        Di.Container.RegisterSingleInstance(new EventBus());
-        Di.Container.RegisterSingleInstance(new ObservableConverter());
-        Di.Container.RegisterSingleInstance(new DatabaseService());
-        Di.Container.RegisterSingleInstance(new DatabaseTransitionService());
-        Di.Container.RegisterSingleInstance(new MainWindowFactory());
-        Di.Container.RegisterSingleInstance(new SteamWebApi());
-        Di.Container.RegisterSingleInstance(new PostgresListener());
-        Di.Container.RegisterSingleInstance(new UserControlFactory());
-        Di.Container.RegisterSingleInstance(new SteamService());
-        Di.Container.RegisterSingleInstance(new ImageConfirmService());
-        Di.Container.RegisterSingleInstance(new TaskRunner());
+        var startProvider = new StartAppProvider();
+        startProvider.BindingInstance();
     }
     
     private static void GlobalExceptionHandler()
