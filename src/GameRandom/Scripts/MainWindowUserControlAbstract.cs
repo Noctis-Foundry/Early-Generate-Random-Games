@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
+using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.Scr.DI;
 using GameRandom.Scr.Service;
 using GameRandom.ViewModels.AdminConfirmSystem;
@@ -33,7 +34,7 @@ public abstract class MainWindowUserControlAbstract : UserControl, IDisposable
         
         SavedProcessingHandler = () =>
         {
-            if (Di.Container.GetInstance<TaskWaiterWindow>() is not TaskWaiterWindow waiter)
+            if (Di.ResolveInstance.TryGetInstance<TaskWaiterWindow>() is not TaskWaiterWindow waiter)
                 throw new NullReferenceException(nameof(TaskWaiterWindow));
 
             Dispatcher.UIThread.InvokeAsync(async () =>
@@ -68,7 +69,7 @@ public abstract class MainWindowUserControlAbstract : UserControl, IDisposable
     /// <exception cref="NullReferenceException"></exception>
     protected virtual void InitializeDiContainer()
     {
-        Di.Container.ResolveFieldsFromClassInstance(this);
+        Di.ResolveInstance.ResolveInstanceFromClass(this);
 
         if (TaskRunner == null)
             throw new NullReferenceException("Failed to inject Task Runner");

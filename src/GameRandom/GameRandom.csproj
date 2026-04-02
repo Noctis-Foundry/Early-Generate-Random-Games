@@ -15,7 +15,6 @@
         <Content Include="Assets\Localization\**">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Folder Include="Scripts\MainWindowServices\" />
         <None Include="Assets\Jsons\temp_apps.json">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>

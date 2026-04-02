@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using GameRandom.DataBaseContexts;
+using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.Scr.DI;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,7 +14,7 @@ public class DatabaseTransitionService : DependenceBase
 
     public DatabaseTransitionService()
     {
-        Di.Container.ResolveField(out _databaseService);
+        Di.ResolveInstance.ResolveFiled(out _databaseService);
 
         if (_databaseService is null)
             throw new NullReferenceException("Failed to inject dependence 'Database service'");
