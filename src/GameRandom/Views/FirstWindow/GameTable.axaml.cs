@@ -1,11 +1,18 @@
 ﻿using System;
 using Avalonia.Controls;
+using GameRandom.DependenceInjectSystem;
 using Avalonia.Interactivity;
+using GameRandom.DependenceInjectSystem;
 using Avalonia.Threading;
-using GameRandom.Scr.DI;
+using GameRandom.DependenceInjectSystem;
+using GameRandom.DependenceInjectSystem.DiSystem;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Scr.Service;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Src;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.ViewModels.AdminConfirmSystem;
+using GameRandom.DependenceInjectSystem;
 
 namespace GameRandom.Views;
 
@@ -32,7 +39,7 @@ public partial class GameTable : MainWindowUserControlAbstract
             return;
         
         DataContext = new GameTableViewModel();
-        Di.Container.ResolveFieldsFromClassInstance(this);
+        Di.ResolveInstance.ResolveInstanceFromClass(this);
         
         InitializeProcessingHandler();
         InitializePostgresListener();
@@ -69,7 +76,7 @@ public partial class GameTable : MainWindowUserControlAbstract
             UpdateTableData();
         };
         
-        if (Di.Container.TryGetInstance<PostgresListener>() is PostgresListener listener)
+        if (Di.ResolveInstance.TryGetInstance<PostgresListener>() is { } listener)
         {
             listener.Subscribe(TableEnum.GameProgress, _savedDelegate);
         }
@@ -91,7 +98,7 @@ public partial class GameTable : MainWindowUserControlAbstract
     {
         _changeWindowAction = null;
 
-        if (Di.Container.TryGetInstance<PostgresListener>() is PostgresListener listener)
+        if (Di.ResolveInstance.TryGetInstance<PostgresListener>() is { } listener)
         {
             if (_savedDelegate is not null) 
                 listener.Unsubscribe(TableEnum.GameProgress, _savedDelegate);

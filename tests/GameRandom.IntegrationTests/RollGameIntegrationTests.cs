@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using GameRandom.CoreApp;
-using GameRandom.Scr.DI;
+using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.Src;
 using GameRandom.ViewModels.AdminConfirmSystem;
 using Xunit;
@@ -19,8 +19,7 @@ public class RollGameIntegrationTests : IDisposable
         // Real app generator loading JSON
         _genApp = new GenerateRandomApps();
         
-        // Register real SteamService in DI for the VM
-        Di.Container.RegisterSingleInstance<SteamService>(new SteamService());
+        Di.BindingInstance.BindSingleton(typeof(SteamService), new SteamService());
         
         _viewModel = new RollGameViewModel(_genApp);
     }
@@ -110,7 +109,7 @@ public class RollGameIntegrationTests : IDisposable
 
     public void Dispose()
     {
-        Di.Container.Unregister<SteamService>();
+        Di.DiClearing.UnsubscribeInstance(typeof(SteamService));
         _viewModel.Dispose();
     }
 }

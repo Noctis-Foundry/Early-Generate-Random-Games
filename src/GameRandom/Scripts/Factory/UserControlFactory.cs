@@ -1,5 +1,7 @@
 using System;
-using GameRandom.Scr.DI;
+using GameRandom.DependenceInjectSystem;
+using GameRandom.DependenceInjectSystem.DiSystem;
+using GameRandom.DependenceInjectSystem;
 
 namespace GameRandom.Src.Factory;
 

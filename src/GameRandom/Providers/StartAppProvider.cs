@@ -1,16 +1,19 @@
-using DIContainer.Providers;
+using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.DependenceInjectSystem.Enums;
+using GameRandom.DependenceInjectSystem.Providers;
+using GameRandom.Scr.Events;
 using GameRandom.Scr.Service;
 using GameRandom.Service;
 using GameRandom.Src;
 using GameRandom.Src.Factory;
 
-namespace GameRandom.DependenceInjectSystem.Providers;
+namespace GameRandom.Providers;
 
 public class StartAppProvider : DiProvider
 {
     public override void BindingInstance()
     {
+        DiContainer.FromInstance<EventBus>().ScopeBind(ScopeType.Singleton);
         DiContainer.FromInstance<ObservableConverter>().ScopeBind(ScopeType.Singleton);
         DiContainer.FromInstance<DatabaseService>().ScopeBind(ScopeType.Singleton);
         DiContainer.FromInstance<DatabaseTransitionService>().ScopeBind(ScopeType.Singleton);

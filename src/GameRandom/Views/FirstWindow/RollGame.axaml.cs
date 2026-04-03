@@ -1,20 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
+using GameRandom.DependenceInjectSystem;
 using System.Threading;
+using GameRandom.DependenceInjectSystem;
 using Avalonia.Controls;
+using GameRandom.DependenceInjectSystem;
 using Avalonia.Interactivity;
+using GameRandom.DependenceInjectSystem;
 using Avalonia.Media.Imaging;
+using GameRandom.DependenceInjectSystem;
 using System.Threading.Tasks;
+using GameRandom.DependenceInjectSystem;
 using Avalonia.Labs.Gif;
+using GameRandom.DependenceInjectSystem;
 using CommunityToolkit.Mvvm.Input;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.CoreApp;
-using GameRandom.Scr.DI;
+using GameRandom.DependenceInjectSystem;
+using GameRandom.DependenceInjectSystem.DiSystem;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Scr.Service;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Service;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Src;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Src.Enums;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Src.Factory;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.ViewModels.AdminConfirmSystem;
+using GameRandom.DependenceInjectSystem;
 
 namespace GameRandom.Views;
 
@@ -48,7 +64,7 @@ public partial class RollGame : MainWindowUserControlAbstract
 
         TextBoxEventsInit();
 
-        Di.Container.ResolveFieldsFromClassInstance(this);
+        Di.ResolveInstance.ResolveInstanceFromClass(this);
 
         if (_errorService is null || _confirmDialog is null)
             throw new NullReferenceException();
@@ -136,7 +152,7 @@ public partial class RollGame : MainWindowUserControlAbstract
 
     private async Task GenerateUi()
     {
-        if (Di.Container.GetInstance<MainWindowFactory>() is not MainWindowFactory mainWindowFactory) return;
+        if (Di.ResolveInstance.TryGetInstance<MainWindowFactory>() is not MainWindowFactory mainWindowFactory) return;
         if (DataContext is not RollGameViewModel viewModel) return;
 
         for (int i = 0; i < viewModel.AppInfo.Count; i++)
@@ -164,7 +180,7 @@ public partial class RollGame : MainWindowUserControlAbstract
             GamesGrid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
         }
 
-        if (Di.Container.GetInstance<MainWindowFactory>() is MainWindowFactory mainWindowFactory)
+        if (Di.ResolveInstance.TryGetInstance<MainWindowFactory>() is MainWindowFactory mainWindowFactory)
         {
             _loadGif = mainWindowFactory.CreateAnimatedImage(GamesGrid);
         }

@@ -1,13 +1,23 @@
 using System;
+using GameRandom.DependenceInjectSystem;
 using System.Collections.Generic;
+using GameRandom.DependenceInjectSystem;
 using System.Collections.ObjectModel;
+using GameRandom.DependenceInjectSystem;
 using System.IO;
+using GameRandom.DependenceInjectSystem;
 using System.Linq;
+using GameRandom.DependenceInjectSystem;
 using System.Text.Json;
-using GameRandom.Scr.DI;
+using GameRandom.DependenceInjectSystem;
+using GameRandom.DependenceInjectSystem.DiSystem;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Scr.Service;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.ViewModels.FilterGameSystem;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.ViewModels.FilterGameSystem.Interface;
+using GameRandom.DependenceInjectSystem;
 
 namespace GameRandom.ViewModels.AdminConfirmSystem;
 
@@ -93,7 +103,7 @@ public class FilterGameViewModel : ViewModelBase
     /// </summary>
     public FilterGameViewModel()
     {
-        Di.Container.ResolveFieldsFromClassInstance(this);
+        Di.ResolveInstance.ResolveInstanceFromClass(this);
 
         if (_observableConverter == null)
             throw new NullReferenceException(nameof(_observableConverter));

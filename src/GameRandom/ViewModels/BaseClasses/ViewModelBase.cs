@@ -1,11 +1,18 @@
 ﻿using System;
 using System.Threading;
+using GameRandom.DependenceInjectSystem;
 using System.Threading.Tasks;
+using GameRandom.DependenceInjectSystem;
 using CommunityToolkit.Mvvm.ComponentModel;
-using GameRandom.Scr.DI;
+using GameRandom.DependenceInjectSystem;
+using GameRandom.DependenceInjectSystem.DiSystem;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Scr.Service;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Src;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Views;
+using GameRandom.DependenceInjectSystem;
 
 namespace GameRandom.ViewModels.AdminConfirmSystem;
 
@@ -21,7 +28,7 @@ public class ViewModelBase : ObservableObject, IDisposable
     
     protected virtual void InitializeDiContainer()
     {
-        Di.Container.ResolveFieldsFromClassInstance(this);
+        Di.ResolveInstance.ResolveInstanceFromClass(this);
 
         if (TaskRunner is null)
             throw new NullReferenceException(nameof(TaskRunner));

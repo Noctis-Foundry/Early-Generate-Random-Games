@@ -1,12 +1,21 @@
 using System;
+using GameRandom.DependenceInjectSystem;
 using System.Collections.Generic;
+using GameRandom.DependenceInjectSystem;
 using System.Collections.ObjectModel;
+using GameRandom.DependenceInjectSystem;
 using System.Threading;
+using GameRandom.DependenceInjectSystem;
 using System.Threading.Tasks;
-using GameRandom.Scr.DI;
+using GameRandom.DependenceInjectSystem;
+using GameRandom.DependenceInjectSystem.DiSystem;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Scr.Service;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Src;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Src.Enums;
+using GameRandom.DependenceInjectSystem;
 
 namespace GameRandom.ViewModels.AdminConfirmSystem;
 
@@ -27,7 +36,7 @@ public class AbstractTableWindowViewModel<TEntity> : ViewModelBase where TEntity
     
     public AbstractTableWindowViewModel()
     {
-        Di.Container.ResolveFieldsFromClassInstance(this);
+        Di.ResolveInstance.ResolveInstanceFromClass(this);
     }
 
     public virtual async Task LoadData(Func<TEntity, bool>? predicate = null)

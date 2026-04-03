@@ -1,11 +1,18 @@
 ﻿using System;
 using System.IO;
+using GameRandom.DependenceInjectSystem;
 using System.Net.Http;
+using GameRandom.DependenceInjectSystem;
 using System.Threading;
+using GameRandom.DependenceInjectSystem;
 using System.Threading.Tasks;
+using GameRandom.DependenceInjectSystem;
 using Avalonia.Media.Imaging;
-using GameRandom.Scr.DI;
+using GameRandom.DependenceInjectSystem;
+using GameRandom.DependenceInjectSystem.DiSystem;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Scr.Service;
+using GameRandom.DependenceInjectSystem;
 
 namespace GameRandom.Src;
 

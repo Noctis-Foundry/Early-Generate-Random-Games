@@ -1,9 +1,9 @@
 using System;
+using GameRandom.DependenceInjectSystem;
 using System.Threading;
 using System.Threading.Tasks;
 using GameRandom.DataBaseContexts;
 using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.Scr.DI;
 using Microsoft.EntityFrameworkCore;
 
 namespace GameRandom.Scr.Service;

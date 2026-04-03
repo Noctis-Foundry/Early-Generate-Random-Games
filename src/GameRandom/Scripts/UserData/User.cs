@@ -1,14 +1,12 @@
 using System;
-using System.Linq;
 using GameRandom.DataBaseContexts;
 using System.Threading.Tasks;
 using Avalonia.Threading;
+using GameRandom.DependenceInjectSystem;
+using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.Events;
-using GameRandom.Scr.DI;
 using GameRandom.Scr.Events;
 using GameRandom.Scr.Service;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Steamworks;
 
 namespace GameRandom.Src.UserData;
@@ -51,7 +49,7 @@ public class User
 
     private void InitializeDependence()
     {
-        Di.Container.ResolveFieldsFromClassInstance(this);
+        Di.ResolveInstance.ResolveInstanceFromClass(this);
 
         if (_databaseService is null)
             throw new NullReferenceException("Database service is null");
@@ -75,7 +73,7 @@ public class User
 
     private async Task UpdateAdminRules()
     {
-        if (Di.Container.GetInstance<EventBus>() is not EventBus bus)
+        if (Di.ResolveInstance.TryGetInstance<EventBus>() is not { } bus)
             throw new NullReferenceException("Event bus is null");
         
         var admin = await _databaseService.GetFirstOrDefaultAsync<Admins>(e => e.SteamId == GetUserId());

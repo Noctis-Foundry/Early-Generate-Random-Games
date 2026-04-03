@@ -7,7 +7,7 @@ using Avalonia.Logging;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
 using GameRandom.DataBaseContexts;
-using GameRandom.Scr.DI;
+using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.Scr.Service;
 using GameRandom.Src;
 using GameRandom.ViewModels.AdminConfirmSystem;
@@ -96,7 +96,7 @@ public sealed partial class ConfirmFinishGame : WindowBase<ConfirmFinishGameView
 
     private ImageConfirmService GetImageConfirm()
     {
-        if (Di.Container.GetInstance<ImageConfirmService>() is not ImageConfirmService imageConfirmService)
+        if (Di.ResolveInstance.TryGetInstance<ImageConfirmService>() is not ImageConfirmService imageConfirmService)
             throw new NullReferenceException(nameof(ImageConfirmService));
 
         return imageConfirmService;

@@ -1,13 +1,23 @@
 using System;
+using GameRandom.DependenceInjectSystem;
 using System.Diagnostics;
+using GameRandom.DependenceInjectSystem;
 using System.Threading.Tasks;
+using GameRandom.DependenceInjectSystem;
 using Avalonia.Controls;
+using GameRandom.DependenceInjectSystem;
 using Avalonia.Interactivity;
+using GameRandom.DependenceInjectSystem;
 using Avalonia.Threading;
-using GameRandom.Scr.DI;
+using GameRandom.DependenceInjectSystem;
+using GameRandom.DependenceInjectSystem.DiSystem;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Scr.Service;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Src;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.ViewModels.AdminConfirmSystem;
+using GameRandom.DependenceInjectSystem;
 
 namespace GameRandom.Views;
 

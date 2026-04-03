@@ -1,8 +1,8 @@
 using Avalonia.Controls;
-using DIContainer.Providers;
+using GameRandom.DependenceInjectSystem.Providers;
 using GameRandom.Src;
 
-namespace GameRandom.DependenceInjectSystem.Providers;
+namespace GameRandom.Providers;
 
 public class AppInitialize(Window mainWindow) : DiProvider
 {

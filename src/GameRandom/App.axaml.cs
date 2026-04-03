@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
-using GameRandom.Scr.DI;
+using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.Scr.Service;
 using GameRandom.Src;
 using GameRandom.Src.Enums;
@@ -32,7 +32,7 @@ public partial class App : Application
             
             Task.Run(async () => await User.GetInstance().InitializeUser()).GetAwaiter().GetResult();
         
-            Di.Container.RegisterSingleInstance(new LobbyService());
+            Di.BindingInstance.BindSingleton(typeof(LobbyService), new LobbyService());
         }
         
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -46,9 +46,6 @@ public partial class App : Application
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
             };
         }
-        
-        if (!Design.IsDesignMode) 
-            Di.Container.InjectDependenciesAcrossAssembly();
         
         base.OnFrameworkInitializationCompleted();
     }

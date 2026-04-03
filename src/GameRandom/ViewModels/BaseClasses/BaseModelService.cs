@@ -1,7 +1,11 @@
 using System;
-using GameRandom.Scr.DI;
+using GameRandom.DependenceInjectSystem;
+using GameRandom.DependenceInjectSystem.DiSystem;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Scr.Service;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Src;
+using GameRandom.DependenceInjectSystem;
 
 namespace GameRandom.ViewModels.AdminConfirmSystem;
 
@@ -26,7 +30,7 @@ public class BaseModelService : IDisposable
     /// <exception cref="NullReferenceException"></exception>
     private void InitializeDiContainer()
     {
-        Di.Container.ResolveFieldsFromClassInstance(this);
+        Di.ResolveInstance.ResolveInstanceFromClass(this);
 
         if (!IsDataNotNull(ErrorService))
             throw new NullReferenceException(nameof(ErrorService));

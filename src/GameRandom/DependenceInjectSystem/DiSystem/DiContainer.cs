@@ -4,17 +4,16 @@ using System.Linq;
 using System.Reflection;
 using DIContainer.DiFactory;
 using DIContainer.DiSystem.Services;
-using DIContainer.Providers;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.DependenceInjectSystem.Binders;
 using GameRandom.DependenceInjectSystem.DiFactory;
 using GameRandom.DependenceInjectSystem.DiInterfaces;
 using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.DependenceInjectSystem.Enums;
-using GameRandom.Scr.DI;
 
 namespace DIContainer.DiSystem;
 
-public class DiContainer : IBindingDiContainer, IFinalizedBinding, IResolveDependence
+public class DiContainer : IBindingDiContainer, IFinalizedBinding, IResolveDependence, IDiClearing
 {
     private Dictionary<Type, DependenceInfo> _singleInstances = new();
     private Dictionary<Type, Func<object>?> _manyInstance = new();
@@ -79,8 +78,7 @@ public class DiContainer : IBindingDiContainer, IFinalizedBinding, IResolveDepen
             var dependence = FindDependence(field.FieldType);
             
             if (dependence is null)
-                throw new ArgumentException(
-                    $"Failed to resolve instance from class instance in Di container. Not founded inject instance {field.FieldType}");
+                continue;
             
             field.SetValue(classInstance, dependence);
         }
@@ -151,5 +149,27 @@ public class DiContainer : IBindingDiContainer, IFinalizedBinding, IResolveDepen
     public void FinalizeBinding(BindingInfo bindingInfo)
     {
         _finalizeBindingService.FinalizeBinding(bindingInfo, ref _singleInstances, ref _manyInstance);
+    }
+
+    private void UnregisterInstance(Type type)
+    {
+        _singleInstances.Remove(type);
+    }
+
+    public void UnsubscribeAll()
+    {
+        _singleInstances.Clear();
+        _manyInstance.Clear();
+    }
+
+    public void ClearAll()
+    {
+        _singleInstances.Clear();
+        _manyInstance.Clear();
+    }
+
+    public void UnsubscribeInstance(Type type)
+    {
+        _singleInstances.Remove(type);
     }
 }

@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
 using GameRandom.DataBaseContexts;
-using GameRandom.Scr.DI;
+using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.Scr.Service;
 using GameRandom.Src;
 using GameRandom.Src.UserData;
@@ -26,7 +26,7 @@ public class RegistrationCommandFactory
     {
         return new AsyncRelayCommand(async () =>
         {
-            if (Di.Container.GetInstance<ErrorService>() is not ErrorService errorService)
+            if (Di.ResolveInstance.TryGetInstance<ErrorService>() is not ErrorService errorService)
                 throw new NullReferenceException("Failed to inject error service from DI");
             
             if (!await actionSemaphore.WaitAsync(0))
@@ -45,7 +45,7 @@ public class RegistrationCommandFactory
                 if (!User.GetInstance().IsTopLevelAdmin())
                     return;
 
-                if (Di.Container.TryGetInstance<DatabaseService>() is DatabaseService databaseService)
+                if (Di.ResolveInstance.TryGetInstance<DatabaseService>() is { } databaseService)
                 {
                     await UpdateLobby(userInfo, databaseService);
 
@@ -78,7 +78,7 @@ public class RegistrationCommandFactory
     {
         return new AsyncRelayCommand(async () =>
         {
-            if (Di.Container.GetInstance<ErrorService>() is not ErrorService errorService)
+            if (Di.ResolveInstance.TryGetInstance<ErrorService>() is not ErrorService errorService)
                 throw new NullReferenceException("Failed to inject error service from DI");
             
             if (!User.GetInstance().IsTopLevelAdmin())
@@ -94,7 +94,7 @@ public class RegistrationCommandFactory
 
             try
             {
-                if (Di.Container.TryGetInstance<DatabaseService>() is not DatabaseService databaseService)
+                if (Di.ResolveInstance.TryGetInstance<DatabaseService>() is not { } databaseService)
                     throw new NullReferenceException("Failed resolve database service");
 
                 await DeleteAdminRules(databaseService, userInfo);

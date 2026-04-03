@@ -4,7 +4,7 @@ using Avalonia.Data.Converters;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.Scr.DI;
+using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.Src;
 
 namespace GameRandom.AvaloniaConverters;

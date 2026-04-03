@@ -1,8 +1,13 @@
 using System.Threading.Tasks;
+using GameRandom.DependenceInjectSystem;
 using Avalonia.Input.Platform;
+using GameRandom.DependenceInjectSystem;
 using Avalonia.Media.Imaging;
+using GameRandom.DependenceInjectSystem;
 using Avalonia.Platform.Storage;
-using GameRandom.Scr.DI;
+using GameRandom.DependenceInjectSystem;
+using GameRandom.DependenceInjectSystem.DiSystem;
+using GameRandom.DependenceInjectSystem;
 
 namespace GameRandom.Scr.Service;
 

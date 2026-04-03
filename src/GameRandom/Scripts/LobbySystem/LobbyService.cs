@@ -1,14 +1,25 @@
 using System;
+using GameRandom.DependenceInjectSystem;
 using System.Collections.Generic;
+using GameRandom.DependenceInjectSystem;
 using System.Linq;
+using GameRandom.DependenceInjectSystem;
 using System.Threading.Tasks;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.DataBaseContexts;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Events;
-using GameRandom.Scr.DI;
+using GameRandom.DependenceInjectSystem;
+using GameRandom.DependenceInjectSystem.DiSystem;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Scr.Events;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Scr.Service;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Src.Enums;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Src.UserData;
+using GameRandom.DependenceInjectSystem;
 
 namespace GameRandom.Src.LobbySystem;
 

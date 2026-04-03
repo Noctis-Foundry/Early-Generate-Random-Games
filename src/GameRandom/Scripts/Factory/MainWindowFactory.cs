@@ -1,10 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using GameRandom.DependenceInjectSystem;
 using Avalonia;
+using GameRandom.DependenceInjectSystem;
 using Avalonia.Controls;
+using GameRandom.DependenceInjectSystem;
 using Avalonia.Labs.Gif;
+using GameRandom.DependenceInjectSystem;
 using Avalonia.Media.Imaging;
-using GameRandom.Scr.DI;
+using GameRandom.DependenceInjectSystem;
+using GameRandom.DependenceInjectSystem.DiSystem;
+using GameRandom.DependenceInjectSystem;
 
 namespace GameRandom.Service;
 

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using DIContainer.Providers;
 using GameRandom.DependenceInjectSystem.Binders;
 using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.DependenceInjectSystem.Enums;

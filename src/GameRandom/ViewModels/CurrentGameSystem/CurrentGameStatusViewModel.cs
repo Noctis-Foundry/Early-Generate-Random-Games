@@ -1,21 +1,39 @@
 using System;
+using GameRandom.DependenceInjectSystem;
 using System.Linq;
+using GameRandom.DependenceInjectSystem;
 using System.Threading;
+using GameRandom.DependenceInjectSystem;
 using System.Timers;
+using GameRandom.DependenceInjectSystem;
 using Avalonia.Controls;
-using GameRandom.Scr.DI;
+using GameRandom.DependenceInjectSystem;
+using GameRandom.DependenceInjectSystem.DiSystem;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Scr.Service;
+using GameRandom.DependenceInjectSystem;
 using System.Threading.Tasks;
+using GameRandom.DependenceInjectSystem;
 using Avalonia.Media.Imaging;
+using GameRandom.DependenceInjectSystem;
 using Avalonia.Threading;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.DataBaseContexts;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Service;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Src;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Src.Enums;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Src.UserData;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.ViewModels.CurrentGameSystem;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.ViewModels.CurrentGameSystem.Interface;
+using GameRandom.DependenceInjectSystem;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using GameRandom.DependenceInjectSystem;
 
 namespace GameRandom.ViewModels.AdminConfirmSystem;
 
@@ -192,7 +210,7 @@ public sealed class CurrentGameStatusViewModel : ViewModelBase
             {
                 Dispatcher.UIThread.InvokeAsync(async () =>
                 {
-                    if (Di.Container.GetInstance<DatabaseService>() is not DatabaseService databaseService)
+                    if (Di.ResolveInstance.TryGetInstance<DatabaseService>() is not DatabaseService databaseService)
                         throw new NullReferenceException("Failed to inject database dependence");
 
                     CancellationTokenSource cts =

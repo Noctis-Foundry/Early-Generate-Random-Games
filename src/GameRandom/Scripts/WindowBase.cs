@@ -1,7 +1,9 @@
 using System;
 using Avalonia.Controls;
 using Avalonia.Threading;
-using GameRandom.Scr.DI;
+using GameRandom.DependenceInjectSystem;
+using GameRandom.DependenceInjectSystem.DiSystem;
+using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.Scr.Events;
 using GameRandom.Scr.Service;
 using GameRandom.Src.Enums;
@@ -68,7 +70,7 @@ public abstract class WindowBase<TViewModel> : Window, IDisposable where TViewMo
         
         SavedProcessingHandler = () =>
         {
-            if (Di.Container.GetInstance<TaskWaiterWindow>() is not TaskWaiterWindow waiter)
+            if (Di.ResolveInstance.TryGetInstance<TaskWaiterWindow>() is not { } waiter)
                 throw new NullReferenceException(nameof(TaskWaiterWindow));
 
             Dispatcher.UIThread.InvokeAsync(async () =>
@@ -89,7 +91,7 @@ public abstract class WindowBase<TViewModel> : Window, IDisposable where TViewMo
     /// <param name="message">Message text to display.</param>
     protected void ShowMessage(string message)
     {
-        if (Di.Container.GetInstance<ErrorService>() is not ErrorService messageWindow)
+        if (Di.ResolveInstance.TryGetInstance<ErrorService>() is not { } messageWindow)
             throw new NullReferenceException(nameof(ErrorService));
         
         messageWindow.ShowWindow(new ErrorStruct{ErrorMessage = message, ErrorType = ErrorEnum.Message});
@@ -102,7 +104,7 @@ public abstract class WindowBase<TViewModel> : Window, IDisposable where TViewMo
     /// <param name="task">Action to execute when event is received.</param>
     protected void InitializeEventBusListener<TEvent>(Action task)
     {
-        if (Di.Container.GetInstance<EventBus>() is not EventBus eventBus)
+        if (Di.ResolveInstance.TryGetInstance<EventBus>() is not { } eventBus)
             throw new NullReferenceException(nameof(EventBus));
         
         eventBus.Subscribe<TEvent>(_ =>
@@ -146,7 +148,7 @@ public abstract class WindowBase<TViewModel> : Window, IDisposable where TViewMo
     /// <exception cref="NullReferenceException"></exception>
     protected virtual void InitializeDiContainer()
     {
-        Di.Container.ResolveFieldsFromClassInstance(this);
+        Di.ResolveInstance.ResolveInstanceFromClass(this);
 
         if (TaskRunner == null)
             throw new NullReferenceException("Failed to inject Task Runner");
