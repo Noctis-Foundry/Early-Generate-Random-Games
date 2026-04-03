@@ -1,21 +1,40 @@
 using System;
+using GameRandom.DependenceInjectSystem;
 using System.Threading;
+using GameRandom.DependenceInjectSystem;
 using System.Threading.Tasks;
+using GameRandom.DependenceInjectSystem;
 using Avalonia.Controls;
+using GameRandom.DependenceInjectSystem;
 using Avalonia.Threading;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.DataBaseContexts;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Events;
-using GameRandom.Scr.DI;
+using GameRandom.DependenceInjectSystem;
+using GameRandom.DependenceInjectSystem.DiSystem;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Scr.Events;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Scr.Service;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Service;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Src;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Src.Enums;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Src.Factory;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Src.LobbySystem;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Src.UserData;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.ViewModels.AdminConfirmSystem;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Views.LobbyModalWindow;
+using GameRandom.DependenceInjectSystem;
+using GameRandom.Providers;
 
 namespace GameRandom.Views;
 
@@ -55,8 +74,7 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>
 
         if (Design.IsDesignMode)
             return;
-
-        RegisterServiceWithMainWindowOwnerAndResolve(this);
+        
         InitializeDiContainer();
         
         _eventBus.Subscribe<AdminRulesUpdating>(_ =>
@@ -95,22 +113,12 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>
 
     #region InitializeDependence
 
-    /// <summary>
-    /// Registers services with DI container and resolves dependencies.
-    /// </summary>
-    /// <param name="mainWindow">The main window instance.</param>
-    private void RegisterServiceWithMainWindowOwnerAndResolve(Window mainWindow)
-    {
-        Di.Container.RegisterSingleInstance(new ErrorService(mainWindow));
-        Di.Container.RegisterSingleInstance(new ConfirmService(mainWindow));
-        Di.Container.RegisterSingleInstance(new AdminConfirmService(mainWindow));
-        Di.Container.RegisterSingleInstance(new FinishedGameDialogService(mainWindow));
-        Di.Container.RegisterSingleInstance(new TaskWaiterWindow(mainWindow));
-    }
-
     
     protected sealed override void InitializeDiContainer()
     {
+        var startAppProvider = new AppInitialize(this);
+        startAppProvider.BindingInstance();
+        
         base.InitializeDiContainer();
 
         if (_lobby is null)

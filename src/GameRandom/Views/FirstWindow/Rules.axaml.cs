@@ -6,7 +6,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
-using GameRandom.Scr.DI;
+using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.Src;
 using GameRandom.Src.Enums;
 using GameRandom.ViewModels.AdminConfirmSystem;

@@ -7,7 +7,7 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using GameRandom.Events;
-using GameRandom.Scr.DI;
+using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.Scr.Events;
 using GameRandom.Scr.Service;
 using GameRandom.Src;

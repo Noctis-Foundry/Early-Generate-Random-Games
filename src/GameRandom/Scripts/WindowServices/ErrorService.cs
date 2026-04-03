@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
-using GameRandom.Scr.DI;
+using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.Scr.Service;
 using GameRandom.Src.Enums;
 using GameRandom.Views;

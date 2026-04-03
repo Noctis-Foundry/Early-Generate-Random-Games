@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
 using GameRandom.DataBaseContexts;
-using GameRandom.Scr.DI;
+using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.Scr.Service;
 using GameRandom.Src;
 using GameRandom.ViewModels.AdminConfirmSystem;

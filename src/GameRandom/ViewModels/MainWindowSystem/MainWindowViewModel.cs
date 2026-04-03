@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using GameRandom.DataBaseContexts;
-using GameRandom.Scr.DI;
+using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.Scr.Service;
 using GameRandom.Src;
 using GameRandom.Src.Enums;

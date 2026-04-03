@@ -1,9 +1,15 @@
 using System;
+using GameRandom.DependenceInjectSystem;
 using System.Threading;
+using GameRandom.DependenceInjectSystem;
 using System.Threading.Tasks;
+using GameRandom.DependenceInjectSystem;
 using Avalonia.Threading;
-using GameRandom.Scr.DI;
+using GameRandom.DependenceInjectSystem;
+using GameRandom.DependenceInjectSystem.DiSystem;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Src;
+using GameRandom.DependenceInjectSystem;
 
 namespace GameRandom.Scr.Service;
 

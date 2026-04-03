@@ -1,7 +1,7 @@
 using System;
 using CommunityToolkit.Mvvm.Input;
 using GameRandom.DataBaseContexts;
-using GameRandom.Scr.DI;
+using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.Src;
 using GameRandom.ViewModels.AdminConfirmSystem;
 
@@ -13,7 +13,7 @@ public class AdminPanelFactory
     {
         RelayCommand openConfirmWindow = new RelayCommand(() =>
         {
-            if (Di.Container.GetInstance<AdminConfirmService>() is not AdminConfirmService confirmService)
+            if (Di.ResolveInstance.TryGetInstance<AdminConfirmService>() is not AdminConfirmService confirmService)
                 throw new NullReferenceException("Injecting is not successful");
             
             confirmService.ShowWindow(finishedGame);

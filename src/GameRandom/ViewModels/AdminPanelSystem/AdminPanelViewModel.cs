@@ -1,18 +1,33 @@
 using System;
+using GameRandom.DependenceInjectSystem;
 using System.Collections.Generic;
+using GameRandom.DependenceInjectSystem;
 using System.Collections.ObjectModel;
+using GameRandom.DependenceInjectSystem;
 using System.Threading;
+using GameRandom.DependenceInjectSystem;
 using System.Threading.Tasks;
+using GameRandom.DependenceInjectSystem;
 using Avalonia.Threading;
+using GameRandom.DependenceInjectSystem;
 using CommunityToolkit.Mvvm.Input;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Events;
-using GameRandom.Scr.DI;
+using GameRandom.DependenceInjectSystem;
+using GameRandom.DependenceInjectSystem.DiSystem;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Scr.Events;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Scr.Service;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Src;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Src.UserData;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.ViewModels.AdminPanelSystem;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.ViewModels.AdminSystem.Interface;
+using GameRandom.DependenceInjectSystem;
 
 namespace GameRandom.ViewModels.AdminConfirmSystem;
 
@@ -124,7 +139,7 @@ public sealed class AdminPanelViewModel : ViewModelBase
 
         OpenWithQueue = new AsyncRelayCommand(async () =>
         {
-            if (Di.Container.GetInstance<AdminConfirmService>() is not AdminConfirmService adminConfirmService)
+            if (Di.ResolveInstance.TryGetInstance<AdminConfirmService>() is not AdminConfirmService adminConfirmService)
                 throw new NullReferenceException(nameof(adminConfirmService));
 
             await adminConfirmService.ShowWindowAsync(GameList);

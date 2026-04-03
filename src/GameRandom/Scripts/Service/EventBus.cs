@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using GameRandom.DependenceInjectSystem;
 using System.Threading.Tasks;
-using GameRandom.Scr.DI;
+using GameRandom.DependenceInjectSystem;
+using GameRandom.DependenceInjectSystem.DiSystem;
+using GameRandom.DependenceInjectSystem;
 
 namespace GameRandom.Scr.Events;
 

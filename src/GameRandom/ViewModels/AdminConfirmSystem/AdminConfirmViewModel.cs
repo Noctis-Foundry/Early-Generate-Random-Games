@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
 using GameRandom.DataBaseContexts;
-using GameRandom.Scr.DI;
+using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.Scr.Service;
 using GameRandom.Src;
 using GameRandom.Src.Enums;
@@ -69,7 +69,7 @@ public sealed class AdminConfirmViewModel : ViewModelBase
     {
         if (elementData.GameProgresses is null) return;
         
-        if (Di.Container.GetInstance<DatabaseService>() is not DatabaseService databaseService)
+        if (Di.ResolveInstance.TryGetInstance<DatabaseService>() is not DatabaseService databaseService)
             throw new NullReferenceException(nameof(databaseService));
 
         if (databaseService is null)

@@ -1,10 +1,16 @@
 ﻿using System;
 using Avalonia.Controls;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Events;
-using GameRandom.Scr.DI;
+using GameRandom.DependenceInjectSystem;
+using GameRandom.DependenceInjectSystem.DiSystem;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Scr.Events;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Src.LobbySystem;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Src.UserData;
+using GameRandom.DependenceInjectSystem;
 
 namespace GameRandom.ViewModels.AdminConfirmSystem;
 

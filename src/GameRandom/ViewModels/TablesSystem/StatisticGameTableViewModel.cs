@@ -1,5 +1,5 @@
 using System.Collections.ObjectModel;
-using GameRandom.Scr.DI;
+using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.Scr.Service;
 using GameRandom.Src;
 using System.Threading.Tasks;

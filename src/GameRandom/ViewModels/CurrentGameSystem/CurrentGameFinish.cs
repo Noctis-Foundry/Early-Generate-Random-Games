@@ -1,12 +1,21 @@
 using System;
+using GameRandom.DependenceInjectSystem;
 using System.Threading;
+using GameRandom.DependenceInjectSystem;
 using System.Threading.Tasks;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.DataBaseContexts;
-using GameRandom.Scr.DI;
+using GameRandom.DependenceInjectSystem;
+using GameRandom.DependenceInjectSystem.DiSystem;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Src;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.Src.UserData;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.ViewModels.AdminConfirmSystem;
+using GameRandom.DependenceInjectSystem;
 using GameRandom.ViewModels.CurrentGameSystem.Interface;
+using GameRandom.DependenceInjectSystem;
 
 namespace GameRandom.ViewModels.CurrentGameSystem;
 

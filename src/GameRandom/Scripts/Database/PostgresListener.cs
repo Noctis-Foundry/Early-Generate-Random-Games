@@ -1,10 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using GameRandom.DependenceInjectSystem;
 using System.Threading.Tasks;
-using GameRandom.Scr.DI;
+using GameRandom.DependenceInjectSystem;
+using GameRandom.DependenceInjectSystem.DiSystem;
+using GameRandom.DependenceInjectSystem;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using GameRandom.DependenceInjectSystem;
 using Microsoft.Extensions.Logging;
+using GameRandom.DependenceInjectSystem;
 using Npgsql;
+using GameRandom.DependenceInjectSystem;
 
 namespace GameRandom.Scr.Service;
 
