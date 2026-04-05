@@ -1,4 +1,12 @@
 # ChangeLog
+## [2026-04-04]
+- perf(rollgame): optimize game generation with JsonDocument instead of List deserialization
+- feat(di): add BindInstance method for binding existing instances to contracts
+- refactor(di): integrate IErrorService interface contract
+- feat(ui): add IsImprove visualization in AdminPanel
+- refactor: reorganize files and add ProfileViewModel
+- refactor: update using statements and minor architectural improvements
+
 ## [2026-04-03]
 - refactor(di): restructure DI system with improved architecture
 - feat(di): integrate StartAppProvider for centralized dependency registration
