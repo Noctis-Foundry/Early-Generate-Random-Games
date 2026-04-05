@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using GameRandom.CoreApp;
 using GameRandom.DependenceInjectSystem.DiSystem;
+using GameRandom.Scripts.RollGameSystem.GenerateGames;
 using GameRandom.Src;
 using GameRandom.ViewModels.AdminConfirmSystem;
 using Xunit;

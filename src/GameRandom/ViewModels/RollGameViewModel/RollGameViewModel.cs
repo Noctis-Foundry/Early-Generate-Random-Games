@@ -12,11 +12,14 @@ using GameRandom.DependenceInjectSystem;
 using System.Threading.Tasks;
 using GameRandom.DependenceInjectSystem;
 using Avalonia.Controls;
+using Avalonia.Threading;
 using GameRandom.DependenceInjectSystem;
 using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.DependenceInjectSystem;
 using GameRandom.Scr.Service;
 using GameRandom.DependenceInjectSystem;
+using GameRandom.Scripts.RollGameSystem.GenerateGames;
+using GameRandom.ViewModels.BaseClasses;
 
 namespace GameRandom.ViewModels.AdminConfirmSystem;
 
@@ -30,7 +33,7 @@ public sealed class RollGameViewModel : ViewModelBase
     /// <summary>
     /// Interface for generating random applications.
     /// </summary>
-    private IGenApp? _generateRandomApps;
+    private IGenApp _generateRandomApps;
     
     /// <summary>
     /// Maximum number of iterations to find suitable games.
@@ -99,9 +102,17 @@ public sealed class RollGameViewModel : ViewModelBase
     /// <param name="cancellationToken">Operation cancellation token.</param>
     public async Task GenerateGames(int countGames, FilterOutputData? filteredGamesData, CancellationToken cancellationToken = default)
     {
-        if (_generateRandomApps is null || !_generateRandomApps.IsInitialized)
+        if (_generateRandomApps is null)
+        {
+            ErrorService.ShowWindow("List with games not loaded, wait..");
             return;
+        }
 
+        await _generateRandomApps.StartGenerateApp();
+
+        if (!_generateRandomApps.ListIsLoad())
+            throw new NullReferenceException("list with games is null");
+        
         ClearItems();
 
         try
@@ -111,7 +122,7 @@ public sealed class RollGameViewModel : ViewModelBase
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var appInfo = await GenerateAppInfo(filteredGamesData);
-                
+
                 if (appInfo is not null)
                     _appInfo.Add(appInfo);
             }
@@ -119,6 +130,10 @@ public sealed class RollGameViewModel : ViewModelBase
         catch (Exception e)
         {
             Logger.Error("Failed to generate games: " + e.Message);
+        }
+        finally
+        {
+            _generateRandomApps.EndGeneration();
         }
     }
 
@@ -182,7 +197,7 @@ public sealed class RollGameViewModel : ViewModelBase
     {
         ClearItems();
         
-        //TODO _generateRandomApps.Dispose()
-        _generateRandomApps = null;
+        _generateRandomApps?.Dispose();
+        _generateRandomApps = null!;
     }
 }

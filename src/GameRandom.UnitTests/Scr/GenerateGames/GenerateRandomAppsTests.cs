@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using GameRandom.CoreApp;
+using GameRandom.Scripts.RollGameSystem.GenerateGames;
 using Xunit;
 
 namespace GameRandom.UnitTests.Scr.GenerateGames;
