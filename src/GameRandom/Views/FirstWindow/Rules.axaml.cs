@@ -10,6 +10,7 @@ using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.Src;
 using GameRandom.Src.Enums;
 using GameRandom.ViewModels.AdminConfirmSystem;
+using GameRandom.ViewModels.BaseClasses;
 
 namespace GameRandom.Views;
 

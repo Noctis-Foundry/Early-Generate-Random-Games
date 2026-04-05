@@ -24,6 +24,7 @@ using GameRandom.ViewModels.AdminConfirmSystem;
 using GameRandom.DependenceInjectSystem;
 using GameRandom.ViewModels.ChooseGameSystem.Interface;
 using GameRandom.DependenceInjectSystem;
+using GameRandom.Scripts.WindowServices.ErrorServiceSystem;
 
 namespace GameRandom.ViewModels.ChooseGameSystem;
 

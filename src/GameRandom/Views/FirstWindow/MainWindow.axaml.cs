@@ -116,7 +116,7 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>
     
     protected sealed override void InitializeDiContainer()
     {
-        var startAppProvider = new AppInitialize(this);
+        var startAppProvider = new AppInitializeProvider(this);
         startAppProvider.BindingInstance();
         
         base.InitializeDiContainer();
@@ -141,8 +141,7 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>
     }
 
     #endregion
-  
-
+    
     /// <summary>
     /// Initializes window event subscriptions.
     /// </summary>

@@ -20,8 +20,18 @@ public sealed partial class FilterGameWindow : WindowBase<FilterGameViewModel>
     
     private void CloseWindow(object? sender, RoutedEventArgs e)
     {
-        Dispose();
         Close();
+    }
+
+    protected override void OnClosing(WindowClosingEventArgs e)
+    {
+        if (IsClosing)
+            return;
+        
+        SetInactive();
+        Hide();
+        
+        e.Cancel = true;
     }
 
     public FilterOutputData? GetFilters()

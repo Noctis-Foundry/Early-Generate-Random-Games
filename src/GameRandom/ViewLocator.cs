@@ -2,6 +2,7 @@ using System;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using GameRandom.ViewModels.AdminConfirmSystem;
+using GameRandom.ViewModels.BaseClasses;
 
 namespace GameRandom;
 

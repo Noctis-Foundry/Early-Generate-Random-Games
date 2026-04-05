@@ -113,4 +113,9 @@ public class AvaloniaService
     {
         _lazyAvalonia = new(() => new AvaloniaService());
     }
+
+    public Bitmap? DefaultUserImage()
+    {
+        return CreateBitmapFromPath("Assets/steamAwatarWithNight.jpg");
+    }
 }

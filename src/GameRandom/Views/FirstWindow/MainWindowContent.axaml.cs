@@ -16,7 +16,7 @@ public partial class MainWindowContent : MainWindowUserControlAbstract
 
     public override void Close(object? sender, RoutedEventArgs e)
     {
-        
+        //Empty
     }
 
     private void GoToRollContent(object? sender, RoutedEventArgs e)

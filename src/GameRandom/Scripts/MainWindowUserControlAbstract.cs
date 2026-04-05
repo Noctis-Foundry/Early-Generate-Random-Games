@@ -8,6 +8,7 @@ using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.Scr.Service;
 using GameRandom.ViewModels.AdminConfirmSystem;
+using GameRandom.ViewModels.BaseClasses;
 
 namespace GameRandom.Src;
 

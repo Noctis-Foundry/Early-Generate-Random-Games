@@ -1,7 +1,8 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:GameRandom.ViewModels.AdminConfirmSystem"
+        xmlns:vm="using:GameRandom.ViewModels"
         x:Class="GameRandom.Views.ProfileContent"
+        x:DataType="vm:ProfileViewModel"
         Width="1000" Height="460"
         MinWidth="1000" MinHeight="460"
         MaxWidth="1000" MaxHeight="460">
@@ -44,7 +45,7 @@
                 </Border.Background>
                 <Grid RowDefinitions="Auto, Auto" RowSpacing="15" VerticalAlignment="Center" Margin="10,0,0,0">
                     <Border Width="140" Height="140" Classes="AvatarBorder" ClipToBounds="True">
-                        <Image Source="avares://GameRandom/Assets/steamAwatarWithNight.jpg"
+                        <Image Source="{Binding ProfileImage}"
                                x:Name="ProfileImage" Stretch="UniformToFill">
                             <Image.OpacityMask>
                                 <VisualBrush>
@@ -57,7 +58,7 @@
                         </Image>
                     </Border>
                     
-                    <TextBlock Grid.Row="1" Text="Ar0cka" x:Name="ProfileName"
+                    <TextBlock Grid.Row="1" Text="{Binding PlayerNickname}" x:Name="ProfileName"
                                HorizontalAlignment="Center" Classes="ProfileNickname"></TextBlock>
                 </Grid>
             </Border>

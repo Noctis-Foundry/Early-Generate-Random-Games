@@ -22,6 +22,11 @@ public class SteamService : DependenceBase
     {
         using var imageClient = new HttpClient();
 
+        if (string.IsNullOrEmpty(imageUrl))
+            throw new NullReferenceException("Failed to get image url");
+        
+        Logger.Debug($"Download image url = {imageUrl}");
+        
         try
         {
             var response = await imageClient.GetAsync(imageUrl, cancellationToken);

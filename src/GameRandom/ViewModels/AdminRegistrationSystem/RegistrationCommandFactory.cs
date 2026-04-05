@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using GameRandom.DataBaseContexts;
 using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.Scr.Service;
+using GameRandom.Scripts.WindowServices.ErrorServiceSystem;
 using GameRandom.Src;
 using GameRandom.Src.UserData;
 

@@ -6,6 +6,7 @@ using GameRandom.Scr.Service;
 using GameRandom.DependenceInjectSystem;
 using GameRandom.Src;
 using GameRandom.DependenceInjectSystem;
+using GameRandom.Scripts.WindowServices.ErrorServiceSystem;
 
 namespace GameRandom.ViewModels.AdminConfirmSystem;
 

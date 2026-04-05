@@ -20,6 +20,7 @@ using GameRandom.Src.SteamsContexts;
 using GameRandom.DependenceInjectSystem;
 using GameRandom.Src.UserData;
 using GameRandom.DependenceInjectSystem;
+using GameRandom.Scripts.WindowServices.ErrorServiceSystem;
 
 namespace GameRandom.ViewModels.AdminConfirmSystem;
 

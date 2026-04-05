@@ -4,6 +4,7 @@ using Avalonia.Interactivity;
 using Avalonia.Threading;
 using GameRandom.Service;
 using GameRandom.Src;
+using GameRandom.ViewModels;
 using GameRandom.ViewModels.AdminConfirmSystem;
 using Steamworks;
 
@@ -22,12 +23,12 @@ public partial class ProfileContent : MainWindowUserControlAbstract
         {
             StatisticContent.Content = new StatisticControl();
         }
+        
+        DataContext = new ProfileViewModel();
     }
 
     public override void Open()
     {
-        InitProfileAvatar();
-        
         _statisticContent = new StatisticControl();
         _statisticContent.Open();
         
@@ -40,24 +41,15 @@ public partial class ProfileContent : MainWindowUserControlAbstract
         Dispose();
     }
 
-    private void InitProfileAvatar()
-    {
-        CSteamID steamId = SteamManager.GetSteamManager().GetSteamId();
-        
-        string accName = SteamFriends.GetPersonaName();
-        
-        int imageId = SteamFriends.GetLargeFriendAvatar(steamId);
-        
-        var bitmap = AvaloniaService.Instance.CreateSteamImage(imageId);
-        
-        ProfileImage.Source = bitmap;
-        ProfileName.Text = accName;
-    }
-
     public override void Dispose()
     {
         _changeWindowAction = null;
         ProfileImage.Source = null;
+        
+        if (DataContext is IDisposable d)
+        {
+            d.Dispose();
+        }
         
         DataContext = null;
         

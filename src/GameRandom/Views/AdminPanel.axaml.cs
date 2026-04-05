@@ -26,6 +26,7 @@ using GameRandom.Src.UserData;
 using GameRandom.DependenceInjectSystem;
 using GameRandom.ViewModels.AdminConfirmSystem;
 using GameRandom.DependenceInjectSystem;
+using GameRandom.Scripts.WindowServices.ErrorServiceSystem;
 
 namespace GameRandom.Views;
 
