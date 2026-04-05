@@ -37,6 +37,17 @@ public class DiContainer : IBindingDiContainer, IFinalizedBinding, IResolveDepen
 
         return new BinderGeneric(this, bindingInfo);
     }
+
+    public BindingInstance BindInstance<TContract>()
+    {
+        var bindingInfo = new BindingInstanceInfo
+        {
+            ContractType = typeof(TContract)
+        };
+
+        return new BindingInstance(this, bindingInfo);
+    }
+    
     public ScopeBinder FromInstance<TInstance>()
     {
         var type = typeof(TInstance);
@@ -151,6 +162,28 @@ public class DiContainer : IBindingDiContainer, IFinalizedBinding, IResolveDepen
         _finalizeBindingService.FinalizeBinding(bindingInfo, ref _singleInstances, ref _manyInstance);
     }
 
+    public void FinalizeInstanceBinding(BindingInstanceInfo bindingInfo)
+    {
+        if (bindingInfo.ContractType is not null && bindingInfo.Instance is not null)
+        {
+            var dependenceInfo = new DependenceInfo(bindingInfo.Instance.GetType(), ScopeType.Singleton, false)
+            {
+                Instance = bindingInfo.Instance
+            };
+
+            if (!_singleInstances.TryAdd(bindingInfo.ContractType, dependenceInfo))
+            {
+                _singleInstances[bindingInfo.ContractType] = dependenceInfo;
+            }
+        }
+        else
+            throw new ArgumentException("Contract type or instance is null");
+            
+    }
+
+
+    #region ClearRegion
+
     private void UnregisterInstance(Type type)
     {
         _singleInstances.Remove(type);
@@ -172,4 +205,7 @@ public class DiContainer : IBindingDiContainer, IFinalizedBinding, IResolveDepen
     {
         _singleInstances.Remove(type);
     }
+    
+    #endregion
 }
+

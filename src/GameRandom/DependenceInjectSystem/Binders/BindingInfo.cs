@@ -10,3 +10,9 @@ public class BindingInfo
     public bool IsLazy;
     public ScopeType ScopeType;
 }
+
+public class BindingInstanceInfo
+{
+    public Type? ContractType;
+    public object? Instance;
+}
