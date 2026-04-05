@@ -43,7 +43,7 @@
                 FallbackValue='Failed to find game name'}" Width="*"/>
                 <DataGridTextColumn Header="Completed Date" Binding="{Binding GameInfo.GameProgresses.AppName,
                 FallbackValue='Failed to find game name'}" Width="150"/>
-                <DataGridTextColumn Header="Status" Width="150"/>
+                <DataGridCheckBoxColumn Header="IsImprove" Width="150" Binding="{Binding GameInfo.IsImprove} "/>
                 <DataGridTemplateColumn Header="Actions">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
