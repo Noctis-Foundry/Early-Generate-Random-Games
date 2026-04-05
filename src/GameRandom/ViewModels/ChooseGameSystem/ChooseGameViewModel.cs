@@ -10,6 +10,7 @@ using GameRandom.Service;
 using GameRandom.Src;
 using GameRandom.Src.Enums;
 using GameRandom.Src.UserData;
+using GameRandom.ViewModels.BaseClasses;
 using GameRandom.ViewModels.ChooseGameSystem;
 using GameRandom.ViewModels.ChooseGameSystem.Interface;
 

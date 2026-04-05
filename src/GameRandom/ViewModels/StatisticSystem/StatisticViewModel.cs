@@ -20,6 +20,7 @@ using GameRandom.Scr.Service;
 using GameRandom.DependenceInjectSystem;
 using GameRandom.Src;
 using GameRandom.DependenceInjectSystem;
+using GameRandom.ViewModels.BaseClasses;
 
 namespace GameRandom.ViewModels.AdminConfirmSystem;
 

@@ -16,6 +16,8 @@ using GameRandom.Src;
 using GameRandom.DependenceInjectSystem;
 using GameRandom.Src.Enums;
 using GameRandom.DependenceInjectSystem;
+using GameRandom.Scripts.WindowServices.ErrorServiceSystem;
+using GameRandom.ViewModels.BaseClasses;
 
 namespace GameRandom.ViewModels.AdminConfirmSystem;
 

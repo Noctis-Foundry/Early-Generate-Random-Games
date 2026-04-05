@@ -10,6 +10,7 @@ using GameRandom.Src;
 using GameRandom.Src.Enums;
 using GameRandom.Src.UserData;
 using GameRandom.ViewModels.AdminConfirmSystem.Interface;
+using GameRandom.ViewModels.BaseClasses;
 
 namespace GameRandom.ViewModels.AdminConfirmSystem;
 

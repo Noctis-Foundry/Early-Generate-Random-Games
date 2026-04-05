@@ -26,6 +26,7 @@ using GameRandom.Src.UserData;
 using GameRandom.DependenceInjectSystem;
 using Microsoft.EntityFrameworkCore.Storage;
 using GameRandom.DependenceInjectSystem;
+using GameRandom.ViewModels.BaseClasses;
 
 namespace GameRandom.ViewModels.AdminConfirmSystem;
 

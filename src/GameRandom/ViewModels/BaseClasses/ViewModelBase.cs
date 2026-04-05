@@ -1,20 +1,14 @@
 ﻿using System;
 using System.Threading;
-using GameRandom.DependenceInjectSystem;
 using System.Threading.Tasks;
-using GameRandom.DependenceInjectSystem;
 using CommunityToolkit.Mvvm.ComponentModel;
 using GameRandom.DependenceInjectSystem;
 using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.DependenceInjectSystem;
 using GameRandom.Scr.Service;
-using GameRandom.DependenceInjectSystem;
+using GameRandom.Scripts.WindowServices.ErrorServiceSystem;
 using GameRandom.Src;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Views;
-using GameRandom.DependenceInjectSystem;
 
-namespace GameRandom.ViewModels.AdminConfirmSystem;
+namespace GameRandom.ViewModels.BaseClasses;
 
 public class ViewModelBase : ObservableObject, IDisposable
 {

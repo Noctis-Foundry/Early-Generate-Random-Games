@@ -28,6 +28,7 @@ using GameRandom.ViewModels.AdminPanelSystem;
 using GameRandom.DependenceInjectSystem;
 using GameRandom.ViewModels.AdminSystem.Interface;
 using GameRandom.DependenceInjectSystem;
+using GameRandom.ViewModels.BaseClasses;
 
 namespace GameRandom.ViewModels.AdminConfirmSystem;
 

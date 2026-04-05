@@ -18,6 +18,7 @@ using GameRandom.ViewModels.FilterGameSystem;
 using GameRandom.DependenceInjectSystem;
 using GameRandom.ViewModels.FilterGameSystem.Interface;
 using GameRandom.DependenceInjectSystem;
+using GameRandom.ViewModels.BaseClasses;
 
 namespace GameRandom.ViewModels.AdminConfirmSystem;
 
@@ -96,7 +97,7 @@ public class FilterGameViewModel : ViewModelBase
 
     #endregion
 
-    private IFilterGame _filterGame = new FilterGameActions();
+    private IFilterGame _filterGame = new LoadFilterData();
     
     /// <summary>
     /// Initializes a new instance of the <see cref="FilterGameViewModel"/> class and loads data from JSON.

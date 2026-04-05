@@ -5,9 +5,11 @@ using Avalonia.Media.Imaging;
 using GameRandom.DataBaseContexts;
 using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.Scr.Service;
+using GameRandom.Scripts.WindowServices.ErrorServiceSystem;
 using GameRandom.Service;
 using GameRandom.Src;
 using GameRandom.Src.Enums;
+using GameRandom.ViewModels.BaseClasses;
 using GameRandom.ViewModels.ConfirmFinishGameSystem;
 using GameRandom.ViewModels.ConfirmFinishGameSystem.Interface;
 
