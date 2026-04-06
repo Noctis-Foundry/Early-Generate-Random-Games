@@ -20,13 +20,14 @@ using GameRandom.Src.SteamsContexts;
 using GameRandom.DependenceInjectSystem;
 using GameRandom.Src.UserData;
 using GameRandom.DependenceInjectSystem;
+using GameRandom.Scripts.SteamSDK;
 using GameRandom.Scripts.WindowServices.ErrorServiceSystem;
 
 namespace GameRandom.ViewModels.AdminConfirmSystem;
 
 public class MainWindowUpdateLobby : BaseModelService, ILobbyUpdate
 {
-    [Inject] private SteamWebApi _steamWebApi = null!;
+    [Inject] private ISteamWebService _steamWebApi = null!;
     
     private const int LobbyUpdateTimeout = 3;
 
@@ -56,7 +57,7 @@ public class MainWindowUpdateLobby : BaseModelService, ILobbyUpdate
         
         foreach (var lobbyUser in lobbyData)
         {
-            var profileContext = await _steamWebApi.GetUserData(lobbyUser.UserId);
+            var profileContext = await _steamWebApi.GetProfile(lobbyUser.UserId);
             
             if (profileContext == null)
             {

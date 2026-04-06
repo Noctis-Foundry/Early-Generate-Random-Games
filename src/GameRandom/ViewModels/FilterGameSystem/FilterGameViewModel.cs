@@ -126,6 +126,10 @@ public class FilterGameViewModel : ViewModelBase
     /// <returns>An instance of <see cref="FilterOutputData"/> containing selected filters.</returns>
     public FilterOutputData GetFilters()
     {
+        Logger.Debug($"Selected categories count {SelectedCategories.Count}");
+        Logger.Debug($"Selected genres count {SelectedGenres.Count}");
+        Logger.Debug($"Selected years count {SelectedYears.Count}");
+        
         return new FilterOutputData(SelectedCategories, SelectedGenres, SelectedYears);
     }
     

@@ -149,9 +149,9 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>
     {
         Closing += MainWindow_OnClosed;
 
-        EventsConnecting();
-
         _eventBus.Subscribe<LobbyUpdate>(_ => { UpdateLobby((int)TableEnum.Lobby); });
+        
+        EventsConnecting();
     }
 
     /// <summary>
@@ -215,8 +215,17 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>
         
         Dispatcher.UIThread.InvokeAsync(async () =>
         {
-            await vm.UpdateLobby();
-            await UpdateAvatarGrid();
+            Logger.Debug("Start updating lobby");
+            
+            try
+            {
+                await vm.UpdateLobby();
+                await UpdateAvatarGrid();
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e.Message);
+            }
         });
     }
 
@@ -225,6 +234,8 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>
     /// </summary>
     private async Task UpdateAvatarGrid()
     {
+        Logger.Debug("Start updating avatar grid");
+        
         if (DataContext is not MainWindowViewModel vm) return;
 
         var profileList = vm.UsersToLobby;
@@ -237,6 +248,8 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>
 
         foreach (var profile in profileList)
         {
+            Logger.Debug($"Update avatar grid with image: {profile.avatarUrl}");
+            
             LobbyImages.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
             var image = _mainWindowFactory.CreateImageInGrid(LobbyImages, imageCount);
 

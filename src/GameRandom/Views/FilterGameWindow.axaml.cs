@@ -15,6 +15,10 @@ public sealed partial class FilterGameWindow : WindowBase<FilterGameViewModel>
     public FilterGameWindow()
     {
         InitializeComponent();
+        
+        if (Design.IsDesignMode)
+            return;
+        
         InitializeViewModel();
     }
     
