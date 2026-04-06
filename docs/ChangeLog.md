@@ -1,4 +1,10 @@
 # ChangeLog
+## [2026-04-05]
+- feat(rollgame): add roll from user's own Steam library
+- refactor(steam): extract SteamWebApi interfaces and improve architecture
+- refactor(lobby): add DI initialization and null checks
+- refactor: minor improvements and code cleanup
+
 ## [2026-04-04]
 - perf(rollgame): optimize game generation with JsonDocument instead of List deserialization
 - feat(di): add BindInstance method for binding existing instances to contracts
