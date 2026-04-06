@@ -1,4 +1,8 @@
 # ChangeLog
+## [2026-04-07]
+- refactor(steam): reorganize SteamWebAPI structure and add generation strategy pattern
+- feat(generation): add error handling and improve Steam API integration
+
 ## [2026-04-05]
 - feat(rollgame): add roll from user's own Steam library
 - refactor(steam): extract SteamWebApi interfaces and improve architecture
