@@ -20,6 +20,8 @@ using GameRandom.Scr.Service;
 using GameRandom.DependenceInjectSystem;
 using GameRandom.Scripts.RollGameSystem.GenerateGames;
 using GameRandom.Scripts.SteamSDK;
+using GameRandom.Src.RollGameSystem;
+using GameRandom.Src.RollGameSystem.GenerateStrategy;
 using GameRandom.Src.UserData;
 using GameRandom.ViewModels.BaseClasses;
 
@@ -41,7 +43,7 @@ public sealed class RollGameViewModel : ViewModelBase
     /// <summary>
     /// Maximum number of iterations to find suitable games.
     /// </summary>
-    private const int IterationLimit = 150;
+    private const int IterationLimit = 50;
     
     /// <summary>
     /// Current number of iterations.
@@ -116,12 +118,6 @@ public sealed class RollGameViewModel : ViewModelBase
     /// <param name="cancellationToken">Operation cancellation token.</param>
     public async Task GenerateGames(int countGames, FilterOutputData? filteredGamesData, CancellationToken cancellationToken = default)
     {
-        if (_generateRandomApps is null)
-        {
-            ErrorService.ShowWindow("List with games not loaded, wait..");
-            return;
-        }
-
         await _generateRandomApps.StartGenerateApp();
 
         if (!_generateRandomApps.ListIsLoad())
@@ -135,10 +131,13 @@ public sealed class RollGameViewModel : ViewModelBase
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var appInfo = await GenerateAppInfo(filteredGamesData);
+                var result = await GenerateAppInfo(filteredGamesData);
 
-                if (appInfo is not null)
-                    _appInfo.Add(appInfo);
+                if (result.code == GenerationStatusCode.Exit)
+                    break;
+                
+                if (result.appInfo is not null)
+                    _appInfo.Add(result.appInfo);
             }
         }
         catch (Exception e)
@@ -156,38 +155,29 @@ public sealed class RollGameViewModel : ViewModelBase
     /// </summary>
     /// <param name="filteredGamesData">Filtering data.</param>
     /// <returns>AppInfo object or null if the game failed filtering or an error occurred.</returns>
-    private async Task<AppInfo?> GenerateAppInfo(FilterOutputData? filteredGamesData)
+    private async Task<(GenerationStatusCode code, AppInfo? appInfo)> GenerateAppInfo(FilterOutputData? filteredGamesData)
     {
-        AppSavedContext? gameInfo = null;
+        GenerationTypes types = GetGenerationType();
+        var result = await _generateRandomApps.GetRandomGame(types);
+
+        if (result.StatusCode == GenerationStatusCode.Exit)
+            return (result.StatusCode, null);
+
+        var gameInfo = result.AppSavedContext;
         
-        if (!IsUserLib) 
-            gameInfo = _generateRandomApps?.GetRandomGame();
-        else
-        {
-            var jsonDocument = await _steamWebService.GetOwnedGames(User.GetInstance().GetUserId());
-
-            if (jsonDocument is null)
-            {
-                Logger.Error("User game is not founded");
-                return null;
-            }
-            
-            gameInfo = _generateRandomApps?.GetRandomGameFromUserLib(jsonDocument);
-        }
-
         if (gameInfo is null || _appInfo.Any(e => e.AppData.AppId == gameInfo.AppId))
-            return null;
-
+            return (result.StatusCode, null);
+        
         if (IsFilter && filteredGamesData is not null)
             if (!FilterGame(gameInfo, filteredGamesData))
-                return null;
+                return (result.StatusCode, null);
 
         var imageBytes = await _steamService.GetImageBytes(gameInfo.HeaderImage);
 
         if (imageBytes == null)
-            return null;
+            return (result.StatusCode, null);
         
-        return new AppInfo(gameInfo, imageBytes);
+        return (result.StatusCode, new AppInfo(gameInfo, imageBytes));
     }
     
     /// <summary>
@@ -204,10 +194,15 @@ public sealed class RollGameViewModel : ViewModelBase
         if (filter.Genres.Count > 0 && !filter.Genres.Any(g => savedGame.AppGenres.Contains(g)))
             return false;
 
-        if (filter.Years.Count > 0 && !filter.Years.Any(y => y == savedGame.AppReleaseYear))
+        if (filter.Years.Count > 0 && filter.Years.All(y => y != savedGame.AppReleaseYear))
             return false;
 
         return true;
+    }
+
+    private GenerationTypes GetGenerationType()
+    {
+        return _isUserLib ? GenerationTypes.RandomFromLibrary : GenerationTypes.RandomIndex;
     }
 
     /// <summary>

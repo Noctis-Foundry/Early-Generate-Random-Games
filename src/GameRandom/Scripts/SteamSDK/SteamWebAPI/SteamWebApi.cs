@@ -9,6 +9,7 @@ using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.Scr.Service;
 using GameRandom.Scripts.WindowServices.ErrorServiceSystem;
 using GameRandom.Src;
+using GameRandom.Src.RollGameSystem;
 using GameRandom.Src.SteamsContexts;
 
 namespace GameRandom.Scripts.SteamSDK;
@@ -50,7 +51,7 @@ public class SteamWebApi : ISteamWebService
         return await _ownerGames.GetPlayerLibrary(GetSteamUrl(steamId64, SteamWebInterfaces.GetOwnedGames));
     }
 
-    public async Task<AppSavedContext?> GetGameFromStore(int appId)
+    public async Task<GenerateGameStruct> GetGameFromStore(int appId)
     {
         return await _ownerGames.GetAppInfoFromAppId(appId);
     }
@@ -98,6 +99,16 @@ public class UserOwnedGames : IUserOwnerGames
         try
         {
             var response = await _client.GetAsync(steamApiKey);
+            var document = await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync());
+
+            var responseProperty = document.RootElement.GetProperty("response");
+
+            if (!responseProperty.TryGetProperty("games", out var value))
+            {
+                ShowError("Steam profile is private or not game views");
+                return null;
+            }
+            
             return JsonDocument.Parse(await response.Content.ReadAsStringAsync());
         }
         catch (Exception e)
@@ -107,14 +118,14 @@ public class UserOwnedGames : IUserOwnerGames
         }
     }
 
-    public async Task<AppSavedContext?> GetAppInfoFromAppId(int appId)
+    public async Task<GenerateGameStruct> GetAppInfoFromAppId(int appId)
     {
         try
         {
             string url = CreateSteamStoreUrl(appId);
 
             if (!await CheckResponseAsync(url))
-                return null;
+                return new GenerateGameStruct{StatusCode = GenerationStatusCode.GenerateNext};
             
             var json = await _response.Content.ReadAsStreamAsync();
             var document = await JsonDocument.ParseAsync(json);
@@ -127,7 +138,7 @@ public class UserOwnedGames : IUserOwnerGames
         catch (Exception e)
         {
             Logger.Error($"Failed to get game from steam store {e.Message}");
-            return null!;
+            return new GenerateGameStruct {StatusCode = GenerationStatusCode.GenerateNext};
         }
     }
 
@@ -148,7 +159,7 @@ public class UserOwnedGames : IUserOwnerGames
         return false;
     }
 
-    private AppSavedContext CreateAppSavedContext(JsonElement jsonElement, int appId)
+    private GenerateGameStruct CreateAppSavedContext(JsonElement jsonElement, int appId)
     {
         string name = jsonElement.GetProperty("name").GetString() ?? "";
         string description = jsonElement.GetProperty("short_description").GetString() ?? "";
@@ -181,7 +192,7 @@ public class UserOwnedGames : IUserOwnerGames
                 if (_nonGameTypes.Contains(descriptionGenre))
                 {
                     Logger.Error("Failed to create AppSavedContext because not correct game type");
-                    return null!;
+                    return new GenerateGameStruct {StatusCode = GenerationStatusCode.GenerateNext};
                 }
                 
                 genres.Add(descriptionGenre);
@@ -196,7 +207,7 @@ public class UserOwnedGames : IUserOwnerGames
                 categories.Add(c.GetProperty("description").GetString() ?? "");
         }
 
-        return new AppSavedContext
+        return new GenerateGameStruct {StatusCode = GenerationStatusCode.Successes, AppSavedContext = new AppSavedContext
         {
             AppId = appId,
             AppCategories = categories,
@@ -205,7 +216,7 @@ public class UserOwnedGames : IUserOwnerGames
             HeaderImage = headerImage,
             AppName = name,
             AppReleaseYear = releaseYear
-        };
+        }};
     }
 
     private string CreateSteamStoreUrl(int appId)

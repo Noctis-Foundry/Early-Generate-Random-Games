@@ -42,7 +42,7 @@ public class TaskRunner : DependenceBase
     /// <typeparam name="T">The type of the result.</typeparam>
     /// <param name="func">The asynchronous function to execute.</param>
     /// <returns>A tuple containing success status and the result.</returns>
-    public async Task<(bool Success, T? Result)> RunT<T>(Func<Task<T>> func)
+    public async Task<(bool Success, T? Value)> RunT<T>(Func<Task<T>> func)
     {
         try
         {

@@ -8,11 +8,13 @@ using GameRandom.DependenceInjectSystem;
 using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.Scr.Service;
 using GameRandom.Scripts.SteamSDK;
+using GameRandom.Src;
+using GameRandom.Src.RollGameSystem;
 using GameRandom.Src.UserData;
 
 namespace GameRandom.Scripts.RollGameSystem.GenerateStrategy;
 
-public abstract class GenerateStrategy : IDisposable
+public abstract class GenerateStrategyAbstract : IDisposable
 {
     protected HashSet<int> IndexSet = new HashSet<int>();
 
@@ -21,7 +23,7 @@ public abstract class GenerateStrategy : IDisposable
 
     protected int ElementIndex = 0;
     
-    public abstract Task<AppSavedContext?> GenerateGame<T>(JsonDocument document, T? inputData1);
+    public abstract Task<GenerateGameStruct> GenerateGame(JsonDocument document, object? inputData = null);
     
     protected JsonSerializerOptions JsonSerializerOptions()
     {
@@ -45,6 +47,16 @@ public abstract class GenerateStrategy : IDisposable
 
         return false;
     }
+
+    protected GenerateGameStruct ReturnSuccessesCode(AppSavedContext? appInfo)
+    {
+        return new GenerateGameStruct { AppSavedContext = appInfo, StatusCode = GenerationStatusCode.Successes};
+    }
+    
+    protected GenerateGameStruct ReturnFailedCode(GenerationStatusCode code)
+    {
+        return new GenerateGameStruct{AppSavedContext = null, StatusCode = code};
+    }
     
     public void ClearAfterGeneration()
     {
@@ -58,10 +70,10 @@ public abstract class GenerateStrategy : IDisposable
     }
 }
 
-public class GenerateRandomGame : GenerateStrategy
+public class GenerateRandomGame : GenerateStrategyAbstract
 {
-    public override async Task<AppSavedContext?> GenerateGame<T>(JsonDocument document, 
-        T? inputData = default) where T : default
+    public override async Task<GenerateGameStruct> GenerateGame(JsonDocument document, 
+        object? inputData = null)
     {
         var rootElement = document.RootElement;
         var arrayLenght = rootElement.GetArrayLength();
@@ -69,64 +81,41 @@ public class GenerateRandomGame : GenerateStrategy
         var isIndexUpdated = CalculateArrayIndex(arrayLenght);
 
         if (isIndexUpdated)
-            return rootElement[ElementIndex].Deserialize<AppSavedContext>(JsonSerializerOptions());
+            return ReturnSuccessesCode(rootElement[ElementIndex].Deserialize<AppSavedContext>(JsonSerializerOptions()));
 
-        return null;
+        return ReturnFailedCode(GenerationStatusCode.GenerateNext);
     }
 }
 
-public class GenerateGameByYear : GenerateStrategy
+public sealed class GenerateGameFromUserLib : GenerateStrategyAbstract
 {
-    public override async Task<AppSavedContext?> GenerateGame<T>(JsonDocument document,
-        T? inputData) where T : default
+    [Inject] private ISteamWebService _steamWebApi = null!;
+    
+    private readonly HashSet<string> _nonGameTypes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
     {
-        if (inputData is not ICollection<int> year)
-        {
-            Logger.Error("Failed to get collection");
-            return null;
-        }
-        
-        var rootElement = document.RootElement;
-        var arrayLenght = rootElement.GetArrayLength();
+        "Photo editing",
+        "Utilities",
+        "Game development",
+        "Animation & Modeling",
+        "Illustration"
+    };
 
-        for (int i = 0; i < MaxIter; i++)
-        {
-            ElementIndex = Random.Shared.Next(0, arrayLenght);
-
-            if (IndexSet.Add(ElementIndex))
-            {
-                var element = rootElement[ElementIndex];
-                var elementYear = element.GetProperty("appReleaseYear").GetInt32();
-                
-                if (year.Contains(elementYear))
-                    return element.Deserialize<AppSavedContext>(JsonSerializerOptions());
-            }
-        }
-
-        return null;
-    }
-}
-
-public sealed class GenerateGameFromUserId : GenerateStrategy
-{
-    [Inject] private SteamWebApi _steamWebApi = null!;
-
-    public GenerateGameFromUserId()
+    public GenerateGameFromUserLib()
     {
-        Di.ResolveInstance.ResolveInstanceFromClass(this);
+        Di.ResolveInstance.ResolveFiled(out _steamWebApi);
 
         if (_steamWebApi is null)
             throw new NullReferenceException(nameof(_steamWebApi));
     }
     
-    public override async Task<AppSavedContext?> GenerateGame<T>(JsonDocument document, 
-        T? inputData1) where T : default
+    public override async Task<GenerateGameStruct> GenerateGame(JsonDocument document, 
+        object? inputData = null)
     {
         var jsonDocument = await _steamWebApi.GetOwnedGames(
             User.GetInstance().GetUserId());
 
-        if (jsonDocument is null)
-            return null;
+        if (jsonDocument is null) 
+            return ReturnFailedCode(GenerationStatusCode.Exit);
         
         var rootElement = jsonDocument.RootElement.GetProperty("response").GetProperty("games");
         var arrayLenght = rootElement.GetArrayLength();
@@ -140,9 +129,28 @@ public sealed class GenerateGameFromUserId : GenerateStrategy
         var currentGameFromAppId = game.EnumerateArray().FirstOrDefault(e => 
             e.GetProperty("appId").GetInt32() == appId);
 
-        return currentGameFromAppId.Deserialize<AppSavedContext>(JsonSerializerOptions());
+        if (currentGameFromAppId.ValueKind == JsonValueKind.Undefined)
+            return await _steamWebApi.GetGameFromStore(appId);
+
+        var app = currentGameFromAppId.Deserialize<AppSavedContext>(JsonSerializerOptions());
+
+        if (app is not null && CheckGameInNonGameTypes(app))
+            return new GenerateGameStruct { StatusCode = GenerationStatusCode.Successes, AppSavedContext = app};
+        
+        return ReturnFailedCode(GenerationStatusCode.GenerateNext);
     }
 
+    private bool CheckGameInNonGameTypes(AppSavedContext app)
+    {
+        foreach (var genre in app.AppGenres)
+        {
+            if (_nonGameTypes.Contains(genre))
+                return false;
+        }
+
+        return true;
+    }
+    
     public override void Dispose()
     {
         _steamWebApi = null!;

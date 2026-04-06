@@ -4,6 +4,7 @@ using System.IO;
 using System.Text.Json;
 using GameRandom.CoreApp;
 using GameRandom.Scripts.RollGameSystem.GenerateGames;
+using GameRandom.Src.RollGameSystem.GenerateStrategy;
 using Xunit;
 
 namespace GameRandom.UnitTests.Scr.GenerateGames;
@@ -60,52 +61,7 @@ public class GenerateRandomAppsTests : IDisposable
     }
 
     [Fact]
-    public void GetRandomGame_WithYear_ShouldReturnMatchingGame()
-    {
-        // Arrange
-        var apps = new[]
-        {
-            new { AppId = 1, AppName = "Game 1", AppReleaseYear = 2020, AppGenres = new Dictionary<int, string> { { 1, "Action" } }, AppCategories = new Dictionary<int, string> { { 1, "Single-player" } } },
-            new { AppId = 2, AppName = "Game 2", AppReleaseYear = 2021, AppGenres = new Dictionary<int, string> { { 2, "RPG" } }, AppCategories = new Dictionary<int, string> { { 2, "Multi-player" } } },
-            new { AppId = 3, AppName = "Game 3", AppReleaseYear = 2020, AppGenres = new Dictionary<int, string> { { 3, "Strategy" } }, AppCategories = new Dictionary<int, string> { { 3, "Co-op" } } }
-        };
-        CreateTempFile(apps);
-        var genApps = new GenerateRandomApps(_tempFilePath);
-
-        // Act
-        var result = genApps.GetRandomGame(new List<int>{2020, 2021});
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.Equal(2020, result.AppReleaseYear);
-        Assert.True(result.AppId == 1 || result.AppId == 3);
-    }
-
-    [Fact]
-    public void GetRandomGame_WithYear_NoMatch_ShouldReturnNull()
-    {
-        // Arrange
-        var apps = new[]
-        {
-            new { AppId = 1, AppName = "Game 1", AppReleaseYear = 2020, AppGenres = new Dictionary<int, string> { { 1, "Action" } }, AppCategories = new Dictionary<int, string> { { 1, "Single-player" } } }
-        };
-        CreateTempFile(apps);
-        var genApps = new GenerateRandomApps(_tempFilePath);
-
-        // Act
-        var ints = new List<int>
-        {
-            2020,
-            2021
-        };
-        var result = genApps.GetRandomGame(ints);
-
-        // Assert
-        Assert.Null(result);
-    }
-
-    [Fact]
-    public void GetRandomGame_NoYear_ShouldReturnAnyGame()
+    public async Task GetRandomGame_ShouldReturnAnyGame()
     {
         // Arrange
         var apps = new[]
@@ -117,10 +73,10 @@ public class GenerateRandomAppsTests : IDisposable
         var genApps = new GenerateRandomApps(_tempFilePath);
 
         // Act
-        var result = genApps.GetRandomGame();
+        var result = await genApps.GetRandomGame(GenerationTypes.RandomIndex);
 
         // Assert
         Assert.NotNull(result);
-        Assert.Contains(result.AppId, new[] { 1, 2 });
+        Assert.Contains(result.AppSavedContext.AppId, new[] { 1, 2 });
     }
 }
