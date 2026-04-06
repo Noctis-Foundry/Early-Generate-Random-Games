@@ -43,12 +43,26 @@ public class LobbyService
     /// </summary>
     public async Task StartApp()
     {
+        InitializeDiContainer();
+        
         var user = GetCurrentUserAsync();
 
         var lobby = await FindLobbyAsync(user.LobbyId);
         SendLobbyEvent(lobby);
     }
 
+    private void InitializeDiContainer()
+    {
+        Di.ResolveInstance.ResolveInstanceFromClass(this);
+
+        if (_databaseService is null)
+            throw new NullReferenceException(nameof(_databaseService));
+        if (_eventBus is null)
+            throw new NullReferenceException(nameof(_eventBus));
+        if (_errorService is null)
+            throw new NullReferenceException(nameof(_errorService));
+    }
+    
     /// <summary>
     /// Create a new lobby
     /// </summary>
@@ -220,6 +234,9 @@ public class LobbyService
     /// </summary>
     private void SendLobbyEvent(Lobbies? lobbies)
     {
+        if (_eventBus is null)
+            throw new NullReferenceException(nameof(_eventBus));
+        
         if (lobbies is null) return;
 
         _eventBus.Publish(new LobbyUpdate(lobbies.LobbyData));
