@@ -32,7 +32,7 @@ public class GenerateRandomAppsTests : IDisposable
     }
 
     [Fact]
-    public void Constructor_WithValidPath_ShouldInitialize()
+    public async Task Constructor_WithValidPath_ShouldInitialize()
     {
         // Arrange
         var apps = new[]
@@ -43,9 +43,10 @@ public class GenerateRandomAppsTests : IDisposable
 
         // Act
         var genApps = new GenerateRandomApps(_tempFilePath);
+        await genApps.StartGenerateApp();
 
         // Assert
-        Assert.True(genApps.IsInitialized);
+        Assert.True(genApps.ListIsLoad());
     }
 
     [Fact]
@@ -72,7 +73,7 @@ public class GenerateRandomAppsTests : IDisposable
         var genApps = new GenerateRandomApps(_tempFilePath);
 
         // Act
-        var result = genApps.GetRandomGame(2020);
+        var result = genApps.GetRandomGame(new List<int>{2020, 2021});
 
         // Assert
         Assert.NotNull(result);
@@ -92,7 +93,12 @@ public class GenerateRandomAppsTests : IDisposable
         var genApps = new GenerateRandomApps(_tempFilePath);
 
         // Act
-        var result = genApps.GetRandomGame(2021);
+        var ints = new List<int>
+        {
+            2020,
+            2021
+        };
+        var result = genApps.GetRandomGame(ints);
 
         // Assert
         Assert.Null(result);

@@ -28,6 +28,9 @@ public class RollGameFactory : IDisposable
     
     public RollGameFactory()
     {
+        if (Design.IsDesignMode)
+            return;
+        
         Di.ResolveInstance.ResolveInstanceFromClass(this);
 
         if (_mainWindowFactory is null)

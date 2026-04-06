@@ -59,8 +59,8 @@
                 </Border>
             </Grid>
             
-            <Border Classes="ContentBorder" Height="80" Width="320">
-                <Grid RowDefinitions="Auto" ColumnDefinitions="Auto, Auto, Auto" HorizontalAlignment="Center"
+            <Border Classes="ContentBorder" Height="80" Width="450">
+                <Grid RowDefinitions="Auto" ColumnDefinitions="Auto, Auto, Auto, Auto" HorizontalAlignment="Center"
                       VerticalAlignment="Center"
                       ColumnSpacing="15">
 
@@ -75,6 +75,9 @@
                     </Border>
                         
                     <CheckBox Grid.Column="2" Content="filter" Width="100" IsChecked="{Binding IsFilter}" x:Name="FilterCheckBox"></CheckBox>
+                    <CheckBox Grid.Column="3" Content="User lib" Width="120" 
+                              IsChecked="{Binding IsUserLib}" 
+                              x:Name="FromUserLib"></CheckBox>
                 </Grid>
             </Border>
         </StackPanel>

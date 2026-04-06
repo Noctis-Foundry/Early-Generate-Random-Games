@@ -35,11 +35,11 @@ public partial class RollGame : MainWindowUserControlAbstract
     public RollGame()
     {
         InitializeComponent();
-        DataContext = new RollGameViewModel(new GenerateRandomApps());
 
         if (Design.IsDesignMode)
             return;
-
+        
+        DataContext = new RollGameViewModel(new GenerateRandomApps());
         TextBoxEventsInit();
 
         Di.ResolveInstance.ResolveInstanceFromClass(this);

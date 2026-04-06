@@ -20,6 +20,8 @@ public class GenerateRandomApps : IGenApp, IDisposable
     private bool _jsonDocumentIsSerialize = false;
     private const int MinYear = 2010;
     private const int MaxIter = 1000;
+
+    private HashSet<int> _pickedIndex = new();
     
     public GenerateRandomApps(string? localPath = null)
     {
@@ -74,6 +76,9 @@ public class GenerateRandomApps : IGenApp, IDisposable
         {
             var randomIndex = Random.Shared.Next(0, rootElement.GetArrayLength());
 
+            if (!_pickedIndex.Add(randomIndex))
+                continue;
+            
             var releaseYear = rootElement[randomIndex].GetProperty("appReleaseYear").GetInt32();
 
             if (years.Contains(releaseYear))
@@ -83,11 +88,27 @@ public class GenerateRandomApps : IGenApp, IDisposable
             }
         }
 
-        var app = rootElement[elementIndex].Deserialize<AppSavedContext>();
+        var app = rootElement[elementIndex].Deserialize<AppSavedContext>(JsonSerializerOptions());
         
         return app;
     }
-    
+
+    public AppSavedContext? GetRandomGameFromUserLib(JsonDocument jsonDocument)
+    {
+        var rootElement = jsonDocument.RootElement.GetProperty("response").GetProperty("games");
+        var arrayLenght = rootElement.GetArrayLength();
+        
+        var arrayIndex = Random.Shared.Next(0, arrayLenght);
+        var currentElement = rootElement[arrayIndex];
+        
+        var appId = currentElement.GetProperty("appid").GetInt32();
+
+        var game = _document.RootElement;
+        var currentGameFromAppId = game.EnumerateArray().FirstOrDefault(e => e.GetProperty("appId").GetInt32() == appId);
+
+        return currentGameFromAppId.Deserialize<AppSavedContext>(JsonSerializerOptions());
+    }
+
     public AppSavedContext? GetRandomGame()
     {
         CheckDocumentInArgumentException();
@@ -122,6 +143,7 @@ public class GenerateRandomApps : IGenApp, IDisposable
     public void Dispose()
     {
         EndGeneration();
+        _pickedIndex.Clear();
     }
 }
 
@@ -131,6 +153,8 @@ public interface IGenApp
     
     public AppSavedContext? GetRandomGame(List<int> years);
 
+    public AppSavedContext? GetRandomGameFromUserLib(JsonDocument jsonDocument);
+    
     public AppSavedContext? GetRandomGame();
 
     public Task StartGenerateApp();

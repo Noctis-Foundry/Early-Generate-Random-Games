@@ -19,6 +19,8 @@ using GameRandom.DependenceInjectSystem;
 using GameRandom.Scr.Service;
 using GameRandom.DependenceInjectSystem;
 using GameRandom.Scripts.RollGameSystem.GenerateGames;
+using GameRandom.Scripts.SteamSDK;
+using GameRandom.Src.UserData;
 using GameRandom.ViewModels.BaseClasses;
 
 namespace GameRandom.ViewModels.AdminConfirmSystem;
@@ -29,6 +31,7 @@ namespace GameRandom.ViewModels.AdminConfirmSystem;
 public sealed class RollGameViewModel : ViewModelBase
 {
     [Inject] private SteamService _steamService = null!;
+    [Inject] private ISteamWebService _steamWebService = null!;
     
     /// <summary>
     /// Interface for generating random applications.
@@ -70,6 +73,14 @@ public sealed class RollGameViewModel : ViewModelBase
         set => SetProperty(ref _isFilter, value);
     }
 
+    private bool _isUserLib = false;
+
+    public bool IsUserLib
+    {
+        get => _isUserLib;
+        set => SetProperty(ref _isUserLib, value);
+    }
+
     #endregion
     
     
@@ -92,6 +103,9 @@ public sealed class RollGameViewModel : ViewModelBase
 
         if (_steamService is null)
             throw new NullReferenceException();
+
+        if (_steamWebService is null)
+            throw new NullReferenceException(nameof(_steamWebService));
     }
 
     /// <summary>
@@ -144,7 +158,22 @@ public sealed class RollGameViewModel : ViewModelBase
     /// <returns>AppInfo object or null if the game failed filtering or an error occurred.</returns>
     private async Task<AppInfo?> GenerateAppInfo(FilterOutputData? filteredGamesData)
     {
-        var gameInfo = _generateRandomApps?.GetRandomGame();
+        AppSavedContext? gameInfo = null;
+        
+        if (!IsUserLib) 
+            gameInfo = _generateRandomApps?.GetRandomGame();
+        else
+        {
+            var jsonDocument = await _steamWebService.GetOwnedGames(User.GetInstance().GetUserId());
+
+            if (jsonDocument is null)
+            {
+                Logger.Error("User game is not founded");
+                return null;
+            }
+            
+            gameInfo = _generateRandomApps?.GetRandomGameFromUserLib(jsonDocument);
+        }
 
         if (gameInfo is null || _appInfo.Any(e => e.AppData.AppId == gameInfo.AppId))
             return null;
