@@ -1,38 +1,108 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.Scr.Service;
+using GameRandom.Src;
 using GameRandom.Src.SteamsContexts;
 
-namespace GameRandom.Src;
+namespace GameRandom.Scripts.SteamSDK;
 
-public class SteamWebApi
+public class SteamWebApi : ISteamWebService
 {
-    private const string ApiKey = "74FCA50C2D6D2C3ACF641458D135AA3A";
-    private readonly HttpClient _client = new HttpClient();
+    private string? ApiKey;
+
+    IUserOwnerGames _ownerGames = new UserOwnedGames();
+    IProfileSummary _profileSummary = new UserProfileSummary();
     
-    public async Task<ProfileContext?> GetUserData(ulong userId)
+    private Dictionary<SteamWebInterfaces, string> _urlExample //TODO load from json file
+        = new()
     {
+        [SteamWebInterfaces.GetPlayerSummaries] = "https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/",
+        [SteamWebInterfaces.GetOwnedGames] = "https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/",
+    };
+    
+    public SteamWebApi()
+    {
+        ApiKey = Environment.GetEnvironmentVariable("Steam_Web_Api_Key");
+        
+        if (string.IsNullOrEmpty(ApiKey))
+        {
+            throw new ArgumentException("Steam web api key not found");
+        }
+    }
+    
+    public async Task<ProfileContext?> GetProfile(ulong steamId64)
+    {
+        Logger.Debug($"Try get profile by id: {steamId64}");
+        
+        return await _profileSummary.GetUserData(GetSteamUrl(steamId64, SteamWebInterfaces.GetPlayerSummaries),
+            steamId64);
+    }
+
+    public async Task<JsonDocument?> GetOwnedGames(ulong steamId64)
+    {
+        return await _ownerGames.GetPlayerLibrary(GetSteamUrl(steamId64, SteamWebInterfaces.GetOwnedGames));
+    }
+
+    private string GetSteamUrl(ulong steamId64, SteamWebInterfaces interfaceName)
+    {
+        var exampleUrl = _urlExample[interfaceName];
+        
+        if (string.IsNullOrEmpty(exampleUrl) || steamId64 == 0)
+        {
+            Logger.Error("Invalid url or steamId64");
+            return "";
+        }
+
+        string url = "";
+        
+        if (SteamWebInterfaces.GetPlayerSummaries == interfaceName) 
+            url = $"{exampleUrl}?key={ApiKey}&steamids={steamId64}";
+
+        if (interfaceName == SteamWebInterfaces.GetOwnedGames)
+            url += $"{exampleUrl}?key={ApiKey}&steamid={steamId64}&format=json";
+
+        return url;
+    }
+}
+
+public class UserOwnedGames : IUserOwnerGames
+{
+    private static readonly HttpClient _client = new();
+    
+    public async Task<JsonDocument?> GetPlayerLibrary(string steamApiKey)
+    {
+
         try
         {
-            var steamUrl = GetSteamUrl(userId);
+            var response = await _client.GetAsync(steamApiKey);
+            return JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+        }
+        catch (Exception e)
+        {
+            Logger.Error(e.Message);
+            return null;
+        }
+    }
+}
 
-            Logger.Debug($"{steamUrl}");
-
-            Logger.Debug("Start steam parsing");
-            
+public class UserProfileSummary : IProfileSummary
+{
+    private static readonly HttpClient _client = new();
+    
+    public async Task<ProfileContext?> GetUserData(string steamUrl, ulong userId)
+    { 
+        try
+        {
             var response = await _client.GetAsync(steamUrl);
 
             if (!response.IsSuccessStatusCode)
             {
-                Logger.Error($"Not find profile json with id {userId}");
+                Logger.Error($"Not find profile json");
                 return null;
             }
-            else 
-                Logger.Debug($"Get profile json with id {userId}");
 
             var json = await response.Content.ReadAsStringAsync();
             var doc = JsonDocument.Parse(json);
@@ -52,16 +122,8 @@ public class SteamWebApi
         }
         catch (Exception e)
         {
-            throw new Exception("GetUserData error", e);
+            Logger.Debug($"Failed to get user data, profile maybe is private. Log: {e.Message}");
+            return null;
         }
     }
-
-    public string GetUserNickName()
-    {
-        //TODO: Implement steam nickname parser
-        Logger.Debug("Get steam nickname");
-        return "";
-    }
-    
-    private string GetSteamUrl(ulong userId) => $"https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={ApiKey}&steamids={userId}";
 }
