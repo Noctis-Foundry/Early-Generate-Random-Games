@@ -23,7 +23,8 @@ sealed class Program
     [STAThread]
     public static void Main(string[] args)
     { 
-        InitializeDependenceInjection();
+        LoadImpotentDependence().GetAwaiter().GetResult();
+        
         GlobalExceptionHandler();
         
         try
@@ -49,12 +50,6 @@ sealed class Program
             .UsePlatformDetect()
             .WithInterFont()
             .LogToTrace();
-
-    private static void InitializeDependenceInjection()
-    {
-        var startProvider = new StartAppProvider();
-        startProvider.BindingInstance();
-    }
     
     private static void GlobalExceptionHandler()
     {
@@ -71,5 +66,11 @@ sealed class Program
             Logger.Error("UnobservedTaskException: " + args.Exception.Message);
             args.SetObserved();
         };
+    }
+
+    private static async Task LoadImpotentDependence()
+    {
+        var priorityStartup = new PriorityStartup();
+        await priorityStartup.PriorityInitialization();
     }
 }

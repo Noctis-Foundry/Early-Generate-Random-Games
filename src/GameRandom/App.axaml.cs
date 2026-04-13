@@ -8,10 +8,12 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using GameRandom.DependenceInjectSystem.DiSystem;
+using GameRandom.Providers;
 using GameRandom.Scr.Service;
 using GameRandom.Src;
 using GameRandom.Src.Enums;
 using GameRandom.Src.LobbySystem;
+using GameRandom.Src.StartupLogic;
 using GameRandom.Src.UserData;
 using GameRandom.Views;
 
@@ -26,15 +28,6 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        if (!Design.IsDesignMode)
-        {
-            SteamManager.GetSteamManager().InitSteam();
-            
-            Task.Run(async () => await User.GetInstance().InitializeUser()).GetAwaiter().GetResult();
-        
-            Di.BindingInstance.BindSingleton(typeof(LobbyService), new LobbyService());
-        }
-        
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
@@ -46,6 +39,8 @@ public partial class App : Application
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
             };
         }
+        
+        //PriorityInitialization
         
         base.OnFrameworkInitializationCompleted();
     }

@@ -35,6 +35,7 @@ using GameRandom.DependenceInjectSystem;
 using GameRandom.Views.LobbyModalWindow;
 using GameRandom.DependenceInjectSystem;
 using GameRandom.Providers;
+using GameRandom.Src.StartupLogic;
 
 namespace GameRandom.Views;
 
@@ -48,7 +49,7 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>
     [Inject] private readonly UserControlFactory _controlFactory = null!;
     [Inject] private readonly PostgresListener _postgresListener = null!;
     [Inject] private readonly MainWindowFactory _mainWindowFactory = null!;
-    [Inject] private readonly SteamService? _steamService;
+    [Inject] private readonly SteamService _steamService = null!;
 
     /// <summary>
     /// Registry for user control factories mapped by navigation keys.
@@ -58,12 +59,11 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>
     /// <summary>
     /// Action delegate for navigating between user controls.
     /// </summary>
-    private readonly Action<string> _changeUserControlAction;
+    private Action<string> _changeUserControlAction;
 
-    private readonly Rules _rules = new();
-    private readonly LobbyWindow _lobbyWindow;
+    private Rules _rules = new();
+    private LobbyWindow _lobbyWindow;
     private AdminPanel _adminUserControl;
-
 
     /// <summary>
     /// Initializes the main window and all subsystems.
@@ -74,7 +74,12 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>
 
         if (Design.IsDesignMode)
             return;
-        
+
+        InitializeMainWindow();
+    }
+    
+    private void InitializeMainWindow()
+    {
         InitializeDiContainer();
         
         _eventBus.Subscribe<AdminRulesUpdating>(_ =>
@@ -84,8 +89,8 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>
         
         _lobbyWindow = new LobbyWindow();
         DataContext = new MainWindowViewModel();
-        BindingCommand();
         
+        BindingCommand();
         EnableAdminPanel();
 
         _changeUserControlAction = Navigate;
@@ -94,7 +99,6 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>
         _changeUserControlAction.Invoke("Main");
         InitWindowEvents();
     }
-
     /// <summary>
     /// Registers navigation targets for user controls.
     /// </summary>
@@ -116,8 +120,11 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>
     
     protected sealed override void InitializeDiContainer()
     {
-        var startAppProvider = new AppInitializeProvider(this);
+        var startAppProvider = new StartAppProvider();
+        var windowProvider = new WindowProvider(this);
+        
         startAppProvider.BindingInstance();
+        windowProvider.BindingInstance();
         
         base.InitializeDiContainer();
 
@@ -285,5 +292,11 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>
         {
             vm.BindingAdminPanel(() => Navigate("Admin"));
         }
+    }
+    
+    private static void InitializeDependenceInjection()
+    {
+        var startProvider = new StartAppProvider();
+        startProvider.BindingInstance();
     }
 }
