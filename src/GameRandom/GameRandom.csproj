@@ -105,6 +105,10 @@
         <Compile Update="Views\ConfirmFinishGame.axaml.cs">
           <DependentUpon>ConfirmFinishGame.axaml</DependentUpon>
         </Compile>
+        <Compile Update="Views\FirstWindow\MainWindowSystem\MainWindow.axaml.cs">
+          <DependentUpon>MainWindow.axaml</DependentUpon>
+          <SubType>Code</SubType>
+        </Compile>
     </ItemGroup>
 
     <ItemGroup>

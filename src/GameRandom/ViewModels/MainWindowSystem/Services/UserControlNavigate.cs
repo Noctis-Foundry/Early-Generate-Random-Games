@@ -1,0 +1,91 @@
+using System;
+using System.Collections.Generic;
+using Avalonia.Controls;
+using GameRandom.DependenceInjectSystem;
+using GameRandom.DependenceInjectSystem.DiSystem;
+using GameRandom.Service;
+using GameRandom.Src;
+using GameRandom.Src.Factory;
+using GameRandom.ViewModels.AdminConfirmSystem;
+using GameRandom.ViewModels.AdminConfirmSystem.Enums;
+using GameRandom.ViewModels.MainWindowSystem.Interface;
+
+namespace GameRandom.Views.MainWindowSystem;
+
+public class UserControlNavigate(IBindingContentControl bindControl)
+{
+    [Inject] private UserControlFactory _controlFactory = null!;
+    /// <summary>
+    /// Registry for user control factories mapped by navigation keys.
+    /// </summary>
+    private readonly Register<ControlTypes, Func<UserControl>> _preloadRegister = new();
+    
+    public Register<ControlTypes, Func<UserControl>> PreloadRegister => _preloadRegister;
+    
+    /// <summary>
+    /// Action delegate for navigating between user controls.
+    /// </summary>
+    private Action<ControlTypes> _changeUserControlAction;
+
+    private bool _isInitializeDi = false;
+    
+    public void BindingNavigateSystem()
+    {
+        if (!_isInitializeDi)
+            InitializeUserFactory();
+
+        _changeUserControlAction = Navigate;
+        
+        InitializeUserControlRegister();
+    }
+    
+    /// <summary>
+    /// Registers navigation targets for user controls.
+    /// </summary>
+    private void
+        InitializeUserControlRegister() //TODO Change IUserControl in MainWindowUserControlAbstract for Profile and GameTable
+    {
+        _preloadRegister.RegisterNewObject(ControlTypes.MainWindow,
+            () => _controlFactory.CreateUserControl<MainWindowContent>(_changeUserControlAction));
+        _preloadRegister.RegisterNewObject(ControlTypes.Profile,
+            () => _controlFactory.CreateUserControl<ProfileContent>(_changeUserControlAction));
+        _preloadRegister.RegisterNewObject(ControlTypes.Roll,
+            () => _controlFactory.CreateUserControl<RollGame>(_changeUserControlAction));
+        _preloadRegister.RegisterNewObject(ControlTypes.GameTable,
+            () => _controlFactory.CreateUserControl<GameTable>(_changeUserControlAction));
+        _preloadRegister.RegisterNewObject(ControlTypes.Admin,
+            () => _controlFactory.CreateUserControl<AdminPanel>(_changeUserControlAction));
+    }
+
+    private void InitializeUserFactory()
+    {
+        Di.ResolveInstance.ResolveFiled(out _controlFactory);
+        
+        if (_controlFactory is null)
+            throw new NullReferenceException(nameof(_controlFactory));
+
+        _isInitializeDi = true;
+    }
+
+    /// <summary>
+    /// Navigates to the specified user control.
+    /// </summary>
+    /// <param name="controlType"></param>
+    /// <exception cref="NullReferenceException">Thrown when control creation fails.</exception>
+    private void Navigate(ControlTypes controlType)
+    {
+        if (_preloadRegister.GetObjectFromRegister(controlType, out var func))
+        {
+            var content = func?.Invoke();
+
+            if (content is null)
+                throw new NullReferenceException($"Failed navigate to {controlType}");
+
+            if (content is MainWindowUserControlAbstract value)
+            {
+                bindControl.SetContentControl(value);
+                value.Open();
+            }
+        }
+    }
+}

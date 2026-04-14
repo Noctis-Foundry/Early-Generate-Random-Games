@@ -8,14 +8,22 @@ using GameRandom.Src.UserData;
 
 namespace GameRandom.Src;
 
-public class PriorityStartup
+public class AppBootstrap
 {
     public async Task PriorityInitialization()
     {
         await new GameEnvLoad().InitializeEnv();
+
+        var priorityDependence = new PriorityDependence();
+        priorityDependence.BindingInstance();
             
         SteamManager.GetSteamManager().InitSteam();
         
         await User.GetInstance().InitializeUser();
+    }
+
+    private void InitializeCoreDependencies()
+    {
+        
     }
 }

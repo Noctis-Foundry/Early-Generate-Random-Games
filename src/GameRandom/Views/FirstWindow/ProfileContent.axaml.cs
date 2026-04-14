@@ -6,6 +6,7 @@ using GameRandom.Service;
 using GameRandom.Src;
 using GameRandom.ViewModels;
 using GameRandom.ViewModels.AdminConfirmSystem;
+using GameRandom.ViewModels.AdminConfirmSystem.Enums;
 using Steamworks;
 
 namespace GameRandom.Views;
@@ -37,7 +38,7 @@ public partial class ProfileContent : MainWindowUserControlAbstract
 
     public override void Close(object? sender, RoutedEventArgs e)
     {
-        _changeWindowAction?.Invoke("Main");
+        _changeWindowAction?.Invoke(ControlTypes.MainWindow);
         Dispose();
     }
 

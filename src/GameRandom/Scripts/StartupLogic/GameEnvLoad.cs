@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace GameRandom.Src.StartupLogic;
@@ -17,9 +18,11 @@ public class GameEnvLoad
     {
         _client = new HttpClient();
 
-        var json = await _client.GetAsync(_url);
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(3));
         
-        var document = await JsonDocument.ParseAsync(await json.Content.ReadAsStreamAsync());
+        var json = await _client.GetAsync(_url, cts.Token);
+        
+        var document = await JsonDocument.ParseAsync(await json.Content.ReadAsStreamAsync(cts.Token), cancellationToken: cts.Token);
         var root =  document.RootElement;
         
         string databaseApi = root.GetProperty("database_api").GetString() ?? "";
@@ -27,6 +30,9 @@ public class GameEnvLoad
 
         if (string.IsNullOrEmpty(databaseApi) || string.IsNullOrEmpty(steamApi))
             throw new NullReferenceException("Failed to get config from server. Check connection"); //TODO Add module for check offline mode and online mode [Check summary for this model in docs/TODO]
+        
+        _envCollection.Add(EnvType.DatabaseEnv, databaseApi);
+        _envCollection.Add(EnvType.SteamApiEnv, steamApi);
     }
 }
 

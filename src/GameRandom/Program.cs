@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using System;
+using System.Diagnostics;
 using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.Scr.Events;
 using GameRandom.Scr.Service;
@@ -23,7 +24,7 @@ sealed class Program
     [STAThread]
     public static void Main(string[] args)
     { 
-        LoadImpotentDependence().GetAwaiter().GetResult();
+        // LoadImpotentDependence().GetAwaiter().GetResult();
         
         GlobalExceptionHandler();
         
@@ -34,13 +35,7 @@ sealed class Program
         }
         catch (Exception e)
         {
-            // System.Diagnostics.Process.Start("MessageBox.exe", new []
-            // {
-            //     e.Message,
-            //     nameof(ErrorEnum.Critical)
-            // });
-            
-            throw new Exception(e.Message, e);
+            ThrowMessageBox($"Fatalerror: {e.Message}");
         }
     }
     
@@ -68,9 +63,23 @@ sealed class Program
         };
     }
 
-    private static async Task LoadImpotentDependence()
+    private static void ThrowMessageBox(string message)
     {
-        var priorityStartup = new PriorityStartup();
-        await priorityStartup.PriorityInitialization();
+        var nameBox = OperatingSystem.IsWindows() ? "MessageBox.exe" : "MessageBox";
+
+        var processingInfo = new ProcessStartInfo
+        {
+            FileName = nameBox,
+            UseShellExecute = false,
+        };
+        
+        processingInfo.ArgumentList.Add(message);
+        
+        var process = Process.Start(processingInfo);
+
+        if (process is null)
+            return;
+        
+        process.WaitForExit();
     }
 }

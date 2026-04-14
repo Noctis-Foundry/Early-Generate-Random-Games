@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Avalonia.Controls;
 using CommunityToolkit.Mvvm.Input;
 using GameRandom.DataBaseContexts;
 using GameRandom.DependenceInjectSystem.DiSystem;
@@ -11,15 +12,19 @@ using GameRandom.Src;
 using GameRandom.Src.Enums;
 using GameRandom.Src.SteamsContexts;
 using GameRandom.Src.UserData;
+using GameRandom.ViewModels.AdminConfirmSystem.Enums;
 using GameRandom.ViewModels.BaseClasses;
+using GameRandom.ViewModels.MainWindowSystem.Interface;
+using GameRandom.Views.MainWindowSystem;
 
 namespace GameRandom.ViewModels.AdminConfirmSystem;
 
 /// <summary>
 /// ViewModel for the main application window. Manages lobby and challenge rules.
 /// </summary>
-public sealed class MainWindowViewModel : ViewModelBase
+public sealed class MainWindowViewModel : ViewModelBase, IBindingContentControl
 {
+    private readonly UserControlNavigate _userControlNavigate;
     
     #region BindingArea
     
@@ -72,6 +77,14 @@ public sealed class MainWindowViewModel : ViewModelBase
         get => _usersToLobby;
         set => SetProperty(ref _usersToLobby, value);
     }
+
+    private object _controlContent;
+
+    public object ControlContent
+    {
+        get => _controlContent;
+        set => SetProperty(ref _controlContent, value);
+    }
     
     #endregion
     
@@ -84,7 +97,30 @@ public sealed class MainWindowViewModel : ViewModelBase
     {
         InitializeDiContainer();
         InitializeSemaphoreSlim();
+
+        _userControlNavigate = new UserControlNavigate(this);
     }
+
+    #region NavigateRegion
+
+    public void InitializeNavigateSystem()
+    {
+        _userControlNavigate.BindingNavigateSystem();
+    }
+    public Func<UserControl>? GetUserControlNavigate(ControlTypes controlType)
+    {
+        if (!_userControlNavigate.PreloadRegister.GetObjectFromRegister(controlType, out var func))
+        {
+            Logger.Error("Failed to get preload user control");
+            return null!;
+        }
+
+        return func;
+    }
+
+    #endregion
+    
+    #region LobbyFunc
 
     /// <summary>
     /// Updates lobby data by loading information about all participants.
@@ -110,7 +146,11 @@ public sealed class MainWindowViewModel : ViewModelBase
         UsersToLobby.Clear();
         UsersToLobby = new HashSet<ProfileContext>(result.Value);
     }
-   
+
+    #endregion
+
+    #region BindingMenuItems
+
     /// <summary>
     /// Binds the lobby opening command to the specified action.
     /// </summary>
@@ -135,12 +175,30 @@ public sealed class MainWindowViewModel : ViewModelBase
     /// Binds the admin panel opening command to the specified action.
     /// </summary>
     /// <param name="func">Action executed when opening the admin panel.</param>
-    public void BindingAdminPanel(Action func)
+    public void BindingAdminPanel()
     {
-        if (AdminPanelOpen is null)
-            AdminPanelOpen = new RelayCommand(func);
+        OpenLobbyCommand = new RelayCommand(() =>
+        {
+            if (!User.GetInstance().IsAdmin())
+                return;
+            
+            
+        });
     }
 
+    #endregion
+
+    public void SetContentControl(object? contentControl)
+    {
+        if (contentControl is null)
+        {
+            Logger.Info("Content control is null");
+            return;
+        }
+        
+        ControlContent = contentControl;
+    }
+    
     public override void Dispose()
     {
         _lobbyUpdate.Dispose();

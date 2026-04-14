@@ -2,7 +2,7 @@ using System;
 using Avalonia.Threading;
 using GameRandom.ViewModels.BaseClasses;
 
-namespace GameRandom.ViewModels.AdminConfirmSystem.ContextWindowViewModels;
+namespace GameRandom.ViewModels.ContextWindowViewModels;
 
 public class TaskProcessingViewModel : ViewModelBase
 {

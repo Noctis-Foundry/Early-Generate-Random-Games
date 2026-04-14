@@ -1,65 +1,35 @@
 using System;
-using GameRandom.DependenceInjectSystem;
 using System.Threading;
-using GameRandom.DependenceInjectSystem;
 using System.Threading.Tasks;
-using GameRandom.DependenceInjectSystem;
 using Avalonia.Controls;
-using GameRandom.DependenceInjectSystem;
 using Avalonia.Threading;
 using GameRandom.DependenceInjectSystem;
-using GameRandom.DataBaseContexts;
-using GameRandom.DependenceInjectSystem;
 using GameRandom.Events;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Scr.Events;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Scr.Service;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Service;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Src;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Src.Enums;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Src.Factory;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Src.LobbySystem;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Src.UserData;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.ViewModels.AdminConfirmSystem;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Views.LobbyModalWindow;
-using GameRandom.DependenceInjectSystem;
 using GameRandom.Providers;
-using GameRandom.Src.StartupLogic;
+using GameRandom.Scr.Events;
+using GameRandom.Scr.Service;
+using GameRandom.Service;
+using GameRandom.Src;
+using GameRandom.Src.Factory;
+using GameRandom.Src.LobbySystem;
+using GameRandom.Src.UserData;
+using GameRandom.ViewModels.AdminConfirmSystem;
+using GameRandom.Views.LobbyModalWindow;
 
-namespace GameRandom.Views;
+namespace GameRandom.Views.MainWindowSystem;
 
 /// <summary>
 /// Primary application window managing navigation, lobby system, and UI state.
 /// </summary>
-public partial class MainWindow : WindowBase<MainWindowViewModel>
+public partial class MainWindow : WindowBase<MainWindowViewModel>, IInitializeMainWindow
 {
     [Inject] private readonly LobbyService _lobby = null!;
     [Inject] private readonly EventBus _eventBus = null!;
-    [Inject] private readonly UserControlFactory _controlFactory = null!;
+
     [Inject] private readonly PostgresListener _postgresListener = null!;
     [Inject] private readonly MainWindowFactory _mainWindowFactory = null!;
     [Inject] private readonly SteamService _steamService = null!;
-
-    /// <summary>
-    /// Registry for user control factories mapped by navigation keys.
-    /// </summary>
-    private readonly Register<string, Func<UserControl>> _preloadRegister = new();
     
-    /// <summary>
-    /// Action delegate for navigating between user controls.
-    /// </summary>
-    private Action<string> _changeUserControlAction;
 
     private Rules _rules = new();
     private LobbyWindow _lobbyWindow;
@@ -71,61 +41,55 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>
     public MainWindow()
     {
         InitializeComponent();
-
-        if (Design.IsDesignMode)
-            return;
-
-        InitializeMainWindow();
     }
-    
-    private void InitializeMainWindow()
+
+    #region InitializeRegion
+
+    public void InitializeUi()
     {
-        InitializeDiContainer();
+        var windowProvider = new WindowProvider(this);
+        windowProvider.BindingInstance();
+        
+        _lobbyWindow = new LobbyWindow();
+        DataContext = new MainWindowViewModel();
         
         _eventBus.Subscribe<AdminRulesUpdating>(_ =>
         {
             EnableAdminPanel();
         });
         
-        _lobbyWindow = new LobbyWindow();
-        DataContext = new MainWindowViewModel();
+        EnableAdminPanel();
         
         BindingCommand();
-        EnableAdminPanel();
-
-        _changeUserControlAction = Navigate;
-        
-        InitializeUserControlRegister();
-        _changeUserControlAction.Invoke("Main");
+            
         InitWindowEvents();
     }
-    /// <summary>
-    /// Registers navigation targets for user controls.
-    /// </summary>
-    private void
-        InitializeUserControlRegister() //TODO Change IUserControl in MainWindowUserControlAbstract for Profile and GameTable
+
+    public void SetLoadControl()
     {
-        _preloadRegister.RegisterNewObject("Main",
-            () => _controlFactory.CreateUserControl<MainWindowContent>(_changeUserControlAction));
-        _preloadRegister.RegisterNewObject("Profile",
-            () => _controlFactory.CreateUserControl<ProfileContent>(_changeUserControlAction));
-        _preloadRegister.RegisterNewObject("Roll",
-            () => _controlFactory.CreateUserControl<RollGame>(_changeUserControlAction));
-        _preloadRegister.RegisterNewObject("Table",
-            () => _controlFactory.CreateUserControl<GameTable>(_changeUserControlAction));
+        ControlMain.Content = new LoadControl();
+        TopContainer.IsVisible = false;
     }
+
+    public void EndLoadingData()
+    {
+        if (ControlMain.Content is IDisposable disposable)
+            disposable.Dispose();   
+        
+        ControlMain.Content = null;
+        
+        TopContainer.IsVisible = true;
+    }
+
+    #endregion
+
+  
 
     #region InitializeDependence
 
     
     protected sealed override void InitializeDiContainer()
     {
-        var startAppProvider = new StartAppProvider();
-        var windowProvider = new WindowProvider(this);
-        
-        startAppProvider.BindingInstance();
-        windowProvider.BindingInstance();
-        
         base.InitializeDiContainer();
 
         if (_lobby is null)
@@ -133,9 +97,6 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>
 
         if (_eventBus is null)
             throw new NullReferenceException(nameof(_eventBus));
-
-        if (_controlFactory is null)
-            throw new NullReferenceException(nameof(_controlFactory));
 
         if (_postgresListener is null)
             throw new NullReferenceException(nameof(_postgresListener));
@@ -159,28 +120,6 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>
         _eventBus.Subscribe<LobbyUpdate>(_ => { UpdateLobby((int)TableEnum.Lobby); });
         
         EventsConnecting();
-    }
-
-    /// <summary>
-    /// Navigates to the specified user control.
-    /// </summary>
-    /// <param name="nameControl">Navigation key for the target control.</param>
-    /// <exception cref="NullReferenceException">Thrown when control creation fails.</exception>
-    private void Navigate(string nameControl)
-    {
-        if (_preloadRegister.GetObjectFromRegister(nameControl, out var func))
-        {
-            var content = func?.Invoke();
-
-            if (content is null)
-                throw new NullReferenceException($"Failed navigate to {nameControl}");
-
-            if (content is MainWindowUserControlAbstract value)
-            {
-                ControlMain.Content = value;
-                value.Open();
-            }
-        }
     }
 
     /// <summary>
@@ -285,18 +224,9 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>
             return;
         }
         
-        _preloadRegister.RegisterNewObject("Admin", () => _controlFactory.CreateUserControl<AdminPanel>(_changeUserControlAction));
         AdminPanel.IsVisible = true;
         
         if (DataContext is MainWindowViewModel vm)
-        {
-            vm.BindingAdminPanel(() => Navigate("Admin"));
-        }
-    }
-    
-    private static void InitializeDependenceInjection()
-    {
-        var startProvider = new StartAppProvider();
-        startProvider.BindingInstance();
+            vm.BindingAdminPanel();
     }
 }

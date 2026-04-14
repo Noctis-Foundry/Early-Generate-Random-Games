@@ -27,6 +27,7 @@ using GameRandom.DependenceInjectSystem;
 using GameRandom.ViewModels.AdminConfirmSystem;
 using GameRandom.DependenceInjectSystem;
 using GameRandom.Scripts.WindowServices.ErrorServiceSystem;
+using GameRandom.ViewModels.AdminConfirmSystem.Enums;
 
 namespace GameRandom.Views;
 
@@ -35,7 +36,6 @@ public partial class AdminPanel : MainWindowUserControlAbstract
     [Inject] private ErrorService? _errorService = null!;
     [Inject] private PostgresListener? _postgresListener;
     private AdminRegistrationWindow _registrationWindow;
-    private const string CloseTarget = "Main";
 
     private CancellationTokenSource _cts = new CancellationTokenSource();
 
@@ -70,7 +70,7 @@ public partial class AdminPanel : MainWindowUserControlAbstract
 
     public override void Close(object? sender, RoutedEventArgs e)
     {
-        _changeWindowAction?.Invoke(CloseTarget);
+        _changeWindowAction?.Invoke(ControlTypes.MainWindow);
         Dispose();
     }
 

@@ -11,6 +11,7 @@ using GameRandom.Src;
 using GameRandom.ViewModels.AdminConfirmSystem;
 using GameRandom.Scripts.WindowServices.ErrorServiceSystem;
 using GameRandom.Src.RollGameSystem;
+using GameRandom.ViewModels.AdminConfirmSystem.Enums;
 
 namespace GameRandom.Views;
 
@@ -50,7 +51,7 @@ public partial class RollGame : MainWindowUserControlAbstract
 
     public override void Close(object? sender, RoutedEventArgs e)
     {
-        _changeWindowAction?.Invoke("Main");
+        _changeWindowAction?.Invoke(ControlTypes.MainWindow);
         
         Dispose();
     }

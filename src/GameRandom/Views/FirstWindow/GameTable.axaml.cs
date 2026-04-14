@@ -14,6 +14,7 @@ using GameRandom.DependenceInjectSystem;
 using GameRandom.ViewModels.AdminConfirmSystem;
 using GameRandom.DependenceInjectSystem;
 using GameRandom.Scripts.WindowServices.ErrorServiceSystem;
+using GameRandom.ViewModels.AdminConfirmSystem.Enums;
 
 namespace GameRandom.Views;
 
@@ -60,7 +61,7 @@ public partial class GameTable : MainWindowUserControlAbstract
     /// </summary>
     public override void Close(object? sender, RoutedEventArgs e)
     {
-        _changeWindowAction?.Invoke("Main");
+        _changeWindowAction?.Invoke(ControlTypes.MainWindow);
         Dispose();
     }
 

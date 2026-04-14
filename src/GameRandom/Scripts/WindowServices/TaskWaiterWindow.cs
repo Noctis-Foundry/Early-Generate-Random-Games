@@ -3,9 +3,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using GameRandom.Scr.Service;
+using GameRandom.Src;
 using GameRandom.Views;
 
-namespace GameRandom.Src;
+namespace GameRandom.Scripts.WindowServices;
 
 public class TaskWaiterWindow(Window ownerWindow) : AbstractWindowService<TaskLoading>(ownerWindow), ITaskWaiter
 {
@@ -45,6 +46,8 @@ public class TaskWaiterWindow(Window ownerWindow) : AbstractWindowService<TaskLo
             _semaphoreSlim.Release();
         }
     }
+    
+    
 }
 
 public interface ITaskWaiter
