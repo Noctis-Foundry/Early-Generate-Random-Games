@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using Avalonia.Controls;
 using GameRandom.DependenceInjectSystem;
 using GameRandom.DependenceInjectSystem.DiSystem;
+using GameRandom.Scr.Service;
 using GameRandom.Service;
 using GameRandom.Src;
 using GameRandom.Src.Factory;
@@ -12,15 +15,17 @@ using GameRandom.ViewModels.MainWindowSystem.Interface;
 
 namespace GameRandom.Views.MainWindowSystem;
 
-public class UserControlNavigate(IBindingContentControl bindControl)
+public class UserControlNavigate : IControlNavigate
 {
+    
+    private readonly BehaviorSubject<UserControl> _controlContent = null!;
+    public IObservable<UserControl> ControlContent => _controlContent.AsObservable();
+    
     [Inject] private UserControlFactory _controlFactory = null!;
     /// <summary>
     /// Registry for user control factories mapped by navigation keys.
     /// </summary>
     private readonly Register<ControlTypes, Func<UserControl>> _preloadRegister = new();
-    
-    public Register<ControlTypes, Func<UserControl>> PreloadRegister => _preloadRegister;
     
     /// <summary>
     /// Action delegate for navigating between user controls.
@@ -72,7 +77,7 @@ public class UserControlNavigate(IBindingContentControl bindControl)
     /// </summary>
     /// <param name="controlType"></param>
     /// <exception cref="NullReferenceException">Thrown when control creation fails.</exception>
-    private void Navigate(ControlTypes controlType)
+    public void Navigate(ControlTypes controlType)
     {
         if (_preloadRegister.GetObjectFromRegister(controlType, out var func))
         {
@@ -83,7 +88,7 @@ public class UserControlNavigate(IBindingContentControl bindControl)
 
             if (content is MainWindowUserControlAbstract value)
             {
-                bindControl.SetContentControl(value);
+                _controlContent.OnNext(content);
                 value.Open();
             }
         }

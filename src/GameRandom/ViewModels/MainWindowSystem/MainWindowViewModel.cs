@@ -1,30 +1,24 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Avalonia.Controls;
 using CommunityToolkit.Mvvm.Input;
-using GameRandom.DataBaseContexts;
-using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.Scr.Service;
-using GameRandom.Src;
-using GameRandom.Src.Enums;
 using GameRandom.Src.SteamsContexts;
 using GameRandom.Src.UserData;
-using GameRandom.ViewModels.AdminConfirmSystem.Enums;
+using GameRandom.ViewModels.AdminConfirmSystem;
 using GameRandom.ViewModels.BaseClasses;
 using GameRandom.ViewModels.MainWindowSystem.Interface;
 using GameRandom.Views.MainWindowSystem;
 
-namespace GameRandom.ViewModels.AdminConfirmSystem;
+namespace GameRandom.ViewModels.MainWindowSystem;
 
 /// <summary>
 /// ViewModel for the main application window. Manages lobby and challenge rules.
 /// </summary>
-public sealed class MainWindowViewModel : ViewModelBase, IBindingContentControl
+public sealed class MainWindowViewModel : ViewModelBase
 {
-    private readonly UserControlNavigate _userControlNavigate;
+    public IControlNavigate UserControlNavigate { get; private set; }
     
     #region BindingArea
     
@@ -77,14 +71,6 @@ public sealed class MainWindowViewModel : ViewModelBase, IBindingContentControl
         get => _usersToLobby;
         set => SetProperty(ref _usersToLobby, value);
     }
-
-    private object _controlContent;
-
-    public object ControlContent
-    {
-        get => _controlContent;
-        set => SetProperty(ref _controlContent, value);
-    }
     
     #endregion
     
@@ -98,27 +84,8 @@ public sealed class MainWindowViewModel : ViewModelBase, IBindingContentControl
         InitializeDiContainer();
         InitializeSemaphoreSlim();
 
-        _userControlNavigate = new UserControlNavigate(this);
+        UserControlNavigate = new UserControlNavigate();
     }
-
-    #region NavigateRegion
-
-    public void InitializeNavigateSystem()
-    {
-        _userControlNavigate.BindingNavigateSystem();
-    }
-    public Func<UserControl>? GetUserControlNavigate(ControlTypes controlType)
-    {
-        if (!_userControlNavigate.PreloadRegister.GetObjectFromRegister(controlType, out var func))
-        {
-            Logger.Error("Failed to get preload user control");
-            return null!;
-        }
-
-        return func;
-    }
-
-    #endregion
     
     #region LobbyFunc
 
@@ -181,23 +148,10 @@ public sealed class MainWindowViewModel : ViewModelBase, IBindingContentControl
         {
             if (!User.GetInstance().IsAdmin())
                 return;
-            
-            
         });
     }
 
     #endregion
-
-    public void SetContentControl(object? contentControl)
-    {
-        if (contentControl is null)
-        {
-            Logger.Info("Content control is null");
-            return;
-        }
-        
-        ControlContent = contentControl;
-    }
     
     public override void Dispose()
     {

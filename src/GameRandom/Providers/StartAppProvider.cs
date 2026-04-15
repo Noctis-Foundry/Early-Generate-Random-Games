@@ -18,7 +18,6 @@ public class StartAppProvider : DiProvider
  
         DiContainer.Bind<LobbyService>().To<LobbyService>().ScopeBind(ScopeType.Singleton, false);
         DiContainer.FromInstance<TaskRunner>().ScopeBind(ScopeType.Singleton, false);
-        
         DiContainer.FromInstance<ObservableConverter>().ScopeBind(ScopeType.Singleton);
         DiContainer.FromInstance<MainWindowFactory>().ScopeBind(ScopeType.Singleton);
         DiContainer.FromInstance<UserControlFactory>().ScopeBind(ScopeType.Singleton);

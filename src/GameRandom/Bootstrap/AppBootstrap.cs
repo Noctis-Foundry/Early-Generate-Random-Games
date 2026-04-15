@@ -20,10 +20,13 @@ public class AppBootstrap
         SteamManager.GetSteamManager().InitSteam();
         
         await User.GetInstance().InitializeUser();
+        
+        InitializeCoreDependencies();
     }
 
     private void InitializeCoreDependencies()
     {
-        
+        var appProvider = new StartAppProvider();
+        appProvider.BindingInstance();
     }
 }

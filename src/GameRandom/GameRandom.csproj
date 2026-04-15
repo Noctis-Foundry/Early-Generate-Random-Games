@@ -53,6 +53,7 @@
         <PackageReference Include="Avalonia.Desktop" Version="11.3.11"/>
         <PackageReference Include="Avalonia.Diagnostics" Version="11.3.11"/>
         <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.11"/>
+        <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.8" />
         <PackageReference Include="Avalonia.Remote.Protocol" Version="11.3.11"/>
         <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.11"/>
         <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.3.11"/>
@@ -68,6 +69,7 @@
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0-rc.1"/>
         <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
         <PackageReference Include="Steamworks.NET" Version="2024.8.0"/>
+        <PackageReference Include="System.Reactive" Version="7.0.0-preview.1" />
     </ItemGroup>
 
     <ItemGroup>

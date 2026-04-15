@@ -3,9 +3,10 @@
         xmlns:vm="using:GameRandom.ViewModels.AdminConfirmSystem"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mainWindowSystem="clr-namespace:GameRandom.ViewModels.MainWindowSystem"
         mc:Ignorable="d" d:DesignWidth="963" d:DesignHeight="700"
         x:Class="GameRandom.Views.MainWindowSystem.MainWindow"
-        x:DataType="vm:MainWindowViewModel"
+        x:DataType="mainWindowSystem:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="GameRandom"
         Width="1000" Height="500"
@@ -32,7 +33,7 @@
                 </Border>
                        
                 
-                <ContentControl x:Name="ControlMain" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"></ContentControl>
+                <ContentControl x:Name="ControlMain" Content="{Binding UserControlNavigate.ControlContent}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"></ContentControl>
         </DockPanel>
         
        

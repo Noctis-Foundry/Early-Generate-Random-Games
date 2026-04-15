@@ -14,6 +14,8 @@ using GameRandom.Src.Factory;
 using GameRandom.Src.LobbySystem;
 using GameRandom.Src.UserData;
 using GameRandom.ViewModels.AdminConfirmSystem;
+using GameRandom.ViewModels.AdminConfirmSystem.Enums;
+using GameRandom.ViewModels.MainWindowSystem;
 using GameRandom.Views.LobbyModalWindow;
 
 namespace GameRandom.Views.MainWindowSystem;
@@ -47,6 +49,8 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>, IInitializeMa
 
     public void InitializeUi()
     {
+        InitializeDiContainer();
+        
         var windowProvider = new WindowProvider(this);
         windowProvider.BindingInstance();
         
@@ -76,14 +80,14 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>, IInitializeMa
         if (ControlMain.Content is IDisposable disposable)
             disposable.Dispose();   
         
-        ControlMain.Content = null;
+        var vm = GetViewModel();
+        vm.UserControlNavigate.BindingNavigateSystem();
+        vm.UserControlNavigate.Navigate(ControlTypes.MainWindow);
         
         TopContainer.IsVisible = true;
     }
 
     #endregion
-
-  
 
     #region InitializeDependence
 
