@@ -31,7 +31,7 @@ using GameRandom.ViewModels.AdminConfirmSystem.Enums;
 
 namespace GameRandom.Views;
 
-public partial class AdminPanel : MainWindowUserControlAbstract
+public sealed partial class AdminPanel : MainWindowUserControlAbstract<AdminPanelViewModel>
 {
     [Inject] private ErrorService? _errorService = null!;
     [Inject] private PostgresListener? _postgresListener;
@@ -51,13 +51,13 @@ public partial class AdminPanel : MainWindowUserControlAbstract
         InitializeDiContainer();
         
         IsInitializeTaskWaiter = true;
-        DataContext = new AdminPanelViewModel();
+        InitializeViewModel();
         
         HideAdminPanel();
         InitializePostgresListener();
     }
 
-    public override void Open()
+    public override void LoadUserControl()
     {
         if (DataContext is AdminPanelViewModel vm)
         {
@@ -68,10 +68,9 @@ public partial class AdminPanel : MainWindowUserControlAbstract
         }
     }
 
-    public override void Close(object? sender, RoutedEventArgs e)
+    public override void CloseUserControl(object? sender, RoutedEventArgs e)
     {
-        _changeWindowAction?.Invoke(ControlTypes.MainWindow);
-        Dispose();
+        _changeWindowAction?.Invoke(ControlTypes.MainWindow); //Call dispose for user control
     }
 
     private void HideAdminPanel()

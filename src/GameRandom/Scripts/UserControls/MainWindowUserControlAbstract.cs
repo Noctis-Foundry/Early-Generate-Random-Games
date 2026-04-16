@@ -7,6 +7,7 @@ using GameRandom.DependenceInjectSystem;
 using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.Scr.Service;
+using GameRandom.Scripts.UserControls;
 using GameRandom.Scripts.WindowServices;
 using GameRandom.ViewModels.AdminConfirmSystem;
 using GameRandom.ViewModels.AdminConfirmSystem.Enums;
@@ -14,7 +15,8 @@ using GameRandom.ViewModels.BaseClasses;
 
 namespace GameRandom.Src;
 
-public abstract class MainWindowUserControlAbstract : UserControl, IDisposable
+public abstract class MainWindowUserControlAbstract<TViewModel> : UserControl, IDisposable, IUserControl
+    where TViewModel : ViewModelBase, new()
 {
     [Inject] protected TaskRunner TaskRunner = null!;
     
@@ -27,11 +29,16 @@ public abstract class MainWindowUserControlAbstract : UserControl, IDisposable
     /// </summary>
     public virtual void AddListener(Action<ControlTypes> _onChangeContent) => _changeWindowAction = _onChangeContent;
     
-    public abstract void Close(object? sender, RoutedEventArgs e);
-    public virtual void Open()
+    public abstract void CloseUserControl(object? sender, RoutedEventArgs e);
+    public virtual void LoadUserControl()
     {
         
     }
+    public virtual void InitializeViewModel()
+    {
+        DataContext = new TViewModel();
+    }
+    
     protected void InitializeProcessingHandler(Window hostWindow = null!)
     {
         if (DataContext is not ViewModelBase vm)

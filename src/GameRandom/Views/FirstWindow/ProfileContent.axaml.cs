@@ -11,7 +11,7 @@ using Steamworks;
 
 namespace GameRandom.Views;
 
-public partial class ProfileContent : MainWindowUserControlAbstract
+public sealed partial class ProfileContent : MainWindowUserControlAbstract<ProfileViewModel>
 {
     private StatisticControl _statisticContent;
     private CurrentGame? _currentGame;
@@ -25,10 +25,10 @@ public partial class ProfileContent : MainWindowUserControlAbstract
             StatisticContent.Content = new StatisticControl();
         }
         
-        DataContext = new ProfileViewModel();
+        InitializeViewModel();
     }
 
-    public override void Open()
+    public override void LoadUserControl()
     {
         _statisticContent = new StatisticControl();
         _statisticContent.Open();
@@ -36,7 +36,7 @@ public partial class ProfileContent : MainWindowUserControlAbstract
         StatisticContent.Content = _statisticContent;
     }
 
-    public override void Close(object? sender, RoutedEventArgs e)
+    public override void CloseUserControl(object? sender, RoutedEventArgs e)
     {
         _changeWindowAction?.Invoke(ControlTypes.MainWindow);
         Dispose();

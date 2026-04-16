@@ -11,6 +11,7 @@ using GameRandom.Src;
 using GameRandom.Src.Factory;
 using GameRandom.ViewModels.AdminConfirmSystem;
 using GameRandom.ViewModels.AdminConfirmSystem.Enums;
+using GameRandom.ViewModels.BaseClasses;
 using GameRandom.ViewModels.MainWindowSystem.Interface;
 
 namespace GameRandom.Views.MainWindowSystem;
@@ -18,14 +19,16 @@ namespace GameRandom.Views.MainWindowSystem;
 public class UserControlNavigate : IControlNavigate
 {
     
-    private readonly BehaviorSubject<UserControl> _controlContent = null!;
-    public IObservable<UserControl> ControlContent => _controlContent.AsObservable();
-    
+    private readonly BehaviorSubject<object> _controlContent;
+    public IObservable<object> ControlContent => _controlContent.AsObservable();
+
     [Inject] private UserControlFactory _controlFactory = null!;
     /// <summary>
     /// Registry for user control factories mapped by navigation keys.
     /// </summary>
     private readonly Register<ControlTypes, Func<UserControl>> _preloadRegister = new();
+
+    private object _currentControl;
     
     /// <summary>
     /// Action delegate for navigating between user controls.
@@ -33,6 +36,13 @@ public class UserControlNavigate : IControlNavigate
     private Action<ControlTypes> _changeUserControlAction;
 
     private bool _isInitializeDi = false;
+
+    public UserControlNavigate()
+    {
+        var loadControl = new LoadControl();
+        _controlContent = new BehaviorSubject<object>(loadControl);
+        _currentControl = loadControl;
+    }
     
     public void BindingNavigateSystem()
     {
@@ -88,7 +98,12 @@ public class UserControlNavigate : IControlNavigate
 
             if (content is MainWindowUserControlAbstract value)
             {
+                if (_currentControl is IDisposable disposable)
+                    disposable.Dispose();
+                
                 _controlContent.OnNext(content);
+                _currentControl = content;
+                
                 value.Open();
             }
         }

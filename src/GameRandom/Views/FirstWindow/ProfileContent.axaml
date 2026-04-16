@@ -25,7 +25,7 @@
                            HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
                 
                 <Button Grid.Column="1" Classes="ProfileButtons" Click="OpenActivityGame">Activity game</Button>
-                <Button Grid.Column="2" Classes="ProfileButtons" Click="Close">Close</Button>
+                <Button Grid.Column="2" Classes="ProfileButtons" Click="CloseUserControl">Close</Button>
             </Grid>
         </Border>
         

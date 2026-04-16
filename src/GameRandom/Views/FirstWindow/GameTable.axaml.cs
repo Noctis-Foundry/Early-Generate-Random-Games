@@ -21,7 +21,7 @@ namespace GameRandom.Views;
 /// <summary>
 /// User control for displaying game progress table with real-time updates.
 /// </summary>
-public partial class GameTable : MainWindowUserControlAbstract
+public sealed partial class GameTable : MainWindowUserControlAbstract<GameTableViewModel>
 {
     [Inject] private ErrorService _errorService = null!;
     
@@ -40,7 +40,7 @@ public partial class GameTable : MainWindowUserControlAbstract
         if (Design.IsDesignMode)
             return;
         
-        DataContext = new GameTableViewModel();
+        InitializeViewModel();
         Di.ResolveInstance.ResolveInstanceFromClass(this);
         
         InitializeProcessingHandler();
@@ -51,7 +51,7 @@ public partial class GameTable : MainWindowUserControlAbstract
     /// <summary>
     /// Called when the control is opened. Refreshes table data.
     /// </summary>
-    public override void Open()
+    public override void LoadUserControl()
     {
         UpdateTableData();
     }
@@ -59,7 +59,7 @@ public partial class GameTable : MainWindowUserControlAbstract
     /// <summary>
     /// Closes the control, navigates to main view, and disposes resources.
     /// </summary>
-    public override void Close(object? sender, RoutedEventArgs e)
+    public override void CloseUserControl(object? sender, RoutedEventArgs e)
     {
         _changeWindowAction?.Invoke(ControlTypes.MainWindow);
         Dispose();

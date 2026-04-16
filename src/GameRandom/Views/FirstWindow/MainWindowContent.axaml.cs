@@ -4,18 +4,20 @@ using Avalonia.Interactivity;
 using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.Src;
 using GameRandom.Src.Enums;
+using GameRandom.ViewModels;
 using GameRandom.ViewModels.AdminConfirmSystem.Enums;
 
 namespace GameRandom.Views;
 
-public partial class MainWindowContent : MainWindowUserControlAbstract
+public partial class MainWindowContent : MainWindowUserControlAbstract<MainUserControlViewModel>
 {
     public MainWindowContent()
     {
         InitializeComponent();
+        DataContext = new MainUserControlViewModel();
     }
 
-    public override void Close(object? sender, RoutedEventArgs e)
+    public override void CloseUserControl(object? sender, RoutedEventArgs e)
     {
         //Empty
     }
