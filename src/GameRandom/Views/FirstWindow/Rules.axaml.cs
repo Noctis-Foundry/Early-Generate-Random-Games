@@ -25,6 +25,8 @@ public partial class Rules : WindowBase<ViewModelBase>
         InitializeComponent();
         _localizationPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Localization");
         LoadLocalization("en");
+
+        WindowStartupLocation = WindowStartupLocation.CenterScreen;
     }
     
     private void Close(Object? sender, RoutedEventArgs e)
