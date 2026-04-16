@@ -57,7 +57,7 @@ public sealed partial class AdminPanel : MainWindowUserControlAbstract<AdminPane
         InitializePostgresListener();
     }
 
-    public override void LoadUserControl()
+    protected override void LoadUserControl()
     {
         if (DataContext is AdminPanelViewModel vm)
         {

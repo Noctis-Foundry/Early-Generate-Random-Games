@@ -46,12 +46,14 @@ public sealed partial class GameTable : MainWindowUserControlAbstract<GameTableV
         InitializeProcessingHandler();
         InitializePostgresListener();
         UpdateTableData();
+        
+        LoadUserControl();
     }
 
     /// <summary>
     /// Called when the control is opened. Refreshes table data.
     /// </summary>
-    public override void LoadUserControl()
+    protected override void LoadUserControl()
     {
         UpdateTableData();
     }

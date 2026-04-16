@@ -26,9 +26,10 @@ public sealed partial class ProfileContent : MainWindowUserControlAbstract<Profi
         }
         
         InitializeViewModel();
+        LoadUserControl();
     }
 
-    public override void LoadUserControl()
+    protected override void LoadUserControl()
     {
         _statisticContent = new StatisticControl();
         _statisticContent.Open();

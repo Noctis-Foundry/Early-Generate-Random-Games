@@ -30,7 +30,7 @@ public abstract class MainWindowUserControlAbstract<TViewModel> : UserControl, I
     public virtual void AddListener(Action<ControlTypes> _onChangeContent) => _changeWindowAction = _onChangeContent;
     
     public abstract void CloseUserControl(object? sender, RoutedEventArgs e);
-    public virtual void LoadUserControl()
+    protected virtual void LoadUserControl()
     {
         
     }
