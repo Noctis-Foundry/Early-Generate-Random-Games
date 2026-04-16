@@ -6,9 +6,11 @@ using Avalonia.Controls;
 using GameRandom.DependenceInjectSystem;
 using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.Scr.Service;
+using GameRandom.Scripts.UserControls;
 using GameRandom.Service;
 using GameRandom.Src;
 using GameRandom.Src.Factory;
+using GameRandom.ViewModels;
 using GameRandom.ViewModels.AdminConfirmSystem;
 using GameRandom.ViewModels.AdminConfirmSystem.Enums;
 using GameRandom.ViewModels.BaseClasses;
@@ -16,7 +18,7 @@ using GameRandom.ViewModels.MainWindowSystem.Interface;
 
 namespace GameRandom.Views.MainWindowSystem;
 
-public class UserControlNavigate : IControlNavigate
+public class NavigateUserControls : IControlNavigate
 {
     
     private readonly BehaviorSubject<object> _controlContent;
@@ -37,7 +39,7 @@ public class UserControlNavigate : IControlNavigate
 
     private bool _isInitializeDi = false;
 
-    public UserControlNavigate()
+    public NavigateUserControls()
     {
         var loadControl = new LoadControl();
         _controlContent = new BehaviorSubject<object>(loadControl);
@@ -96,15 +98,13 @@ public class UserControlNavigate : IControlNavigate
             if (content is null)
                 throw new NullReferenceException($"Failed navigate to {controlType}");
 
-            if (content is MainWindowUserControlAbstract value)
+            if (content is IUserControl value)
             {
                 if (_currentControl is IDisposable disposable)
                     disposable.Dispose();
                 
                 _controlContent.OnNext(content);
                 _currentControl = content;
-                
-                value.Open();
             }
         }
     }

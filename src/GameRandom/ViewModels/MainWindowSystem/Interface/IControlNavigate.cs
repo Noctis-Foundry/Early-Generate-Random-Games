@@ -6,7 +6,7 @@ namespace GameRandom.ViewModels.MainWindowSystem.Interface;
 
 public interface IControlNavigate
 {
-    IObservable<UserControl> ControlContent { get; }
+    IObservable<object> ControlContent { get; }
     void BindingNavigateSystem();
     void Navigate(ControlTypes controlType);
 }
