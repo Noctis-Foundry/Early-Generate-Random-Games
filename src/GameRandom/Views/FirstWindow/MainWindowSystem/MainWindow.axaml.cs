@@ -35,7 +35,6 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>, IInitializeMa
 
     private Rules _rules = new();
     private LobbyWindow _lobbyWindow;
-    private AdminPanel _adminUserControl;
 
     /// <summary>
     /// Initializes the main window and all subsystems.
@@ -49,10 +48,11 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>, IInitializeMa
 
     public void InitializeUi()
     {
-        InitializeDiContainer();
-        
         var windowProvider = new WindowProvider(this);
         windowProvider.BindingInstance();
+        
+        InitializeViewModel();
+        InitializeDiContainer();
         
         _lobbyWindow = new LobbyWindow();
         DataContext = new MainWindowViewModel();
@@ -62,11 +62,7 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>, IInitializeMa
             EnableAdminPanel();
         });
         
-        EnableAdminPanel();
-        
         BindingCommand();
-            
-        InitWindowEvents();
     }
 
     public void SetLoadControl()
@@ -77,14 +73,14 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>, IInitializeMa
 
     public void EndLoadingData()
     {
-        if (ControlMain.Content is IDisposable disposable)
-            disposable.Dispose();   
+        TopContainer.IsVisible = true;
+        
+        EnableAdminPanel();
+        InitWindowEvents();
         
         var vm = GetViewModel();
         vm.UserControlNavigate.BindingNavigateSystem();
         vm.UserControlNavigate.Navigate(ControlTypes.MainWindow);
-        
-        TopContainer.IsVisible = true;
     }
 
     #endregion
@@ -229,6 +225,7 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>, IInitializeMa
         }
         
         AdminPanel.IsVisible = true;
+        AdminPanel.IsEnabled = true;
         
         if (DataContext is MainWindowViewModel vm)
             vm.BindingAdminPanel();
