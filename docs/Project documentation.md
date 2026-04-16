@@ -116,6 +116,12 @@ Global text styling with Rye-Font and dark gray color for all TextBlock controls
 
 ## Navigation and Content
 
+### UserControlNavigate
+Reactive navigation service managing user control switching in the main window. Uses `BehaviorSubject` to expose the active control as an observable, disposes previous controls on navigation, and delegates factory creation to `UserControlFactory`.
+
+[Detailed Documentation](ClassesAndSystems/UserControlNavigate.md)
+
+
 ### Main Window Content
 Primary navigation hub with three large image-based buttons (Table, Profile, Roll). Features animated rotating gradient borders on hover.
 
