@@ -22,7 +22,7 @@ public class RollGameIntegrationTests : IDisposable
         
         Di.BindingInstance.BindSingleton(typeof(SteamService), new SteamService());
         
-        _viewModel = new RollGameViewModel(_genApp);
+        _viewModel = new RollGameViewModel();
     }
 
     [Fact]
