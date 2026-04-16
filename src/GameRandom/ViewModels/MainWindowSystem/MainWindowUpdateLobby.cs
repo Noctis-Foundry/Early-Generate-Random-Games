@@ -43,7 +43,7 @@ public class MainWindowUpdateLobby : BaseModelService, ILobbyUpdate
         var userData = User.GetInstance().GetUserInfo();
 
         if (await GetLobby(userData.LobbyId, cts.Token) is not { } lobbyContexts)
-            return null!;
+            return new List<ProfileContext>();
 
         return await LoadLobbyProfiles(lobbyContexts.LobbyData);
     }

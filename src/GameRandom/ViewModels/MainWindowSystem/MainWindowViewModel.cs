@@ -7,8 +7,10 @@ using GameRandom.Scr.Service;
 using GameRandom.Src.SteamsContexts;
 using GameRandom.Src.UserData;
 using GameRandom.ViewModels.AdminConfirmSystem;
+using GameRandom.ViewModels.AdminConfirmSystem.Enums;
 using GameRandom.ViewModels.BaseClasses;
 using GameRandom.ViewModels.MainWindowSystem.Interface;
+using GameRandom.Views;
 using GameRandom.Views.MainWindowSystem;
 
 namespace GameRandom.ViewModels.MainWindowSystem;
@@ -84,7 +86,7 @@ public sealed class MainWindowViewModel : ViewModelBase
         InitializeDiContainer();
         InitializeSemaphoreSlim();
 
-        UserControlNavigate = new UserControlNavigate();
+        UserControlNavigate = new NavigateUserControls();
     }
     
     #region LobbyFunc
@@ -101,17 +103,24 @@ public sealed class MainWindowViewModel : ViewModelBase
             return;
         }
 
-        var result =
-            await TaskRunner.RunWithFinallyActionT(() => _lobbyUpdate.UpdateLobby(), () => SemaphoreSlim.Release());
-        
-        if (!result.Success || result.Value is null)
+        try
         {
-            Logger.Info($"Failed to update lobby");
-            return;
+            var result = await _lobbyUpdate.UpdateLobby();
+
+            if (result.Count == 0)
+                return;
+
+            UsersToLobby.Clear();
+            UsersToLobby = new HashSet<ProfileContext>(result);
         }
-        
-        UsersToLobby.Clear();
-        UsersToLobby = new HashSet<ProfileContext>(result.Value);
+        catch (Exception e)
+        {
+            Logger.Error($"Failed to update lobby: {e}");
+        }
+        finally
+        {
+            SemaphoreSlim.Release();
+        }
     }
 
     #endregion
@@ -125,7 +134,7 @@ public sealed class MainWindowViewModel : ViewModelBase
     public void BindingOpenLobbyCommand(Action func)
     {
         if (OpenLobbyCommand is null)
-            OpenLobbyCommand = new RelayCommand(func);
+            OpenLobbyCommand = new RelayCommand(func); //TODO Вынести в Navigate system
     }
 
     /// <summary>
@@ -135,7 +144,7 @@ public sealed class MainWindowViewModel : ViewModelBase
     public void BindingRulesWindow(Action func)
     {
         if (RulesOpen is null)
-            RulesOpen = new RelayCommand(func);
+            RulesOpen = new RelayCommand(func); //TODO Вынести в Navigate system
     }
 
     /// <summary>
@@ -144,10 +153,14 @@ public sealed class MainWindowViewModel : ViewModelBase
     /// <param name="func">Action executed when opening the admin panel.</param>
     public void BindingAdminPanel()
     {
-        OpenLobbyCommand = new RelayCommand(() =>
+        if (AdminPanelOpen is not null) return;
+        
+        AdminPanelOpen = new RelayCommand(() =>
         {
             if (!User.GetInstance().IsAdmin())
                 return;
+            
+            UserControlNavigate.Navigate(ControlTypes.Admin);
         });
     }
 
@@ -155,7 +168,7 @@ public sealed class MainWindowViewModel : ViewModelBase
     
     public override void Dispose()
     {
-        _lobbyUpdate.Dispose();
+        _lobbyUpdate?.Dispose();
         _lobbyUpdate = null!;
         
         base.Dispose();
