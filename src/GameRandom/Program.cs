@@ -35,7 +35,8 @@ sealed class Program
         }
         catch (Exception e)
         {
-            ThrowMessageBox($"Fatalerror: {e.Message}");
+            Logger.Error("App is closed with error: " + e);
+            ThrowMessageBox($"Fatal Error: {e.Message}");
         }
     }
     
