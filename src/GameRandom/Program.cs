@@ -36,6 +36,10 @@ sealed class Program
         catch (Exception e)
         {
             Logger.Error("App is closed with error: " + e);
+            
+            if (SteamManager.GetSteamManager().IsInitialized) 
+                SteamManager.GetSteamManager().ShutdownSteam();
+            
             ThrowMessageBox($"Fatal Error: {e.Message}");
         }
     }
