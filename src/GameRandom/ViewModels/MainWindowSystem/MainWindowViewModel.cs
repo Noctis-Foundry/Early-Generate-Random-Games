@@ -10,6 +10,7 @@ using GameRandom.ViewModels.AdminConfirmSystem;
 using GameRandom.ViewModels.AdminConfirmSystem.Enums;
 using GameRandom.ViewModels.BaseClasses;
 using GameRandom.ViewModels.MainWindowSystem.Interface;
+using GameRandom.ViewModels.MainWindowSystem.Services;
 using GameRandom.Views;
 using GameRandom.Views.MainWindowSystem;
 
@@ -21,45 +22,9 @@ namespace GameRandom.ViewModels.MainWindowSystem;
 public sealed class MainWindowViewModel : ViewModelBase
 {
     public IControlNavigate UserControlNavigate { get; private set; }
+    public ITopConCommandBinding ContainerCommandBinding { get; private set; }
+    public IAdminLock AdminLock { get; private set; }
     
-    #region BindingArea
-    
-    /// <summary>
-    /// Command to open the lobby window.
-    /// </summary>
-    private ICommand? _openLobbyCommand;
-
-    public ICommand? OpenLobbyCommand
-    {
-        get => _openLobbyCommand;
-        set => SetProperty(ref _openLobbyCommand, value);
-    }
-
-    /// <summary>
-    /// Command to open the challenge rules window.
-    /// </summary>
-    private ICommand? _rulesOpen;
-
-    public ICommand? RulesOpen
-    {
-        get => _rulesOpen;
-        set => SetProperty(ref _rulesOpen, value);
-    }
-
-    /// <summary>
-    /// Command to open the admin panel window.
-    /// </summary>
-    private ICommand? _adminPanelOpen;
-
-    /// <summary>
-    /// Gets or sets the command to open the admin panel.
-    /// </summary>
-    public ICommand? AdminPanelOpen
-    {
-        get => _adminPanelOpen;
-        set => SetProperty(ref _adminPanelOpen, value);
-    }
-
     /// <summary>
     /// Collection of users in the current lobby.
     /// </summary>
@@ -71,10 +36,8 @@ public sealed class MainWindowViewModel : ViewModelBase
     public HashSet<ProfileContext> UsersToLobby
     {
         get => _usersToLobby;
-        set => SetProperty(ref _usersToLobby, value);
+        private set => SetProperty(ref _usersToLobby, value);
     }
-    
-    #endregion
     
     private ILobbyUpdate _lobbyUpdate = new MainWindowUpdateLobby();
     
@@ -87,6 +50,26 @@ public sealed class MainWindowViewModel : ViewModelBase
         InitializeSemaphoreSlim();
 
         UserControlNavigate = new NavigateUserControls();
+        AdminLock = new AdminLockService();
+
+        AdminLock.Initialize();
+    }
+
+    public void InitializeCommands(Action openLobby, Action openRules)
+    {
+        ContainerCommandBinding = new TopConContainerCommands();
+        
+        ContainerCommandBinding.BindingLobby(openLobby);
+        ContainerCommandBinding.BindingRules(openRules);
+        ContainerCommandBinding.BindingAdmin(OpenAdminPanel);
+    }
+
+    private void OpenAdminPanel()
+    {
+        if (!User.GetInstance().IsAdmin())
+            return;
+        
+        UserControlNavigate.Navigate(ControlTypes.Admin);
     }
     
     #region LobbyFunc
@@ -124,52 +107,15 @@ public sealed class MainWindowViewModel : ViewModelBase
     }
 
     #endregion
-
-    #region BindingMenuItems
-
-    /// <summary>
-    /// Binds the lobby opening command to the specified action.
-    /// </summary>
-    /// <param name="func">Action executed when opening the lobby.</param>
-    public void BindingOpenLobbyCommand(Action func)
-    {
-        if (OpenLobbyCommand is null)
-            OpenLobbyCommand = new RelayCommand(func); //TODO Вынести в Navigate system
-    }
-
-    /// <summary>
-    /// Binds the rules window opening command to the specified action.
-    /// </summary>
-    /// <param name="func">Action executed when opening the rules window.</param>
-    public void BindingRulesWindow(Action func)
-    {
-        if (RulesOpen is null)
-            RulesOpen = new RelayCommand(func); //TODO Вынести в Navigate system
-    }
-
-    /// <summary>
-    /// Binds the admin panel opening command to the specified action.
-    /// </summary>
-    /// <param name="func">Action executed when opening the admin panel.</param>
-    public void BindingAdminPanel()
-    {
-        if (AdminPanelOpen is not null) return;
-        
-        AdminPanelOpen = new RelayCommand(() =>
-        {
-            if (!User.GetInstance().IsAdmin())
-                return;
-            
-            UserControlNavigate.Navigate(ControlTypes.Admin);
-        });
-    }
-
-    #endregion
     
     public override void Dispose()
     {
         _lobbyUpdate?.Dispose();
         _lobbyUpdate = null!;
+        
+        UserControlNavigate.Dispose();
+        ContainerCommandBinding.Dispose();
+        AdminLock.Dispose();
         
         base.Dispose();
     }

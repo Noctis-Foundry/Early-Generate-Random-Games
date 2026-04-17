@@ -33,7 +33,7 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>, IInitializeMa
     [Inject] private readonly SteamService _steamService = null!;
     
 
-    private Rules _rules = new();
+    private RulesWindow _rulesWindowWindow = new();
     private LobbyWindow _lobbyWindow;
 
     /// <summary>
@@ -54,15 +54,7 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>, IInitializeMa
         InitializeViewModel();
         InitializeDiContainer();
         
-        _lobbyWindow = new LobbyWindow();
         DataContext = new MainWindowViewModel();
-        
-        _eventBus.Subscribe<AdminRulesUpdating>(_ =>
-        {
-            EnableAdminPanel();
-        });
-        
-        BindingCommand();
     }
 
     public void SetLoadControl()
@@ -75,7 +67,7 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>, IInitializeMa
     {
         TopContainer.IsVisible = true;
         
-        EnableAdminPanel();
+        BindingCommands();
         InitWindowEvents();
         
         var vm = GetViewModel();
@@ -204,30 +196,17 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>, IInitializeMa
         }
     }
 
-    /// <summary>
-    /// Binds ViewModel commands to window actions.
-    /// </summary>
-    private void BindingCommand()
+    private void BindingCommands()
     {
-        if (DataContext is MainWindowViewModel vm)
-        {
-            vm.BindingOpenLobbyCommand(() => _lobbyWindow.Show());
-            vm.BindingRulesWindow(() => _rules.Show());
-        }
-    }
+        _lobbyWindow = new LobbyWindow();
+        _rulesWindowWindow = new RulesWindow();
 
-    private void EnableAdminPanel()
-    {
-        if (!User.GetInstance().IsAdmin())
-        {
-            AdminPanel.IsVisible = false;
-            return;
-        }
-        
-        AdminPanel.IsVisible = true;
-        AdminPanel.IsEnabled = true;
-        
+        void OpenLobby() => _lobbyWindow.Show();
+        void OpenRules() => _rulesWindowWindow.Show();
+
         if (DataContext is MainWindowViewModel vm)
-            vm.BindingAdminPanel();
+        {
+            vm.InitializeCommands(OpenLobby, OpenRules);
+        }
     }
 }

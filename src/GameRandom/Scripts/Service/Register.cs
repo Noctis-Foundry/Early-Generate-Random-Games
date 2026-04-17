@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace GameRandom.Service;
 
-public class Register<TKey, TValue>
+public class Register<TKey, TValue> : IDisposable
 {
     private Dictionary<TKey, TValue> _registerValues = new Dictionary<TKey, TValue>();
 
@@ -24,5 +24,11 @@ public class Register<TKey, TValue>
             throw new ArgumentNullException();
 
         return _registerValues.TryGetValue(key, out tValue);
+    }
+
+
+    public void Dispose()
+    {
+        _registerValues.Clear();
     }
 }

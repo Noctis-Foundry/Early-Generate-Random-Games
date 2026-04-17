@@ -18,7 +18,7 @@ using GameRandom.ViewModels.MainWindowSystem.Interface;
 
 namespace GameRandom.Views.MainWindowSystem;
 
-public class NavigateUserControls : IControlNavigate
+public class NavigateUserControls : IControlNavigate, IDisposable
 {
     
     private readonly BehaviorSubject<object> _controlContent;
@@ -107,5 +107,13 @@ public class NavigateUserControls : IControlNavigate
                 _currentControl = content;
             }
         }
+    }
+
+    public void Dispose()
+    {
+        _controlContent.Dispose();
+        _preloadRegister.Dispose();
+        _currentControl = null!;
+        _changeUserControlAction = null!;
     }
 }

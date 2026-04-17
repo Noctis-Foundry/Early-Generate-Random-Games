@@ -9,4 +9,6 @@ public interface IControlNavigate
     IObservable<object> ControlContent { get; }
     void BindingNavigateSystem();
     void Navigate(ControlTypes controlType);
+
+    void Dispose();
 }
