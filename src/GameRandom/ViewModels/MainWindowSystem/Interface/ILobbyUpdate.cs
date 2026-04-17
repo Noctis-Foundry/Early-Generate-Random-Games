@@ -6,6 +6,7 @@ namespace GameRandom.ViewModels.AdminConfirmSystem;
 
 public interface ILobbyUpdate
 {
-    public Task<List<ProfileContext>> UpdateLobby();
+    public List<ProfileContext> UserContext { get; }
+    public Task UpdateLobby();
     public void Dispose();
 }
