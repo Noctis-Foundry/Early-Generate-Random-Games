@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Autofac.Core;
 using CommunityToolkit.Mvvm.Input;
 using GameRandom.Scr.Service;
 using GameRandom.Src.SteamsContexts;
@@ -11,7 +12,6 @@ using GameRandom.ViewModels.AdminConfirmSystem.Enums;
 using GameRandom.ViewModels.BaseClasses;
 using GameRandom.ViewModels.MainWindowSystem.Interface;
 using GameRandom.ViewModels.MainWindowSystem.Services;
-using GameRandom.Views;
 using GameRandom.Views.MainWindowSystem;
 
 namespace GameRandom.ViewModels.MainWindowSystem;
@@ -22,24 +22,29 @@ namespace GameRandom.ViewModels.MainWindowSystem;
 public sealed class MainWindowViewModel : ViewModelBase
 {
     public IControlNavigate UserControlNavigate { get; private set; }
-    public ITopConCommandBinding ContainerCommandBinding { get; private set; }
     public IAdminLock AdminLock { get; private set; }
-    
-    /// <summary>
-    /// Collection of users in the current lobby.
-    /// </summary>
-    private HashSet<ProfileContext> _usersToLobby = new();
+    public ILobbyUpdate LobbyUpdate { get; private set; }= new MainWindowUpdateLobby();
 
-    /// <summary>
-    /// Gets or sets the collection of users in the lobby.
-    /// </summary>
-    public HashSet<ProfileContext> UsersToLobby
-    {
-        get => _usersToLobby;
-        private set => SetProperty(ref _usersToLobby, value);
+    #region BindingArea
+
+    private ICommand _rulesOpenCommand;
+    private ICommand _adminOpenCommand;
+    private ICommand _lobbyOpenCommand;
+
+    public ICommand RulesOpenCommand {
+        get => _rulesOpenCommand;
+        set => SetProperty(ref _rulesOpenCommand, value);
     }
-    
-    private ILobbyUpdate _lobbyUpdate = new MainWindowUpdateLobby();
+    public ICommand AdminOpenCommand {
+        get => _adminOpenCommand;
+        set => SetProperty(ref _adminOpenCommand, value);
+    }
+    public ICommand LobbyOpenCommand {
+        get => _lobbyOpenCommand;
+        set => SetProperty(ref _lobbyOpenCommand, value);
+    }
+
+    #endregion
     
     /// <summary>
     /// Initializes a new instance of MainWindowViewModel.
@@ -57,11 +62,9 @@ public sealed class MainWindowViewModel : ViewModelBase
 
     public void InitializeCommands(Action openLobby, Action openRules)
     {
-        ContainerCommandBinding = new TopConContainerCommands();
-        
-        ContainerCommandBinding.BindingLobby(openLobby);
-        ContainerCommandBinding.BindingRules(openRules);
-        ContainerCommandBinding.BindingAdmin(OpenAdminPanel);
+        RulesOpenCommand = new RelayCommand(openRules);
+        AdminOpenCommand = new RelayCommand(OpenAdminPanel);
+        LobbyOpenCommand = new RelayCommand(openLobby);
     }
 
     private void OpenAdminPanel()
@@ -72,50 +75,17 @@ public sealed class MainWindowViewModel : ViewModelBase
         UserControlNavigate.Navigate(ControlTypes.Admin);
     }
     
-    #region LobbyFunc
-
-    /// <summary>
-    /// Updates lobby data by loading information about all participants.
-    /// </summary>
-    /// <param name="tableCode">Table code for update (must be TableEnum.Lobby).</param>
-    public async Task UpdateLobby()
-    {
-        if (!await SemaphoreSlim.WaitAsync(SemaphoreTimeWait))
-        {
-            Logger.Info("Thread is not empty");
-            return;
-        }
-
-        try
-        {
-            var result = await _lobbyUpdate.UpdateLobby();
-
-            if (result.Count == 0)
-                return;
-
-            UsersToLobby.Clear();
-            UsersToLobby = new HashSet<ProfileContext>(result);
-        }
-        catch (Exception e)
-        {
-            Logger.Error($"Failed to update lobby: {e}");
-        }
-        finally
-        {
-            SemaphoreSlim.Release();
-        }
-    }
-
-    #endregion
-    
     public override void Dispose()
     {
-        _lobbyUpdate?.Dispose();
-        _lobbyUpdate = null!;
+        LobbyUpdate.Dispose();
+        LobbyUpdate = null!;
         
         UserControlNavigate.Dispose();
-        ContainerCommandBinding.Dispose();
         AdminLock.Dispose();
+
+        RulesOpenCommand = null!;
+        AdminOpenCommand = null!;
+        LobbyOpenCommand = null!;
         
         base.Dispose();
     }

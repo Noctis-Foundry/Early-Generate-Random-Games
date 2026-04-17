@@ -18,10 +18,10 @@
                         Background="DimGray" x:Name="TopContainer">
                         <Grid ColumnDefinitions="*, Auto">
                                 <Menu>
-                                        <MenuItem Header="Lobby System" Command="{Binding ContainerCommandBinding.LobbyCommand}"></MenuItem>
-                                        <MenuItem Header="Rules" Command="{Binding ContainerCommandBinding.RulesCommand}"></MenuItem>
-                                        <MenuItem Header="Admin Panel" Command="{Binding ContainerCommandBinding.AdminCommand}" x:Name="AdminPanel"
-                                                  IsEnabled="True"></MenuItem>
+                                        <MenuItem Header="Lobby System" Command="{Binding LobbyOpenCommand}"></MenuItem>
+                                        <MenuItem Header="Rules" Command="{Binding RulesOpenCommand}"></MenuItem>
+                                        <MenuItem Header="Admin Panel" Command="{Binding AdminOpenCommand}" x:Name="AdminPanel"
+                                                  IsEnabled="{Binding AdminLock.IsAdmin}"></MenuItem>
                                 </Menu>
                                 <Grid Grid.Column="1" ColumnDefinitions="Auto, Auto" HorizontalAlignment="Center" ColumnSpacing="5"
                                       VerticalAlignment="Center" Margin="0,0,10, 0" x:Name="LobbyImages">

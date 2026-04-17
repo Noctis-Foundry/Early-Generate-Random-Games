@@ -27,7 +27,6 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>, IInitializeMa
 {
     [Inject] private readonly LobbyService _lobby = null!;
     [Inject] private readonly EventBus _eventBus = null!;
-
     [Inject] private readonly PostgresListener _postgresListener = null!;
     [Inject] private readonly MainWindowFactory _mainWindowFactory = null!;
     [Inject] private readonly SteamService _steamService = null!;
@@ -153,11 +152,9 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>, IInitializeMa
         
         Dispatcher.UIThread.InvokeAsync(async () =>
         {
-            Logger.Debug("Start updating lobby");
-            
             try
             {
-                await vm.UpdateLobby();
+                await vm.LobbyUpdate.UpdateLobby();
                 await UpdateAvatarGrid();
             }
             catch (Exception e)
@@ -176,7 +173,7 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>, IInitializeMa
         
         if (DataContext is not MainWindowViewModel vm) return;
 
-        var profileList = vm.UsersToLobby;
+        var profileList = vm.LobbyUpdate.UserContext;
         LobbyImages.Children.Clear();
 
         LobbyImages.ColumnDefinitions.Clear();
