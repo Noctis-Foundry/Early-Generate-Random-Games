@@ -13,7 +13,7 @@ public class SteamManager
 {
     private const int MaxTryToConnect = 6;
     private static Lazy<SteamManager> _instance = new (() => new SteamManager());
-    private bool _isInitialized = false;
+    public bool IsInitialized { get; private set; }= false;
 
     private DispatcherTimer? _steamCallbackTimer;
 
@@ -21,7 +21,7 @@ public class SteamManager
     
     public void InitSteam()
     {
-        if (_isInitialized)
+        if (IsInitialized)
             return;
         
         try
@@ -35,7 +35,7 @@ public class SteamManager
         }
         
         StartEventTimer();
-        _isInitialized = true;
+        IsInitialized = true;
     }
     private void StartEventTimer()
     {
@@ -47,18 +47,18 @@ public class SteamManager
 
     public void ShutdownSteam()
     {
-        if (!_isInitialized) return;
+        if (!IsInitialized) return;
 
         _steamCallbackTimer?.Stop();
         SteamAPI.Shutdown();
-        _isInitialized = false;
+        IsInitialized = false;
 
         Console.WriteLine("SteamAPI.Shutdown() finished");
     }
     
     public CSteamID GetSteamId()
     {
-        if (!_isInitialized)
+        if (!IsInitialized)
             throw new Exception("SteamAPI.Init() failed");
 
         return SteamUser.GetSteamID();
