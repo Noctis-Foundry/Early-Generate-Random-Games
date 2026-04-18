@@ -4,38 +4,36 @@ using Avalonia.Interactivity;
 using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.Src;
 using GameRandom.Src.Enums;
+using GameRandom.ViewModels;
+using GameRandom.ViewModels.AdminConfirmSystem.Enums;
 
 namespace GameRandom.Views;
 
-public partial class MainWindowContent : MainWindowUserControlAbstract
+public partial class MainWindowContent : MainWindowUserControlAbstract<MainUserControlViewModel>
 {
     public MainWindowContent()
     {
         InitializeComponent();
+        DataContext = new MainUserControlViewModel();
     }
 
-    public override void Close(object? sender, RoutedEventArgs e)
+    public override void CloseUserControl(object? sender, RoutedEventArgs e)
     {
         //Empty
     }
 
     private void GoToRollContent(object? sender, RoutedEventArgs e)
     {
-        _changeWindowAction?.Invoke("Roll");
+        _changeWindowAction?.Invoke(ControlTypes.Roll);
     }
     
     private void GoToTable(object? sender, RoutedEventArgs e)
     {
-        _changeWindowAction?.Invoke("Table");
+        _changeWindowAction?.Invoke(ControlTypes.GameTable);
     }
 
     private void GoToProfile(object? sender, RoutedEventArgs e)
     {
-        _changeWindowAction?.Invoke("Profile");
-    }
-
-    private void GoToRules(object? sender, RoutedEventArgs e)
-    {
-        _changeWindowAction?.Invoke("Rules");
+        _changeWindowAction?.Invoke(ControlTypes.Profile);
     }
 }

@@ -23,7 +23,7 @@
             <Grid ColumnDefinitions="*, Auto">
                 <TextBlock Text="Game table" Classes="TitleTextBoxStyle"
                            HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
-                <Button Grid.Column="1" Content="Close" Classes="ProfileButtons" Click="Close"></Button>
+                <Button Grid.Column="1" Content="Close" Classes="ProfileButtons" Click="CloseUserControl"></Button>
             </Grid>
         </Border>
         

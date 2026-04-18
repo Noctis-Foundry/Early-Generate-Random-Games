@@ -6,6 +6,7 @@ using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.Scr.Events;
 using GameRandom.Scr.Service;
+using GameRandom.Scripts.WindowServices;
 using GameRandom.Scripts.WindowServices.ErrorServiceSystem;
 using GameRandom.Src.Enums;
 using GameRandom.ViewModels.AdminConfirmSystem;

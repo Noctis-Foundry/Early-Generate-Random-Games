@@ -10,6 +10,7 @@ using GameRandom.Scr.Service;
 using GameRandom.Scripts.WindowServices.ErrorServiceSystem;
 using GameRandom.Src;
 using GameRandom.Src.RollGameSystem;
+using GameRandom.Src.StartupLogic;
 using GameRandom.Src.SteamsContexts;
 
 namespace GameRandom.Scripts.SteamSDK;
@@ -30,11 +31,15 @@ public class SteamWebApi : ISteamWebService
     
     public SteamWebApi()
     {
-        ApiKey = Environment.GetEnvironmentVariable("Steam_Web_Api_Key");
+        if (GameEnvLoad._envCollection.TryGetValue(EnvType.SteamApiEnv, out var value))
+        {
+            ApiKey = value;
+        }
+        
         
         if (string.IsNullOrEmpty(ApiKey))
         {
-            throw new ArgumentException("Steam web api key not found");
+            throw new ArgumentException("Failed load steam web api. Check ethernet connection");
         }
     }
     

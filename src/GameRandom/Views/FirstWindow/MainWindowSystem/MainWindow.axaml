@@ -3,9 +3,10 @@
         xmlns:vm="using:GameRandom.ViewModels.AdminConfirmSystem"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mainWindowSystem="clr-namespace:GameRandom.ViewModels.MainWindowSystem"
         mc:Ignorable="d" d:DesignWidth="963" d:DesignHeight="700"
-        x:Class="GameRandom.Views.MainWindow"
-        x:DataType="vm:MainWindowViewModel"
+        x:Class="GameRandom.Views.MainWindowSystem.MainWindow"
+        x:DataType="mainWindowSystem:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="GameRandom"
         Width="1000" Height="500"
@@ -14,12 +15,13 @@
         
         <DockPanel Background="Gray">
                 <Border Classes="TopProfileContainer" MinHeight="40" MaxHeight="40" DockPanel.Dock="Top" CornerRadius="0"
-                        Background="DimGray">
+                        Background="DimGray" x:Name="TopContainer">
                         <Grid ColumnDefinitions="*, Auto">
                                 <Menu>
-                                        <MenuItem Header="Lobby System" Command="{Binding OpenLobbyCommand}"></MenuItem>
-                                        <MenuItem Header="Rules" Command="{Binding RulesOpen}"></MenuItem>
-                                        <MenuItem Header="Admin Panel" Command="{Binding AdminPanelOpen}" x:Name="AdminPanel" IsVisible="False"></MenuItem>
+                                        <MenuItem Header="Lobby System" Command="{Binding LobbyOpenCommand}"></MenuItem>
+                                        <MenuItem Header="Rules" Command="{Binding RulesOpenCommand}"></MenuItem>
+                                        <MenuItem Header="Admin Panel" Command="{Binding AdminOpenCommand}" x:Name="AdminPanel"
+                                                  IsEnabled="{Binding AdminLock.IsAdmin}"></MenuItem>
                                 </Menu>
                                 <Grid Grid.Column="1" ColumnDefinitions="Auto, Auto" HorizontalAlignment="Center" ColumnSpacing="5"
                                       VerticalAlignment="Center" Margin="0,0,10, 0" x:Name="LobbyImages">
@@ -32,7 +34,7 @@
                 </Border>
                        
                 
-                <ContentControl x:Name="ControlMain" Width="1000" Height="460"></ContentControl>
+                <ContentControl x:Name="ControlMain" Content="{Binding UserControlNavigate.ControlContent^}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"></ContentControl>
         </DockPanel>
         
        

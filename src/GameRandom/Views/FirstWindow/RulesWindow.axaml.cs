@@ -14,17 +14,19 @@ using GameRandom.ViewModels.BaseClasses;
 
 namespace GameRandom.Views;
 
-public partial class Rules : WindowBase<ViewModelBase>
+public partial class RulesWindow : WindowBase<ViewModelBase>
 {
     private bool _isEnglish = false;
     private Dictionary<string, string> _currentLocalization = new();
     private readonly string _localizationPath;
     
-    public Rules()
+    public RulesWindow()
     {
         InitializeComponent();
         _localizationPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", "Localization");
         LoadLocalization("en");
+
+        WindowStartupLocation = WindowStartupLocation.CenterScreen;
     }
     
     private void Close(Object? sender, RoutedEventArgs e)

@@ -7,6 +7,7 @@
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
         <LangVersion>14</LangVersion>
+        <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
     </PropertyGroup>
 
     <ItemGroup>
@@ -15,6 +16,7 @@
         <Content Include="Assets\Localization\**">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
+        <None Include="Assets\icon.ico" />
         <None Include="Assets\Jsons\temp_apps.json">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
@@ -53,10 +55,12 @@
         <PackageReference Include="Avalonia.Desktop" Version="11.3.11"/>
         <PackageReference Include="Avalonia.Diagnostics" Version="11.3.11"/>
         <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.11"/>
+        <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.8" />
         <PackageReference Include="Avalonia.Remote.Protocol" Version="11.3.11"/>
         <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.11"/>
         <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.3.11"/>
         <PackageReference Include="Avalonia.Labs.Gif" Version="11.3.1" />
+        <PackageReference Include="Avalonia.Xaml.Behaviors" Version="11.3.0.6" />
 
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.0-rc.1.25451.107"/>
@@ -68,6 +72,7 @@
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0-rc.1"/>
         <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
         <PackageReference Include="Steamworks.NET" Version="2024.8.0"/>
+        <PackageReference Include="System.Reactive" Version="7.0.0-preview.1" />
     </ItemGroup>
 
     <ItemGroup>
@@ -104,6 +109,10 @@
         </Compile>
         <Compile Update="Views\ConfirmFinishGame.axaml.cs">
           <DependentUpon>ConfirmFinishGame.axaml</DependentUpon>
+        </Compile>
+        <Compile Update="Views\FirstWindow\MainWindowSystem\MainWindow.axaml.cs">
+          <DependentUpon>MainWindow.axaml</DependentUpon>
+          <SubType>Code</SubType>
         </Compile>
     </ItemGroup>
 

@@ -1,0 +1,21 @@
+using GameRandom.DependenceInjectSystem.Enums;
+using GameRandom.DependenceInjectSystem.Providers;
+using GameRandom.Scr.Events;
+using GameRandom.Scr.Service;
+using GameRandom.Scripts.SteamSDK;
+using GameRandom.Src;
+
+namespace GameRandom.Providers;
+
+public sealed class PriorityDependence : DiProvider
+{
+    public override void BindingInstance()
+    {
+        DiContainer.FromInstance<DatabaseService>().ScopeBind(ScopeType.Singleton, false);
+        DiContainer.FromInstance<DatabaseTransitionService>().ScopeBind(ScopeType.Singleton);
+        DiContainer.Bind<ISteamWebService>().To<SteamWebApi>().ScopeBind(ScopeType.Singleton, false);
+        DiContainer.FromInstance<PostgresListener>().ScopeBind(ScopeType.Singleton);
+        DiContainer.FromInstance<SteamService>().ScopeBind(ScopeType.Singleton);
+        DiContainer.FromInstance<EventBus>().ScopeBind(ScopeType.Singleton);
+    }
+}

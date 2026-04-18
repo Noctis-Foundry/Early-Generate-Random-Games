@@ -6,11 +6,12 @@ using GameRandom.Service;
 using GameRandom.Src;
 using GameRandom.ViewModels;
 using GameRandom.ViewModels.AdminConfirmSystem;
+using GameRandom.ViewModels.AdminConfirmSystem.Enums;
 using Steamworks;
 
 namespace GameRandom.Views;
 
-public partial class ProfileContent : MainWindowUserControlAbstract
+public sealed partial class ProfileContent : MainWindowUserControlAbstract<ProfileViewModel>
 {
     private StatisticControl _statisticContent;
     private CurrentGame? _currentGame;
@@ -24,10 +25,11 @@ public partial class ProfileContent : MainWindowUserControlAbstract
             StatisticContent.Content = new StatisticControl();
         }
         
-        DataContext = new ProfileViewModel();
+        InitializeViewModel();
+        LoadUserControl();
     }
 
-    public override void Open()
+    protected override void LoadUserControl()
     {
         _statisticContent = new StatisticControl();
         _statisticContent.Open();
@@ -35,9 +37,9 @@ public partial class ProfileContent : MainWindowUserControlAbstract
         StatisticContent.Content = _statisticContent;
     }
 
-    public override void Close(object? sender, RoutedEventArgs e)
+    public override void CloseUserControl(object? sender, RoutedEventArgs e)
     {
-        _changeWindowAction?.Invoke("Main");
+        _changeWindowAction?.Invoke(ControlTypes.MainWindow);
         Dispose();
     }
 

@@ -3,7 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using GameRandom.Src;
-using GameRandom.ViewModels.AdminConfirmSystem.ContextWindowViewModels;
+using GameRandom.ViewModels.ContextWindowViewModels;
 
 namespace GameRandom.Views;
 

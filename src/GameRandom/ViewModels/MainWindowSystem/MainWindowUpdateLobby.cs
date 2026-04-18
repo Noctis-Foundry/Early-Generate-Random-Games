@@ -30,28 +30,55 @@ public class MainWindowUpdateLobby : BaseModelService, ILobbyUpdate
     [Inject] private ISteamWebService _steamWebApi = null!;
     
     private const int LobbyUpdateTimeout = 3;
+    private SemaphoreSlim _semaphoreSlim = new(1, 1);
+    private const int SemaphoreWaitSec = 3;
+
+    public List<ProfileContext> UserContext { get; private set; } = new();
 
     public MainWindowUpdateLobby()
     {
         if (_steamWebApi is null) //Base model service injecting base property.
             throw new NullReferenceException(nameof(_steamWebApi));
     }
-    public async Task<List<ProfileContext>> UpdateLobby()
+
+    public async Task UpdateLobby()
     {
+        try
+        {
+            if (!await _semaphoreSlim.WaitAsync(TimeSpan.FromSeconds(SemaphoreWaitSec)))
+            {
+                Logger.Debug("Thread is not empty");
+                return;
+            }
 
-        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(LobbyUpdateTimeout));
-        var userData = User.GetInstance().GetUserInfo();
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(LobbyUpdateTimeout));
+            var userData = User.GetInstance().GetUserInfo();
 
-        if (await GetLobby(userData.LobbyId, cts.Token) is not { } lobbyContexts)
-            return null!;
+            if (await GetLobby(userData.LobbyId, cts.Token) is not { } lobbyContexts)
+                return;
 
-        return await LoadLobbyProfiles(lobbyContexts.LobbyData);
+            var profiles = await LoadLobbyProfiles(lobbyContexts.LobbyData);
+
+            if (profiles == null)
+                return;
+            
+            UserContext.Clear();
+            UserContext.AddRange(profiles);
+        }
+        catch (Exception e)
+        {
+            Logger.Error(e.Message);
+        }
+        finally
+        {
+            _semaphoreSlim.Release();
+        }
     }
     /// <summary>
     /// Loads profile information for all users in the lobby.
     /// </summary>
     /// <param name="lobbyData">List of lobby users to load profiles for.</param>
-    private async Task<List<ProfileContext>> LoadLobbyProfiles(List<LobbyData> lobbyData)
+    private async Task<List<ProfileContext>?> LoadLobbyProfiles(List<LobbyData> lobbyData)
     {
         var users = new List<ProfileContext>();
         
@@ -62,7 +89,7 @@ public class MainWindowUpdateLobby : BaseModelService, ILobbyUpdate
             if (profileContext == null)
             {
                 Logger.Error("Not find profile context");
-                return null!;
+                return null;
             }
 
             users.Add(profileContext);
@@ -91,6 +118,8 @@ public class MainWindowUpdateLobby : BaseModelService, ILobbyUpdate
     }
     public override void Dispose()
     {
+        UserContext.Clear();
+        
         _steamWebApi = null!;
         
         base.Dispose();

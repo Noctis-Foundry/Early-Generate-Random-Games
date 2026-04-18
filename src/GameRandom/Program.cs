@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using System;
+using System.Diagnostics;
 using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.Scr.Events;
 using GameRandom.Scr.Service;
@@ -23,7 +24,8 @@ sealed class Program
     [STAThread]
     public static void Main(string[] args)
     { 
-        InitializeDependenceInjection();
+        // LoadImpotentDependence().GetAwaiter().GetResult();
+        
         GlobalExceptionHandler();
         
         try
@@ -33,13 +35,12 @@ sealed class Program
         }
         catch (Exception e)
         {
-            // System.Diagnostics.Process.Start("MessageBox.exe", new []
-            // {
-            //     e.Message,
-            //     nameof(ErrorEnum.Critical)
-            // });
+            Logger.Error("App is closed with error: " + e);
             
-            throw new Exception(e.Message, e);
+            if (SteamManager.GetSteamManager().IsInitialized) 
+                SteamManager.GetSteamManager().ShutdownSteam();
+            
+            ThrowMessageBox($"Fatal Error: {e.Message}");
         }
     }
     
@@ -49,12 +50,6 @@ sealed class Program
             .UsePlatformDetect()
             .WithInterFont()
             .LogToTrace();
-
-    private static void InitializeDependenceInjection()
-    {
-        var startProvider = new StartAppProvider();
-        startProvider.BindingInstance();
-    }
     
     private static void GlobalExceptionHandler()
     {
@@ -71,5 +66,25 @@ sealed class Program
             Logger.Error("UnobservedTaskException: " + args.Exception.Message);
             args.SetObserved();
         };
+    }
+
+    private static void ThrowMessageBox(string message)
+    {
+        var nameBox = OperatingSystem.IsWindows() ? "MessageBox.exe" : "MessageBox";
+
+        var processingInfo = new ProcessStartInfo
+        {
+            FileName = nameBox,
+            UseShellExecute = false,
+        };
+        
+        processingInfo.ArgumentList.Add(message);
+        
+        var process = Process.Start(processingInfo);
+
+        if (process is null)
+            return;
+        
+        process.WaitForExit();
     }
 }

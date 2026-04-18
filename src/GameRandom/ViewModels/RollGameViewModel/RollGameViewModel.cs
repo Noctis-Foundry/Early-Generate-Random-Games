@@ -89,11 +89,11 @@ public sealed class RollGameViewModel : ViewModelBase
     /// <summary>
     /// Constructor. Initializes the random application generator if not in design mode.
     /// </summary>
-    public RollGameViewModel(IGenApp generateRandomApps)
+    public RollGameViewModel()
     {
         if (Design.IsDesignMode) return;
 
-        _generateRandomApps = generateRandomApps;
+        _generateRandomApps = new GenerateRandomApps();
 
         InitializeDiContainer();
         

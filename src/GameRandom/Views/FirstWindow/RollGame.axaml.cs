@@ -11,10 +11,11 @@ using GameRandom.Src;
 using GameRandom.ViewModels.AdminConfirmSystem;
 using GameRandom.Scripts.WindowServices.ErrorServiceSystem;
 using GameRandom.Src.RollGameSystem;
+using GameRandom.ViewModels.AdminConfirmSystem.Enums;
 
 namespace GameRandom.Views;
 
-public partial class RollGame : MainWindowUserControlAbstract
+public sealed partial class RollGame : MainWindowUserControlAbstract<RollGameViewModel>
 {
     [Inject] private IErrorService _errorService = null!;
     
@@ -39,7 +40,7 @@ public partial class RollGame : MainWindowUserControlAbstract
         if (Design.IsDesignMode)
             return;
         
-        DataContext = new RollGameViewModel(new GenerateRandomApps());
+        InitializeViewModel();
         TextBoxEventsInit();
 
         Di.ResolveInstance.ResolveInstanceFromClass(this);
@@ -48,9 +49,9 @@ public partial class RollGame : MainWindowUserControlAbstract
             throw new NullReferenceException(nameof(_errorService));
     }
 
-    public override void Close(object? sender, RoutedEventArgs e)
+    public override void CloseUserControl(object? sender, RoutedEventArgs e)
     {
-        _changeWindowAction?.Invoke("Main");
+        _changeWindowAction?.Invoke(ControlTypes.MainWindow);
         
         Dispose();
     }

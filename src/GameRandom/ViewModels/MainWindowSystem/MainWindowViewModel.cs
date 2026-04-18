@@ -1,81 +1,51 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Autofac.Core;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
-using GameRandom.DataBaseContexts;
-using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.Scr.Service;
-using GameRandom.Src;
-using GameRandom.Src.Enums;
 using GameRandom.Src.SteamsContexts;
 using GameRandom.Src.UserData;
+using GameRandom.ViewModels.AdminConfirmSystem;
+using GameRandom.ViewModels.AdminConfirmSystem.Enums;
 using GameRandom.ViewModels.BaseClasses;
+using GameRandom.ViewModels.MainWindowSystem.Interface;
+using GameRandom.ViewModels.MainWindowSystem.Services;
+using GameRandom.Views.MainWindowSystem;
 
-namespace GameRandom.ViewModels.AdminConfirmSystem;
+namespace GameRandom.ViewModels.MainWindowSystem;
 
 /// <summary>
 /// ViewModel for the main application window. Manages lobby and challenge rules.
 /// </summary>
 public sealed class MainWindowViewModel : ViewModelBase
 {
-    
+    public IControlNavigate UserControlNavigate { get; private set; }
+    public IAdminLock AdminLock { get; private set; }
+    public ILobbyUpdate LobbyUpdate { get; private set; }= new MainWindowUpdateLobby();
+
     #region BindingArea
-    
-    /// <summary>
-    /// Command to open the lobby window.
-    /// </summary>
-    private ICommand? _openLobbyCommand;
 
-    public ICommand? OpenLobbyCommand
-    {
-        get => _openLobbyCommand;
-        set => SetProperty(ref _openLobbyCommand, value);
+    private ICommand _rulesOpenCommand;
+    private ICommand _adminOpenCommand;
+    private ICommand _lobbyOpenCommand;
+
+    public ICommand RulesOpenCommand {
+        get => _rulesOpenCommand;
+        set => SetProperty(ref _rulesOpenCommand, value);
+    }
+    public ICommand AdminOpenCommand {
+        get => _adminOpenCommand;
+        set => SetProperty(ref _adminOpenCommand, value);
+    }
+    public ICommand LobbyOpenCommand {
+        get => _lobbyOpenCommand;
+        set => SetProperty(ref _lobbyOpenCommand, value);
     }
 
-    /// <summary>
-    /// Command to open the challenge rules window.
-    /// </summary>
-    private ICommand? _rulesOpen;
-
-    public ICommand? RulesOpen
-    {
-        get => _rulesOpen;
-        set => SetProperty(ref _rulesOpen, value);
-    }
-
-    /// <summary>
-    /// Command to open the admin panel window.
-    /// </summary>
-    private ICommand? _adminPanelOpen;
-
-    /// <summary>
-    /// Gets or sets the command to open the admin panel.
-    /// </summary>
-    public ICommand? AdminPanelOpen
-    {
-        get => _adminPanelOpen;
-        set => SetProperty(ref _adminPanelOpen, value);
-    }
-
-    /// <summary>
-    /// Collection of users in the current lobby.
-    /// </summary>
-    private HashSet<ProfileContext> _usersToLobby = new();
-
-    /// <summary>
-    /// Gets or sets the collection of users in the lobby.
-    /// </summary>
-    public HashSet<ProfileContext> UsersToLobby
-    {
-        get => _usersToLobby;
-        set => SetProperty(ref _usersToLobby, value);
-    }
-    
     #endregion
-    
-    private ILobbyUpdate _lobbyUpdate = new MainWindowUpdateLobby();
     
     /// <summary>
     /// Initializes a new instance of MainWindowViewModel.
@@ -84,67 +54,39 @@ public sealed class MainWindowViewModel : ViewModelBase
     {
         InitializeDiContainer();
         InitializeSemaphoreSlim();
+
+        UserControlNavigate = new NavigateUserControls();
+        AdminLock = new AdminLockService();
+
+        AdminLock.Initialize();
     }
 
-    /// <summary>
-    /// Updates lobby data by loading information about all participants.
-    /// </summary>
-    /// <param name="tableCode">Table code for update (must be TableEnum.Lobby).</param>
-    public async Task UpdateLobby()
+    public void InitializeCommands(Action openLobby, Action openRules)
     {
-        if (!await SemaphoreSlim.WaitAsync(SemaphoreTimeWait))
-        {
-            Logger.Info("Thread is not empty");
+        RulesOpenCommand = new RelayCommand(openRules);
+        AdminOpenCommand = new RelayCommand(OpenAdminPanel);
+        LobbyOpenCommand = new RelayCommand(openLobby);
+    }
+
+    private void OpenAdminPanel()
+    {
+        if (!User.GetInstance().IsAdmin())
             return;
-        }
-
-        var result =
-            await TaskRunner.RunWithFinallyActionT(() => _lobbyUpdate.UpdateLobby(), () => SemaphoreSlim.Release());
         
-        if (!result.Success || result.Value is null)
-        {
-            Logger.Info($"Failed to update lobby");
-            return;
-        }
-        
-        UsersToLobby.Clear();
-        UsersToLobby = new HashSet<ProfileContext>(result.Value);
+        UserControlNavigate.Navigate(ControlTypes.Admin);
     }
-   
-    /// <summary>
-    /// Binds the lobby opening command to the specified action.
-    /// </summary>
-    /// <param name="func">Action executed when opening the lobby.</param>
-    public void BindingOpenLobbyCommand(Action func)
-    {
-        if (OpenLobbyCommand is null)
-            OpenLobbyCommand = new RelayCommand(func);
-    }
-
-    /// <summary>
-    /// Binds the rules window opening command to the specified action.
-    /// </summary>
-    /// <param name="func">Action executed when opening the rules window.</param>
-    public void BindingRulesWindow(Action func)
-    {
-        if (RulesOpen is null)
-            RulesOpen = new RelayCommand(func);
-    }
-
-    /// <summary>
-    /// Binds the admin panel opening command to the specified action.
-    /// </summary>
-    /// <param name="func">Action executed when opening the admin panel.</param>
-    public void BindingAdminPanel(Action func)
-    {
-        if (AdminPanelOpen is null)
-            AdminPanelOpen = new RelayCommand(func);
-    }
-
+    
     public override void Dispose()
     {
-        _lobbyUpdate.Dispose();
-        _lobbyUpdate = null!;
+        LobbyUpdate.Dispose();
+        LobbyUpdate = null!;
+        
+        UserControlNavigate.Dispose();
+        AdminLock.Dispose();
+
+        RulesOpenCommand = null!;
+        AdminOpenCommand = null!;
+        LobbyOpenCommand = null!;
         
         base.Dispose();
     }

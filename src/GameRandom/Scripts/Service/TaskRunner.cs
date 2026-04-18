@@ -31,7 +31,7 @@ public class TaskRunner : DependenceBase
         }
         catch (Exception e)
         {
-            Logger.Error($"Failed to complete method with error: {e.Message}");
+            Logger.Error($"Failed to complete method with error: {e.Message}. Full: {e}");
             return false;
         }
     }
@@ -51,7 +51,7 @@ public class TaskRunner : DependenceBase
         }
         catch (Exception e)
         {
-            Logger.Error($"Failed to complete method with error: {e.Message}");
+            Logger.Error($"Failed to complete method with error: {e.Message}. Full: {e}");
             return (false, default)!;
         }
     }
@@ -82,7 +82,7 @@ public class TaskRunner : DependenceBase
         }
         catch (Exception e)
         {
-            Logger.Error($"Failed to complete method with error: {e.Message}");
+            Logger.Error($"Failed to complete method with error: {e.Message}. Full: {e}");
             return false;
         }
         finally
@@ -114,7 +114,7 @@ public class TaskRunner : DependenceBase
         }
         catch (Exception e)
         {
-            Logger.Error($"Failed to complete method with error: {e.Message}");
+            Logger.Error($"Failed to complete method with error: {e.Message}. Full: {e}");
             return (false, default)!;
         }
         finally
@@ -142,7 +142,7 @@ public class TaskRunner : DependenceBase
         }
         catch (Exception e)
         {
-            Logger.Error($"Failed to complete method with error: {e.Message}");
+            Logger.Error($"Failed to complete method with error: {e.Message}. Full: {e}");
             return false;
         }
         finally
@@ -167,7 +167,7 @@ public class TaskRunner : DependenceBase
         }
         catch (Exception e)
         {
-            Logger.Error($"Failed to complete method with error: {e.Message}");
+            Logger.Error($"Failed to complete method with error: {e.Message}. Full: {e}");
             return (false, default)!;
         }
         finally
@@ -187,7 +187,7 @@ public class TaskRunner : DependenceBase
         }
         catch (Exception e)
         {
-            Logger.Error($"Failed to complete action: {e.Message}");
+            Logger.Error($"Failed to complete action: {e.Message}. Full: {e}");
             return false;
         }
     }
@@ -201,7 +201,7 @@ public class TaskRunner : DependenceBase
         }
         catch (Exception e)
         {
-            Logger.Error($"Failed to complete action: {e.Message}");
+            Logger.Error($"Failed to complete action: {e.Message}. Full: {e}");
             return false;
         }
         finally
@@ -219,7 +219,7 @@ public class TaskRunner : DependenceBase
         }
         catch (Exception e)
         {
-            Logger.Error($"Failed to complete action: {e.Message}");
+            Logger.Error($"Failed to complete action: {e.Message}. Full: {e}");
             return false;
         }
         finally

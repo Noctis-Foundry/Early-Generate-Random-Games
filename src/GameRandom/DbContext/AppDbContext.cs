@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Text.Json;
+using GameRandom.Src.StartupLogic;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using JsonSerializer = System.Text.Json.JsonSerializer;
@@ -32,8 +33,13 @@ public class AppDbContext : DbContext
     {
         if (optionsBuilder.IsConfigured)
             return;
-        
-        _hostPath = Environment.GetEnvironmentVariable("GAMERANDOM_DB_CONNECT");
+
+        if (GameEnvLoad._envCollection.TryGetValue(EnvType.DatabaseEnv, out var databaseApi))
+        {
+            _hostPath = databaseApi;
+        }
+        else 
+            throw new NullReferenceException("Failed to load database api, loading in offline mode or check network connection");
         
         if (_hostPath is null)
             throw new ArgumentNullException(nameof(_hostPath));

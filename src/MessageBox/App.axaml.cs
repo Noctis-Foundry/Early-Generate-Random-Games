@@ -1,3 +1,4 @@
+using System;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core;
@@ -31,11 +32,8 @@ public partial class App : Application
             if (desktop.Args.Length > 0)
             {
                 message = desktop.Args[0];
-
-                if (desktop.Args[1] != null)
-                {
-                    title = desktop.Args[1];
-                }
+                
+                Console.WriteLine("Error: " + message);
             }
             
             var window = new MainWindow(){

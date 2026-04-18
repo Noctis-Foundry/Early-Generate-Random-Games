@@ -27,15 +27,15 @@ using GameRandom.DependenceInjectSystem;
 using GameRandom.ViewModels.AdminConfirmSystem;
 using GameRandom.DependenceInjectSystem;
 using GameRandom.Scripts.WindowServices.ErrorServiceSystem;
+using GameRandom.ViewModels.AdminConfirmSystem.Enums;
 
 namespace GameRandom.Views;
 
-public partial class AdminPanel : MainWindowUserControlAbstract
+public sealed partial class AdminPanel : MainWindowUserControlAbstract<AdminPanelViewModel>
 {
     [Inject] private ErrorService? _errorService = null!;
     [Inject] private PostgresListener? _postgresListener;
     private AdminRegistrationWindow _registrationWindow;
-    private const string CloseTarget = "Main";
 
     private CancellationTokenSource _cts = new CancellationTokenSource();
 
@@ -51,13 +51,14 @@ public partial class AdminPanel : MainWindowUserControlAbstract
         InitializeDiContainer();
         
         IsInitializeTaskWaiter = true;
-        DataContext = new AdminPanelViewModel();
+        InitializeViewModel();
         
         HideAdminPanel();
         InitializePostgresListener();
+        LoadUserControl();
     }
 
-    public override void Open()
+    protected override void LoadUserControl()
     {
         if (DataContext is AdminPanelViewModel vm)
         {
@@ -68,10 +69,9 @@ public partial class AdminPanel : MainWindowUserControlAbstract
         }
     }
 
-    public override void Close(object? sender, RoutedEventArgs e)
+    public override void CloseUserControl(object? sender, RoutedEventArgs e)
     {
-        _changeWindowAction?.Invoke(CloseTarget);
-        Dispose();
+        _changeWindowAction?.Invoke(ControlTypes.MainWindow); //Call dispose for user control
     }
 
     private void HideAdminPanel()
