@@ -98,14 +98,14 @@ public class NavigateUserControls : IControlNavigate, IDisposable
             if (content is null)
                 throw new NullReferenceException($"Failed navigate to {controlType}");
 
-            if (content is IUserControl value)
-            {
-                if (_currentControl is IDisposable disposable)
-                    disposable.Dispose();
-                
-                _controlContent.OnNext(content);
-                _currentControl = content;
-            }
+            if (content is not IUserControl value)
+                return;
+
+            if (_currentControl is IDisposable disposable)
+                disposable.Dispose();
+
+            _controlContent.OnNext(content);
+            _currentControl = content;
         }
     }
 

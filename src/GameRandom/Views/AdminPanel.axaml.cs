@@ -55,6 +55,7 @@ public sealed partial class AdminPanel : MainWindowUserControlAbstract<AdminPane
         
         HideAdminPanel();
         InitializePostgresListener();
+        LoadUserControl();
     }
 
     protected override void LoadUserControl()

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Autofac.Core;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using GameRandom.Scr.Service;
 using GameRandom.Src.SteamsContexts;
