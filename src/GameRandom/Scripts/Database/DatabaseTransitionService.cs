@@ -116,7 +116,7 @@ public class DatabaseTransitionService : DependenceBase
             
             var isUserGame = await _databaseService.TryGetOrCreateUserGame(user, ct);
 
-            if (isUserGame)
+            if (!isUserGame)
                 throw new NullReferenceException("Failed to create or get user game");
             
             await db.SaveChangesAsync(ct);

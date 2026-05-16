@@ -186,7 +186,15 @@ public class LobbyService
         if (!await User.GetInstance().UpdateLobbyId(DisconnectedLobbyId)) return;
         
         // Remove user from lobby members list
-        currentLobby.LobbyData.RemoveAll(e => e.UserId == user.SteamId);
+        var userLobbyData = currentLobby.LobbyData.FirstOrDefault(e => e.UserId == user.SteamId);
+
+        if (userLobbyData is null)
+        {
+            Logger.Debug("Failed to find user data");
+            return;
+        }
+        
+        currentLobby.LobbyData.Remove(userLobbyData); //TODO Check this
         currentLobby.MembersCount = currentLobby.LobbyData.Count;
 
         // Delete empty lobby or update data
