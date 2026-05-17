@@ -10,6 +10,7 @@
     <Style Selector="TextBlock">
         <!-- <Setter Property="FontFamily" Value="{DynamicResource 'Rye-Font'}"></Setter> -->
         <Setter Property="Foreground" Value="#1a1c1c"></Setter>
+        <Setter Property="TextWrapping" Value="Wrap"></Setter>
     </Style>
     
     <Style Selector="SelectableTextBlock">

@@ -2,8 +2,10 @@
 using GameRandom.Src;
 using GameRandom.DependenceInjectSystem;
 using System.Collections.Generic;
+using System.Diagnostics;
 using GameRandom.DependenceInjectSystem;
 using System.Linq;
+using System.Text.Json;
 using GameRandom.DependenceInjectSystem;
 using System.Threading;
 using GameRandom.DependenceInjectSystem;
@@ -24,6 +26,8 @@ using GameRandom.Src.RollGameSystem;
 using GameRandom.Src.RollGameSystem.GenerateStrategy;
 using GameRandom.Src.UserData;
 using GameRandom.ViewModels.BaseClasses;
+using Newtonsoft.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace GameRandom.ViewModels.AdminConfirmSystem;
 
@@ -39,6 +43,8 @@ public sealed class RollGameViewModel : ViewModelBase
     /// Interface for generating random applications.
     /// </summary>
     private IGenApp _generateRandomApps;
+
+    private SemaphoreSlim _userLibSemaphore = new SemaphoreSlim(1, 1);
     
     /// <summary>
     /// Maximum number of iterations to find suitable games.
@@ -50,6 +56,8 @@ public sealed class RollGameViewModel : ViewModelBase
     /// </summary>
     private int _iterationCount;
 
+    private List<int> LibraryIds = new();
+    
     #region BindingProperty
 
     /// <summary>
@@ -84,7 +92,6 @@ public sealed class RollGameViewModel : ViewModelBase
     }
 
     #endregion
-    
     
     /// <summary>
     /// Constructor. Initializes the random application generator if not in design mode.
@@ -158,7 +165,12 @@ public sealed class RollGameViewModel : ViewModelBase
     private async Task<(GenerationStatusCode code, AppInfo? appInfo)> GenerateAppInfo(FilterOutputData? filteredGamesData)
     {
         GenerationTypes types = GetGenerationType();
-        var result = await _generateRandomApps.GetRandomGame(types);
+        object? inputData = null;
+
+        if (types == GenerationTypes.RandomFromLibrary)
+            inputData = await IsLibrary();
+        
+        var result = await _generateRandomApps.GetRandomGame(types, inputData);
 
         if (result.StatusCode == GenerationStatusCode.Exit)
             return (result.StatusCode, null);
@@ -200,6 +212,58 @@ public sealed class RollGameViewModel : ViewModelBase
         return true;
     }
 
+    private async Task<List<int>?> IsLibrary()
+    {
+        if (!await _userLibSemaphore.WaitAsync(0))
+        {
+            Logger.Debug("Failed to choose user type");
+            return null;
+        }
+        
+        _isUserLib = true;
+        
+        StartTaskWaiter();
+
+        try
+        {
+            var filename = OperatingSystem.IsWindows() ? "SteamVDFParser.exe" : "SteamVDFParser";
+
+            var procInfo = new ProcessStartInfo
+            {
+                FileName = filename,
+                RedirectStandardError = true,
+                RedirectStandardOutput = true,
+                UseShellExecute = false
+            };
+
+            using var process = new Process { StartInfo = procInfo };
+
+            process.Start();
+
+            Task<string> output = process.StandardOutput.ReadToEndAsync();
+            Task<string> error = process.StandardError.ReadToEndAsync();
+            
+            await Task.WhenAll(output, error, process.WaitForExitAsync());
+            
+            var json = JsonDocument.Parse(output.Result);
+
+            var list = json.Deserialize<List<int>>();
+            
+            Logger.Info($"Steam info list count = {list.Count}");
+            
+            return list;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return null;
+        }
+        finally
+        {
+            _userLibSemaphore.Release();
+        }
+    }
+    
     private GenerationTypes GetGenerationType()
     {
         return _isUserLib ? GenerationTypes.RandomFromLibrary : GenerationTypes.RandomIndex;

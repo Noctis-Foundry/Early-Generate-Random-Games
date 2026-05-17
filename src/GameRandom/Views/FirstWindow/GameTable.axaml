@@ -32,10 +32,12 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="User" Binding="{Binding PlayerName, DataType=vm:GameTableData}"/>
                 <DataGridTextColumn Header="Game" Binding="{Binding GameInfo.AppName, DataType=vm:GameTableData}"/>
+                <DataGridTextColumn Header="Comment" Binding="{Binding GameInfo.Comment, DataType=vm:GameTableData}"
+                                    Width="300">
+               
+                </DataGridTextColumn>
                 <DataGridTextColumn Header="Begin date" Binding="{Binding GameInfo.BeginTime, DataType=vm:GameTableData}"/>
                 <DataGridTextColumn Header="End date" Binding="{Binding GameInfo.EndTime, DataType=vm:GameTableData}"/>
-                <DataGridCheckBoxColumn Header="Is finished"
-                                        Binding="{Binding GameInfo.IsFinished, DataType=vm:GameTableData}"/>
                 <DataGridTextColumn Header="Finished time" Binding="{Binding GameInfo.FinishTime, DataType=vm:GameTableData}"></DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
