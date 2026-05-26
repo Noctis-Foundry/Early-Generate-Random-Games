@@ -25,7 +25,8 @@ public sealed class GenerateGameFromUserLib : GenerateStrategyAbstract
         "Utilities",
         "Game development",
         "Animation & Modeling",
-        "Illustration"
+        "Illustration",
+        "Downloadable Content"
     };
 
     public GenerateGameFromUserLib()

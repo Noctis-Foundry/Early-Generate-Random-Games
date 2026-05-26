@@ -3,31 +3,17 @@ using GameRandom.Src;
 using GameRandom.DependenceInjectSystem;
 using System.Collections.Generic;
 using System.Diagnostics;
-using GameRandom.DependenceInjectSystem;
 using System.Linq;
 using System.Text.Json;
-using GameRandom.DependenceInjectSystem;
 using System.Threading;
-using GameRandom.DependenceInjectSystem;
 using GameRandom.CoreApp;
-using GameRandom.DependenceInjectSystem;
 using System.Threading.Tasks;
-using GameRandom.DependenceInjectSystem;
 using Avalonia.Controls;
-using Avalonia.Threading;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.DependenceInjectSystem;
 using GameRandom.Scr.Service;
-using GameRandom.DependenceInjectSystem;
 using GameRandom.Scripts.RollGameSystem.GenerateGames;
-using GameRandom.Scripts.SteamSDK;
 using GameRandom.Src.RollGameSystem;
 using GameRandom.Src.RollGameSystem.GenerateStrategy;
-using GameRandom.Src.UserData;
 using GameRandom.ViewModels.BaseClasses;
-using Newtonsoft.Json;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace GameRandom.ViewModels.AdminConfirmSystem;
 
@@ -38,37 +24,38 @@ public sealed class RollGameViewModel : ViewModelBase
 {
     [Inject] private SteamService _steamService = null!;
     [Inject] private ISteamWebService _steamWebService = null!;
-    
+
     /// <summary>
     /// Interface for generating random applications.
     /// </summary>
     private IGenApp _generateRandomApps;
 
     private SemaphoreSlim _userLibSemaphore = new SemaphoreSlim(1, 1);
-    
+
     /// <summary>
     /// Maximum number of iterations to find suitable games.
     /// </summary>
     private const int IterationLimit = 50;
-    
+
     /// <summary>
     /// Current number of iterations.
     /// </summary>
     private int _iterationCount;
 
     private List<int> LibraryIds = new();
-    
+
     #region BindingProperty
 
     /// <summary>
     /// List of generated games with their information and images.
     /// </summary>
     private List<AppInfo> _appInfo = new();
+
     /// <summary>
     /// List of generated games for UI display.
     /// </summary>
     public List<AppInfo> AppInfo => _appInfo;
-    
+
     /// <summary>
     /// Flag indicating whether filtering is used during generation.
     /// </summary>
@@ -92,7 +79,7 @@ public sealed class RollGameViewModel : ViewModelBase
     }
 
     #endregion
-    
+
     /// <summary>
     /// Constructor. Initializes the random application generator if not in design mode.
     /// </summary>
@@ -103,7 +90,6 @@ public sealed class RollGameViewModel : ViewModelBase
         _generateRandomApps = new GenerateRandomApps();
 
         InitializeDiContainer();
-        
     }
 
     protected override void InitializeDiContainer()
@@ -123,13 +109,14 @@ public sealed class RollGameViewModel : ViewModelBase
     /// <param name="countGames">Number of games to retrieve.</param>
     /// <param name="filteredGamesData">Filtering data.</param>
     /// <param name="cancellationToken">Operation cancellation token.</param>
-    public async Task GenerateGames(int countGames, FilterOutputData? filteredGamesData, CancellationToken cancellationToken = default)
+    public async Task GenerateGames(int countGames, FilterOutputData? filteredGamesData,
+        CancellationToken cancellationToken = default)
     {
         await _generateRandomApps.StartGenerateApp();
 
         if (!_generateRandomApps.ListIsLoad())
             throw new NullReferenceException("list with games is null");
-        
+
         ClearItems();
 
         try
@@ -142,7 +129,7 @@ public sealed class RollGameViewModel : ViewModelBase
 
                 if (result.code == GenerationStatusCode.Exit)
                     break;
-                
+
                 if (result.appInfo is not null)
                     _appInfo.Add(result.appInfo);
             }
@@ -162,24 +149,25 @@ public sealed class RollGameViewModel : ViewModelBase
     /// </summary>
     /// <param name="filteredGamesData">Filtering data.</param>
     /// <returns>AppInfo object or null if the game failed filtering or an error occurred.</returns>
-    private async Task<(GenerationStatusCode code, AppInfo? appInfo)> GenerateAppInfo(FilterOutputData? filteredGamesData)
+    private async Task<(GenerationStatusCode code, AppInfo? appInfo)> GenerateAppInfo(
+        FilterOutputData? filteredGamesData)
     {
         GenerationTypes types = GetGenerationType();
         object? inputData = null;
 
         if (types == GenerationTypes.RandomFromLibrary)
             inputData = await IsLibrary();
-        
+
         var result = await _generateRandomApps.GetRandomGame(types, inputData);
 
         if (result.StatusCode == GenerationStatusCode.Exit)
             return (result.StatusCode, null);
 
         var gameInfo = result.AppSavedContext;
-        
+
         if (gameInfo is null || _appInfo.Any(e => e.AppData.AppId == gameInfo.AppId))
             return (result.StatusCode, null);
-        
+
         if (IsFilter && filteredGamesData is not null)
             if (!FilterGame(gameInfo, filteredGamesData))
                 return (result.StatusCode, null);
@@ -188,10 +176,10 @@ public sealed class RollGameViewModel : ViewModelBase
 
         if (imageBytes == null)
             return (result.StatusCode, null);
-        
+
         return (result.StatusCode, new AppInfo(gameInfo, imageBytes));
     }
-    
+
     /// <summary>
     /// Checks if the game matches the specified filters (categories, genres, years).
     /// </summary>
@@ -219,9 +207,9 @@ public sealed class RollGameViewModel : ViewModelBase
             Logger.Debug("Failed to choose user type");
             return null;
         }
-        
+
         _isUserLib = true;
-        
+
         StartTaskWaiter();
 
         try
@@ -242,15 +230,15 @@ public sealed class RollGameViewModel : ViewModelBase
 
             Task<string> output = process.StandardOutput.ReadToEndAsync();
             Task<string> error = process.StandardError.ReadToEndAsync();
-            
+
             await Task.WhenAll(output, error, process.WaitForExitAsync());
-            
+
             var json = JsonDocument.Parse(output.Result);
 
             var list = json.Deserialize<List<int>>();
-            
+
             Logger.Info($"Steam info list count = {list.Count}");
-            
+
             return list;
         }
         catch (Exception e)
@@ -263,7 +251,7 @@ public sealed class RollGameViewModel : ViewModelBase
             _userLibSemaphore.Release();
         }
     }
-    
+
     private GenerationTypes GetGenerationType()
     {
         return _isUserLib ? GenerationTypes.RandomFromLibrary : GenerationTypes.RandomIndex;
@@ -284,7 +272,7 @@ public sealed class RollGameViewModel : ViewModelBase
     public override void Dispose()
     {
         ClearItems();
-        
+
         _generateRandomApps?.Dispose();
         _generateRandomApps = null!;
     }

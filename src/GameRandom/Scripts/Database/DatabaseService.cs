@@ -371,6 +371,43 @@ public class DatabaseService : DependenceBase, IDatabaseService
         }
     }
 
+    public async Task<bool> DeleteAllUserData(ulong userData, long lobbyId, CancellationToken ct = default)
+    {
+        await using var appDb = CreateContext();
+        await using var transition = await appDb.Database.BeginTransactionAsync(ct);
+        
+        try
+        {
+            var lobbyContext = 
+                await appDb.Lobbies.Include(l => l.LobbyData).FirstOrDefaultAsync(l => l.LobbyId == lobbyId, ct);
+
+            if (lobbyContext == null)
+                return false;
+            
+            lobbyContext.LobbyData.RemoveAll(e => e.UserId == userData);
+
+            if (lobbyContext.LobbyData.Count <= 0)
+                appDb.Lobbies.Remove(lobbyContext);
+            
+            await appDb.SaveChangesAsync(ct);
+            await transition.CommitAsync(ct);
+
+            return true;
+        }
+        catch (OperationCanceledException e)
+        {
+            Logger.Error($"Operation failed {e.Message}");
+            await transition.RollbackAsync(ct);
+            return false;
+        }
+        catch (Exception e)
+        {
+            Logger.Error($"Operation failed {e.Message}");
+            await transition.RollbackAsync(ct);
+            return false;
+        }
+    }
+
     public async Task<Lobbies?> GetLobbyById(long lobbyId, CancellationToken ct = default)
     {
         try

@@ -3,6 +3,7 @@ using GameRandom.DependenceInjectSystem;
 using System.Collections.Generic;
 using GameRandom.DependenceInjectSystem;
 using System.Linq;
+using System.Threading;
 using GameRandom.DependenceInjectSystem;
 using System.Threading.Tasks;
 using GameRandom.DependenceInjectSystem;
@@ -135,18 +136,27 @@ public class LobbyService
             return;
         }
 
+        if (User.GetInstance().GetUserInfo().LobbyId == lobbyId)
+        {
+            _errorService.ShowWindow("Player is already in the lobby");
+            return;
+        }
+
         var user = GetCurrentUserAsync();
 
         // Disconnect from current lobby before connecting to a new one
-        await DisconnectIfInLobby(user);
+        var disconnect = await DisconnectIfInLobby(user);
 
+        if (!disconnect)
+            Logger.Debug("Failed to disconnect from lobby");
+        
         var lobby = await FindLobbyAsync(lobbyId);
         if (lobby is null)
         {
             _errorService.ShowWindow(new ErrorStruct{ErrorMessage = $"Failed to connect to {lobbyId}. Lobby not found", ErrorType = ErrorEnum.Error});
             return;
         }
-
+        
         // Add user to lobby
         if (await User.GetInstance().UpdateLobbyId(lobbyId))
         {
@@ -156,6 +166,7 @@ public class LobbyService
                 LobbyId = lobbyId
             });
             lobby.MembersCount = lobby.LobbyData.Count;
+            
             if (!await _databaseService.UpdateAsync(lobby))
             {
                 await User.GetInstance().UpdateLobbyId(EmptyLobbyId);
@@ -170,44 +181,19 @@ public class LobbyService
     /// <summary>
     /// Disconnect from current lobby
     /// </summary>
-    public async Task DisconnectFromLobby()
+    public async Task<bool> DisconnectFromLobby()
     {
         var user = GetCurrentUserAsync();
-        if (user.LobbyId == EmptyLobbyId) return;
+        if (user.LobbyId == EmptyLobbyId) return true;
 
-        var currentLobby = await FindLobbyAsync(user.LobbyId);
-        if (currentLobby is null)
-        {
-            _errorService.ShowWindow(new ErrorStruct{ErrorMessage = $"Failed to disconnect from {user.LobbyId}. Lobby is empty", ErrorType = ErrorEnum.Error});
-            return;
-        }
+        using var ctx = new CancellationTokenSource(TimeSpan.FromSeconds(5));
 
-        // Update user status
-        if (!await User.GetInstance().UpdateLobbyId(DisconnectedLobbyId)) return;
+        var disconnect = await _databaseService.DeleteAllUserData(user.SteamId, user.LobbyId, ctx.Token);
         
-        // Remove user from lobby members list
-        var userLobbyData = currentLobby.LobbyData.FirstOrDefault(e => e.UserId == user.SteamId);
+        if (disconnect)
+            await User.GetInstance().UpdateLobbyId(DisconnectedLobbyId);
 
-        if (userLobbyData is null)
-        {
-            Logger.Debug("Failed to find user data");
-            return;
-        }
-        
-        currentLobby.LobbyData.Remove(userLobbyData); //TODO Check this
-        currentLobby.MembersCount = currentLobby.LobbyData.Count;
-
-        // Delete empty lobby or update data
-        if (currentLobby.MembersCount <= 0)
-        {
-            _errorService.ShowWindow(new ErrorStruct{ErrorMessage = "No member in lobby. Deleting lobby from database", ErrorType = ErrorEnum.Message});
-            await _databaseService.DeleteItemAsync(currentLobby);
-        }
-        else
-        {
-            await _databaseService.UpdateAsync(currentLobby);
-            SendLobbyEvent(currentLobby);
-        }
+        return disconnect;
     }
 
     /// <summary>
@@ -253,13 +239,15 @@ public class LobbyService
     /// <summary>
     /// Disconnect from lobby if user is currently in one
     /// </summary>
-    private async Task DisconnectIfInLobby(Users userInfo)
+    private async Task<bool> DisconnectIfInLobby(Users userInfo)
     {
         if (userInfo.LobbyId > EmptyLobbyId)
         {
             //TODO Give choose for player
-            await DisconnectFromLobby();
+            return await DisconnectFromLobby();
         }
+
+        return false;
     }
 
     /// <summary>
