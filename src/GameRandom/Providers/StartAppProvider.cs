@@ -3,6 +3,7 @@ using GameRandom.DependenceInjectSystem.Enums;
 using GameRandom.DependenceInjectSystem.Providers;
 using GameRandom.Scr.Events;
 using GameRandom.Scr.Service;
+using GameRandom.Scripts.LobbySystem;
 using GameRandom.Scripts.SteamSDK;
 using GameRandom.Service;
 using GameRandom.Src;
@@ -16,6 +17,7 @@ public class StartAppProvider : DiProvider
     public override void BindingInstance()
     {
         DiContainer.Bind<LobbyService>().To<LobbyService>().ScopeBind(ScopeType.Singleton, false);
+        DiContainer.FromInstance<LobbyRegister>().ScopeBind(ScopeType.Singleton, false);
         DiContainer.FromInstance<TaskRunner>().ScopeBind(ScopeType.Many);
         DiContainer.FromInstance<ObservableConverter>().ScopeBind(ScopeType.Singleton);
         DiContainer.FromInstance<MainWindowFactory>().ScopeBind(ScopeType.Singleton);
