@@ -40,7 +40,6 @@ public partial class App : Application
         }
 
         //PriorityInitialization
-
         base.OnFrameworkInitializationCompleted();
 
         if (Design.IsDesignMode)

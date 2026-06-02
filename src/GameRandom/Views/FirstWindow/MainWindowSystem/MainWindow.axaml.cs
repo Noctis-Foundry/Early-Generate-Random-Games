@@ -8,6 +8,8 @@ using GameRandom.Events;
 using GameRandom.Providers;
 using GameRandom.Scr.Events;
 using GameRandom.Scr.Service;
+using GameRandom.Scripts.HandleSystem;
+using GameRandom.Scripts.HandleSystem.PostgresListener;
 using GameRandom.Service;
 using GameRandom.Src;
 using GameRandom.Src.Factory;
