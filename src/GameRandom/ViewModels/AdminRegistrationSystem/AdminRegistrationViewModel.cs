@@ -27,7 +27,9 @@ using GameRandom.DependenceInjectSystem;
 using Microsoft.EntityFrameworkCore.Storage;
 using GameRandom.DependenceInjectSystem;
 using GameRandom.Scripts.HandleSystem;
+using GameRandom.Scripts.HandleSystem.Enums;
 using GameRandom.Scripts.HandleSystem.PostgresListener;
+using GameRandom.Scripts.HandleSystem.RoutSystem;
 using GameRandom.ViewModels.BaseClasses;
 
 namespace GameRandom.ViewModels.AdminConfirmSystem;
@@ -40,7 +42,7 @@ public sealed class AdminRegistrationViewModel : ViewModelBase
     /// <summary>
     /// Listener for database changes in PostgreSQL.
     /// </summary>
-    [Inject] private PostgresListener _postgresListener = null!;
+    [Inject] private IRouteManager _routeManager = null!;
     
     /// <summary>
     /// Action to handle admin table updates from the database listener.
@@ -90,26 +92,15 @@ public sealed class AdminRegistrationViewModel : ViewModelBase
     /// </summary>
     private void InitializeListeners()
     {
-        _loadAdminTable += e =>
-        {
-            Dispatcher.UIThread.InvokeAsync(async () =>
-            {
-                if (e.TableCode != (int)TableEnum.AdminTable)
-                    return;
-
-                await UpdateData();
-            });
-        };
-
-        _postgresListener?.Subscribe(TableEnum.AdminTable, _loadAdminTable);
+        _routeManager.GetRouteService(TableEnum.AdminTable).Subscribe(RouteStage.View, UpdateData);
     }
 
     protected override void InitializeDiContainer()
     {
         base.InitializeDiContainer();
 
-        if (_postgresListener == null)
-            throw new NullReferenceException(nameof(_postgresListener));
+        if (_routeManager == null)
+            throw new NullReferenceException(nameof(_routeManager));
     }
 
     private async Task UpdateData()
@@ -138,8 +129,7 @@ public sealed class AdminRegistrationViewModel : ViewModelBase
     /// </summary>
     public override void Dispose()
     {
-        _postgresListener?.Unsubscribe(TableEnum.AdminTable, _loadAdminTable);
-        _postgresListener = null!;
+        _routeManager = null!;
 
         _loadAdminTable = null!;
 

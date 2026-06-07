@@ -2,10 +2,10 @@ using System;
 using System.Threading.Tasks;
 using GameRandom.DependenceInjectSystem;
 using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.Scr.Events;
 using GameRandom.Scr.Service;
 using GameRandom.Scripts.HandleSystem;
-using GameRandom.Scripts.HandleSystem.PostgresListener;
+using GameRandom.Scripts.HandleSystem.Enums;
+using GameRandom.Scripts.HandleSystem.RoutSystem;
 using GameRandom.Src;
 using GameRandom.Src.LobbySystem;
 using GameRandom.Src.UserData;
@@ -18,30 +18,22 @@ public class LobbyUpdateService : IDisposable
     [Inject] private LobbyRegister _lobbyRegister = null!;
     [Inject] private SteamService _steamService = null!;
     [Inject] private ISteamWebService _steamWebService = null!;
+    [Inject] private IRouteManager _routeManager = null!;
     
-    [Inject] private PostgresListener _postgresListener = null!;
-    [Inject] private EventBus _eventBus = null!;
-
-    private Action<PayloadStructure>? _updateAction;
+   
 
     public LobbyUpdateService()
     {
         Di.ResolveInstance.ResolveInstanceFromClass(this);
         ValidationDependence();
-
-        _updateAction = structure =>
-        {
-            if (structure.TableCode != (int)TableEnum.Lobby)
-                return;
-            
-            Task.Run(async () => await UpdateLobbyRegister(User.GetInstance().GetUserInfo().LobbyId));
-        };
         
-        _postgresListener.Subscribe(TableEnum.Lobby, _updateAction);
+        _routeManager.GetRouteService(TableEnum.Lobby).Subscribe(RouteStage.Data, UpdateLobbyRegister);
     }
     
-    public async Task UpdateLobbyRegister(long lobbyId)
+    public async Task UpdateLobbyRegister()
     {
+        var lobbyId = User.GetInstance().GetUserInfo().LobbyId;
+        
         var lobbyMembers = await _databaseService.GetLobbyById(lobbyId);
 
         if (lobbyMembers is null || lobbyMembers.LobbyData.Count <= 0)
@@ -76,11 +68,8 @@ public class LobbyUpdateService : IDisposable
         if (_lobbyRegister is null)
             throw new ArgumentNullException(nameof(_lobbyRegister));
         
-        if (_postgresListener is null)
-            throw new ArgumentNullException(nameof(_postgresListener));
-        
-        if (_eventBus is null)
-            throw new ArgumentNullException(nameof(_eventBus));
+        if (_routeManager is null)
+            throw new ArgumentNullException(nameof(_routeManager));
 
         if (_steamService is null)
             throw new ArgumentNullException(nameof(_steamService));
@@ -88,11 +77,6 @@ public class LobbyUpdateService : IDisposable
 
     public void Dispose()
     {
-        if (_updateAction is not null) 
-            _postgresListener.Unsubscribe(TableEnum.Lobby, _updateAction);
-
-        _postgresListener = null!;
-        _eventBus = null!;
         _databaseService = null!;
         _steamWebService = null!;
         _lobbyRegister = null!;

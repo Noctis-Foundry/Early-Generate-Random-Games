@@ -3,8 +3,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:GameRandom.ViewModels.AdminConfirmSystem"
+             xmlns:adminPanelSystem="clr-namespace:GameRandom.ViewModels.AdminPanelSystem"
              x:Class="GameRandom.Views.AdminPanel"
-             x:DataType="vm:AdminPanelViewModel"
+             x:DataType="adminPanelSystem:AdminPanelViewModel"
              Width="1000" Height="460"
              MinWidth="1000" MinHeight="460"
              MaxWidth="1000" MaxHeight="460">

@@ -1,24 +1,41 @@
-using System;
-using GameRandom.Scripts.HandleSystem.Enums;
+using System.Threading.Tasks;
+using GameRandom.DataBaseContexts;
+using GameRandom.Scr.Service;
+using GameRandom.Scripts.HandleSystem.HandleEvents;
 using GameRandom.Scripts.HandleSystem.PostgresListener;
-using GameRandom.Src.HandleSystem.Interfaces;
+using GameRandom.Src.UserData;
 
 namespace GameRandom.Scripts.HandleSystem.RoutSystem.RouteVariants;
 
-public class LobbyRoute : IRouteService
+public class LobbyRoute : RouteService
 {
-    public void Route(PayloadStructure payloadStructure)
+    public override async Task Route(PayloadStructure payloadStructure)
     {
-        
+        if (payloadStructure.TableCode != (int)TableEnum.Lobby)
+        {
+            Logger.Warning("Is not lobby payload structure");
+            return;
+        }
+
+        var lobbyData = await _databaseService.GetFromRowId<Lobbies>(payloadStructure.RowId);
+
+        if (lobbyData == null|| lobbyData.LobbyId == 0)
+        {
+            Logger.Warning($"Lobby data from row {payloadStructure.RowId} is null or empty");
+            return;
+        }
+
+        if (lobbyData.LobbyId != User.GetInstance().GetUserInfo().LobbyId)
+        {
+            Logger.Warning("User is not in lobby");
+            return;
+        }
+
+        await BaseHandle(payloadStructure);
     }
 
-    public void Subscribe(RouteStage routeUpdateStage, Action process)
+    public override void SendEvent(object? data)
     {
-        
-    }
-
-    public void Dispose()
-    {
-        throw new System.NotImplementedException();
+        _eventBus.Publish(new LobbyEvent());
     }
 }

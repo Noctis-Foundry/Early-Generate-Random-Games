@@ -1,51 +1,32 @@
 using System;
-using GameRandom.DependenceInjectSystem;
 using System.Collections.Generic;
-using GameRandom.DependenceInjectSystem;
 using System.Collections.ObjectModel;
-using GameRandom.DependenceInjectSystem;
-using System.Threading;
-using GameRandom.DependenceInjectSystem;
 using System.Threading.Tasks;
-using GameRandom.DependenceInjectSystem;
-using Avalonia.Threading;
-using GameRandom.DependenceInjectSystem;
 using CommunityToolkit.Mvvm.Input;
 using GameRandom.DependenceInjectSystem;
-using GameRandom.Events;
-using GameRandom.DependenceInjectSystem;
 using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.DependenceInjectSystem;
 using GameRandom.Scr.Events;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Scr.Service;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Src;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Src.UserData;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.ViewModels.AdminPanelSystem;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.ViewModels.AdminSystem.Interface;
-using GameRandom.DependenceInjectSystem;
 using GameRandom.Scripts.HandleSystem;
-using GameRandom.Scripts.HandleSystem.PostgresListener;
+using GameRandom.Scripts.HandleSystem.Enums;
+using GameRandom.Scripts.HandleSystem.HandleEvents;
+using GameRandom.Scripts.HandleSystem.RoutSystem;
+using GameRandom.Src;
+using GameRandom.Src.UserData;
+using GameRandom.ViewModels.AdminSystem.Interface;
 using GameRandom.ViewModels.BaseClasses;
 
-namespace GameRandom.ViewModels.AdminConfirmSystem;
+namespace GameRandom.ViewModels.AdminPanelSystem;
 
 /// <summary>
 /// ViewModel for the admin panel, responsible for managing finished game processes and admin rules.
 /// </summary>
 public sealed class AdminPanelViewModel : ViewModelBase
 {
-    [Inject] private readonly PostgresListener? _postgresListener = null!;
-    [Inject] private readonly EventBus? _eventBus = null!;
+    [Inject] private IRouteManager _routeManager = null!;
+    [Inject] private EventBus _eventBus = null!;
 
     private IAdminLoad _adminLoadService = new AdminPanelLoadService();
-
-    private Action<PayloadStructure> _loadAction;
-    private Action<AdminRulesUpdating> _updateRules;
+    private Action<AdminRulesUpdate> _adminRulesUpdate;
 
     #region BindingProperty
 
@@ -101,11 +82,8 @@ public sealed class AdminPanelViewModel : ViewModelBase
     {
         base.InitializeDiContainer();
 
-        if (_postgresListener is null)
-            throw new NullReferenceException(nameof(_postgresListener) + " is not injected");
-
-        if (_eventBus is null)
-            throw new NullReferenceException(nameof(_eventBus) + " is not injected");
+        if (_routeManager == null)
+            throw new ArgumentNullException(nameof(_routeManager));
     }
 
     /// <summary>
@@ -142,7 +120,7 @@ public sealed class AdminPanelViewModel : ViewModelBase
 
         OpenWithQueue = new AsyncRelayCommand(async () =>
         {
-            if (Di.ResolveInstance.TryGetInstance<AdminConfirmService>() is not AdminConfirmService adminConfirmService)
+            if (Di.ResolveInstance.TryGetInstance<AdminConfirmService>() is not { } adminConfirmService)
                 throw new NullReferenceException(nameof(adminConfirmService));
 
             await adminConfirmService.ShowWindowAsync(GameList);
@@ -156,25 +134,8 @@ public sealed class AdminPanelViewModel : ViewModelBase
     /// </summary>
     private void InitializeListeners()
     {
-        _loadAction += p =>
-        {
-            Dispatcher.UIThread.InvokeAsync(async () =>
-            {
-                if (p.TableCode != (int)TableEnum.EndGameTable)
-                    return;
-
-                var isSuccess = await LoadGameProgresses();
-
-                if (!isSuccess)
-                    Logger.Error("Failed to update admin panel from postgres listener");
-            });
-        };
-
-        _updateRules += _ => CheckIsAdminRules();
-
-        _postgresListener?.Subscribe(TableEnum.EndGameTable, _loadAction);
-
-        _eventBus?.Subscribe<AdminRulesUpdating>(_updateRules);
+        _routeManager.GetRouteService(TableEnum.EndGameTable).Subscribe(RouteStage.View, LoadGameProgresses);
+        _adminRulesUpdate = _ => CheckIsAdminRules();
     }
 
     /// <summary>
@@ -188,11 +149,9 @@ public sealed class AdminPanelViewModel : ViewModelBase
         _openWithQueue = null;
         OpenWithQueue = null;
 
-        _eventBus?.Unsubscribe<AdminRulesUpdating>(_updateRules);
-        _postgresListener?.Unsubscribe(TableEnum.EndGameTable, _loadAction);
+        _eventBus?.Unsubscribe(_adminRulesUpdate);
 
-        _updateRules = null!;
-        _loadAction = null!;
+        _adminRulesUpdate = null!;
 
         base.Dispose();
     }

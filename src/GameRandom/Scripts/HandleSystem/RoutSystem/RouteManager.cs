@@ -1,15 +1,15 @@
 using System;
 using System.Collections.Generic;
 using GameRandom.Scr.Service;
+using GameRandom.Scripts.HandleSystem.Interfaces;
 using GameRandom.Scripts.HandleSystem.PostgresListener;
 using GameRandom.Scripts.HandleSystem.RoutSystem.RouteVariants;
-using GameRandom.Src.HandleSystem.Interfaces;
 
 namespace GameRandom.Scripts.HandleSystem.RoutSystem;
 
 public class RouteManager : IDisposable, IRouteManager
 {
-    private readonly Dictionary<TableEnum, IRouteService> _routeServices = new();
+    private readonly Dictionary<TableEnum, RouteService> _routeServices = new();
     
     private PostgresListener.PostgresListener _listener = null!;
     private Action<TableEnum, PayloadStructure> _chooseRouteService;
@@ -38,6 +38,7 @@ public class RouteManager : IDisposable, IRouteManager
     {
         _routeServices.TryAdd(TableEnum.Lobby, new LobbyRoute());
     }
+     
     private void ChooseRouteService(TableEnum tableEnum, PayloadStructure structure)
     {
         if (!_routeServices.TryGetValue(tableEnum, out var routeService))
@@ -48,7 +49,6 @@ public class RouteManager : IDisposable, IRouteManager
         
         routeService.Route(structure);
     }
-    
     public void Dispose()
     {
         _listener.Dispose();

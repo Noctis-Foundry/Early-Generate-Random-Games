@@ -4,5 +4,5 @@ public enum RouteStage
 {
     Data,
     Logic,
-    UpdateUi
+    View
 }

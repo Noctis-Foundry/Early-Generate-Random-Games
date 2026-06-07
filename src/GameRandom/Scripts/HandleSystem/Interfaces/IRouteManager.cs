@@ -1,4 +1,4 @@
-using GameRandom.Src.HandleSystem.Interfaces;
+using GameRandom.Scripts.HandleSystem.Interfaces;
 
 namespace GameRandom.Scripts.HandleSystem.RoutSystem;
 
