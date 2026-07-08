@@ -1,5 +1,5 @@
 using CommunityToolkit.Mvvm.Input;
-using GameRandom.DataBaseContexts;
+using GameRandom.DbContext;
 
 namespace GameRandom.ViewModels.AdminPanelSystem;
 

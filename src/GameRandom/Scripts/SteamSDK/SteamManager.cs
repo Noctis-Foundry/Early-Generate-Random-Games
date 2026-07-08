@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Linq;
 using Avalonia.Threading;
-using GameRandom.Scr.Service;
+using GameRandom.Scripts.Service;
 using Steamworks;
-using System.Threading.Tasks;
-using GameRandom.DataBaseContexts;
-using GameRandom.Src.UserData;
 
-namespace GameRandom.Src;
+namespace GameRandom.Scripts.SteamSDK;
 
 public class SteamManager
 {

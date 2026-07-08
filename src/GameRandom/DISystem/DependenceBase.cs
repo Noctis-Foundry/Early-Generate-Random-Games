@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace GameRandom.DependenceInjectSystem;
+namespace GameRandom.DISystem;
 
 public class DependenceBase
 {

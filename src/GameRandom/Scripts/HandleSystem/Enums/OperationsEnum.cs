@@ -1,4 +1,4 @@
-namespace GameRandom.Scr.Service;
+namespace GameRandom.Scripts.HandleSystem.Enums;
 
 public enum OperationsEnum
 {

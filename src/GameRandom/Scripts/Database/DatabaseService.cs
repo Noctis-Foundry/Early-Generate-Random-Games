@@ -1,26 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using GameRandom.DependenceInjectSystem;
 using System.Linq;
-using GameRandom.DependenceInjectSystem;
 using System.Linq.Expressions;
-using GameRandom.DependenceInjectSystem;
 using System.Threading;
-using GameRandom.DependenceInjectSystem;
 using System.Threading.Tasks;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DataBaseContexts;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Src.UserData;
-using GameRandom.DependenceInjectSystem;
+using GameRandom.DbContext;
+using GameRandom.DISystem;
+using GameRandom.Scripts.Service;
 using Microsoft.EntityFrameworkCore;
-using GameRandom.DependenceInjectSystem;
-using Steamworks;
-using GameRandom.DependenceInjectSystem;
 
-namespace GameRandom.Scr.Service;
+namespace GameRandom.Scripts.Database;
 
 public interface IDatabaseService
 {
@@ -431,12 +420,12 @@ public class DatabaseService : DependenceBase, IDatabaseService
         }
     }
 
-    public async Task<TEntity?> GetFromRowId<TEntity>(int rowId, CancellationToken ct = default) where TEntity : class
+    public async Task<TEntity?> GetFromRowId<TEntity>(int rowId, CancellationToken ct = default) where TEntity : BaseTable
     {
         try
         {
             await using var context = CreateContext();
-            var item = await context.Set<TEntity>().FindAsync(rowId, ct);
+            var item = await context.Set<TEntity>().FirstOrDefaultAsync(e => e.Id == rowId, ct);
 
             return item;
         }

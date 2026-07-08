@@ -1,26 +1,14 @@
 using System;
-using GameRandom.DependenceInjectSystem;
 using System.Collections.Generic;
-using GameRandom.DependenceInjectSystem;
 using System.Collections.ObjectModel;
-using GameRandom.DependenceInjectSystem;
-using System.IO;
-using GameRandom.DependenceInjectSystem;
 using System.Linq;
-using GameRandom.DependenceInjectSystem;
-using System.Text.Json;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Scr.Service;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.ViewModels.FilterGameSystem;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.ViewModels.FilterGameSystem.Interface;
-using GameRandom.DependenceInjectSystem;
+using GameRandom.DISystem;
+using GameRandom.DISystem.DiSystem;
+using GameRandom.Scripts.Service;
 using GameRandom.ViewModels.BaseClasses;
+using GameRandom.ViewModels.FilterGameSystem.Interface;
 
-namespace GameRandom.ViewModels.AdminConfirmSystem;
+namespace GameRandom.ViewModels.FilterGameSystem;
 
 /// <summary>
 /// ViewModel for managing game filtering options such as categories, genres, and years.

@@ -3,23 +3,20 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Events;
+using GameRandom.DISystem;
 using GameRandom.Providers;
-using GameRandom.Scr.Events;
-using GameRandom.Scr.Service;
-using GameRandom.Scripts.HandleSystem;
+using GameRandom.Scripts;
+using GameRandom.Scripts.Factory;
+using GameRandom.Scripts.HandleSystem.Enums;
+using GameRandom.Scripts.HandleSystem.HandleEvents;
+using GameRandom.Scripts.HandleSystem.Interfaces;
 using GameRandom.Scripts.HandleSystem.PostgresListener;
 using GameRandom.Scripts.LobbySystem;
-using GameRandom.Service;
-using GameRandom.Src;
-using GameRandom.Src.Factory;
-using GameRandom.Src.LobbySystem;
-using GameRandom.Src.UserData;
-using GameRandom.ViewModels.AdminConfirmSystem;
-using GameRandom.ViewModels.AdminConfirmSystem.Enums;
+using GameRandom.Scripts.Service;
+using GameRandom.Scripts.SteamSDK;
 using GameRandom.ViewModels.MainWindowSystem;
-using GameRandom.Views.LobbyModalWindow;
+using GameRandom.ViewModels.MainWindowSystem.Enums;
+using GameRandom.ViewModels.MainWindowSystem.Interface;
 
 namespace GameRandom.Views.MainWindowSystem;
 
@@ -30,13 +27,16 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>, IInitializeMa
 {
     [Inject] private readonly LobbyService _lobby = null!;
     [Inject] private readonly EventBus _eventBus = null!;
-    [Inject] private readonly PostgresListener _postgresListener = null!;
+    [Inject] private readonly IRouteManager _routeManager = null!;
     [Inject] private readonly MainWindowFactory _mainWindowFactory = null!;
     [Inject] private readonly SteamService _steamService = null!;
     
 
     private RulesWindow _rulesWindowWindow = new();
     private LobbyWindow _lobbyWindow;
+
+    private Func<PayloadStructure, Task> _onLobbyUpdateHandler;
+    private Action<LobbyEvent> _onEventBusLobbyHandler;
 
     /// <summary>
     /// Initializes the main window and all subsystems.
@@ -92,8 +92,8 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>, IInitializeMa
         if (_eventBus is null)
             throw new NullReferenceException(nameof(_eventBus));
 
-        if (_postgresListener is null)
-            throw new NullReferenceException(nameof(_postgresListener));
+        if (_routeManager is null)
+            throw new NullReferenceException(nameof(_routeManager));
 
         if (_mainWindowFactory is null)
             throw new NullReferenceException(nameof(_mainWindowFactory));
@@ -109,11 +109,37 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>, IInitializeMa
     /// </summary>
     private void InitWindowEvents()
     {
+        LobbyImages.Children.Clear();
         Closing += MainWindow_OnClosed;
 
-        _eventBus.Subscribe<LobbyUpdate>(_ => { UpdateLobby((int)TableEnum.Lobby); });
+        _onLobbyUpdateHandler = async (p) =>
+        {
+            if (p.TableCode != (int)TableEnum.Lobby)
+                return;
+
+            var viewModel = GetViewModel();
+
+            if (viewModel == null)
+                throw new NullReferenceException(nameof(viewModel));
+
+            await viewModel.LobbyUpdate.UpdateLobby();
+            await UpdateAvatarGrid();
+        };
+        _onEventBusLobbyHandler = (e) =>
+        {
+            Dispatcher.UIThread.InvokeAsync(async () =>
+            {
+                await _onLobbyUpdateHandler?.Invoke(new PayloadStructure
+                {
+                    TableCode = (int)TableEnum.Lobby,
+                })!;
+            });
+        };
+
+        _eventBus.Subscribe(_onEventBusLobbyHandler);
+        _routeManager.GetRouteService(TableEnum.Lobby).Subscribe(RouteStage.View, _onLobbyUpdateHandler);
         
-        EventsConnecting();
+        InitializeLobbySystem();
     }
 
     /// <summary>
@@ -122,6 +148,7 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>, IInitializeMa
     private void MainWindow_OnClosed(object? sender, EventArgs e)
     {
         SteamManager.GetSteamManager().ShutdownSteam();
+        Dispose();
         Environment.Exit(0);
     }
 
@@ -129,42 +156,12 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>, IInitializeMa
     /// Subscribes to database and lobby events.
     /// </summary>
     /// <exception cref="Exception">Thrown when lobby service is not found.</exception>
-    private void EventsConnecting()
+    private void InitializeLobbySystem()
     {
-        LobbyImages.Children.Clear();
-
-        _postgresListener.Subscribe(TableEnum.Lobby,
-            e => UpdateLobby(e.TableCode));
-
         if (_lobby == null)
             throw new Exception("Lobby service not found");
 
         Dispatcher.UIThread.InvokeAsync(async () => { await _lobby.StartApp(); });
-    }
-   
-    /// <summary>
-    /// Updates lobby data and avatar grid on UI thread.
-    /// </summary>
-    /// <param name="tableCode">Database table code for validation.</param>
-    private void UpdateLobby(int tableCode) //TODO create class with saving current lobby data and update lobby with event from event bus
-    {
-        if (DataContext is not MainWindowViewModel vm) return;
-
-        if (tableCode != (int)TableEnum.Lobby)
-            return;
-        
-        Dispatcher.UIThread.InvokeAsync(async () =>
-        {
-            try
-            {
-                await vm.LobbyUpdate.UpdateLobby();
-                await UpdateAvatarGrid();
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e.Message);
-            }
-        });
     }
 
     /// <summary>
@@ -208,5 +205,13 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>, IInitializeMa
         {
             vm.InitializeCommands(OpenLobby, OpenRules);
         }
+    }
+
+    public override void Dispose()
+    {
+        base.Dispose();
+        
+        _eventBus.Unsubscribe(_onEventBusLobbyHandler);
+        _routeManager.GetRouteService(TableEnum.Lobby).Unsubscribe(RouteStage.View, _onLobbyUpdateHandler);
     }
 }

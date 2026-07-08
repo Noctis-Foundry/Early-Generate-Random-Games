@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
-using GameRandom.Src.SteamsContexts;
+using GameRandom.Scripts.SteamSDK.SteamsContexts;
 
-namespace GameRandom.Src;
+namespace GameRandom.Scripts.SteamSDK.SteamWebAPI;
 
 public interface IProfileSummary
 {

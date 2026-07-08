@@ -1,4 +1,4 @@
-namespace GameRandom.Src.RollGameSystem;
+namespace GameRandom.Scripts.RollGameSystem.Enums;
 
 public enum GenerationStatusCode
 {

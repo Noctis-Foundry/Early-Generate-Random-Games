@@ -1,10 +1,9 @@
 using System.Text.Json;
 using System.Threading.Tasks;
-using GameRandom.CoreApp;
-using GameRandom.Src.RollGameSystem;
-using GameRandom.Src.SteamsContexts;
+using GameRandom.Scripts.RollGameSystem;
+using GameRandom.Scripts.SteamSDK.SteamsContexts;
 
-namespace GameRandom.Src;
+namespace GameRandom.Scripts.SteamSDK.SteamWebAPI;
 
 public interface ISteamWebService
 {

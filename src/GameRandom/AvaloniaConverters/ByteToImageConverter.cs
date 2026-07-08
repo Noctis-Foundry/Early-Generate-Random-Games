@@ -3,9 +3,8 @@ using System.Globalization;
 using Avalonia.Data.Converters;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.Src;
+using GameRandom.DISystem.DiSystem;
+using GameRandom.Scripts.SteamSDK;
 
 namespace GameRandom.AvaloniaConverters;
 

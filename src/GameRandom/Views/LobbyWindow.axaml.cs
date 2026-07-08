@@ -1,17 +1,9 @@
-﻿using System;
-using System.Linq;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Threading;
-using GameRandom.Scr.Events;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.Scr.Service;
-using GameRandom.Src;
-using GameRandom.Src.Enums;
-using GameRandom.Src.LobbySystem;
-using GameRandom.ViewModels.AdminConfirmSystem;
+using GameRandom.Scripts;
+using GameRandom.ViewModels.LobbySystem;
 
-namespace GameRandom.Views.LobbyModalWindow;
+namespace GameRandom.Views;
 
 public sealed partial class LobbyWindow : WindowBase<LobbyWindowViewModel>
 {

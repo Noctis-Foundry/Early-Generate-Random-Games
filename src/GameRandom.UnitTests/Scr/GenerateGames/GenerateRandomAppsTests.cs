@@ -2,9 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
-using GameRandom.CoreApp;
 using GameRandom.Scripts.RollGameSystem.GenerateGames;
-using GameRandom.Src.RollGameSystem.GenerateStrategy;
+using GameRandom.Scripts.RollGameSystem.GenerateStrategy;
 using Xunit;
 
 namespace GameRandom.UnitTests.Scr.GenerateGames;

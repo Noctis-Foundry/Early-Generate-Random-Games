@@ -1,4 +1,4 @@
-namespace DIContainer.DiFactory;
+namespace GameRandom.DISystem.DiFactory;
 
 public interface IFactoryDependence
 {

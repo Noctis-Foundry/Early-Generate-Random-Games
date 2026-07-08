@@ -1,24 +1,22 @@
 using System;
-using GameRandom.DependenceInjectSystem;
 using System.Threading;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.Scr.Service;
 using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
-using GameRandom.DataBaseContexts;
-using GameRandom.Service;
-using GameRandom.Src.UserData;
-using GameRandom.ViewModels.CurrentGameSystem;
-using GameRandom.ViewModels.CurrentGameSystem.Interface;
-using GameRandom.Scripts.HandleSystem;
+using GameRandom.DbContext;
+using GameRandom.DISystem;
+using GameRandom.DISystem.DiSystem;
+using GameRandom.Scripts.Database;
 using GameRandom.Scripts.HandleSystem.Enums;
+using GameRandom.Scripts.HandleSystem.Interfaces;
 using GameRandom.Scripts.HandleSystem.PostgresListener;
-using GameRandom.Scripts.HandleSystem.RoutSystem;
+using GameRandom.Scripts.Service;
+using GameRandom.Scripts.UserData;
 using GameRandom.Scripts.WindowServices.ErrorServiceSystem;
 using GameRandom.ViewModels.BaseClasses;
+using GameRandom.ViewModels.CurrentGameSystem.Interface;
 
-namespace GameRandom.ViewModels.AdminConfirmSystem;
+namespace GameRandom.ViewModels.CurrentGameSystem;
 
 public sealed class CurrentGameStatusViewModel : ViewModelBase
 {
@@ -103,20 +101,32 @@ public sealed class CurrentGameStatusViewModel : ViewModelBase
         LoadEmpty();
         StartTaskWaiter();
 
-        var result = await TaskRunner.RunWithFinallyActionT(async () => await _currentGameLoad.LoadInfo(),
-            CloseTaskWaiterWithSemaphore);
+        try
+        {
+            var result = await Dispatcher.UIThread.InvokeAsync(async () => await _currentGameLoad.LoadInfo());
 
-        if (!result.Success || result.Value is null)
-            return;
+            if (result is null)
+                return;
 
-        var data = result.Value;
+            var data = result;
 
-        AppInfo = data.GameInfo;
-        ImageBitmap = data.ImageBitmap;
-        UserGame = data.UserGame;
+            AppInfo = data.GameInfo;
+            ImageBitmap = data.ImageBitmap;
+            UserGame = data.UserGame;
+
+            StartTimer();
+            IsEmpty = false;
+        }
+        catch (Exception ex)
+        {
+            Logger.Error("Error loading game info" + ex);
+            ErrorService.ShowWindow("Failed to load game info");
+        }
+        finally
+        {
+            CloseTaskWaiterWithSemaphore();
+        }
         
-        StartTimer();
-        IsEmpty = false;
     }
 
     /// <summary>
@@ -129,14 +139,28 @@ public sealed class CurrentGameStatusViewModel : ViewModelBase
         
         if (!IsCanStartFinishingGame()) return;
 
-        var result = await TaskRunner.RunWithFinallyActionT(() => _currentGameFinish.FinishingGame(AppInfo), 
-            () => SemaphoreSlim.Release()); //AppInfo is checking in IsCanStartFinishingGame 
-
-        if (result.Success && result.Value is not null)
+        try
         {
-            UserGame = result.Value;
-            ClearingContent();
+            var result =
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                    _currentGameFinish.FinishingGame(AppInfo!)); //AppInfo is checking in IsCanStartFinishingGame 
+
+            if (result is not null)
+            {
+                UserGame = result;
+                ClearingContent();
+            }
         }
+        catch (Exception ex)
+        {
+            Logger.Error($"{ex}");
+            ErrorService.ShowWindow(new ErrorStruct { ErrorMessage = "Failed to finish game" });
+        }
+        finally
+        {
+            SemaphoreSlim.Release();
+        }
+       
     }
 
     /// <summary>
@@ -246,7 +270,7 @@ public sealed class CurrentGameStatusViewModel : ViewModelBase
     /// </summary>
     private void UpdateDateTimer()
     {
-        if (AppInfo is not null)
+        if (AppInfo is not null && _appInfo is not null)
             CurrentTime = _appInfo.EndTime - DateTime.Now;
     }
 

@@ -1,22 +1,20 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Avalonia.Controls;
-using GameRandom.DependenceInjectSystem;
 using Avalonia.Interactivity;
-using GameRandom.DependenceInjectSystem;
 using Avalonia.Threading;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Scr.Service;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Src;
-using GameRandom.DependenceInjectSystem;
+using GameRandom.DISystem;
+using GameRandom.DISystem.DiSystem;
 using GameRandom.ViewModels.AdminConfirmSystem;
-using GameRandom.DependenceInjectSystem;
 using GameRandom.Scripts.HandleSystem;
+using GameRandom.Scripts.HandleSystem.Enums;
+using GameRandom.Scripts.HandleSystem.Interfaces;
 using GameRandom.Scripts.HandleSystem.PostgresListener;
+using GameRandom.Scripts.HandleSystem.RoutSystem;
+using GameRandom.Scripts.UserControls;
 using GameRandom.Scripts.WindowServices.ErrorServiceSystem;
-using GameRandom.ViewModels.AdminConfirmSystem.Enums;
+using GameRandom.ViewModels.MainWindowSystem.Enums;
+using GameRandom.ViewModels.TablesSystem;
 
 namespace GameRandom.Views;
 
@@ -26,11 +24,12 @@ namespace GameRandom.Views;
 public sealed partial class GameTable : MainWindowUserControlAbstract<GameTableViewModel>
 {
     [Inject] private ErrorService _errorService = null!;
+    [Inject] private IRouteManager _routeManager = null!;
     
     /// <summary>
     /// Delegate for handling table update notifications from PostgresListener.
     /// </summary>
-    private Action<PayloadStructure>? _savedDelegate;
+    private Func<PayloadStructure, Task> _savedDelegate;
 
     /// <summary>
     /// Initializes the GameTable control and subscribes to database notifications.
@@ -45,19 +44,13 @@ public sealed partial class GameTable : MainWindowUserControlAbstract<GameTableV
         InitializeViewModel();
         Di.ResolveInstance.ResolveInstanceFromClass(this);
         
+        if (_routeManager == null || _errorService == null)
+            throw new InvalidOperationException("Dependencies are not properly injected.");
+        
         InitializeProcessingHandler();
         InitializePostgresListener();
-        UpdateTableData();
         
-        LoadUserControl();
-    }
-
-    /// <summary>
-    /// Called when the control is opened. Refreshes table data.
-    /// </summary>
-    protected override void LoadUserControl()
-    {
-        UpdateTableData();
+        Dispatcher.UIThread.InvokeAsync(async () => await LoadTableData());
     }
 
     /// <summary>
@@ -72,29 +65,27 @@ public sealed partial class GameTable : MainWindowUserControlAbstract<GameTableV
     /// <summary>
     /// Handles table update notifications from database listener.
     /// </summary>
-    /// <param name="tableCode">Code identifying which table was updated.</param>
     private void InitializePostgresListener()
     {
-        _savedDelegate = e => 
+        _savedDelegate = async (e) =>
         {
-            if (e.OpCode == (int)TableEnum.GameProgress)
+            if (e.TableCode != (int)TableEnum.GameProgress)
+                return;
             
-            UpdateTableData();
+            await LoadTableData();
         };
         
-        if (Di.ResolveInstance.TryGetInstance<PostgresListener>() is { } listener)
-        {
-            listener.Subscribe(TableEnum.GameProgress, _savedDelegate);
-        }
+        _routeManager.GetRouteService(TableEnum.GameProgress).Subscribe(RouteStage.View, _savedDelegate);
     }
 
-    /// <summary>
-    /// Refreshes table data by calling ViewModel's LoadData method on UI thread.
-    /// </summary>
-    private void UpdateTableData()
+    private async Task LoadTableData()
     {
-        if (DataContext is GameTableViewModel vm)
-            TaskRunner.RunWithDispatcherAsync(() => vm.LoadData());
+        var viewModel = GetViewModel();
+        
+        if (viewModel is null)
+            throw new ApplicationException("ViewModel is null");
+
+        await viewModel.LoadData();
     }
     
     /// <summary>
@@ -106,11 +97,10 @@ public sealed partial class GameTable : MainWindowUserControlAbstract<GameTableV
 
         if (Di.ResolveInstance.TryGetInstance<PostgresListener>() is { } listener)
         {
-            if (_savedDelegate is not null) 
-                listener.Unsubscribe(TableEnum.GameProgress, _savedDelegate);
+            _routeManager.GetRouteService(TableEnum.GameProgress).Unsubscribe(RouteStage.View, _savedDelegate);
         }
         
-        _savedDelegate = null;
+        _savedDelegate = null!;
         _errorService = null!;
         
         base.Dispose();

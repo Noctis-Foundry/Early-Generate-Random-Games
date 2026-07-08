@@ -2,8 +2,8 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media;
-using GameRandom.Src;
-using GameRandom.Src.Enums;
+using GameRandom.Scripts;
+using GameRandom.Scripts.Enums;
 using GameRandom.ViewModels.AdminConfirmSystem;
 using GameRandom.ViewModels.BaseClasses;
 

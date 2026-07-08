@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using GameRandom.DependenceInjectSystem.Binders;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.DependenceInjectSystem.Enums;
+using GameRandom.DISystem.Binders;
+using GameRandom.DISystem.DiSystem;
+using GameRandom.DISystem.Enums;
 
-namespace DIContainer.DiSystem.Services;
+namespace GameRandom.DISystem.Services;
 
 public class FinalizeBindingService(Func<Type, object> createInstance)
 {

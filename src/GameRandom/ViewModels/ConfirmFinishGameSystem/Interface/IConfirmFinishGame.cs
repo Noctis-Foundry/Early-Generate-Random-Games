@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
-using GameRandom.DataBaseContexts;
+using GameRandom.DbContext;
 
 namespace GameRandom.ViewModels.ConfirmFinishGameSystem.Interface;
 

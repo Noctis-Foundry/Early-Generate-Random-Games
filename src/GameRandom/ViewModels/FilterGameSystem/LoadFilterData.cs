@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
-using GameRandom.Scr.Service;
+using GameRandom.Scripts.Service;
 using GameRandom.ViewModels.AdminConfirmSystem;
+using GameRandom.ViewModels.BaseClasses;
 using GameRandom.ViewModels.FilterGameSystem.Interface;
 
 namespace GameRandom.ViewModels.FilterGameSystem;

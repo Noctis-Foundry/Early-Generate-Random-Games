@@ -2,17 +2,14 @@
 using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.Scr.Service;
+using GameRandom.DISystem;
+using GameRandom.DISystem.DiSystem;
 using GameRandom.Scripts.WindowServices.ErrorServiceSystem;
-using GameRandom.Src;
 
 namespace GameRandom.ViewModels.BaseClasses;
 
 public class ViewModelBase : ObservableObject, IDisposable
 {
-    [Inject] protected TaskRunner TaskRunner = null!;
     [Inject] protected ErrorService ErrorService = null!;
     
     protected const int SemaphoreTimeWait = 2;
@@ -23,9 +20,7 @@ public class ViewModelBase : ObservableObject, IDisposable
     protected virtual void InitializeDiContainer()
     {
         Di.ResolveInstance.ResolveInstanceFromClass(this);
-
-        if (TaskRunner is null)
-            throw new NullReferenceException(nameof(TaskRunner));
+        
         if (ErrorService is null)
             throw new NullReferenceException(nameof(ErrorService));
     }
@@ -79,8 +74,7 @@ public class ViewModelBase : ObservableObject, IDisposable
         
         SemaphoreSlim?.Dispose();
         SemaphoreSlim = null!;
-
-        TaskRunner = null!;
+        
         ErrorService = null!;
     }
 

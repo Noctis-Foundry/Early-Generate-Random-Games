@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Threading.Tasks;
-using GameRandom.Src;
-using GameRandom.Src.Enums;
 
-namespace GameRandom.Scr.Service;
+namespace GameRandom.Scripts.Service;
 
 public static class Logger //To:Do Connect Error window to logger
 {

@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Threading.Tasks;
-using GameRandom.CoreApp;
-using GameRandom.Src.RollGameSystem;
+using GameRandom.Scripts.RollGameSystem.Enums;
+using GameRandom.Scripts.RollGameSystem.GenerateGames;
 
 namespace GameRandom.Scripts.RollGameSystem.GenerateStrategy;
 

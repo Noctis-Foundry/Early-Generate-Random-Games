@@ -1,4 +1,4 @@
-namespace GameRandom.DependenceInjectSystem.Enums;
+namespace GameRandom.DISystem.Enums;
 
 public enum ScopeType
 {

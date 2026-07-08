@@ -3,23 +3,17 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.Scr.Service;
-using GameRandom.Scripts.UserControls;
+using GameRandom.DISystem.DiSystem;
+using GameRandom.Scripts.Service;
 using GameRandom.Scripts.WindowServices;
-using GameRandom.ViewModels.AdminConfirmSystem;
-using GameRandom.ViewModels.AdminConfirmSystem.Enums;
 using GameRandom.ViewModels.BaseClasses;
+using GameRandom.ViewModels.MainWindowSystem.Enums;
 
-namespace GameRandom.Src;
+namespace GameRandom.Scripts.UserControls;
 
 public abstract class MainWindowUserControlAbstract<TViewModel> : UserControl, IDisposable, IUserControl
     where TViewModel : ViewModelBase, new()
 {
-    [Inject] protected TaskRunner TaskRunner = null!;
-    
     protected Action<ControlTypes>? _changeWindowAction;
     protected Action SavedProcessingHandler;
     protected bool IsInitializeTaskWaiter = false;
@@ -29,11 +23,10 @@ public abstract class MainWindowUserControlAbstract<TViewModel> : UserControl, I
     /// </summary>
     public virtual void AddListener(Action<ControlTypes> _onChangeContent) => _changeWindowAction = _onChangeContent;
     
+    protected virtual void LoadUserControl() {}
+    
     public abstract void CloseUserControl(object? sender, RoutedEventArgs e);
-    protected virtual void LoadUserControl()
-    {
-        
-    }
+    protected TViewModel? GetViewModel() => DataContext as TViewModel;
     public virtual void InitializeViewModel()
     {
         DataContext = new TViewModel();
@@ -82,9 +75,6 @@ public abstract class MainWindowUserControlAbstract<TViewModel> : UserControl, I
     protected virtual void InitializeDiContainer()
     {
         Di.ResolveInstance.ResolveInstanceFromClass(this);
-
-        if (TaskRunner == null)
-            throw new NullReferenceException("Failed to inject Task Runner");
     }
     
     /// <summary>

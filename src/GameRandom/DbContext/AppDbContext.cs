@@ -1,15 +1,14 @@
-﻿using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.Json;
-using GameRandom.Src.StartupLogic;
+using GameRandom.Scripts.StartupLogic;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
-namespace GameRandom.DataBaseContexts;
+namespace GameRandom.DbContext;
 
-public class AppDbContext : DbContext
+public class AppDbContext : Microsoft.EntityFrameworkCore.DbContext
 {
     public DbSet<Users> Users { get; set; }
     public DbSet<Lobbies> Lobbies { get; set; }
@@ -33,7 +32,7 @@ public class AppDbContext : DbContext
     {
         if (optionsBuilder.IsConfigured)
             return;
-
+        
         if (GameEnvLoad._envCollection.TryGetValue(EnvType.DatabaseEnv, out var databaseApi))
         {
             _hostPath = databaseApi;
@@ -73,18 +72,21 @@ public class AppDbContext : DbContext
     }
 }
 
-public class Users
+public abstract class BaseTable
 {
     public int Id { get; set; }
+}
+
+public class Users : BaseTable
+{
     public ulong SteamId { get; set; }
     public long LobbyId { get; set; }
     public string? Nickname { get; set; }
     public int AvatarURL { get; set; } //TODO Change to byte + webp format
 }
 
-public class Lobbies
+public class Lobbies : BaseTable
 {
-    public int Id { get; set; }
     public long LobbyId { get; set; }
     public int MembersCount { get; set; }
     public List<LobbyData> LobbyData { get; set; } //Navigation
@@ -92,9 +94,8 @@ public class Lobbies
     public List<Admins> AdminsList { get; set; } //Navigation
 }
 
-public class GameProgresses
+public class GameProgresses : BaseTable
 {
-    public int Id { get; set; }
     public int AppId { get; set; }
     public ulong PlayerId { get; set; }
     public string? AppName { get; set; }
@@ -107,9 +108,8 @@ public class GameProgresses
     public bool IsFinished { get; set; }
 }
 
-public class UserGame
+public class UserGame : BaseTable
 {
-    public int Id { get; set; }
     public ulong UserId { get; set; } // Взятие листа из базы данных UserGame конкретного пользователя
     public int AppId { get; set; }
     
@@ -119,10 +119,8 @@ public class UserGame
     // public GameProgresses? GameProgresses { get; set; } // Навигационное свойство
 }
 
-public class FinishedGames
+public class FinishedGames : BaseTable
 {
-    public int Id { get; set; }
-    
     public int GameProgressId { get; set; }
     
     public byte[]? ScreenShot { get; set; }
@@ -132,17 +130,15 @@ public class FinishedGames
     public GameProgresses? GameProgresses { get; set; }
 }
 
-public class Admins
+public class Admins : BaseTable
 {
-    public int Id { get; set; }
     public ulong SteamId { get; set; }
     public long LobbyId { get; set; }
     public bool IsTopAdmin { get; set; }
 }
 
-public class LobbyData
+public class LobbyData : BaseTable
 {
-    public int Id { get; set; }
     public long LobbyId { get; set; }
     public ulong UserId { get; set; }
 }

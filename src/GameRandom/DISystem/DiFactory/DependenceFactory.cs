@@ -1,7 +1,6 @@
 using System;
-using DIContainer.DiFactory;
 
-namespace GameRandom.DependenceInjectSystem.DiFactory;
+namespace GameRandom.DISystem.DiFactory;
 
 public class DependenceFactory : IFactoryDependence
 {

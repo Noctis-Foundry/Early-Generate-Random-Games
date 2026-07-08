@@ -1,8 +1,8 @@
 using System;
 using CommunityToolkit.Mvvm.Input;
-using GameRandom.DataBaseContexts;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.Src;
+using GameRandom.DbContext;
+using GameRandom.DISystem.DiSystem;
+using GameRandom.Scripts.WindowServices;
 using GameRandom.ViewModels.AdminConfirmSystem;
 
 namespace GameRandom.ViewModels.AdminPanelSystem;

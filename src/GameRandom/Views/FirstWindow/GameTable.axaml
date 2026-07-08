@@ -4,10 +4,11 @@
              xmlns:vm="using:GameRandom.ViewModels.AdminConfirmSystem"
              xmlns:converters="using:GameRandom.AvaloniaConverters"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:tablesSystem="clr-namespace:GameRandom.ViewModels.TablesSystem"
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="460"
              MinHeight="460" MaxHeight="460"
              x:Class="GameRandom.Views.GameTable"
-             x:DataType="vm:GameTableViewModel">
+             x:DataType="tablesSystem:GameTableViewModel">
     
     <UserControl.Resources>
         <converters:BoolConverter x:Key="BoolConverter"></converters:BoolConverter>
@@ -30,15 +31,15 @@
         <DataGrid Classes="ProfileDataGrid" AutoGenerateColumns="False" IsReadOnly="True" Height="400"
                   ItemsSource="{Binding TableData}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="User" Binding="{Binding PlayerName, DataType=vm:GameTableData}"/>
-                <DataGridTextColumn Header="Game" Binding="{Binding GameInfo.AppName, DataType=vm:GameTableData}"/>
-                <DataGridTextColumn Header="Comment" Binding="{Binding GameInfo.Comment, DataType=vm:GameTableData}"
+                <DataGridTextColumn Header="User" Binding="{Binding PlayerName, DataType=tablesSystem:GameTableData}"/>
+                <DataGridTextColumn Header="Game" Binding="{Binding GameInfo.AppName, DataType=tablesSystem:GameTableData}"/>
+                <DataGridTextColumn Header="Comment" Binding="{Binding GameInfo.Comment, DataType=tablesSystem:GameTableData}"
                                     Width="300">
                
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Begin date" Binding="{Binding GameInfo.BeginTime, DataType=vm:GameTableData}"/>
-                <DataGridTextColumn Header="End date" Binding="{Binding GameInfo.EndTime, DataType=vm:GameTableData}"/>
-                <DataGridTextColumn Header="Finished time" Binding="{Binding GameInfo.FinishTime, DataType=vm:GameTableData}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Begin date" Binding="{Binding GameInfo.BeginTime, DataType=tablesSystem:GameTableData}"/>
+                <DataGridTextColumn Header="End date" Binding="{Binding GameInfo.EndTime, DataType=tablesSystem:GameTableData}"/>
+                <DataGridTextColumn Header="Finished time" Binding="{Binding GameInfo.FinishTime, DataType=tablesSystem:GameTableData}"></DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>

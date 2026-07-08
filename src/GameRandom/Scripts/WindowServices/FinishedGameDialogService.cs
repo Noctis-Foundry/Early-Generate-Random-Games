@@ -1,12 +1,11 @@
 using System;
 using System.Threading.Tasks;
 using Avalonia.Controls;
-using Avalonia.Logging;
-using GameRandom.DataBaseContexts;
+using GameRandom.DbContext;
 using GameRandom.Views;
-using Logger = GameRandom.Scr.Service.Logger;
+using Logger = GameRandom.Scripts.Service.Logger;
 
-namespace GameRandom.Src;
+namespace GameRandom.Scripts.WindowServices;
 
 public class FinishedGameDialogService (Window owner) : AbstractWindowService<ConfirmFinishGame>(owner)
 {

@@ -2,12 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using GameRandom.DataBaseContexts;
-using GameRandom.Scr.Service;
-using GameRandom.Src.UserData;
+using GameRandom.DbContext;
+using GameRandom.Scripts.UserData;
+using GameRandom.ViewModels.AdminConfirmSystem;
 using GameRandom.ViewModels.AdminConfirmSystem.Interface;
+using GameRandom.ViewModels.AdminRegistrationSystem.Interface;
+using GameRandom.ViewModels.BaseClasses;
 
-namespace GameRandom.ViewModels.AdminConfirmSystem;
+namespace GameRandom.ViewModels.AdminRegistrationSystem;
 
 public class RegistrationLoad : BaseModelService, IRegistrationLoad
 {
@@ -28,7 +30,7 @@ public class RegistrationLoad : BaseModelService, IRegistrationLoad
         _refActionSemaphore = refActionSemaphore;
     }
 
-    public async Task<List<AdminRegistrationData>> LoadRegistrations()
+    public async Task<List<AdminRegistrationData>?> LoadRegistrations()
     {
         _admins.Clear();
         

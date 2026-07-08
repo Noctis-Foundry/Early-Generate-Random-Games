@@ -6,12 +6,14 @@ using Avalonia.Controls;
 using Avalonia.Logging;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media.Imaging;
-using GameRandom.DataBaseContexts;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.Scr.Service;
-using GameRandom.Src;
+using Avalonia.Threading;
+using GameRandom.DbContext;
+using GameRandom.DISystem.DiSystem;
+using GameRandom.Scripts;
+using GameRandom.Scripts.Service;
 using GameRandom.ViewModels.AdminConfirmSystem;
-using Logger = GameRandom.Scr.Service.Logger;
+using GameRandom.ViewModels.ConfirmFinishGameSystem;
+using Logger = GameRandom.Scripts.Service.Logger;
 
 namespace GameRandom.Views;
 
@@ -53,7 +55,7 @@ public sealed partial class ConfirmFinishGame : WindowBase<ConfirmFinishGameView
     
     private void OnSaveEditClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        TaskRunner.RunWithDispatcherAsync(async () =>
+        Dispatcher.UIThread.InvokeAsync(async () =>
         {
             if (DataContext is ConfirmFinishGameViewModel vm)
             {
@@ -67,7 +69,7 @@ public sealed partial class ConfirmFinishGame : WindowBase<ConfirmFinishGameView
 
     private void ChooseImageFromFile(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        TaskRunner.RunWithDispatcherAsync(async () =>
+        Dispatcher.UIThread.InvokeAsync(async () =>
         {
             var imageConfirmService = GetImageConfirm();
 
@@ -81,7 +83,7 @@ public sealed partial class ConfirmFinishGame : WindowBase<ConfirmFinishGameView
     }
     private void ChooseImageFromClipboard(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        TaskRunner.RunWithDispatcherAsync(async () =>
+        Dispatcher.UIThread.InvokeAsync(async () =>
         {
             var imageConfirmService = GetImageConfirm();
 
@@ -96,7 +98,7 @@ public sealed partial class ConfirmFinishGame : WindowBase<ConfirmFinishGameView
 
     private ImageConfirmService GetImageConfirm()
     {
-        if (Di.ResolveInstance.TryGetInstance<ImageConfirmService>() is not ImageConfirmService imageConfirmService)
+        if (Di.ResolveInstance.TryGetInstance<ImageConfirmService>() is not { } imageConfirmService)
             throw new NullReferenceException(nameof(ImageConfirmService));
 
         return imageConfirmService;

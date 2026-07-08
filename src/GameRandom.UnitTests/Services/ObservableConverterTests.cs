@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using GameRandom.Scr.Service;
+using GameRandom.Scripts.Service;
 using Xunit;
 
 namespace GameRandom.UnitTests.Services;

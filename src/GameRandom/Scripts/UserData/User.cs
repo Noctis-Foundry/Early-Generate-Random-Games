@@ -1,18 +1,16 @@
 using System;
-using GameRandom.DataBaseContexts;
 using System.Threading.Tasks;
-using Avalonia.Threading;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.Scr.Events;
-using GameRandom.Scr.Service;
-using GameRandom.Scripts.HandleSystem;
+using GameRandom.DbContext;
+using GameRandom.DISystem;
+using GameRandom.DISystem.DiSystem;
+using GameRandom.Scripts.Database;
 using GameRandom.Scripts.HandleSystem.Enums;
-using GameRandom.Scripts.HandleSystem.PostgresListener;
-using GameRandom.Scripts.HandleSystem.RoutSystem;
+using GameRandom.Scripts.HandleSystem.Interfaces;
+using GameRandom.Scripts.Service;
+using GameRandom.Scripts.SteamSDK;
 using Steamworks;
 
-namespace GameRandom.Src.UserData;
+namespace GameRandom.Scripts.UserData;
 
 /// <summary>
 /// Singleton class for managing current Steam user data

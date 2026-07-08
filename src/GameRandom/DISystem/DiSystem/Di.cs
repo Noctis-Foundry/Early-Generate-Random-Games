@@ -1,8 +1,7 @@
 using System;
-using DIContainer.DiSystem;
-using GameRandom.DependenceInjectSystem.DiInterfaces;
+using GameRandom.DISystem.DiInterfaces;
 
-namespace GameRandom.DependenceInjectSystem.DiSystem;
+namespace GameRandom.DISystem.DiSystem;
 
 public static class Di
 {

@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using GameRandom.CoreApp;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.Scr.Service;
-using GameRandom.Src;
-using GameRandom.Src.RollGameSystem;
-using GameRandom.Src.UserData;
+using GameRandom.DISystem;
+using GameRandom.DISystem.DiSystem;
+using GameRandom.Scripts.RollGameSystem.Enums;
+using GameRandom.Scripts.RollGameSystem.GenerateGames;
+using GameRandom.Scripts.Service;
+using GameRandom.Scripts.SteamSDK.SteamWebAPI;
+using GameRandom.Scripts.UserData;
 
 namespace GameRandom.Scripts.RollGameSystem.GenerateStrategy;
 

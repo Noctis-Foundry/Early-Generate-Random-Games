@@ -1,18 +1,10 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
-using Avalonia.Threading;
-using GameRandom.Events;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.Scr.Events;
-using GameRandom.Scr.Service;
-using GameRandom.Src;
-using GameRandom.Src.UserData;
+using GameRandom.Scripts;
+using GameRandom.Scripts.HandleSystem.HandleEvents;
+using GameRandom.Scripts.UserData;
 using GameRandom.ViewModels.AdminConfirmSystem;
+using GameRandom.ViewModels.AdminRegistrationSystem;
 
 namespace GameRandom.Views;
 
@@ -27,7 +19,7 @@ public sealed partial class AdminRegistrationWindow : WindowBase<AdminRegistrati
         
         InitializeViewModel();
         InitializeProcessingHandler();
-        InitializeEventBusListener<AdminRulesUpdating>(CheckAdminStatus);
+        InitializeEventBusListener<AdminRulesUpdate>(CheckAdminStatus);
 
         WindowStartupLocation = WindowStartupLocation.CenterScreen;
     }

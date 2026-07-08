@@ -1,7 +1,7 @@
 using System;
-using GameRandom.DependenceInjectSystem.Enums;
+using GameRandom.DISystem.Enums;
 
-namespace GameRandom.DependenceInjectSystem.Binders;
+namespace GameRandom.DISystem.Binders;
 
 public class BindingInfo
 {

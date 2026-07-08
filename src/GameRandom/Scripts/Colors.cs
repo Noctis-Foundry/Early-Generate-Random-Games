@@ -1,6 +1,6 @@
 using Avalonia.Media;
 
-namespace GameRandom.Src;
+namespace GameRandom.Scripts;
 
 public static class Colors
 {

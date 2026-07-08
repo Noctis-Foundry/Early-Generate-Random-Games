@@ -1,10 +1,8 @@
-using System;
-using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using GameRandom.Views;
 
-namespace GameRandom.Src;
+namespace GameRandom.Scripts.WindowServices;
 
 public class ConfirmService(Window owner)
 {

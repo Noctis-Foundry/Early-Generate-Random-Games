@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using GameRandom.Scr.Service;
-using GameRandom.Src.StartupLogic;
+using GameRandom.Scripts.HandleSystem.Enums;
+using GameRandom.Scripts.Service;
+using GameRandom.Scripts.StartupLogic;
 using Npgsql;
 
 namespace GameRandom.Scripts.HandleSystem.PostgresListener;

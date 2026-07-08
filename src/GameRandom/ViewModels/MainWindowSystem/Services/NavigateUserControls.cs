@@ -1,22 +1,18 @@
 using System;
-using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using Avalonia.Controls;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.Scr.Service;
+using GameRandom.DISystem;
+using GameRandom.DISystem.DiSystem;
+using GameRandom.Scripts.Factory;
+using GameRandom.Scripts.Service;
 using GameRandom.Scripts.UserControls;
-using GameRandom.Service;
-using GameRandom.Src;
-using GameRandom.Src.Factory;
-using GameRandom.ViewModels;
-using GameRandom.ViewModels.AdminConfirmSystem;
-using GameRandom.ViewModels.AdminConfirmSystem.Enums;
-using GameRandom.ViewModels.BaseClasses;
+using GameRandom.ViewModels.MainWindowSystem.Enums;
 using GameRandom.ViewModels.MainWindowSystem.Interface;
+using GameRandom.Views;
+using GameRandom.Views.MainWindowSystem;
 
-namespace GameRandom.Views.MainWindowSystem;
+namespace GameRandom.ViewModels.MainWindowSystem.Services;
 
 public class NavigateUserControls : IControlNavigate, IDisposable
 {

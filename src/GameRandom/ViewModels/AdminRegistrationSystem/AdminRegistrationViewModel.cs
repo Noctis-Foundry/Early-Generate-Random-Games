@@ -1,38 +1,16 @@
 using System;
-using GameRandom.DependenceInjectSystem;
-using System.Collections.Generic;
-using GameRandom.DependenceInjectSystem;
 using System.Collections.ObjectModel;
-using GameRandom.DependenceInjectSystem;
 using System.Threading;
-using GameRandom.DependenceInjectSystem;
 using System.Threading.Tasks;
-using GameRandom.DependenceInjectSystem;
 using Avalonia.Threading;
-using GameRandom.DependenceInjectSystem;
-using CommunityToolkit.Mvvm.Input;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DataBaseContexts;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Scr.Service;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Src;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Src.Enums;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Src.UserData;
-using GameRandom.DependenceInjectSystem;
-using Microsoft.EntityFrameworkCore.Storage;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Scripts.HandleSystem;
+using GameRandom.DISystem;
 using GameRandom.Scripts.HandleSystem.Enums;
+using GameRandom.Scripts.HandleSystem.Interfaces;
 using GameRandom.Scripts.HandleSystem.PostgresListener;
-using GameRandom.Scripts.HandleSystem.RoutSystem;
+using GameRandom.Scripts.Service;
 using GameRandom.ViewModels.BaseClasses;
 
-namespace GameRandom.ViewModels.AdminConfirmSystem;
+namespace GameRandom.ViewModels.AdminRegistrationSystem;
 
 /// <summary>
 /// ViewModel for managing admin registration and permissions within a lobby.
@@ -113,15 +91,20 @@ public sealed class AdminRegistrationViewModel : ViewModelBase
 
         StartTaskWaiter();
 
-        var result =
-            await TaskRunner.RunWithFinallyActionT<List<AdminRegistrationData>>(
-                async () => await _registrationLoad.LoadRegistrations(), CloseTaskWaiterWithSemaphore);
+        try
+        {
+            var result = await Dispatcher.UIThread.InvokeAsync(async () => await _registrationLoad.LoadRegistrations());
 
-        if (!result.Success)
-            return;
-
-        if (result.Value is { } adminList)
-            Admins = new ObservableCollection<AdminRegistrationData>(adminList);
+            if (result is null)
+                return;
+            
+            Admins = new ObservableCollection<AdminRegistrationData>(result);
+        }
+        finally
+        {
+            CloseTaskWaiterWithSemaphore();
+        }
+        
     }
 
     /// <summary>

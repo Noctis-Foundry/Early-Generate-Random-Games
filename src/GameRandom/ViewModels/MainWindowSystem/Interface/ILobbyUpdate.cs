@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using GameRandom.Src.SteamsContexts;
+using GameRandom.Scripts.SteamSDK.SteamsContexts;
 
-namespace GameRandom.ViewModels.AdminConfirmSystem;
+namespace GameRandom.ViewModels.MainWindowSystem.Interface;
 
 public interface ILobbyUpdate
 {

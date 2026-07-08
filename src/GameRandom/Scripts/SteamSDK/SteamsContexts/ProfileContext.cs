@@ -1,4 +1,4 @@
-﻿namespace GameRandom.Src.SteamsContexts;
+﻿namespace GameRandom.Scripts.SteamSDK.SteamsContexts;
 
 public class ProfileContext
 {

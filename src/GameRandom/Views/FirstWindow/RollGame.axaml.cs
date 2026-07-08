@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Threading;
-using GameRandom.DependenceInjectSystem;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using System.Threading.Tasks;
-using GameRandom.CoreApp;
-using GameRandom.DependenceInjectSystem.DiSystem;
+using Avalonia.Threading;
+using GameRandom.DISystem;
+using GameRandom.DISystem.DiSystem;
+using GameRandom.Scripts.RollGameSystem;
 using GameRandom.Scripts.RollGameSystem.GenerateGames;
-using GameRandom.Src;
+using GameRandom.Scripts.UserControls;
 using GameRandom.ViewModels.AdminConfirmSystem;
 using GameRandom.Scripts.WindowServices.ErrorServiceSystem;
-using GameRandom.Src.RollGameSystem;
-using GameRandom.ViewModels.AdminConfirmSystem.Enums;
+using GameRandom.ViewModels.MainWindowSystem.Enums;
+using GameRandom.ViewModels.RollGameViewModel;
 
 namespace GameRandom.Views;
 
@@ -92,7 +93,7 @@ public sealed partial class RollGame : MainWindowUserControlAbstract<RollGameVie
     /// <param name="e"></param>
     private void GenerateGame(object? sender, RoutedEventArgs e)
     {
-        TaskRunner.RunWithDispatcherAsync(async () => await GenerateGameAsync());
+        Dispatcher.UIThread.InvokeAsync(async () => await GenerateGameAsync());
     }
 
     private async Task GenerateGameAsync()
@@ -113,8 +114,16 @@ public sealed partial class RollGame : MainWindowUserControlAbstract<RollGameVie
         
         var filters = _filterGameWindow?.GetFilters();
 
-        await TaskRunner.Run(() => viewModel.GenerateGames(countGames, filters, _cts.Token));
-        await TaskRunner.RunWithFinallyAction(() => _rollGameFactory.GenerateUi(viewModel, GamesGrid, countGames), () => _rollSemaphore.Release());
+        await viewModel.GenerateGames(countGames, filters, _cts.Token);
+        
+        try
+        {
+            await _rollGameFactory.GenerateUi(viewModel, GamesGrid, countGames);
+        }
+        finally
+        {
+            _rollSemaphore.Release();
+        }
     }
     
     public override void Dispose()

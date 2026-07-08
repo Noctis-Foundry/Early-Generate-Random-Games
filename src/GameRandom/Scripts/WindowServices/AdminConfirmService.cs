@@ -1,11 +1,11 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Avalonia.Controls;
-using GameRandom.DataBaseContexts;
-using GameRandom.Scr.Service;
+using GameRandom.DbContext;
+using GameRandom.Scripts.Service;
 using GameRandom.Views;
 
-namespace GameRandom.Src;
-using System.Threading.Tasks;
+namespace GameRandom.Scripts.WindowServices;
 
 public class AdminConfirmService : AbstractWindowService<AdminConfirmWindow>
 {

@@ -3,8 +3,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:vm="using:GameRandom.ViewModels.AdminConfirmSystem"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:rollGameViewModel="clr-namespace:GameRandom.ViewModels.RollGameViewModel"
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="500"
-             x:Class="GameRandom.Views.RollGame" x:DataType="vm:RollGameViewModel"
+             x:Class="GameRandom.Views.RollGame" x:DataType="rollGameViewModel:RollGameViewModel"
              Width="1000" Height="460">
 
     <DockPanel>

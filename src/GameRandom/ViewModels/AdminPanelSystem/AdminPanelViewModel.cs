@@ -2,17 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.Scr.Events;
+using GameRandom.DISystem;
+using GameRandom.DISystem.DiSystem;
 using GameRandom.Scripts.HandleSystem;
 using GameRandom.Scripts.HandleSystem.Enums;
 using GameRandom.Scripts.HandleSystem.HandleEvents;
+using GameRandom.Scripts.HandleSystem.Interfaces;
 using GameRandom.Scripts.HandleSystem.RoutSystem;
-using GameRandom.Src;
-using GameRandom.Src.UserData;
-using GameRandom.ViewModels.AdminSystem.Interface;
+using GameRandom.Scripts.Service;
+using GameRandom.Scripts.UserData;
+using GameRandom.Scripts.WindowServices;
+using GameRandom.ViewModels.AdminPanelSystem.Interface;
 using GameRandom.ViewModels.BaseClasses;
 
 namespace GameRandom.ViewModels.AdminPanelSystem;
@@ -110,22 +112,32 @@ public sealed class AdminPanelViewModel : ViewModelBase
 
         StartTaskWaiter();
 
-        var result = await TaskRunner.RunWithFinallyActionT<List<AdminPanelElementData>>(async () =>
-            await _adminLoadService.LoadElementsData(), CloseTaskWaiterWithSemaphore);
 
-        if (result is { Success: false, Value: null })
-            return false;
-
-        GameList = new ObservableCollection<AdminPanelElementData>(result.Value!);
-
-        OpenWithQueue = new AsyncRelayCommand(async () =>
+        try
         {
-            if (Di.ResolveInstance.TryGetInstance<AdminConfirmService>() is not { } adminConfirmService)
-                throw new NullReferenceException(nameof(adminConfirmService));
+            var result = await Dispatcher.UIThread.InvokeAsync(async () =>
+                await _adminLoadService.LoadElementsData());
 
-            await adminConfirmService.ShowWindowAsync(GameList);
-        });
+            if (result is null)
+                return false;
+            
+            GameList = new ObservableCollection<AdminPanelElementData>(result);
 
+            OpenWithQueue = new AsyncRelayCommand(async () =>
+            {
+                if (Di.ResolveInstance.TryGetInstance<AdminConfirmService>() is not { } adminConfirmService)
+                    throw new NullReferenceException(nameof(adminConfirmService));
+
+                await adminConfirmService.ShowWindowAsync(GameList);
+            });
+
+        }
+        finally
+        {
+            CloseTaskWaiterWithSemaphore();
+        }
+
+      
         return true;
     }
 
@@ -134,7 +146,7 @@ public sealed class AdminPanelViewModel : ViewModelBase
     /// </summary>
     private void InitializeListeners()
     {
-        _routeManager.GetRouteService(TableEnum.EndGameTable).Subscribe(RouteStage.View, LoadGameProgresses);
+        _routeManager.GetRouteService(TableEnum.FinishedGames).Subscribe(RouteStage.View, LoadGameProgresses);
         _adminRulesUpdate = _ => CheckIsAdminRules();
     }
 

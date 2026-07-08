@@ -1,4 +1,4 @@
-﻿namespace GameRandom.Src.Enums;
+﻿namespace GameRandom.Scripts.Enums;
 
 public enum ErrorEnum
 {

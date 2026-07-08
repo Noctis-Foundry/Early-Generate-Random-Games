@@ -1,6 +1,6 @@
-using GameRandom.Scripts.HandleSystem.Interfaces;
+using GameRandom.Scripts.HandleSystem.Enums;
 
-namespace GameRandom.Scripts.HandleSystem.RoutSystem;
+namespace GameRandom.Scripts.HandleSystem.Interfaces;
 
 public interface IRouteManager
 {

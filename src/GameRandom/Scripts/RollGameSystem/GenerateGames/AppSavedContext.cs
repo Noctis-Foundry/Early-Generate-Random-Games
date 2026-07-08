@@ -2,7 +2,7 @@
 using System.Text.Json.Serialization;
 using GameRandom.AvaloniaConverters;
 
-namespace GameRandom.CoreApp;
+namespace GameRandom.Scripts.RollGameSystem.GenerateGames;
 
 public class AppSavedContext
 {

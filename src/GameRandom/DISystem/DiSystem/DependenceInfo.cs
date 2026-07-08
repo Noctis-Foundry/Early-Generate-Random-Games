@@ -1,7 +1,7 @@
 using System;
-using GameRandom.DependenceInjectSystem.Enums;
+using GameRandom.DISystem.Enums;
 
-namespace GameRandom.DependenceInjectSystem.DiSystem;
+namespace GameRandom.DISystem.DiSystem;
 
 public class DependenceInfo(Type implementationType, ScopeType scopeType = ScopeType.Singleton, bool isLazy = true)
 {

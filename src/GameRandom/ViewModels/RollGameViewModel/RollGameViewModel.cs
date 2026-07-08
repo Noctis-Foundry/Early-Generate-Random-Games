@@ -1,21 +1,22 @@
 ﻿using System;
-using GameRandom.Src;
-using GameRandom.DependenceInjectSystem;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.Json;
 using System.Threading;
-using GameRandom.CoreApp;
 using System.Threading.Tasks;
 using Avalonia.Controls;
-using GameRandom.Scr.Service;
+using GameRandom.DISystem;
+using GameRandom.Scripts.RollGameSystem.Enums;
 using GameRandom.Scripts.RollGameSystem.GenerateGames;
-using GameRandom.Src.RollGameSystem;
-using GameRandom.Src.RollGameSystem.GenerateStrategy;
+using GameRandom.Scripts.RollGameSystem.GenerateStrategy;
+using GameRandom.Scripts.Service;
+using GameRandom.Scripts.SteamSDK;
+using GameRandom.Scripts.SteamSDK.SteamWebAPI;
 using GameRandom.ViewModels.BaseClasses;
+using GameRandom.ViewModels.FilterGameSystem;
 
-namespace GameRandom.ViewModels.AdminConfirmSystem;
+namespace GameRandom.ViewModels.RollGameViewModel;
 
 /// <summary>
 /// ViewModel for the logic of rolling (generating) random games.

@@ -1,7 +1,7 @@
-using GameRandom.DependenceInjectSystem.DiInterfaces;
-using GameRandom.DependenceInjectSystem.DiSystem;
+using GameRandom.DISystem.DiInterfaces;
+using GameRandom.DISystem.DiSystem;
 
-namespace GameRandom.DependenceInjectSystem.Providers;
+namespace GameRandom.DISystem.Providers;
 
 /// <summary>
 /// For usage this provide, override BindingInstance

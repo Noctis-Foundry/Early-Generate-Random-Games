@@ -1,9 +1,8 @@
 using System.Text.Json;
 using System.Threading.Tasks;
-using GameRandom.CoreApp;
-using GameRandom.Src.RollGameSystem;
+using GameRandom.Scripts.RollGameSystem;
 
-namespace GameRandom.Src;
+namespace GameRandom.Scripts.SteamSDK.SteamWebAPI;
 
 public interface IUserOwnerGames
 {

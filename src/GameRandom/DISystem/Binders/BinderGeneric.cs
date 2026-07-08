@@ -1,6 +1,6 @@
-using GameRandom.DependenceInjectSystem.DiInterfaces;
+using GameRandom.DISystem.DiInterfaces;
 
-namespace GameRandom.DependenceInjectSystem.Binders;
+namespace GameRandom.DISystem.Binders;
 
 public class BinderGeneric (IFinalizedBinding container, BindingInfo bindingInfo)
 {

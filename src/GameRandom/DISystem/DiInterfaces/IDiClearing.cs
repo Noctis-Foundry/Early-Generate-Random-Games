@@ -1,6 +1,6 @@
 using System;
 
-namespace GameRandom.DependenceInjectSystem.DiInterfaces;
+namespace GameRandom.DISystem.DiInterfaces;
 
 public interface IDiClearing
 {

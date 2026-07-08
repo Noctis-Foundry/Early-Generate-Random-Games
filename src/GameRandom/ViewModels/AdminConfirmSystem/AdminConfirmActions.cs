@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using GameRandom.DataBaseContexts;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.Scr.Service;
-using GameRandom.Src.Enums;
+using GameRandom.DbContext;
+using GameRandom.DISystem;
+using GameRandom.Scripts.Database;
+using GameRandom.Scripts.Enums;
 using GameRandom.ViewModels.AdminConfirmSystem.Interface;
+using GameRandom.ViewModels.BaseClasses;
 
 namespace GameRandom.ViewModels.AdminConfirmSystem;
 

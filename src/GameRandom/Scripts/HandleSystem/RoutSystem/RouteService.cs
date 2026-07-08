@@ -2,33 +2,33 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.Scr.Events;
-using GameRandom.Scr.Service;
+using GameRandom.DISystem;
+using GameRandom.DISystem.DiSystem;
+using GameRandom.Scripts.Database;
 using GameRandom.Scripts.HandleSystem.Enums;
 using GameRandom.Scripts.HandleSystem.HandleEvents;
 using GameRandom.Scripts.HandleSystem.Interfaces;
 using GameRandom.Scripts.HandleSystem.PostgresListener;
+using GameRandom.Scripts.Service;
 
 namespace GameRandom.Scripts.HandleSystem.RoutSystem;
 
 public abstract class RouteService : IRouteService
 {
-    [Inject] protected DatabaseService _databaseService;
-    [Inject] protected EventBus _eventBus;
+    [Inject] protected DatabaseService _databaseService = null!;
+    [Inject] protected EventBus _eventBus = null!;
 
     private readonly Dictionary<RouteStage, List<Func<Task>>> _routeHandlers = new()
     {
-        [RouteStage.Data] = null!,
-        [RouteStage.Logic] = null!,
-        [RouteStage.View] = null!,
+        [RouteStage.Data] = [],
+        [RouteStage.Logic] = [],
+        [RouteStage.View] = [],
     };
     private readonly Dictionary<RouteStage, List<Func<PayloadStructure, Task>>> _routeHandlersPayload = new()
     {
-        [RouteStage.Data] = null!,
-        [RouteStage.Logic] = null!,
-        [RouteStage.View] = null!,
+        [RouteStage.Data] = [],
+        [RouteStage.Logic] = [],
+        [RouteStage.View] = [],
     };
 
     protected RouteService()
@@ -37,10 +37,15 @@ public abstract class RouteService : IRouteService
         
         if (_databaseService is null)
             throw new ArgumentNullException(nameof(_databaseService));
+        
+        if (_eventBus is null)
+            throw new ArgumentNullException(nameof(_eventBus));
     }
-    
-    public abstract Task Route(PayloadStructure payloadStructure);
 
+    public abstract Task Route(PayloadStructure payloadStructure);
+    
+    public abstract void SendEvent(object? data = null);
+    
     public virtual void Subscribe(RouteStage routeUpdateStage, Func<Task> process)
     {
         if (!_routeHandlers.ContainsKey(routeUpdateStage))
@@ -49,13 +54,14 @@ public abstract class RouteService : IRouteService
             return;
         }
         
-        if (!_routeHandlers.TryGetValue(routeUpdateStage, out var list))
+        if (_routeHandlers.TryGetValue(routeUpdateStage, out var list))
         {
-            var newList = new List<Func<Task>>();
-            _routeHandlers[routeUpdateStage] = newList;
+            list.Add(process);
+            return;
         }
         
-        _routeHandlers[routeUpdateStage].Add(process);
+        throw new ArgumentException("Route stage not found in routeHandlersPayload dictionary.");
+        
     }
     public void Subscribe(RouteStage routeStage, Func<PayloadStructure, Task> process)
     {
@@ -65,17 +71,35 @@ public abstract class RouteService : IRouteService
             return;
         }
         
-        if (!_routeHandlersPayload.TryGetValue(routeStage, out var list))
+        if (_routeHandlersPayload.TryGetValue(routeStage, out var list))
         {
-            var newList = new List<Func<PayloadStructure, Task>>();
-            _routeHandlersPayload[routeStage] = newList;
+            list.Add(process);
+            return;
         }
         
-        _routeHandlersPayload[routeStage].Add(process);
+        throw new ArgumentException("Route stage not found in routeHandlersPayload dictionary.");
     }
-
-    public abstract void SendEvent(object? data = null);
-
+    public void Unsubscribe(RouteStage routeStage, Func<Task> process)
+    {
+        if (!_routeHandlers.ContainsKey(routeStage))
+        {
+            Logger.Error("RouteStage not found in routeHandlersPayload dictionary.");
+            return;
+        }
+        
+        _routeHandlers[routeStage].Remove(process);
+    }
+    public void Unsubscribe(RouteStage routeStage, Func<PayloadStructure, Task> process)
+    {
+        if (!_routeHandlersPayload.ContainsKey(routeStage))
+        {
+            Logger.Error("RouteStage not found in routeHandlersPayload dictionary.");
+            return;
+        }
+        
+        _routeHandlersPayload[routeStage].Remove(process);
+    }
+    
     public virtual void Dispose()
     {
         _databaseService = null!;

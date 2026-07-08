@@ -1,4 +1,4 @@
-using GameRandom.Src.Enums;
+using GameRandom.Scripts.Enums;
 
 namespace GameRandom.Scripts.WindowServices.ErrorServiceSystem;
 

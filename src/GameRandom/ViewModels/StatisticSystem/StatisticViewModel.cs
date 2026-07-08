@@ -1,30 +1,19 @@
 using System;
-using GameRandom.DependenceInjectSystem;
 using System.Collections.Generic;
-using GameRandom.DependenceInjectSystem;
-using System.Collections.ObjectModel;
-using GameRandom.DependenceInjectSystem;
 using System.Linq;
-using GameRandom.DependenceInjectSystem;
 using System.Threading.Tasks;
-using GameRandom.DependenceInjectSystem;
-using Avalonia.Controls;
-using GameRandom.DependenceInjectSystem;
 using Avalonia.Threading;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DataBaseContexts;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Scr.Service;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Src;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Scripts.HandleSystem;
+using GameRandom.DbContext;
+using GameRandom.DISystem;
+using GameRandom.DISystem.DiSystem;
+using GameRandom.Scripts.Database;
+using GameRandom.Scripts.HandleSystem.Enums;
+using GameRandom.Scripts.HandleSystem.Interfaces;
 using GameRandom.Scripts.HandleSystem.PostgresListener;
+using GameRandom.Scripts.SteamSDK;
 using GameRandom.ViewModels.BaseClasses;
 
-namespace GameRandom.ViewModels.AdminConfirmSystem;
+namespace GameRandom.ViewModels.StatisticSystem;
 
 /// <summary>
 /// ViewModel for the statistics screen.
@@ -34,17 +23,17 @@ public class StatisticViewModel : ViewModelBase
     /// <summary>
     /// Database service for querying game data.
     /// </summary>
-    [Inject] private DatabaseService? _databaseService = null!;
+    [Inject] private DatabaseService _databaseService = null!;
     
     /// <summary>
     /// PostgreSQL listener for real-time database updates.
     /// </summary>
-    [Inject] private PostgresListener? _postgresListener = null!;
+    [Inject] private IRouteManager _routeManager = null!;
 
     /// <summary>
     /// Listener callback for table updates.
     /// </summary>
-    private Action<PayloadStructure>? _tableListener;
+    private Func<PayloadStructure, Task>? _onEndTableHandler;
     
     /// <summary>
     /// Collection of statistic cards to display.
@@ -61,8 +50,8 @@ public class StatisticViewModel : ViewModelBase
 
         if (_databaseService is null)
             throw new NullReferenceException(nameof(_databaseService));
-        if (_postgresListener is null)
-            throw new NullReferenceException(nameof(_postgresListener));
+        if (_routeManager is null)
+            throw new NullReferenceException(nameof(_routeManager));
 
         InitializeListener();
     }
@@ -72,15 +61,15 @@ public class StatisticViewModel : ViewModelBase
     /// </summary>
     private void InitializeListener()
     {
-        _tableListener += e =>
+        _onEndTableHandler += async e =>
         {
-            if (e.TableCode != (int)TableEnum.EndGameTable)
+            if (e.TableCode != (int)TableEnum.FinishedGames)
                 return;
 
-            Dispatcher.UIThread.InvokeAsync(async () => await LoadStatisticAsync());
+            await Dispatcher.UIThread.InvokeAsync(async () => await LoadStatisticAsync());
         };
         
-        _postgresListener.Subscribe(TableEnum.EndGameTable, _tableListener);
+        _routeManager.GetRouteService(TableEnum.FinishedGames).Subscribe(RouteStage.View, _onEndTableHandler);
     }
     
     /// <summary>
@@ -107,11 +96,11 @@ public class StatisticViewModel : ViewModelBase
     {
         _databaseService = null;
         
-        if (_tableListener is not null) 
-            _postgresListener?.Unsubscribe(TableEnum.GameProgress, _tableListener);
+        if (_onEndTableHandler is not null) 
+            _routeManager?.GetRouteService(TableEnum.FinishedGames).Unsubscribe(RouteStage.View, _onEndTableHandler);
         
-        _postgresListener = null;
-        _tableListener = null;
+        _routeManager = null;
+        _onEndTableHandler = null;
         
         StatisticCardInfos.Clear();
     }

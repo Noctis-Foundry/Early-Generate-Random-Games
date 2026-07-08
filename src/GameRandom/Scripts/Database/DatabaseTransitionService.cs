@@ -1,12 +1,13 @@
 using System;
-using GameRandom.DependenceInjectSystem;
 using System.Threading;
 using System.Threading.Tasks;
-using GameRandom.DataBaseContexts;
-using GameRandom.DependenceInjectSystem.DiSystem;
+using GameRandom.DbContext;
+using GameRandom.DISystem;
+using GameRandom.DISystem.DiSystem;
+using GameRandom.Scripts.Service;
 using Microsoft.EntityFrameworkCore;
 
-namespace GameRandom.Scr.Service;
+namespace GameRandom.Scripts.Database;
 
 public class DatabaseTransitionService : DependenceBase
 {

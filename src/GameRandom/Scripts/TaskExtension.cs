@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace GameRandom.Src;
+namespace GameRandom.Scripts;
 
 public static class TaskExtension
 {

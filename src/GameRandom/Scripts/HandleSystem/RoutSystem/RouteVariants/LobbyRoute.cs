@@ -1,9 +1,10 @@
 using System.Threading.Tasks;
-using GameRandom.DataBaseContexts;
-using GameRandom.Scr.Service;
+using GameRandom.DbContext;
+using GameRandom.Scripts.HandleSystem.Enums;
 using GameRandom.Scripts.HandleSystem.HandleEvents;
 using GameRandom.Scripts.HandleSystem.PostgresListener;
-using GameRandom.Src.UserData;
+using GameRandom.Scripts.Service;
+using GameRandom.Scripts.UserData;
 
 namespace GameRandom.Scripts.HandleSystem.RoutSystem.RouteVariants;
 
@@ -17,11 +18,17 @@ public class LobbyRoute : RouteService
             return;
         }
 
-        var lobbyData = await _databaseService.GetFromRowId<Lobbies>(payloadStructure.RowId);
+        var lobbyData = await _databaseService.GetFromRowId<LobbyData>(payloadStructure.RowId);
 
-        if (lobbyData == null|| lobbyData.LobbyId == 0)
+        if (payloadStructure.OpCode == (int)OperationsEnum.Delete)
         {
-            Logger.Warning($"Lobby data from row {payloadStructure.RowId} is null or empty");
+            await BaseHandle(payloadStructure);
+            return;
+        }
+        
+        if (lobbyData == null || lobbyData.LobbyId == 0)
+        {
+            Logger.Warning($"Lobby data is null or empty");
             return;
         }
 

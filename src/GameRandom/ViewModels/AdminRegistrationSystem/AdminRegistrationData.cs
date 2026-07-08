@@ -1,7 +1,7 @@
 using CommunityToolkit.Mvvm.Input;
-using GameRandom.DataBaseContexts;
+using GameRandom.DbContext;
 
-namespace GameRandom.ViewModels.AdminConfirmSystem;
+namespace GameRandom.ViewModels.AdminRegistrationSystem;
 
 /// <summary>
 /// Represents data for a single user in the admin registration view.

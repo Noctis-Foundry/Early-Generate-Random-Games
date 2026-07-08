@@ -1,13 +1,10 @@
 using System;
 using Avalonia.Controls;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.DependenceInjectSystem;
+using GameRandom.DISystem;
 using GameRandom.Scripts.UserControls;
-using GameRandom.ViewModels.AdminConfirmSystem.Enums;
-using GameRandom.ViewModels.BaseClasses;
+using GameRandom.ViewModels.MainWindowSystem.Enums;
 
-namespace GameRandom.Src.Factory;
+namespace GameRandom.Scripts.Factory;
 
 public class UserControlFactory : DependenceBase
 {

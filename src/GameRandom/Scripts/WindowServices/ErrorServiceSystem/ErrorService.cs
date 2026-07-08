@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Avalonia.Controls;
-using GameRandom.Src;
-using GameRandom.Src.Enums;
+using GameRandom.Scripts.Enums;
 using GameRandom.Views;
 
 namespace GameRandom.Scripts.WindowServices.ErrorServiceSystem;

@@ -1,6 +1,7 @@
-using GameRandom.CoreApp;
+using GameRandom.Scripts.RollGameSystem.Enums;
+using GameRandom.Scripts.RollGameSystem.GenerateGames;
 
-namespace GameRandom.Src.RollGameSystem;
+namespace GameRandom.Scripts.RollGameSystem;
 
 public struct GenerateGameStruct
 {

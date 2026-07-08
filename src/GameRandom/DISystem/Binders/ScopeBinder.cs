@@ -1,7 +1,7 @@
-using GameRandom.DependenceInjectSystem.DiInterfaces;
-using GameRandom.DependenceInjectSystem.Enums;
+using GameRandom.DISystem.DiInterfaces;
+using GameRandom.DISystem.Enums;
 
-namespace GameRandom.DependenceInjectSystem.Binders;
+namespace GameRandom.DISystem.Binders;
 
 public class ScopeBinder(IFinalizedBinding container, BindingInfo bindingInfo)
 {

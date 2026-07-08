@@ -3,14 +3,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="using:GameRandom.ViewModels.AdminConfirmSystem"
+        xmlns:confirmFinishGameSystem="clr-namespace:GameRandom.ViewModels.ConfirmFinishGameSystem"
         x:Class="GameRandom.Views.ConfirmFinishGame"
-        x:DataType="vm:ConfirmFinishGameViewModel"
+        x:DataType="confirmFinishGameSystem:ConfirmFinishGameViewModel"
         Title="Confirm Finish Game"
         Width="800" Height="400"
         CanResize="False">
 
     <Design.DataContext>
-        <vm:ConfirmFinishGameViewModel />
+        <confirmFinishGameSystem:ConfirmFinishGameViewModel />
     </Design.DataContext>
     
     <Window.Styles>

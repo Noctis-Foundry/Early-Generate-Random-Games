@@ -1,18 +1,14 @@
 using System;
 using Avalonia.Controls;
 using Avalonia.Threading;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.Scr.Events;
-using GameRandom.Scr.Service;
+using GameRandom.DISystem.DiSystem;
+using GameRandom.Scripts.Enums;
+using GameRandom.Scripts.Service;
 using GameRandom.Scripts.WindowServices;
 using GameRandom.Scripts.WindowServices.ErrorServiceSystem;
-using GameRandom.Src.Enums;
-using GameRandom.ViewModels.AdminConfirmSystem;
 using GameRandom.ViewModels.BaseClasses;
 
-namespace GameRandom.Src;
+namespace GameRandom.Scripts;
 
 /// <summary>
 /// Base class for application windows with ViewModel support and lifecycle management.
@@ -20,11 +16,6 @@ namespace GameRandom.Src;
 /// <typeparam name="TViewModel">ViewModel type that inherits from ViewModelBase.</typeparam>
 public abstract class WindowBase<TViewModel> : Window, IDisposable where TViewModel : ViewModelBase, new()
 {
-    /// <summary>
-    /// Task runner for launch methods with try/catch structure
-    /// </summary>
-    [Inject] protected TaskRunner TaskRunner = null!;
-    
     /// <summary>
     /// Saved handler for processing operations.
     /// </summary>
@@ -152,17 +143,14 @@ public abstract class WindowBase<TViewModel> : Window, IDisposable where TViewMo
     protected virtual void InitializeDiContainer()
     {
         Di.ResolveInstance.ResolveInstanceFromClass(this);
-
-        if (TaskRunner == null)
-            throw new NullReferenceException("Failed to inject Task Runner");
     }
 
-    protected TViewModel GetViewModel()
+    protected TViewModel? GetViewModel()
     {
         if (DataContext is TViewModel vm)
             return vm;
 
-        return null!;
+        return null;
     }
     
     /// <summary>

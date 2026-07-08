@@ -1,4 +1,4 @@
-namespace GameRandom.Scripts.SteamSDK;
+namespace GameRandom.Scripts.SteamSDK.SteamWebAPI;
 
 public enum SteamWebInterfaces
 {

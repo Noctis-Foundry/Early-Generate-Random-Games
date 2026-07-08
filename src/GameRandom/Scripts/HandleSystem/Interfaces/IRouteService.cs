@@ -9,5 +9,7 @@ public interface IRouteService
 {
     public void Subscribe(RouteStage routeUpdateStage, Func<Task> process);
     public void Subscribe(RouteStage routeStage, Func<PayloadStructure, Task> process);
+    public void Unsubscribe(RouteStage routeStage, Func<Task> process);
+    public void Unsubscribe(RouteStage routeStage, Func<PayloadStructure, Task> process);
     public void SendEvent(object? data = null);
 }

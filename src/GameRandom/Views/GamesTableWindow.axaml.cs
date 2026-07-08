@@ -5,9 +5,9 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
-using GameRandom.Src;
-using GameRandom.Src.UserData;
+using GameRandom.Scripts;
 using GameRandom.ViewModels.AdminConfirmSystem;
+using GameRandom.ViewModels.TablesSystem;
 
 namespace GameRandom.Views;
 

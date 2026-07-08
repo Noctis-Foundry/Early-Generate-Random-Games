@@ -1,4 +1,4 @@
-namespace GameRandom.CoreApp;
+namespace GameRandom.Scripts.RollGameSystem.GenerateGames;
 
 public class AppInfo (AppSavedContext savedContext, byte[] imageBytes)
 {

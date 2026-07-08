@@ -2,16 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using DIContainer.DiFactory;
-using DIContainer.DiSystem.Services;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DependenceInjectSystem.Binders;
-using GameRandom.DependenceInjectSystem.DiFactory;
-using GameRandom.DependenceInjectSystem.DiInterfaces;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.DependenceInjectSystem.Enums;
+using GameRandom.DISystem.Binders;
+using GameRandom.DISystem.DiFactory;
+using GameRandom.DISystem.DiInterfaces;
+using GameRandom.DISystem.Enums;
+using GameRandom.DISystem.Services;
 
-namespace DIContainer.DiSystem;
+namespace GameRandom.DISystem.DiSystem;
 
 public class DiContainer : IBindingDiContainer, IFinalizedBinding, IResolveDependence, IDiClearing
 {

@@ -1,7 +1,6 @@
 using Avalonia.Controls;
-using GameRandom.DependenceInjectSystem.Providers;
+using GameRandom.DISystem.Providers;
 using GameRandom.Scripts.WindowServices;
-using GameRandom.Src;
 
 namespace GameRandom.Providers;
 

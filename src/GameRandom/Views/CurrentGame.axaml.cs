@@ -1,29 +1,20 @@
 using System;
-using GameRandom.DependenceInjectSystem;
 using System.Diagnostics;
-using GameRandom.DependenceInjectSystem;
 using System.Threading.Tasks;
-using GameRandom.DependenceInjectSystem;
 using Avalonia.Controls;
-using GameRandom.DependenceInjectSystem;
 using Avalonia.Interactivity;
-using GameRandom.DependenceInjectSystem;
 using Avalonia.Threading;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Scr.Service;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Src;
-using GameRandom.DependenceInjectSystem;
+using GameRandom.DISystem;
+using GameRandom.Scripts;
+using GameRandom.Scripts.SteamSDK;
 using GameRandom.ViewModels.AdminConfirmSystem;
-using GameRandom.DependenceInjectSystem;
+using GameRandom.ViewModels.CurrentGameSystem;
 
 namespace GameRandom.Views;
 
 public sealed partial class CurrentGame : WindowBase<CurrentGameStatusViewModel>
 {
-    [Inject] private SteamService _steamService;
+    [Inject] private SteamService _steamService = null!;
     
     public CurrentGame()
     {
@@ -81,7 +72,7 @@ public sealed partial class CurrentGame : WindowBase<CurrentGameStatusViewModel>
             return;
         }
         
-        TaskRunner.RunWithDispatcherAsync(async () => await vm.FinishingGame());
+        Dispatcher.UIThread.InvokeAsync(async () => await vm.FinishingGame());
     }
 
     protected override void InitializeDiContainer()

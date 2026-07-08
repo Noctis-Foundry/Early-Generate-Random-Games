@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
-using GameRandom.DataBaseContexts;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.Scr.Service;
-using GameRandom.Src;
-using GameRandom.Src.Enums;
-using GameRandom.Src.UserData;
+using Avalonia.Threading;
+using GameRandom.DbContext;
+using GameRandom.DISystem.DiSystem;
+using GameRandom.Scripts.Database;
+using GameRandom.Scripts.Service;
 using GameRandom.ViewModels.AdminConfirmSystem.Interface;
 using GameRandom.ViewModels.BaseClasses;
 
@@ -94,9 +93,22 @@ public sealed class AdminConfirmViewModel : ViewModelBase
         if (FinishedGame is null) return false;
 
         StartTaskWaiter();
-        
-        return await TaskRunner.RunWithFinallyAction(() => _adminConfirm.AcceptGame(FinishedGame),
-            CloseTaskWaiter);
+
+        try
+        {
+            return await Dispatcher.UIThread.InvokeAsync(async () => await _adminConfirm.AcceptGame(FinishedGame));
+        }
+        catch (Exception ex)
+        {
+            Logger.Error("Failed to accept game: " + ex.Message);
+            ErrorService.ShowWindow("Failed to accept game");
+        }
+        finally
+        {
+            CloseTaskWaiter();
+        }
+
+        return false;
     }
     
     /// <summary>
@@ -108,8 +120,22 @@ public sealed class AdminConfirmViewModel : ViewModelBase
         if (FinishedGame is null) return false;
 
         StartTaskWaiter();
-        
-        return await TaskRunner.RunWithFinallyAction(() => _adminConfirm.RejectGame(FinishedGame), CloseTaskWaiter);
+
+        try
+        {
+            return await Dispatcher.UIThread.InvokeAsync(() => _adminConfirm.RejectGame(FinishedGame));
+        }
+        catch (Exception ex)
+        {
+            Logger.Error("Failed to reject game: " + ex.Message);
+            ErrorService.ShowWindow("Failed to reject game");
+        }
+        finally
+        {
+            CloseTaskWaiter();
+        }
+
+        return false;
     }
     
     /// <summary>
