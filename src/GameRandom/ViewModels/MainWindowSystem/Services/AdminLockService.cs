@@ -1,12 +1,11 @@
 using System;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.Events;
-using GameRandom.Scr.Events;
-using GameRandom.Scr.Service;
-using GameRandom.Src.UserData;
+using GameRandom.DISystem;
+using GameRandom.DISystem.DiSystem;
+using GameRandom.Scripts.HandleSystem.HandleEvents;
+using GameRandom.Scripts.Service;
+using GameRandom.Scripts.UserData;
 using GameRandom.ViewModels.MainWindowSystem.Interface;
 
 namespace GameRandom.ViewModels.MainWindowSystem.Services;
@@ -18,7 +17,7 @@ public class AdminLockService : IDisposable, IAdminLock
     private readonly BehaviorSubject<bool> _isAdmin = new(true);
     public IObservable<bool> IsAdmin => _isAdmin.AsObservable();
     
-    private Action<AdminRulesUpdating> _adminListener = null!;
+    private Action<AdminRulesUpdate> _adminListener = null!;
 
     public void Initialize()
     {

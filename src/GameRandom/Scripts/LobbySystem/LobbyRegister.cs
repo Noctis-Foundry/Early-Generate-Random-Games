@@ -1,6 +1,5 @@
 using System.Collections.Generic;
-using GameRandom.Scr.Service;
-using GameRandom.Src.LobbySystem;
+using GameRandom.Scripts.Service;
 
 namespace GameRandom.Scripts.LobbySystem;
 

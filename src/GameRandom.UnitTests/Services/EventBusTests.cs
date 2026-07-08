@@ -1,4 +1,4 @@
-using GameRandom.Scr.Events;
+using GameRandom.Scripts.Service;
 using Xunit;
 
 namespace GameRandom.UnitTests.Services;

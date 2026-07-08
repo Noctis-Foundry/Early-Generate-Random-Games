@@ -1,4 +1,4 @@
-namespace GameRandom.ViewModels.AdminConfirmSystem.Enums;
+namespace GameRandom.ViewModels.MainWindowSystem.Enums;
 
 public enum ControlTypes
 {

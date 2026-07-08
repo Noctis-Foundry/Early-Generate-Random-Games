@@ -2,10 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
-using GameRandom.CoreApp;
-using GameRandom.Scr.Service;
+using GameRandom.Scripts.RollGameSystem.Enums;
+using GameRandom.Scripts.RollGameSystem.GenerateGames;
 using GameRandom.Scripts.SteamSDK;
-using GameRandom.Src.RollGameSystem;
 
 namespace GameRandom.Scripts.RollGameSystem.GenerateStrategy;
 

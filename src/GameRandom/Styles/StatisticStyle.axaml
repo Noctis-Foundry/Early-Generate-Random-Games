@@ -1,7 +1,8 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:GameRandom.ViewModels.AdminConfirmSystem"
-        x:DataType="vm:StatisticViewModel">
+        xmlns:statisticSystem="clr-namespace:GameRandom.ViewModels.StatisticSystem"
+        x:DataType="statisticSystem:StatisticViewModel">
 
     <Design.PreviewWith>
          <Border Classes="StatisticContainer" Height="400" Width="700">

@@ -2,8 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
-using GameRandom.Scr.Service;
-using GameRandom.Src;
+using GameRandom.Scripts.Service;
 using GameRandom.Views;
 
 namespace GameRandom.Scripts.WindowServices;

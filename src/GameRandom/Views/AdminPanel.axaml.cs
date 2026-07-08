@@ -1,45 +1,39 @@
 using System;
-using GameRandom.DependenceInjectSystem;
 using System.Threading;
-using GameRandom.DependenceInjectSystem;
 using System.Threading.Tasks;
-using GameRandom.DependenceInjectSystem;
 using Avalonia;
-using GameRandom.DependenceInjectSystem;
 using Avalonia.Controls;
-using GameRandom.DependenceInjectSystem;
 using Avalonia.Interactivity;
-using GameRandom.DependenceInjectSystem;
 using Avalonia.Markup.Xaml;
-using GameRandom.DependenceInjectSystem;
 using Avalonia.Threading;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DataBaseContexts;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Scr.Service;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Src;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Src.UserData;
-using GameRandom.DependenceInjectSystem;
+using GameRandom.DbContext;
+using GameRandom.DISystem;
+using GameRandom.DISystem.DiSystem;
+using GameRandom.Scripts;
+using GameRandom.Scripts.Database;
 using GameRandom.ViewModels.AdminConfirmSystem;
-using GameRandom.DependenceInjectSystem;
+using GameRandom.Scripts.HandleSystem;
+using GameRandom.Scripts.HandleSystem.Enums;
+using GameRandom.Scripts.HandleSystem.Interfaces;
+using GameRandom.Scripts.HandleSystem.PostgresListener;
+using GameRandom.Scripts.HandleSystem.RoutSystem;
+using GameRandom.Scripts.UserControls;
+using GameRandom.Scripts.UserData;
 using GameRandom.Scripts.WindowServices.ErrorServiceSystem;
-using GameRandom.ViewModels.AdminConfirmSystem.Enums;
+using GameRandom.ViewModels.AdminPanelSystem;
+using GameRandom.ViewModels.MainWindowSystem.Enums;
 
 namespace GameRandom.Views;
 
 public sealed partial class AdminPanel : MainWindowUserControlAbstract<AdminPanelViewModel>
 {
     [Inject] private ErrorService? _errorService = null!;
-    [Inject] private PostgresListener? _postgresListener;
+    [Inject] private IRouteManager _routeManager = null!;
     private AdminRegistrationWindow _registrationWindow;
 
     private CancellationTokenSource _cts = new CancellationTokenSource();
 
-    private Action<PayloadStructure> _savedHandler;
+    private Func<PayloadStructure, Task> _onAdminHideHandler;
     
     public AdminPanel()
     {
@@ -62,7 +56,7 @@ public sealed partial class AdminPanel : MainWindowUserControlAbstract<AdminPane
     {
         if (DataContext is AdminPanelViewModel vm)
         {
-            TaskRunner.RunWithDispatcherAsync(async () =>
+            Dispatcher.UIThread.InvokeAsync(async () =>
             {
                 await vm.LoadGameProgresses().WithCancellation(_cts.Token);
             });
@@ -74,9 +68,9 @@ public sealed partial class AdminPanel : MainWindowUserControlAbstract<AdminPane
         _changeWindowAction?.Invoke(ControlTypes.MainWindow); //Call dispose for user control
     }
 
-    private void HideAdminPanel()
+    private async Task HideAdminPanel()
     {
-        TaskRunner.RunWithDispatcherAsync(HidePanel);
+        await Dispatcher.UIThread.InvokeAsync(HidePanel);
     }
     private async Task HidePanel()
     {
@@ -95,26 +89,27 @@ public sealed partial class AdminPanel : MainWindowUserControlAbstract<AdminPane
     }
     private void InitializePostgresListener()
     {
-        _savedHandler = structure =>
+        _onAdminHideHandler = async structure =>
         {
             if (structure.TableCode == (int)TableEnum.AdminTable)
                 return;
 
-            HideAdminPanel();
+            await HideAdminPanel();
         };
         
-        _postgresListener?.Subscribe(TableEnum.AdminTable, _savedHandler);
+        _routeManager.GetRouteService(TableEnum.AdminTable).Subscribe(RouteStage.View, _onAdminHideHandler);
     }
     private void UnsubscribeListener()
     {
-        _postgresListener?.Unsubscribe(TableEnum.AdminTable, _savedHandler);
+        _routeManager.GetRouteService(TableEnum.AdminTable).Subscribe(RouteStage.View, _onAdminHideHandler);
     }
+    
     private void ShowRegistration(object? sender, RoutedEventArgs e)
     {
         if (DataContext is AdminPanelViewModel { IsCanShow: false })
             return;
 
-        TaskRunner.RunWithDispatcherAsync(async () =>
+        Dispatcher.UIThread.InvokeAsync(async () =>
         {
             _registrationWindow = new AdminRegistrationWindow();
 
@@ -132,8 +127,8 @@ public sealed partial class AdminPanel : MainWindowUserControlAbstract<AdminPane
 
         if (_errorService is null)
             throw new NullReferenceException(nameof(_errorService));
-        if (_postgresListener is null)
-            throw new NullReferenceException(nameof(_postgresListener));
+        if (_routeManager is null)
+            throw new NullReferenceException(nameof(_routeManager));
     }
 
     public override void Dispose()

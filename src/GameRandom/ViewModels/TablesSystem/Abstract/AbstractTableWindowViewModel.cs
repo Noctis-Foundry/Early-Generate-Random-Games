@@ -1,25 +1,17 @@
 using System;
-using GameRandom.DependenceInjectSystem;
 using System.Collections.Generic;
-using GameRandom.DependenceInjectSystem;
 using System.Collections.ObjectModel;
-using GameRandom.DependenceInjectSystem;
 using System.Threading;
-using GameRandom.DependenceInjectSystem;
 using System.Threading.Tasks;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Scr.Service;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Src;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Src.Enums;
-using GameRandom.DependenceInjectSystem;
+using GameRandom.DISystem;
+using GameRandom.DISystem.DiSystem;
+using GameRandom.Scripts.Database;
+using GameRandom.Scripts.Enums;
+using GameRandom.Scripts.Service;
 using GameRandom.Scripts.WindowServices.ErrorServiceSystem;
 using GameRandom.ViewModels.BaseClasses;
 
-namespace GameRandom.ViewModels.AdminConfirmSystem;
+namespace GameRandom.ViewModels.TablesSystem.Abstract;
 
 public class AbstractTableWindowViewModel<TEntity> : ViewModelBase where TEntity : class
 {

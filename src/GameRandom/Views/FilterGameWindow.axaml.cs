@@ -4,9 +4,9 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
-using GameRandom.CoreApp;
-using GameRandom.Src;
+using GameRandom.Scripts;
 using GameRandom.ViewModels.AdminConfirmSystem;
+using GameRandom.ViewModels.FilterGameSystem;
 
 namespace GameRandom.Views;
 

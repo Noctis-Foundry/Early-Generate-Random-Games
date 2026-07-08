@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.ComponentModel;
-using GameRandom.DataBaseContexts;
-using GameRandom.Scr.Service;
-using GameRandom.Src.UserData;
+using GameRandom.DbContext;
+using GameRandom.Scripts.Service;
+using GameRandom.Scripts.UserData;
+using GameRandom.ViewModels.TablesSystem.Abstract;
 
-namespace GameRandom.ViewModels.AdminConfirmSystem;
+namespace GameRandom.ViewModels.TablesSystem;
 
 /// <summary>
 /// ViewModel for managing game progress table data with lobby-based filtering.

@@ -1,17 +1,7 @@
-using System.Collections.ObjectModel;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.Scr.Service;
-using GameRandom.Src;
-using System.Threading.Tasks;
-using GameRandom.DataBaseContexts;
-using System.Collections.Generic;
-using Avalonia.Threading;
-using GameRandom.Src.Enums;
-using System.Linq;
-using System.Threading;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using GameRandom.DbContext;
+using GameRandom.ViewModels.TablesSystem.Abstract;
 
-namespace GameRandom.ViewModels.AdminConfirmSystem;
+namespace GameRandom.ViewModels.TablesSystem;
 
 public class StatisticGameTableViewModel : AbstractTableWindowViewModel<GameProgresses>
 {

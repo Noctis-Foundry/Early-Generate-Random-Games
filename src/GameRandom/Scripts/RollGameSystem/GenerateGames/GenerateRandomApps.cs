@@ -3,19 +3,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.Scr.Service;
+using Avalonia.Threading;
+using GameRandom.DISystem.DiSystem;
+using GameRandom.Scripts.RollGameSystem.Enums;
 using GameRandom.Scripts.RollGameSystem.GenerateStrategy;
-using GameRandom.Src.RollGameSystem;
-using GameRandom.Src.RollGameSystem.GenerateStrategy;
+using GameRandom.Scripts.Service;
 
 namespace GameRandom.Scripts.RollGameSystem.GenerateGames;
 
 public class GenerateRandomApps : IGenApp, IDisposable
 {
-    [Inject] private TaskRunner _taskRunner = new TaskRunner();
-    
     private string _localPath = Path.Combine(AppContext.BaseDirectory, "Assets", "Jsons", "temp_apps.json");
     private JsonDocument _document = null!;
 
@@ -33,9 +30,6 @@ public class GenerateRandomApps : IGenApp, IDisposable
     {
         InitializeLocalPath(localPath);
         Di.ResolveInstance.ResolveInstanceFromClass(this);
-
-        if (_taskRunner is null)
-            throw new NullReferenceException(nameof(_taskRunner));
     }
 
     private void InitializeLocalPath(string? localPath)
@@ -79,11 +73,20 @@ public class GenerateRandomApps : IGenApp, IDisposable
         
         if (_generateStrategy.TryGetValue(generationType, out var value))
         {
-            var result =
-                await _taskRunner.RunT(async () => (await value.GenerateGame(_document, inputData))!);
-            value.ClearAfterGeneration();
-            
-            return result.Value;
+            try
+            {
+                var result =
+                    await Dispatcher.UIThread.InvokeAsync(async () =>
+                        (await value.GenerateGame(_document, inputData)));
+                value.ClearAfterGeneration();
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Logger.Error($"Failed to generate random game: " + ex);
+            }
+           
         }
 
         Logger.Error($"Not correct type {generationType}");

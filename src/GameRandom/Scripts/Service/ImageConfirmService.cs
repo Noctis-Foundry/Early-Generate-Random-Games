@@ -1,15 +1,10 @@
 using System.Threading.Tasks;
-using GameRandom.DependenceInjectSystem;
 using Avalonia.Input.Platform;
-using GameRandom.DependenceInjectSystem;
 using Avalonia.Media.Imaging;
-using GameRandom.DependenceInjectSystem;
 using Avalonia.Platform.Storage;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.DependenceInjectSystem;
+using GameRandom.DISystem;
 
-namespace GameRandom.Scr.Service;
+namespace GameRandom.Scripts.Service;
 
 public class ImageConfirmService : DependenceBase, IImageConfirm
 {

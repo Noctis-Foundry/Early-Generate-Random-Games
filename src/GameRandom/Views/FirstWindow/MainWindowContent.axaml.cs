@@ -1,11 +1,9 @@
 ﻿using System;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.Src;
-using GameRandom.Src.Enums;
+using GameRandom.Scripts.UserControls;
 using GameRandom.ViewModels;
-using GameRandom.ViewModels.AdminConfirmSystem.Enums;
+using GameRandom.ViewModels.MainWindowSystem.Enums;
 
 namespace GameRandom.Views;
 

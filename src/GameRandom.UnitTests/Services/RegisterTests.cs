@@ -1,5 +1,5 @@
 using System;
-using GameRandom.Service;
+using GameRandom.Scripts.Service;
 using Xunit;
 
 namespace GameRandom.UnitTests.Services;

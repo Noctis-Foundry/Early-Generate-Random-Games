@@ -1,18 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using GameRandom.DependenceInjectSystem;
-using Avalonia;
-using GameRandom.DependenceInjectSystem;
+﻿using Avalonia;
 using Avalonia.Controls;
-using GameRandom.DependenceInjectSystem;
 using Avalonia.Labs.Gif;
-using GameRandom.DependenceInjectSystem;
-using Avalonia.Media.Imaging;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.DependenceInjectSystem;
+using GameRandom.DISystem;
+using GameRandom.Scripts.Service;
 
-namespace GameRandom.Service;
+namespace GameRandom.Scripts.Factory;
 
 public class MainWindowFactory : DependenceBase
 {

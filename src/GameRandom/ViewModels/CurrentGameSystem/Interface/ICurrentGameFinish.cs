@@ -1,11 +1,11 @@
 using System.Threading.Tasks;
-using GameRandom.DataBaseContexts;
+using GameRandom.DbContext;
 
 namespace GameRandom.ViewModels.CurrentGameSystem.Interface;
 
 public interface ICurrentGameFinish
 {
   
-    public Task<UserGame> FinishingGame(GameProgresses gameInfo);
+    public Task<UserGame?> FinishingGame(GameProgresses gameInfo);
     public void Dispose();
 }

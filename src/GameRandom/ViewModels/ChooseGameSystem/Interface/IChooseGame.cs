@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using GameRandom.CoreApp;
+using GameRandom.Scripts.RollGameSystem.GenerateGames;
 
 namespace GameRandom.ViewModels.ChooseGameSystem.Interface;
 

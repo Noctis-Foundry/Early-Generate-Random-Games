@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using GameRandom.DependenceInjectSystem;
-using System.Threading.Tasks;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.DependenceInjectSystem;
+using GameRandom.DISystem;
 
-namespace GameRandom.Scr.Events;
+namespace GameRandom.Scripts.Service;
 
 public class EventBus : DependenceBase
 {

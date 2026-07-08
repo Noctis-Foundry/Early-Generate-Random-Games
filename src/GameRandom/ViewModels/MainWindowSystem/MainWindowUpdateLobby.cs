@@ -1,29 +1,19 @@
 using System;
-using GameRandom.DependenceInjectSystem;
 using System.Collections.Generic;
-using GameRandom.DependenceInjectSystem;
 using System.Threading;
-using GameRandom.DependenceInjectSystem;
 using System.Threading.Tasks;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DataBaseContexts;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Scr.Service;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Src;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Src.Enums;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Src.SteamsContexts;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Src.UserData;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Scripts.SteamSDK;
+using GameRandom.DbContext;
+using GameRandom.DISystem;
+using GameRandom.Scripts.Enums;
+using GameRandom.Scripts.Service;
+using GameRandom.Scripts.SteamSDK.SteamsContexts;
+using GameRandom.Scripts.SteamSDK.SteamWebAPI;
+using GameRandom.Scripts.UserData;
 using GameRandom.Scripts.WindowServices.ErrorServiceSystem;
+using GameRandom.ViewModels.BaseClasses;
+using GameRandom.ViewModels.MainWindowSystem.Interface;
 
-namespace GameRandom.ViewModels.AdminConfirmSystem;
+namespace GameRandom.ViewModels.MainWindowSystem;
 
 public class MainWindowUpdateLobby : BaseModelService, ILobbyUpdate
 {

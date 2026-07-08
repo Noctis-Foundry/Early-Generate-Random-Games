@@ -1,20 +1,13 @@
 using System;
 using System.Diagnostics;
-using System.Threading;
 using System.Threading.Tasks;
-using GameRandom.CoreApp;
-using GameRandom.DataBaseContexts;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.Scr.Service;
-using GameRandom.Service;
-using GameRandom.Src;
-using GameRandom.Src.Enums;
-using GameRandom.Src.UserData;
+using Avalonia.Threading;
+using GameRandom.Scripts.RollGameSystem.GenerateGames;
+using GameRandom.Scripts.Service;
 using GameRandom.ViewModels.BaseClasses;
-using GameRandom.ViewModels.ChooseGameSystem;
 using GameRandom.ViewModels.ChooseGameSystem.Interface;
 
-namespace GameRandom.ViewModels.AdminConfirmSystem;
+namespace GameRandom.ViewModels.ChooseGameSystem;
 
 /// <summary>
 /// ViewModel for choosing and setting up a game from the random selection.
@@ -62,8 +55,20 @@ public sealed class ChooseGameViewModel : ViewModelBase
         
         StartTaskWaiter();
 
-        return await TaskRunner.RunWithFinallyAction(async () => await _chooseGameService.ChooseGame(_appInfo),
-            CloseTaskWaiterWithSemaphore);
+        try
+        {
+            return await Dispatcher.UIThread.InvokeAsync(async () => await _chooseGameService.ChooseGame(_appInfo));
+        }
+        catch (Exception ex)
+        {
+            Logger.Error($"Error choosing game: {ex.Message}");
+            ErrorService.ShowWindow("Failed to choose game");
+            return false;
+        }
+        finally
+        {
+            CloseTaskWaiterWithSemaphore();
+        }
     }
 
     /// <summary>

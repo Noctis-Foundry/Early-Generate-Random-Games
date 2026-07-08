@@ -5,15 +5,15 @@ using Avalonia.Controls;
 using Avalonia.Labs.Gif;
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.Input;
-using GameRandom.CoreApp;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.Service;
-using GameRandom.Src.Factory;
-using GameRandom.ViewModels.AdminConfirmSystem;
+using GameRandom.DISystem;
+using GameRandom.DISystem.DiSystem;
+using GameRandom.Scripts.Factory;
+using GameRandom.Scripts.RollGameSystem.GenerateGames;
+using GameRandom.Scripts.SteamSDK;
+using GameRandom.ViewModels.RollGameViewModel;
 using GameRandom.Views;
 
-namespace GameRandom.Src.RollGameSystem;
+namespace GameRandom.Scripts.RollGameSystem;
 
 public class RollGameFactory : IDisposable
 {

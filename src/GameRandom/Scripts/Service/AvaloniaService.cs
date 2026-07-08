@@ -4,13 +4,12 @@ using Avalonia;
 using Avalonia.Labs.Gif;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
-using GameRandom.Scr.Service;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Webp;
 using SixLabors.ImageSharp.PixelFormats;
 using Steamworks;
 
-namespace GameRandom.Service;
+namespace GameRandom.Scripts.Service;
 
 public class AvaloniaService
 {

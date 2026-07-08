@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GameRandom.Service;
+namespace GameRandom.Scripts.Service;
 
 public class Register<TKey, TValue> : IDisposable
 {

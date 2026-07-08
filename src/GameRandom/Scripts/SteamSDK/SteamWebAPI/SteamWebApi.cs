@@ -4,16 +4,16 @@ using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using GameRandom.CoreApp;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.Scr.Service;
+using GameRandom.DISystem.DiSystem;
+using GameRandom.Scripts.RollGameSystem;
+using GameRandom.Scripts.RollGameSystem.Enums;
+using GameRandom.Scripts.RollGameSystem.GenerateGames;
+using GameRandom.Scripts.Service;
+using GameRandom.Scripts.StartupLogic;
+using GameRandom.Scripts.SteamSDK.SteamsContexts;
 using GameRandom.Scripts.WindowServices.ErrorServiceSystem;
-using GameRandom.Src;
-using GameRandom.Src.RollGameSystem;
-using GameRandom.Src.StartupLogic;
-using GameRandom.Src.SteamsContexts;
 
-namespace GameRandom.Scripts.SteamSDK;
+namespace GameRandom.Scripts.SteamSDK.SteamWebAPI;
 
 public class SteamWebApi : ISteamWebService
 {

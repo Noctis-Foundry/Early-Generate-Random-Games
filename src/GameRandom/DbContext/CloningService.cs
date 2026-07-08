@@ -1,7 +1,7 @@
 using System;
 using System.Text.Json;
 
-namespace GameRandom.DataBaseContexts;
+namespace GameRandom.DbContext;
 
 public class CloningService
 {

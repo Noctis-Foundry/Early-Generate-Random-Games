@@ -1,14 +1,11 @@
 using System;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Scr.Service;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Src;
-using GameRandom.DependenceInjectSystem;
+using GameRandom.DISystem;
+using GameRandom.DISystem.DiSystem;
+using GameRandom.Scripts.Database;
+using GameRandom.Scripts.Service;
 using GameRandom.Scripts.WindowServices.ErrorServiceSystem;
 
-namespace GameRandom.ViewModels.AdminConfirmSystem;
+namespace GameRandom.ViewModels.BaseClasses;
 
 public class BaseModelService : IDisposable
 {

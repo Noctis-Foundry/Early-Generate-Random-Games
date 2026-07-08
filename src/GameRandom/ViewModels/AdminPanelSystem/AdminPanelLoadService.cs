@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
-using GameRandom.DataBaseContexts;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.Scr.Service;
-using GameRandom.Src;
+using GameRandom.DbContext;
+using GameRandom.Scripts.Service;
 using GameRandom.ViewModels.AdminConfirmSystem;
-using GameRandom.ViewModels.AdminSystem.Interface;
+using GameRandom.ViewModels.AdminPanelSystem.Interface;
+using GameRandom.ViewModels.BaseClasses;
 
 namespace GameRandom.ViewModels.AdminPanelSystem;
 

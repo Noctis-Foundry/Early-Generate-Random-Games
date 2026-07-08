@@ -1,6 +1,6 @@
 using System;
 using Avalonia.Interactivity;
-using GameRandom.ViewModels.AdminConfirmSystem.Enums;
+using GameRandom.ViewModels.MainWindowSystem.Enums;
 
 namespace GameRandom.Scripts.UserControls;
 

@@ -1,12 +1,10 @@
 using System.Threading.Tasks;
-using Avalonia.Controls;
-using GameRandom.DependenceInjectSystem.DiSystem;
 using GameRandom.Providers;
-using GameRandom.Src.LobbySystem;
-using GameRandom.Src.StartupLogic;
-using GameRandom.Src.UserData;
+using GameRandom.Scripts.StartupLogic;
+using GameRandom.Scripts.SteamSDK;
+using GameRandom.Scripts.UserData;
 
-namespace GameRandom.Src;
+namespace GameRandom.Bootstrap;
 
 public class AppBootstrap
 {

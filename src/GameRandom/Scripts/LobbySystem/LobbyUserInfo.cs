@@ -1,7 +1,6 @@
-using System.Collections;
 using Avalonia.Media.Imaging;
 
-namespace GameRandom.Src.LobbySystem;
+namespace GameRandom.Scripts.LobbySystem;
 
 public class LobbyUserInfo(ulong userId, string userName, Bitmap avatarMap)
 {

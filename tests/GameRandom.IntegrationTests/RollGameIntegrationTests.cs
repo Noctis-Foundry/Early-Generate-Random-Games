@@ -1,11 +1,12 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using GameRandom.CoreApp;
-using GameRandom.DependenceInjectSystem.DiSystem;
+using GameRandom.DISystem.DiSystem;
 using GameRandom.Scripts.RollGameSystem.GenerateGames;
-using GameRandom.Src;
+using GameRandom.Scripts.SteamSDK;
 using GameRandom.ViewModels.AdminConfirmSystem;
+using GameRandom.ViewModels.FilterGameSystem;
+using GameRandom.ViewModels.RollGameViewModel;
 using Xunit;
 
 namespace GameRandom.IntegrationTests;

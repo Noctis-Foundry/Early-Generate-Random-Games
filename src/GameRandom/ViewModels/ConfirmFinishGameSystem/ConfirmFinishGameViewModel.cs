@@ -1,19 +1,14 @@
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
-using GameRandom.DataBaseContexts;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.Scr.Service;
+using Avalonia.Threading;
+using GameRandom.DbContext;
+using GameRandom.Scripts.Enums;
 using GameRandom.Scripts.WindowServices.ErrorServiceSystem;
-using GameRandom.Service;
-using GameRandom.Src;
-using GameRandom.Src.Enums;
 using GameRandom.ViewModels.BaseClasses;
-using GameRandom.ViewModels.ConfirmFinishGameSystem;
 using GameRandom.ViewModels.ConfirmFinishGameSystem.Interface;
 
-namespace GameRandom.ViewModels.AdminConfirmSystem;
+namespace GameRandom.ViewModels.ConfirmFinishGameSystem;
 
 /// <summary>
 /// ViewModel responsible for confirming that a game has been finished.
@@ -91,8 +86,8 @@ public sealed class ConfirmFinishGameViewModel : ViewModelBase
         
         StartTaskWaiter();
 
-        IsUpdated =  await TaskRunner.RunWithFinallyAction(
-            async () => await _confirmFinishGame.SaveEditAsync(GameProgress, Comment, ImageBitmap), CloseTaskWaiterWithSemaphore); //GameProgress and Comment checked in IsRequiredParameters
+        IsUpdated =  await Dispatcher.UIThread.InvokeAsync(
+            async () => await _confirmFinishGame.SaveEditAsync(GameProgress!, Comment!, ImageBitmap!)); //GameProgress and Comment checked in IsRequiredParameters
 
         ShowResultWindow(IsUpdated);
         

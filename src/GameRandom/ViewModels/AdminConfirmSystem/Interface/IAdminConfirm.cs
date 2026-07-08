@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using GameRandom.DataBaseContexts;
+using GameRandom.DbContext;
 
 namespace GameRandom.ViewModels.AdminConfirmSystem.Interface;
 

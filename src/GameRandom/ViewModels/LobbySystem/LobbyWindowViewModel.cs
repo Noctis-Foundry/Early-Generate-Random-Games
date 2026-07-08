@@ -1,19 +1,14 @@
 ﻿using System;
 using Avalonia.Controls;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Events;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Scr.Events;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Src.LobbySystem;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Src.UserData;
-using GameRandom.DependenceInjectSystem;
+using Avalonia.Threading;
+using GameRandom.DISystem;
+using GameRandom.Scripts.HandleSystem.HandleEvents;
+using GameRandom.Scripts.LobbySystem;
+using GameRandom.Scripts.Service;
+using GameRandom.Scripts.UserData;
 using GameRandom.ViewModels.BaseClasses;
 
-namespace GameRandom.ViewModels.AdminConfirmSystem;
+namespace GameRandom.ViewModels.LobbySystem;
 
 public sealed class LobbyWindowViewModel : ViewModelBase
 {
@@ -39,7 +34,7 @@ public sealed class LobbyWindowViewModel : ViewModelBase
 
         GetCurrentId();
         
-        _eventBus.Subscribe<LobbyUpdate>(e => GetCurrentId());
+        _eventBus.Subscribe<LobbyEvent>(e => GetCurrentId());
     }
 
     protected override void InitializeDiContainer()
@@ -60,7 +55,7 @@ public sealed class LobbyWindowViewModel : ViewModelBase
         {
             if (long.TryParse(id, out var lobbyId))
             {
-                TaskRunner.RunWithDispatcherAsync(async () => await _lobbyService.ConnectToLobby(lobbyId));
+                Dispatcher.UIThread.InvokeAsync(async () => await _lobbyService.ConnectToLobby(lobbyId));
             }
             else
                 ErrorService.ShowWindow("Failed connect to lobby. Not correct id");
@@ -77,7 +72,7 @@ public sealed class LobbyWindowViewModel : ViewModelBase
 
         try
         {
-            TaskRunner.RunWithDispatcherAsync(async () => await _lobbyService.CreateLobby());
+            Dispatcher.UIThread.InvokeAsync(async () => await _lobbyService.CreateLobby());
         }
         finally
         {

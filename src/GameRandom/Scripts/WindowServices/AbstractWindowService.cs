@@ -1,17 +1,8 @@
-using System.Collections;
-using GameRandom.DependenceInjectSystem;
-using System.Collections.Generic;
-using GameRandom.DependenceInjectSystem;
-using System.Threading;
-using GameRandom.DependenceInjectSystem;
 using System.Threading.Tasks;
-using GameRandom.DependenceInjectSystem;
 using Avalonia.Controls;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.DependenceInjectSystem;
+using GameRandom.DISystem;
 
-namespace GameRandom.Src;
+namespace GameRandom.Scripts.WindowServices;
 
 public abstract class AbstractWindowService<TWindow>(Window ownerWindow) : DependenceBase
     where TWindow : Window, new()

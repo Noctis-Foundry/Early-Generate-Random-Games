@@ -1,4 +1,4 @@
-namespace GameRandom.Src.RollGameSystem.GenerateStrategy;
+namespace GameRandom.Scripts.RollGameSystem.GenerateStrategy;
 
 public enum GenerationTypes
 {

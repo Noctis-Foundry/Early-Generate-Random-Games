@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
+using GameRandom.Bootstrap;
 using GameRandom.Providers;
-using GameRandom.Scr.Service;
-using GameRandom.Src;
+using GameRandom.ViewModels.MainWindowSystem.Interface;
 using GameRandom.Views;
 using GameRandom.Views.MainWindowSystem;
 using MainWindow = GameRandom.Views.MainWindowSystem.MainWindow;
@@ -40,7 +40,6 @@ public partial class App : Application
         }
 
         //PriorityInitialization
-
         base.OnFrameworkInitializationCompleted();
 
         if (Design.IsDesignMode)

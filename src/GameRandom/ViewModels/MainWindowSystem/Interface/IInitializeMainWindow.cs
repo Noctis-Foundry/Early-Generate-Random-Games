@@ -1,6 +1,4 @@
-using System.Threading.Tasks;
-
-namespace GameRandom.Views.MainWindowSystem;
+namespace GameRandom.ViewModels.MainWindowSystem.Interface;
 
 public interface IInitializeMainWindow
 {

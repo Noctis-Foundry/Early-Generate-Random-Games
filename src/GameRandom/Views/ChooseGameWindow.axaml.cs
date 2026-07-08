@@ -1,9 +1,10 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using GameRandom.CoreApp;
-using GameRandom.Scr.Service;
-using GameRandom.Src;
+using Avalonia.Threading;
+using GameRandom.Scripts;
+using GameRandom.Scripts.RollGameSystem.GenerateGames;
 using GameRandom.ViewModels.AdminConfirmSystem;
+using GameRandom.ViewModels.ChooseGameSystem;
 
 namespace GameRandom.Views;
 
@@ -42,6 +43,6 @@ public sealed partial class ChooseGameWindow : WindowBase<ChooseGameViewModel>
     {
         if (DataContext is not ChooseGameViewModel viewModel) return;
 
-        TaskRunner.RunWithDispatcherAsync(async () => await viewModel.ChooseGame());
+        Dispatcher.UIThread.InvokeAsync(async () => await viewModel.ChooseGame());
     }
 }

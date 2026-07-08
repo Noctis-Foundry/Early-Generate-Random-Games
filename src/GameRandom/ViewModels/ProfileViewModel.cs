@@ -1,6 +1,6 @@
 using Avalonia.Media.Imaging;
-using GameRandom.Service;
-using GameRandom.Src;
+using GameRandom.Scripts.Service;
+using GameRandom.Scripts.SteamSDK;
 using GameRandom.ViewModels.BaseClasses;
 using Steamworks;
 

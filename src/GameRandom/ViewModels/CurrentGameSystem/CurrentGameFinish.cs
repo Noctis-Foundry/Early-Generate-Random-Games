@@ -1,21 +1,14 @@
 using System;
-using GameRandom.DependenceInjectSystem;
 using System.Threading;
-using GameRandom.DependenceInjectSystem;
 using System.Threading.Tasks;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DataBaseContexts;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Src;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Src.UserData;
-using GameRandom.DependenceInjectSystem;
+using GameRandom.DbContext;
+using GameRandom.DISystem;
+using GameRandom.Scripts.SteamSDK;
+using GameRandom.Scripts.UserData;
+using GameRandom.Scripts.WindowServices;
 using GameRandom.ViewModels.AdminConfirmSystem;
-using GameRandom.DependenceInjectSystem;
+using GameRandom.ViewModels.BaseClasses;
 using GameRandom.ViewModels.CurrentGameSystem.Interface;
-using GameRandom.DependenceInjectSystem;
 
 namespace GameRandom.ViewModels.CurrentGameSystem;
 
@@ -35,11 +28,10 @@ public sealed class CurrentGameFinish : BaseModelService, ICurrentGameFinish
             throw new NullReferenceException(nameof(_finishedGameDialogService));
     } // Check dependency in null after InitializeDiContainer from BaseModelService
 
-    public async Task<UserGame> FinishingGame(GameProgresses gameInfo)
+    public async Task<UserGame?> FinishingGame(GameProgresses gameInfo)
     {
         if (!await _finishedGameDialogService.ShowWindowAsync(gameInfo))
             return null!;
-        
         
         return await ChangeUserGame();
     }

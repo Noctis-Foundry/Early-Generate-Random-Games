@@ -1,15 +1,16 @@
 using System;
-using GameRandom.DataBaseContexts;
 using System.Threading.Tasks;
-using Avalonia.Threading;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.Events;
-using GameRandom.Scr.Events;
-using GameRandom.Scr.Service;
+using GameRandom.DbContext;
+using GameRandom.DISystem;
+using GameRandom.DISystem.DiSystem;
+using GameRandom.Scripts.Database;
+using GameRandom.Scripts.HandleSystem.Enums;
+using GameRandom.Scripts.HandleSystem.Interfaces;
+using GameRandom.Scripts.Service;
+using GameRandom.Scripts.SteamSDK;
 using Steamworks;
 
-namespace GameRandom.Src.UserData;
+namespace GameRandom.Scripts.UserData;
 
 /// <summary>
 /// Singleton class for managing current Steam user data
@@ -18,7 +19,7 @@ public class User
 {
     [Inject] private DatabaseService _databaseService = null!;
     [Inject] private DatabaseTransitionService _transitionService = null!;
-    [Inject] private PostgresListener _postgresListener = null!;
+    [Inject] private IRouteManager _routeManager = null!;
 
     private static Lazy<User> _userInstance = new (() => new User());
     private Users _userInfo;
@@ -41,9 +42,9 @@ public class User
         InitializeDependence();
 
         await GetUserDataOrCreate();
-
-        InitializePostgresListener();
-
+        
+        _routeManager.GetRouteService(TableEnum.AdminTable).Subscribe(RouteStage.Data, UpdateAdminRules);
+        
         await UpdateAdminRules();
     }
 
@@ -53,12 +54,12 @@ public class User
 
         if (_databaseService is null)
             throw new NullReferenceException("Database service is null");
-        
-        if (_postgresListener is null)
-            throw new NullReferenceException("Postgres listener is null");
 
         if (_transitionService is null)
             throw new NullReferenceException("Transition service is null");
+        
+        if (_routeManager is null)
+            throw new NullReferenceException("Route manager is null");
     }
     
     /// <summary>
@@ -88,8 +89,6 @@ public class User
             _isAdmin = true;
             _isTopLevelAdmin = admin.IsTopAdmin;
         }
-        
-        bus.Publish(new AdminRulesUpdating());
     }
 
     private async Task CreateUser()
@@ -129,20 +128,6 @@ public class User
         }
         else 
             await CreateUser();
-    }
-    
-    private void InitializePostgresListener()
-    {
-        _postgresListener.Subscribe(TableEnum.AdminTable, e =>
-        {
-            Dispatcher.UIThread.InvokeAsync(async () =>
-            {
-                if (e.TableCode != (int)TableEnum.AdminTable)
-                    return;
-                
-                await UpdateAdminRules();
-            });
-        });
     }
     
     /// <summary>

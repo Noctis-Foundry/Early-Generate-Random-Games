@@ -1,30 +1,22 @@
 using System;
-using GameRandom.DependenceInjectSystem;
 using System.Collections.Generic;
-using GameRandom.DependenceInjectSystem;
 using System.Linq;
 using System.Threading;
-using GameRandom.DependenceInjectSystem;
 using System.Threading.Tasks;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DataBaseContexts;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Events;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Scr.Events;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Scr.Service;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Src.Enums;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Src.UserData;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Scripts.LobbySystem;
+using GameRandom.DbContext;
+using GameRandom.DISystem;
+using GameRandom.DISystem.DiSystem;
+using GameRandom.Scripts.Database;
+using GameRandom.Scripts.Enums;
+using GameRandom.Scripts.HandleSystem;
+using GameRandom.Scripts.HandleSystem.Enums;
+using GameRandom.Scripts.HandleSystem.Interfaces;
+using GameRandom.Scripts.HandleSystem.RoutSystem;
+using GameRandom.Scripts.Service;
+using GameRandom.Scripts.UserData;
 using GameRandom.Scripts.WindowServices.ErrorServiceSystem;
 
-namespace GameRandom.Src.LobbySystem;
+namespace GameRandom.Scripts.LobbySystem;
 
 /// <summary>
 /// Lobby management service for multiplayer game sessions
@@ -36,6 +28,7 @@ public class LobbyService
     [Inject] private readonly DatabaseService _databaseService = null!;
     [Inject] private readonly EventBus _eventBus = null!;
     [Inject] private readonly ErrorService _errorService = null!;
+    [Inject] private readonly IRouteManager _routeManager = null!;
 
     private const long EmptyLobbyId = 0;
     private const long DisconnectedLobbyId = -1;
@@ -52,7 +45,7 @@ public class LobbyService
         var user = GetCurrentUserAsync();
 
         var lobby = await FindLobbyAsync(user.LobbyId);
-        SendLobbyEvent(lobby);
+        _routeManager.GetRouteService(TableEnum.Lobby).SendEvent();
     }
 
     private void InitializeDiContainer()
@@ -65,6 +58,8 @@ public class LobbyService
             throw new NullReferenceException(nameof(_eventBus));
         if (_errorService is null)
             throw new NullReferenceException(nameof(_errorService));
+        if (_routeManager is null)
+            throw new NullReferenceException(nameof(_routeManager));
     }
 
     /// <summary>
@@ -122,10 +117,7 @@ public class LobbyService
                 _errorService.ShowWindow(new ErrorStruct
                     { ErrorMessage = "Failed to create lobbies", ErrorType = ErrorEnum.Error });
                 await User.GetInstance().UpdateLobbyId(EmptyLobbyId);
-                return;
             }
-
-            SendLobbyEvent(lobby);
         }
         finally
         {
@@ -234,19 +226,6 @@ public class LobbyService
         }
 
         return lobby;
-    }
-
-    /// <summary>
-    /// Send lobby update event
-    /// </summary>
-    private void SendLobbyEvent(Lobbies? lobbies)
-    {
-        if (_eventBus is null)
-            throw new NullReferenceException(nameof(_eventBus));
-
-        if (lobbies is null) return;
-
-        _eventBus.Publish(new LobbyUpdate(lobbies.LobbyData));
     }
 
     /// <summary>

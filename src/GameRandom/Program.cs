@@ -1,17 +1,10 @@
 ﻿using Avalonia;
 using System;
 using System.Diagnostics;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.Scr.Events;
-using GameRandom.Scr.Service;
-using GameRandom.Service;
-using GameRandom.Src;
-using GameRandom.Src.Factory;
 using System.Threading.Tasks;
-using GameRandom.DependenceInjectSystem.Providers;
 using GameRandom.Providers;
-using GameRandom.Src.LobbySystem;
-using GameRandom.Src.UserData;
+using GameRandom.Scripts.Service;
+using GameRandom.Scripts.SteamSDK;
 
 namespace GameRandom;
 

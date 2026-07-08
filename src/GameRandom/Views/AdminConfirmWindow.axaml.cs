@@ -6,8 +6,8 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
-using GameRandom.DataBaseContexts;
-using GameRandom.Src;
+using GameRandom.DbContext;
+using GameRandom.Scripts;
 using GameRandom.ViewModels.AdminConfirmSystem;
 
 namespace GameRandom.Views;
@@ -28,10 +28,7 @@ public sealed partial class AdminConfirmWindow : WindowBase<AdminConfirmViewMode
     {
         Show();
 
-        if (TaskRunner is null)
-            throw new NullReferenceException(nameof(TaskRunner));
-
-        TaskRunner.RunWithDispatcherAsync(async () =>
+        Dispatcher.UIThread.InvokeAsync(async () =>
         {
             if (DataContext is AdminConfirmViewModel vm)
                 await vm.UpdateElementData(elementData, _cts.Token);

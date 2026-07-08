@@ -1,47 +1,26 @@
 using System;
-using GameRandom.DependenceInjectSystem;
-using System.Linq;
-using GameRandom.DependenceInjectSystem;
 using System.Threading;
-using GameRandom.DependenceInjectSystem;
-using System.Timers;
-using GameRandom.DependenceInjectSystem;
-using Avalonia.Controls;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Scr.Service;
-using GameRandom.DependenceInjectSystem;
 using System.Threading.Tasks;
-using GameRandom.DependenceInjectSystem;
 using Avalonia.Media.Imaging;
-using GameRandom.DependenceInjectSystem;
 using Avalonia.Threading;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DataBaseContexts;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Service;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Src;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Src.Enums;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.Src.UserData;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.ViewModels.CurrentGameSystem;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.ViewModels.CurrentGameSystem.Interface;
-using GameRandom.DependenceInjectSystem;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using GameRandom.DependenceInjectSystem;
+using GameRandom.DbContext;
+using GameRandom.DISystem;
+using GameRandom.DISystem.DiSystem;
+using GameRandom.Scripts.Database;
+using GameRandom.Scripts.HandleSystem.Enums;
+using GameRandom.Scripts.HandleSystem.Interfaces;
+using GameRandom.Scripts.HandleSystem.PostgresListener;
+using GameRandom.Scripts.Service;
+using GameRandom.Scripts.UserData;
 using GameRandom.Scripts.WindowServices.ErrorServiceSystem;
 using GameRandom.ViewModels.BaseClasses;
+using GameRandom.ViewModels.CurrentGameSystem.Interface;
 
-namespace GameRandom.ViewModels.AdminConfirmSystem;
+namespace GameRandom.ViewModels.CurrentGameSystem;
 
 public sealed class CurrentGameStatusViewModel : ViewModelBase
 {
-    [Inject] private PostgresListener _postgresListener = null!;
+    [Inject] private IRouteManager _routeManager = null!;
     private ICurrentGameLoad _currentGameLoad = new CurrentGameLoad();
     private ICurrentGameFinish _currentGameFinish = new CurrentGameFinish();
     
@@ -51,7 +30,7 @@ public sealed class CurrentGameStatusViewModel : ViewModelBase
     private DispatcherTimer? _timer;
 
     private EventHandler? _savedHandler;
-    private Action<PayloadStructure>? _listener;
+    private Func<PayloadStructure, Task> _listener;
 
     private const int DelayAfterUserGameChange = 500;
 
@@ -122,20 +101,32 @@ public sealed class CurrentGameStatusViewModel : ViewModelBase
         LoadEmpty();
         StartTaskWaiter();
 
-        var result = await TaskRunner.RunWithFinallyActionT(async () => await _currentGameLoad.LoadInfo(),
-            CloseTaskWaiterWithSemaphore);
+        try
+        {
+            var result = await Dispatcher.UIThread.InvokeAsync(async () => await _currentGameLoad.LoadInfo());
 
-        if (!result.Success || result.Value is null)
-            return;
+            if (result is null)
+                return;
 
-        var data = result.Value;
+            var data = result;
 
-        AppInfo = data.GameInfo;
-        ImageBitmap = data.ImageBitmap;
-        UserGame = data.UserGame;
+            AppInfo = data.GameInfo;
+            ImageBitmap = data.ImageBitmap;
+            UserGame = data.UserGame;
+
+            StartTimer();
+            IsEmpty = false;
+        }
+        catch (Exception ex)
+        {
+            Logger.Error("Error loading game info" + ex);
+            ErrorService.ShowWindow("Failed to load game info");
+        }
+        finally
+        {
+            CloseTaskWaiterWithSemaphore();
+        }
         
-        StartTimer();
-        IsEmpty = false;
     }
 
     /// <summary>
@@ -148,14 +139,28 @@ public sealed class CurrentGameStatusViewModel : ViewModelBase
         
         if (!IsCanStartFinishingGame()) return;
 
-        var result = await TaskRunner.RunWithFinallyActionT(() => _currentGameFinish.FinishingGame(AppInfo), 
-            () => SemaphoreSlim.Release()); //AppInfo is checking in IsCanStartFinishingGame 
-
-        if (result.Success && result.Value is not null)
+        try
         {
-            UserGame = result.Value;
-            ClearingContent();
+            var result =
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                    _currentGameFinish.FinishingGame(AppInfo!)); //AppInfo is checking in IsCanStartFinishingGame 
+
+            if (result is not null)
+            {
+                UserGame = result;
+                ClearingContent();
+            }
         }
+        catch (Exception ex)
+        {
+            Logger.Error($"{ex}");
+            ErrorService.ShowWindow(new ErrorStruct { ErrorMessage = "Failed to finish game" });
+        }
+        finally
+        {
+            SemaphoreSlim.Release();
+        }
+       
     }
 
     /// <summary>
@@ -197,8 +202,8 @@ public sealed class CurrentGameStatusViewModel : ViewModelBase
     {
         base.InitializeDiContainer();
 
-        if (_postgresListener is null)
-            throw new NullReferenceException(nameof(_postgresListener));
+        if (_routeManager is null)
+            throw new NullReferenceException(nameof(_routeManager));
     }
     
     /// <summary>
@@ -206,30 +211,24 @@ public sealed class CurrentGameStatusViewModel : ViewModelBase
     /// </summary>
     private void InitializePostgresListener()
     {
-        _listener += structure =>
+        _listener += async (structure) =>
         {
-            if (structure.TableCode == (int)TableEnum.UserGames)
-            {
-                Dispatcher.UIThread.InvokeAsync(async () =>
-                {
-                    if (Di.ResolveInstance.TryGetInstance<DatabaseService>() is not DatabaseService databaseService)
-                        throw new NullReferenceException("Failed to inject database dependence");
+            if (Di.ResolveInstance.TryGetInstance<DatabaseService>() is not { } databaseService)
+                throw new NullReferenceException("Failed to inject database dependence");
 
-                    CancellationTokenSource cts =
-                        new CancellationTokenSource(TimeSpan.FromSeconds(DatabaseOperationDelay));
-                    
-                    var userGame = await databaseService.GetFromRowId<UserGame>(structure.RowId, cts.Token);
+            CancellationTokenSource cts =
+                new CancellationTokenSource(TimeSpan.FromSeconds(DatabaseOperationDelay));
 
-                    if (userGame is null || userGame.UserId != User.GetInstance().GetUserId())
-                        return;
-                    
-                    await Task.Delay(DelayAfterUserGameChange);
-                    await LoadInfo();
-                });
-            }
+            var userGame = await databaseService.GetFromRowId<UserGame>(structure.RowId, cts.Token);
+
+            if (userGame is null || userGame.UserId != User.GetInstance().GetUserId())
+                return;
+
+            await Task.Delay(DelayAfterUserGameChange);
+            await LoadInfo();
         };
 
-        _postgresListener.Subscribe(TableEnum.UserGames, _listener);
+        _routeManager.GetRouteService(TableEnum.UserGames).Subscribe(RouteStage.View, _listener);
     }
 
     /// <summary>
@@ -271,7 +270,7 @@ public sealed class CurrentGameStatusViewModel : ViewModelBase
     /// </summary>
     private void UpdateDateTimer()
     {
-        if (AppInfo is not null)
+        if (AppInfo is not null && _appInfo is not null)
             CurrentTime = _appInfo.EndTime - DateTime.Now;
     }
 
@@ -287,10 +286,7 @@ public sealed class CurrentGameStatusViewModel : ViewModelBase
         _currentGameLoad = null!;
         _currentGameFinish = null!;
         
-        if (_listener is not null) 
-            _postgresListener.Unsubscribe(TableEnum.UserGames, _listener);
-        
-        _postgresListener = null!;
+        _routeManager = null!;
         _listener = null!;
         
         base.Dispose();

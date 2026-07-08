@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using GameRandom.DependenceInjectSystem;
-using GameRandom.DependenceInjectSystem.DiSystem;
-using GameRandom.DependenceInjectSystem;
+using GameRandom.DISystem;
 
-namespace GameRandom.Scr.Service;
+namespace GameRandom.Scripts.Service;
 
 public class ObservableConverter : DependenceBase
 {
