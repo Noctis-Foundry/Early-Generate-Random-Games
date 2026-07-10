@@ -48,7 +48,7 @@ Monitor your current game session with detailed information about start date, ti
 
 ## ⚡ Project Status
 
-> **Beta Version 0.2.0**  
+> **Beta Version 0.3.2**  
 > Available installation files:  
 > - **Linux x64**: AppImage  
 > - **Windows x64**: NSIS Setup
