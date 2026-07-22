@@ -8,6 +8,15 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Avalonia" Version="12.1.0" />
+        <PackageReference Include="Avalonia.Controls.DataGrid" Version="12.1.0" />
+        <PackageReference Include="Avalonia.Desktop" Version="12.1.0" />
+        <PackageReference Include="Avalonia.Diagnostics" Version="11.3.18" />
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.0" />
+        <PackageReference Include="Avalonia.Headless.XUnit" Version="12.1.0" />
+        <PackageReference Include="Avalonia.Labs.Gif" Version="12.0.2" />
+        <PackageReference Include="Avalonia.Remote.Protocol" Version="12.1.0" />
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.0" />
         <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
         <PackageReference Include="ValveKeyValue" Version="0.70.0.499" />
     </ItemGroup>

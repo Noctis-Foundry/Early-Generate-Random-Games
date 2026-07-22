@@ -21,25 +21,14 @@
         </ResourceDictionary>
     </Application.Resources>
     
-    <Application.DataTemplates>
-        <local:ViewLocator />
-    </Application.DataTemplates>
-    
     <Application.Styles>
         <FluentTheme />
-        <StyleInclude Source="avares://GameRandom/GlobalStyles/CheckBoxStyle.axaml"></StyleInclude>
-        <StyleInclude Source="avares://GameRandom/Styles/RulesStyle.axaml"></StyleInclude>
-        <StyleInclude Source="avares://GameRandom/GlobalStyles/MenuItem.axaml"></StyleInclude>
-        <StyleInclude Source="avares://GameRandom/GlobalStyles/TextBlock.axaml"></StyleInclude>
-        <StyleInclude Source="avares://GameRandom/GlobalStyles/ContextWindowsStyle.axaml"></StyleInclude>
-        <StyleInclude Source="avares://GameRandom/GlobalStyles/Button.axaml"></StyleInclude>
-        <StyleInclude Source="avares://GameRandom/Styles/StatisticStyle.axaml"></StyleInclude>
-        <StyleInclude Source="avares://GameRandom/Styles/RollGameStyle.axaml"></StyleInclude>
-       
         <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
-        <StyleInclude Source="avares://GameRandom/Styles/ProfileDataGridStyle.axaml"></StyleInclude>
-        <StyleInclude Source="avares://GameRandom/Styles/LobbyStyle.axaml"></StyleInclude>
-        <StyleInclude Source="avares://GameRandom/Styles/MainWindowStyle.axaml"></StyleInclude>
-        <StyleInclude Source="avares://GameRandom/Styles/ProfileStyle.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/GlobalStyles/AppBackgrounds.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/GlobalStyles/ButtonStyle.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/GlobalStyles/TextBlocksStyle.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/GlobalStyles/ProgressBarStyle.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/GlobalStyles/BorderStyle.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/Styles/MainMenu/MainMenuTopContainerStyle.axaml"></StyleInclude>
     </Application.Styles>
 </Application>

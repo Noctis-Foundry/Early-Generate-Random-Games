@@ -18,52 +18,52 @@
     </Window.Styles>
     
     <!-- Main container for the current game status window -->
-    <DockPanel Classes="WindowContainer">
+    <DockPanel>
         
-        <Border DockPanel.Dock="Top" Classes="WindowTopContainer"> 
-            <TextBlock Text="Current game" Classes="WindowTextBlock" FontSize="16"
+        <Border DockPanel.Dock="Top"> 
+            <TextBlock Text="Current game" FontSize="16"
                        HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
         </Border>
 
         <!-- Main grid layout: left column for info, right column for image and actions -->
-        <Grid Classes="WindowGrid" RowDefinitions="*, *, *, *, *" DockPanel.Dock="Left">
+        <Grid RowDefinitions="*, *, *, *, *" DockPanel.Dock="Left">
             <!-- Game name label -->
-            <Border Grid.Row="0" Grid.Column="0" Classes="WindowTextBorder">
+            <Border Grid.Row="0" Grid.Column="0">
                 <TextBlock
                     Text="{Binding AppInfo.AppName, StringFormat='Name: {0}',
                                  TargetNullValue='Name: Empty', FallbackValue='Failed to find app name'}"
-                    Classes="WindowTextBlock" x:Name="GameName" />
+                    x:Name="GameName" />
             </Border>
 
             <!-- Date when the game session was started -->
-            <Border Grid.Row="1" Grid.Column="0" Classes="WindowTextBorder">
+            <Border Grid.Row="1" Grid.Column="0">
                 <TextBlock
                     Text="{Binding AppInfo.BeginTime, Converter={StaticResource TimeSpanConverter}, 
                                         ConverterParameter='Start date'}"
-                    Classes="WindowTextBlock" x:Name="StartDate"/>
+                    x:Name="StartDate"/>
 
             </Border>
 
             <!-- Total time spent on the game -->
-            <Border Grid.Row="2" Grid.Column="0" Classes="WindowTextBorder">
+            <Border Grid.Row="2" Grid.Column="0">
                 <TextBlock Text="{Binding CurrentTime, StringFormat='LeftTime: {0:dd\\:hh\\:mm\\:ss}'}"
-                           Classes="WindowTextBlock" x:Name="TimeSpent" />
+                           x:Name="TimeSpent" />
             </Border>
 
             <!-- Expected or deadline end date for the game -->
-            <Border Grid.Row="3" Grid.Column="0" Classes="WindowTextBorder">
+            <Border Grid.Row="3" Grid.Column="0">
                 <TextBlock
                     Text="{Binding AppInfo.EndTime, Converter={StaticResource TimeSpanConverter}, 
-                    ConverterParameter='End date'}" Classes="WindowTextBlock" x:Name="EndDate" />
+                    ConverterParameter='End date'}" x:Name="EndDate" />
             </Border>
         </Grid>
 
         <Grid DockPanel.Dock="Right" RowDefinitions="Auto, Auto" HorizontalAlignment="Right" Margin="0,0,20,0"
               VerticalAlignment="Center" RowSpacing="5">
-            <Border Grid.Row="0" Grid.Column="0" Classes="WindowImageBorder">
+            <Border Grid.Row="0" Grid.Column="0">
                 <Border>
                     <Image Source="{Binding ImageBitmap, Converter={StaticResource NullImageConverter}}"
-                           x:Name="GameImage" Classes="WindowHeaderImage">
+                           x:Name="GameImage">
                     </Image>
                 </Border>
             </Border>
@@ -73,9 +73,9 @@
                 <Grid ColumnDefinitions="Auto, Auto" ColumnSpacing="30">
 
                     <!-- TODO: Open the game's store page in Steam browser -->
-                    <Button Classes="WindowButton" Content="Steam" Click="ShowSteamStore"></Button>
+                    <Button Content="Steam" Click="ShowSteamStore"></Button>
 
-                    <Button Grid.Column="1" Classes="WindowButton" Content="Finish game" Click="FinishedGame"></Button>
+                    <Button Grid.Column="1" Content="Finish game" Click="FinishedGame"></Button>
 
                 </Grid>
             </Border>

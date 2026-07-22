@@ -1,18 +1,11 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="using:GameRandom.ViewModels.AdminConfirmSystem"
              xmlns:adminPanelSystem="clr-namespace:GameRandom.ViewModels.AdminPanelSystem"
              x:Class="GameRandom.Views.AdminPanel"
              x:DataType="adminPanelSystem:AdminPanelViewModel"
              Width="1000" Height="460"
              MinWidth="1000" MinHeight="460"
              MaxWidth="1000" MaxHeight="460">
-    
-    <UserControl.Styles>
-        <StyleInclude Source="/Styles/AdminPanelStyle.axaml"/>
-    </UserControl.Styles>
     
     <Grid RowDefinitions="Auto, *">
         <Grid.Background>
@@ -23,17 +16,16 @@
               HorizontalAlignment="Center" ColumnSpacing="10">
             <TextBlock Grid.Row="0" 
                        Text="Completed Games Awaiting Confirmation"
-                       Classes="RatingTitle" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
             
             <Button Grid.Column="1" Content="Registration" HorizontalAlignment="Center" Click="ShowRegistration"
-                    VerticalAlignment="Center" IsVisible="{Binding IsCanShow}" Classes="ProfileButtons" Margin="0,0,0,0"></Button>
+                    VerticalAlignment="Center" IsVisible="{Binding IsCanShow}" Margin="0,0,0,0"></Button>
             
             <Button Grid.Column="2" Content="Close" HorizontalAlignment="Center" Click="CloseUserControl"
-                    VerticalAlignment="Center" Classes="ProfileButtons" Margin="0,0,0,0"></Button>
+                    VerticalAlignment="Center" Margin="0,0,0,0"></Button>
         </Grid>
         
         <DataGrid Grid.Row="1" Grid.ColumnSpan="2"
-                  Classes="AdminDataGrid"
                   Margin="20"
                   GridLinesVisibility="All"
                   ItemsSource="{Binding GameList}"
@@ -48,7 +40,7 @@
                 <DataGridTemplateColumn Header="Actions">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Classes="WindowButton" Content="Check" Command="{Binding OpenCommand}"></Button>
+                            <Button Content="Check" Command="{Binding OpenCommand}"></Button>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

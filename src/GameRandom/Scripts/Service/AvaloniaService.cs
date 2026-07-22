@@ -73,12 +73,14 @@ public class AvaloniaService
     public GifImage CreateGifImageFromPath(string path)
     {
         var uri = new Uri($"avares://GameRandom/{path}");
-        return new GifImage
+        var gif = new GifImage
         {
-            Source = uri,
+            Source = GifStreamSource.FromUri(uri),
             Width = 120,
             Height = 70
         };
+
+        return gif;
     }
 
     public byte[] ConvertToWebpBytes(Bitmap bitmap)

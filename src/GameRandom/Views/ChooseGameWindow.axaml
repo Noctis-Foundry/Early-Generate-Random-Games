@@ -17,43 +17,43 @@
                 </Style>
         </Window.Styles>
         
-        <DockPanel Classes="WindowContainer">
+        <DockPanel>
 
-                <Border DockPanel.Dock="Top" Classes="WindowTopContainer">
-                        <TextBlock Text="Choose game" Classes="WindowTextBlock"></TextBlock>
+                <Border DockPanel.Dock="Top">
+                        <TextBlock Text="Choose game"></TextBlock>
                 </Border>
                 
-                <Grid Classes="WindowGrid" RowDefinitions="Auto, Auto, Auto, Auto, Auto" ColumnDefinitions="Auto, Auto" MaxWidth="300">
+                <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto" ColumnDefinitions="Auto, Auto" MaxWidth="300">
 
                         <!-- Game name -->
-                        <Border Grid.Row="0" Grid.Column="0" Classes="WindowTextBorder">
+                        <Border Grid.Row="0" Grid.Column="0">
                                 <SelectableTextBlock Text="{Binding AppInfo.AppData.AppName, StringFormat='App name: {0}',
-                                TargetNullValue='Name is null', FallbackValue='Not find name'}" Classes="WindowTextBlock" x:Name="GameName"/>
+                                TargetNullValue='Name is null', FallbackValue='Not find name'}" x:Name="GameName"/>
                         </Border>
 
                         <!-- Game genres -->
-                        <Border Grid.Row="1" Grid.Column="0" Classes="WindowTextBorder">
+                        <Border Grid.Row="1" Grid.Column="0">
                                 <TextBlock Text="{Binding AppInfo.AppData.AppGenres, 
-                                Converter={StaticResource ArrayTextJoinConverter}, ConverterParameter='Genres', FallbackValue='Genres not find'}" Classes="WindowTextBlock" x:Name="GameGenres"/>
+                                Converter={StaticResource ArrayTextJoinConverter}, ConverterParameter='Genres', FallbackValue='Genres not find'}" x:Name="GameGenres"/>
                         </Border>
                         
-                        <Border Grid.Row="2" Grid.Column="0" Classes="WindowTextBorder">
+                        <Border Grid.Row="2" Grid.Column="0">
                                 <TextBlock Text="{Binding AppInfo.AppData.AppCategories, 
-                                Converter={StaticResource ArrayTextJoinConverter}, ConverterParameter='Categories', FallbackValue='Categories not find'}" Classes="WindowTextBlock" x:Name="GameCategories"/>
+                                Converter={StaticResource ArrayTextJoinConverter}, ConverterParameter='Categories', FallbackValue='Categories not find'}" x:Name="GameCategories"/>
                         </Border>
 
                         <!-- Release date -->
-                        <Border Grid.Row="3" Grid.Column="0" Classes="WindowTextBorder">
+                        <Border Grid.Row="3" Grid.Column="0">
                                 <TextBlock Text="{Binding AppInfo.AppData.AppReleaseYear, StringFormat='Release: {0}',
-                                TargetNullValue='Release is null', FallbackValue='Not find release'}" Classes="WindowTextBlock" x:Name="ReleaseDate"/>
+                                TargetNullValue='Release is null', FallbackValue='Not find release'}" x:Name="ReleaseDate"/>
                         </Border>
                 </Grid>
                 
                 <Grid RowDefinitions="Auto, Auto" DockPanel.Dock="Left" HorizontalAlignment="Center"  VerticalAlignment="Center" RowSpacing="5">
-                        <Border  Classes="WindowImageBorder">
+                        <Border>
                                 <Border>
                                         <Image Source="{Binding AppInfo.ImageBytes, Converter={StaticResource ByteToImageConverter}}" 
-                                               Classes="WindowHeaderImage" x:Name="GameHeader"/>
+                                               x:Name="GameHeader"/>
                                 </Border>
                         </Border>
                 
@@ -62,9 +62,9 @@
                                 <Grid ColumnDefinitions="Auto, Auto" HorizontalAlignment="Center" ColumnSpacing="10" 
                                       Margin="0, 0,20,0">
 
-                                        <Button Classes="WindowButton" Content="Steam" Click="ToSteamStorePage"></Button>
+                                        <Button Content="Steam" Click="ToSteamStorePage"></Button>
 
-                                        <Button Grid.Column="1" Classes="WindowButton" Content="Choose Game" Click="ChooseGame"></Button>
+                                        <Button Grid.Column="1" Content="Choose Game" Click="ChooseGame"></Button>
 
                                 </Grid>
                         </Border>

@@ -1,21 +1,19 @@
 ﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         x:Class="GameRandom.Views.ErrorWindow"
         MinWidth="450" MaxWidth="450"
         MinHeight="250" MaxHeight="250"
         Title="Error">
     
-    <DockPanel Classes="WindowContainer">
-        <Grid Classes="WindowGrid" RowDefinitions="*, Auto">
+    <DockPanel>
+        <Grid RowDefinitions="*, Auto">
             
-            <Border Grid.Row="0" Classes="WindowTextBorder" MinWidth="400" MaxWidth="400" MinHeight="60" MaxHeight="80">
-                <SelectableTextBlock x:Name="ErrorLabel" Text="fdsaaaaaaadsaffffffffffffdsfaaaaaaa" Classes="WindowTextBlock"/>
+            <Border Grid.Row="0" MinWidth="400" MaxWidth="400" MinHeight="60" MaxHeight="80">
+                <SelectableTextBlock x:Name="ErrorLabel" Text="fdsaaaaaaadsaffffffffffffdsfaaaaaaa"/>
             </Border>
             
             <Button Grid.Row="1" Click="MessageBoxButtonAction" x:Name="ErrorButton" 
-                    Content="Ok" Classes="WindowButton" HorizontalAlignment="Center"/>
+                    Content="Ok" HorizontalAlignment="Center"/>
         </Grid>
         
     </DockPanel>

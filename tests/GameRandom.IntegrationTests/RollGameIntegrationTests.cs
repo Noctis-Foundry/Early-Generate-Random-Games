@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Avalonia.Headless.XUnit;
 using GameRandom.DISystem.DiSystem;
 using GameRandom.Scripts.RollGameSystem.GenerateGames;
 using GameRandom.Scripts.SteamSDK;
@@ -26,7 +27,7 @@ public class RollGameIntegrationTests : IDisposable
         _viewModel = new RollGameViewModel();
     }
 
-    [Fact]
+    [AvaloniaFact]
     public async Task GenerateGames_Should_LoadGames_From_Json_File()
     {
         // Act
@@ -45,7 +46,7 @@ public class RollGameIntegrationTests : IDisposable
         Assert.True(firstGame.ImageBytes.Length > 0);
     }
 
-    [Fact]
+    [AvaloniaFact]
     public async Task GenerateGames_With_Filter_Should_Only_Return_Matching_Games()
     {
         // Arrange
@@ -64,7 +65,7 @@ public class RollGameIntegrationTests : IDisposable
         }
     }
 
-    [Fact]
+    [AvaloniaFact]
     public async Task GenerateGames_With_Genres_Filter_Should_Onlyy_Return_Matching_Games()
     {
         _viewModel.IsFilter = true;
@@ -78,7 +79,7 @@ public class RollGameIntegrationTests : IDisposable
         }
     }
     
-    [Fact]
+    [AvaloniaFact]
     public async Task GenerateGames_With_Categories_Filter_Should_Onlyy_Return_Matching_Games()
     {
         _viewModel.IsFilter = true;
@@ -92,7 +93,7 @@ public class RollGameIntegrationTests : IDisposable
         }
     }
     
-    [Fact]
+    [AvaloniaFact]
     public async Task GenerateGames_With_All_Filter_Should_Onlyy_Return_Matching_Games()
     {
         _viewModel.IsFilter = true;

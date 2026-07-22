@@ -49,44 +49,44 @@
         </Style>
     </Window.Styles>
     
-    <DockPanel Classes="WindowContainer">
+    <DockPanel>
         
-        <Border DockPanel.Dock="Top" Classes="WindowTopContainer" MinWidth="250" Margin="0,10,0,0">
-            <TextBlock Text="Lobby Manager" Classes="WindowTextBlock" FontSize="16"/>
+        <Border DockPanel.Dock="Top" MinWidth="250" Margin="0,10,0,0">
+            <TextBlock Text="Lobby Manager" FontSize="16"/>
         </Border>
 
-        <Grid Classes="WindowGrid" RowDefinitions="*, *" ColumnDefinitions="*, *" ColumnSpacing="30"
+        <Grid RowDefinitions="*, *" ColumnDefinitions="*, *" ColumnSpacing="30"
               MinWidth="650" MinHeight="250" Margin="0,0,0,50">
             
-            <Border DockPanel.Dock="Top" Classes="WindowTopContainer" MinWidth="250">
-                <TextBlock Text="Create lobby" Classes="WindowTextBlock" FontSize="16"/>
+            <Border DockPanel.Dock="Top" MinWidth="250">
+                <TextBlock Text="Create lobby" FontSize="16"/>
             </Border>
             
-            <Border Grid.Row="0" Grid.Column="1" DockPanel.Dock="Top" Classes="WindowTopContainer" MinWidth="250">
-                <TextBlock Text="Connect ot lobby" Classes="WindowTextBlock" FontSize="16"/>
+            <Border Grid.Row="0" Grid.Column="1" DockPanel.Dock="Top" MinWidth="250">
+                <TextBlock Text="Connect ot lobby" FontSize="16"/>
             </Border>
             
             <!-- Lobby ID display -->
-            <Border Grid.Row="1" Grid.Column="0" Classes="WindowTextBorder" MinHeight="170" MaxHeight="180">
+            <Border Grid.Row="1" Grid.Column="0" MinHeight="170" MaxHeight="180">
                 <Grid RowDefinitions="Auto, Auto" HorizontalAlignment="Center" VerticalAlignment="Center" RowSpacing="15">
-                    <Border Classes="WindowTextBorder" MinWidth="260" MaxWidth="260"
+                    <Border MinWidth="260" MaxWidth="260"
                             MinHeight="50" MaxHeight="80">
                         <SelectableTextBlock Text="{Binding CurrentLobbyID, Converter='{StaticResource LongToStringConverter}',
                         ConverterParameter='Lobby ID'}" 
-                                   Classes="WindowTextBlock" x:Name="LobbyId"/>
+                                   x:Name="LobbyId"/>
                     </Border>
                    
-                    <Button Grid.Row="1" Content="Create Lobby" Click="Create" Classes="WindowButton" HorizontalAlignment="Center"/>
+                    <Button Grid.Row="1" Content="Create Lobby" Click="Create" HorizontalAlignment="Center"/>
                 </Grid>
                
             </Border>
 
             <!-- Connect section -->
-            <Border Grid.Row="1" Grid.Column="1" Classes="WindowTextBorder" MinHeight="170" MaxHeight="180">
+            <Border Grid.Row="1" Grid.Column="1" MinHeight="170" MaxHeight="180">
                 <Grid RowDefinitions="Auto, Auto" HorizontalAlignment="Center" VerticalAlignment="Center" RowSpacing="15">
                     <TextBox x:Name="IdBox" MaxLength="20" Text="..." MinWidth="260" MaxWidth="260" MinHeight="40" MaxHeight="50" 
                              Watermark="Enter lobby ID"/>
-                    <Button Grid.Row="1" Content="Connect" Click="Connect" Classes="WindowButton" HorizontalAlignment="Center"/>
+                    <Button Grid.Row="1" Content="Connect" Click="Connect" HorizontalAlignment="Center"/>
                 </Grid>
             </Border>
 

@@ -8,22 +8,11 @@
         x:Class="GameRandom.Views.TaskLoading"
         Title="TaskLoading">
 
-    <Window.Styles>
-        <StyleInclude Source="/GlobalStyles/ContextWindowsStyle.axaml" />
-
-        <Style Selector="ProgressBar.LoadingProgress">
-            <Setter Property="Foreground" Value="#bb9e67" />
-            <Setter Property="Background" Value="{StaticResource TextBlockBackground}" />
-            <Setter Property="Height" Value="20" />
-            <Setter Property="CornerRadius" Value="4" />
-        </Style>
-    </Window.Styles>
-
-    <DockPanel Classes="WindowContainer">
-        <Grid Classes="WindowGrid">
+    <DockPanel>
+        <Grid>
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="15">
-                <Border Classes="WindowTextBorder">
-                    <TextBlock Classes="WindowTextBlock" Text="Please wait" FontSize="14" />
+                <Border>
+                    <TextBlock Text="Please wait" FontSize="14" />
                 </Border>
 
                 <ProgressBar Classes="LoadingProgress" IsIndeterminate="True" x:Name="WaitBar" Width="300" />

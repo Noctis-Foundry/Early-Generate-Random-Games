@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Avalonia.Headless.XUnit;
 using GameRandom.DbContext;
 using GameRandom.Scripts.Database;
 using Microsoft.Data.Sqlite;
@@ -35,7 +36,7 @@ public class DatabaseServiceIntegrationTests : IDisposable
         _databaseService = new DatabaseService(_options);
     }
 
-    [Fact]
+    [AvaloniaFact]
     public async Task AddItemAsync_ShouldAddItemToDatabase()
     {
         // Arrange
@@ -58,7 +59,7 @@ public class DatabaseServiceIntegrationTests : IDisposable
         Assert.Equal("TestUser", addedUser.Nickname);
     }
 
-    [Fact]
+    [AvaloniaFact]
     public async Task GetTableListAsync_ShouldReturnList()
     {
         // Arrange
@@ -77,7 +78,7 @@ public class DatabaseServiceIntegrationTests : IDisposable
         Assert.Equal(2, result.Count);
     }
 
-    [Fact]
+    [AvaloniaFact]
     public async Task UpdateAsync_ShouldUpdateEntity()
     {
         // Arrange
@@ -102,7 +103,7 @@ public class DatabaseServiceIntegrationTests : IDisposable
         }
     }
 
-    [Fact]
+    [AvaloniaFact]
     public async Task DeleteItemAsync_ShouldRemoveItem()
     {
         // Arrange
@@ -129,7 +130,7 @@ public class DatabaseServiceIntegrationTests : IDisposable
         }
     }
 
-    [Fact]
+    [AvaloniaFact]
     public async Task TryGetOrCreateUserGame_ShouldCreateIfNotExist()
     {
         // Arrange

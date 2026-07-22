@@ -7,73 +7,73 @@
              MinHeight="450" MaxHeight="650"
              x:Class="GameRandom.Views.RulesWindow">
     
-    <Grid Classes="RulesGrid">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0">
-            <TextBlock x:Name="TitleText" Classes="TitleText"/>
+            <TextBlock x:Name="TitleText"/>
             
-            <Button x:Name="LanguageButton" Classes="RulesButton LanguageButton" Click="ToggleLanguage"/>
+            <Button x:Name="LanguageButton" Click="ToggleLanguage"/>
             
-            <Button Classes="RulesButton CloseButton" Click="Close">✕ CLOSE</Button>
+            <Button Click="Close">✕ CLOSE</Button>
         </StackPanel>
 
-        <ScrollViewer Grid.Row="1" Classes="RulesScrollViewer">
+        <ScrollViewer Grid.Row="1">
             <StackPanel Spacing="15">
 
-                <Border Classes="RuleBorder">
-                    <TextBlock x:Name="Rule1Text" Classes="RuleText"/>
+                <Border>
+                    <TextBlock x:Name="Rule1Text"/>
                 </Border>
 
-                <Border Classes="RuleBorder">
-                    <TextBlock x:Name="Rule2Text" Classes="RuleText"/>
+                <Border>
+                    <TextBlock x:Name="Rule2Text"/>
                 </Border>
 
-                <Border Classes="RuleBorder">
-                    <TextBlock x:Name="Rule3Text" Classes="RuleText"/>
+                <Border>
+                    <TextBlock x:Name="Rule3Text"/>
                 </Border>
 
-                <Border Classes="RuleBorder">
-                    <TextBlock x:Name="Rule4Text" Classes="RuleText"/>
+                <Border>
+                    <TextBlock x:Name="Rule4Text"/>
                 </Border>
 
-                <Border Classes="RuleBorder">
-                    <TextBlock x:Name="Rule5Text" Classes="RuleText"/>
+                <Border>
+                    <TextBlock x:Name="Rule5Text"/>
                 </Border>
 
-                <Border Classes="RuleBorder">
+                <Border>
                     <StackPanel Spacing="10">
-                        <TextBlock x:Name="Rule6Text" Classes="RuleText"/>
+                        <TextBlock x:Name="Rule6Text"/>
                         
-                        <TextBlock x:Name="PricesTitleText" Classes="PricesTitleText"/>
+                        <TextBlock x:Name="PricesTitleText"/>
                         
                         <StackPanel Spacing="6" Margin="10,0,0,0">
-                            <TextBlock x:Name="Price1Text" Classes="PriceText"/>
-                            <TextBlock x:Name="Price2Text" Classes="PriceText"/>
-                            <TextBlock x:Name="Price3Text" Classes="PriceText"/>
-                            <TextBlock x:Name="Price4Text" Classes="PriceText"/>
-                            <TextBlock x:Name="Price5Text" Classes="PriceText" FontWeight="SemiBold"/>
+                            <TextBlock x:Name="Price1Text"/>
+                            <TextBlock x:Name="Price2Text"/>
+                            <TextBlock x:Name="Price3Text"/>
+                            <TextBlock x:Name="Price4Text"/>
+                            <TextBlock x:Name="Price5Text" FontWeight="SemiBold"/>
                         </StackPanel>
                     </StackPanel>
                 </Border>
 
-                <Border Classes="RuleBorder">
-                    <TextBlock x:Name="Rule7Text" Classes="RuleText"/>
+                <Border>
+                    <TextBlock x:Name="Rule7Text"/>
                 </Border>
 
-                <Border Classes="RuleBorder">
-                    <TextBlock x:Name="Rule8Text" Classes="RuleText"/>
+                <Border>
+                    <TextBlock x:Name="Rule8Text"/>
                 </Border>
 
-                <Border Classes="RuleBorder">
-                    <TextBlock x:Name="Rule9Text" Classes="RuleText"/>
+                <Border>
+                    <TextBlock x:Name="Rule9Text"/>
                 </Border>
 
-                <Border Classes="RuleBorder">
-                    <TextBlock x:Name="Rule10Text" Classes="RuleText"/>
+                <Border>
+                    <TextBlock x:Name="Rule10Text"/>
                 </Border>
 
             </StackPanel>

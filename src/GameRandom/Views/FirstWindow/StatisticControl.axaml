@@ -9,27 +9,26 @@
              x:DataType="statisticSystem:StatisticViewModel">
 
     
-    <Border Classes="StatisticContainer" Height="400" Width="700">
+    <Border Height="400" Width="700">
         <Border.Background>
             <ImageBrush Source="avares://GameRandom/Assets/TableBorder1920.png"
                         Stretch="Fill">
             </ImageBrush>
         </Border.Background>
         <Grid RowDefinitions="Auto, Auto" HorizontalAlignment="Center" Margin="0,50,0,0">
-            <Border Classes="StatisticHeader" Height="50" Width="450">
+            <Border Height="50" Width="450">
                 <Grid ColumnDefinitions="*, Auto">
-                    <TextBlock Text="Player Statistic"
-                               Classes="StatisticHeaderText">
+                    <TextBlock Text="Player Statistic">
                     </TextBlock>
 
-                    <Button Grid.Column="1" Classes="ProfileButtons"
+                    <Button Grid.Column="1"
                             HorizontalAlignment="Right" Click="OpenTable">
                         Games Table
                     </Button>
                 </Grid>
             </Border>
         
-            <Grid Grid.Row="1" RowDefinitions="Auto, Auto" ColumnDefinitions="Auto, Auto, Auto" Classes="CardContainer"
+            <Grid Grid.Row="1" RowDefinitions="Auto, Auto" ColumnDefinitions="Auto, Auto, Auto"
                   x:Name="StatisticCardGrid">
             </Grid>
         </Grid>

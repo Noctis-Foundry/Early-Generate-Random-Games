@@ -13,7 +13,7 @@
         Title="GamesTable">
     <DockPanel Background="Gray">
         <DataGrid ItemsSource="{Binding TableData}"
-                  AutoGenerateColumns="False" Classes="ProfileDataGrid" IsReadOnly="True">
+                  AutoGenerateColumns="False" IsReadOnly="True">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Game name" Binding="{Binding AppName}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Begin data" Binding="{Binding BeginTime}"></DataGridTextColumn>

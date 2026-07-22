@@ -1,0 +1,24 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <ProgressBar Height="30"></ProgressBar>
+        </Border>
+    </Design.PreviewWith>
+
+    <Style Selector="ProgressBar">
+        <Setter Property="Foreground" Value="Black"></Setter>
+        <Setter Property="Background" Value="Transparent"></Setter>
+        <Setter Property="BorderThickness" Value="1.5"></Setter>
+        <Setter Property="IsIndeterminate" Value="True"></Setter>
+        <Setter Property="Height" Value="20"></Setter>
+        <Setter Property="BorderBrush">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0%, 0%" EndPoint="100%, 0%">
+                    <GradientStop Color="#1A1A1A" Offset="0.0" />
+                    <GradientStop Color="#575252" Offset="1.0" />
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</Styles>

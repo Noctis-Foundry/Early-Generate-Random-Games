@@ -1,7 +1,6 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:vm="using:GameRandom.ViewModels.AdminConfirmSystem"
              xmlns:converters="using:GameRandom.AvaloniaConverters"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:tablesSystem="clr-namespace:GameRandom.ViewModels.TablesSystem"
@@ -19,16 +18,16 @@
             Gray
         </DockPanel.Background>
         
-        <Border Classes="TopProfileContainer" DockPanel.Dock="Top" Width="1000" Height="50" Margin="0, 20, 0, 0"
+        <Border DockPanel.Dock="Top" Width="1000" Height="50" Margin="0, 20, 0, 0"
                 VerticalAlignment="Top" HorizontalAlignment="Center" Background="DimGray">
             <Grid ColumnDefinitions="*, Auto">
-                <TextBlock Text="Game table" Classes="TitleTextBoxStyle"
+                <TextBlock Text="Game table"
                            HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
-                <Button Grid.Column="1" Content="Close" Classes="ProfileButtons" Click="CloseUserControl"></Button>
+                <Button Grid.Column="1" Content="Close" Click="CloseUserControl"></Button>
             </Grid>
         </Border>
         
-        <DataGrid Classes="ProfileDataGrid" AutoGenerateColumns="False" IsReadOnly="True" Height="400"
+        <DataGrid AutoGenerateColumns="False" IsReadOnly="True" Height="400"
                   ItemsSource="{Binding TableData}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="User" Binding="{Binding PlayerName, DataType=tablesSystem:GameTableData}"/>

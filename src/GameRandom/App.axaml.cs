@@ -32,10 +32,6 @@ public partial class App : Application
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
-            // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
-            DisableAvaloniaDataAnnotationValidation();
-
             desktop.MainWindow = desktopWindow;
         }
 
@@ -49,17 +45,6 @@ public partial class App : Application
         windowProvider.BindingInstance();
 
         Dispatcher.UIThread.Post(async () => { await Bootstrap(desktopWindow); });
-    }
-
-    private void DisableAvaloniaDataAnnotationValidation()
-    {
-        var dataValidationPluginsToRemove =
-            BindingPlugins.DataValidators.OfType<DataAnnotationsValidationPlugin>().ToArray();
-
-        foreach (var plugin in dataValidationPluginsToRemove)
-        {
-            BindingPlugins.DataValidators.Remove(plugin);
-        }
     }
 
     private async Task Bootstrap(IInitializeMainWindow desktopWindow)

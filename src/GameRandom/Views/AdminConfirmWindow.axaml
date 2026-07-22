@@ -10,25 +10,25 @@
         x:DataType="vm:AdminConfirmViewModel"
         Title="Confirm Game">
     
-    <DockPanel Classes="WindowContainer">
+    <DockPanel>
         
-        <Border DockPanel.Dock="Top" Classes="WindowTopContainer">
-            <TextBlock Text="Confirm Game" Classes="WindowTextBlock" HorizontalAlignment="Center"/>
+        <Border DockPanel.Dock="Top">
+            <TextBlock Text="Confirm Game" HorizontalAlignment="Center"/>
         </Border>
         
-        <Grid Classes="WindowGrid" RowDefinitions="Auto, Auto, Auto" Width="300">
+        <Grid RowDefinitions="Auto, Auto, Auto" Width="300">
             
-            <Border Grid.Row="0" Grid.Column="0" Classes="WindowTextBorder">
-                <TextBlock Classes="WindowTextBlock" x:Name="PlayerName" Text="{Binding NickName}"/>
+            <Border Grid.Row="0" Grid.Column="0">
+                <TextBlock x:Name="PlayerName" Text="{Binding NickName}"/>
             </Border>
             
-            <Border Grid.Row="1" Grid.Column="0" Classes="WindowTextBorder">
-                <TextBlock Classes="WindowTextBlock" x:Name="GameName" 
+            <Border Grid.Row="1" Grid.Column="0">
+                <TextBlock x:Name="GameName" 
                            Text="{Binding FinishedGame.GameProgresses.AppName, FallbackValue='Failed to find game name in the property'}"/>
             </Border>
             
-            <Border Grid.Row="2" Grid.Column="0" Classes="WindowTextBorder">
-                <TextBlock Classes="WindowTextBlock" x:Name="CompletedDate" 
+            <Border Grid.Row="2" Grid.Column="0">
+                <TextBlock x:Name="CompletedDate" 
                            Text="{Binding FinishedGame.GameProgresses.EndTime, Converter={StaticResource TimeSpanConverter}, ConverterParameter='End date: ',
                            FallbackValue='Game progresses is null'}"/>
             </Border>
@@ -37,15 +37,15 @@
         
         <Grid RowDefinitions="Auto, Auto" DockPanel.Dock="Left" HorizontalAlignment="Center" VerticalAlignment="Center" RowSpacing="5">
             
-            <Border Classes="WindowImageBorder">
-                <Image Classes="WindowHeaderImage" x:Name="GameImage"
+            <Border>
+                <Image x:Name="GameImage"
                        Source="{Binding FinishedGame.ScreenShot, Converter={StaticResource ByteToImageConverter}}"/>
             </Border>
             
             <Border Grid.Row="1">
                 <Grid ColumnDefinitions="Auto, Auto" HorizontalAlignment="Center" ColumnSpacing="10">
-                    <Button Classes="WindowButton" Content="Confirm" Click="ConfirmGame"/>
-                    <Button Grid.Column="1" Classes="WindowButton" Content="Reject" Click="RejectGame"/>
+                    <Button Content="Confirm" Click="ConfirmGame"/>
+                    <Button Grid.Column="1" Content="Reject" Click="RejectGame"/>
                 </Grid>
             </Border>
             

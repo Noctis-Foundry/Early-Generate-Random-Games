@@ -41,8 +41,8 @@
         
             <Border Grid.Row="1" Classes="ConfirmTextBorder" Width="170" Height="50" HorizontalAlignment="Center" VerticalAlignment="Bottom">
                 <Grid ColumnDefinitions="Auto, Auto" HorizontalAlignment="Center" ColumnSpacing="30">
-                    <Button Classes="ProfileButtons" Click="YesClick">Yes</Button>
-                    <Button Grid.Column="1" Classes="ProfileButtons" Click="NoClick">No</Button>
+                    <Button Click="YesClick">Yes</Button>
+                    <Button Grid.Column="1" Click="NoClick">No</Button>
                 </Grid>
             </Border>
         </Grid>

@@ -1,0 +1,16 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <TextBlock Text="Hello"></TextBlock>
+        </Border>
+    </Design.PreviewWith>
+
+    <Style Selector="TextBlock">
+        <Setter Property="FontSize" Value="14"></Setter>
+        <Setter Property="Foreground" Value="Black"></Setter>
+        <Setter Property="FontFamily" Value="{StaticResource 'Anime Ace'}"></Setter>
+        <Setter Property="Background" Value="Transparent"></Setter>
+        <Setter Property="TextAlignment" Value="Center"></Setter>
+    </Style>
+</Styles>

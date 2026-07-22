@@ -2,29 +2,24 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:vm="using:GameRandom.ViewModels.AdminConfirmSystem"
         xmlns:adminRegistrationSystem="clr-namespace:GameRandom.ViewModels.AdminRegistrationSystem"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="GameRandom.Views.AdminRegistrationWindow"
         x:DataType="adminRegistrationSystem:AdminRegistrationViewModel"
         Title="AdminRegistrationWindow">
     
-    <Window.Styles>
-        <StyleInclude Source="avares://GameRandom/Styles/AdminPanelStyle.axaml"/>
-    </Window.Styles>
-    
-    <DockPanel Classes="WindowContainer">
-        <Border Classes="WindowTopContainer" DockPanel.Dock="Top" MinWidth="300">
+    <DockPanel>
+        <Border DockPanel.Dock="Top" MinWidth="300">
             <Grid ColumnDefinitions="*, Auto">
-                <TextBlock Classes="WindowTextBlock" Text="Admin Panel" FontSize="16"/>
-                <Button Grid.Column="1" Classes="ProfileButtons" Content="Close" Click="CloseAsyncWindow"
+                <TextBlock Text="Admin Panel" FontSize="16"/>
+                <Button Grid.Column="1" Content="Close" Click="CloseAsyncWindow"
                         CornerRadius="3"
                         Margin="0,0,35,0"/>
             </Grid>
           
         </Border>
         
-        <DataGrid Margin="20" AutoGenerateColumns="False" Classes="AdminDataGrid" 
+        <DataGrid Margin="20" AutoGenerateColumns="False" 
                   ItemsSource="{Binding Admins}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="NickName" Binding="{Binding UserInfo.Nickname}" Width="*"/>
@@ -33,7 +28,7 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Button Content="{Binding ButtonText}" 
-                                    Classes="WindowButton" Padding="10,5"
+                                    Padding="10,5"
                                     Command="{Binding ButtonCommand}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

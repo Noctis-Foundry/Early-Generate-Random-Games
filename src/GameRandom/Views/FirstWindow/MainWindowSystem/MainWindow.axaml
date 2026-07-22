@@ -1,6 +1,5 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:GameRandom.ViewModels.AdminConfirmSystem"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:mainWindowSystem="clr-namespace:GameRandom.ViewModels.MainWindowSystem"
@@ -13,22 +12,22 @@
         MinWidth="1000" MinHeight="500"
         MaxWidth="1000" MaxHeight="500">
         
-        <DockPanel Background="Gray">
-                <Border Classes="TopProfileContainer" MinHeight="40" MaxHeight="40" DockPanel.Dock="Top" CornerRadius="0"
-                        Background="DimGray" x:Name="TopContainer">
-                        <Grid ColumnDefinitions="*, Auto">
+        <DockPanel>
+                <Border Classes="TopContainer" 
+                        DockPanel.Dock="Top" 
+                        x:Name="TopContainer">
+                        <Grid Classes="MainMenuGrid" ColumnDefinitions="*, Auto">
                                 <Menu>
-                                        <MenuItem Header="Lobby System" Command="{Binding LobbyOpenCommand}"></MenuItem>
-                                        <MenuItem Header="Rules" Command="{Binding RulesOpenCommand}"></MenuItem>
-                                        <MenuItem Header="Admin Panel" Command="{Binding AdminOpenCommand}" x:Name="AdminPanel"
-                                                  IsEnabled="{Binding AdminLock.IsAdmin}"></MenuItem>
+                                        <MenuItem Classes="MainMenuItem" Header="Lobby System" />
+                                        <MenuItem Classes="MainMenuItem" Header="Rulesets" />
+                                        <MenuItem Classes="MainMenuItem" Header="Admin Panel" />
                                 </Menu>
-                                <Grid Grid.Column="1" ColumnDefinitions="Auto, Auto" HorizontalAlignment="Center" ColumnSpacing="5"
-                                      VerticalAlignment="Center" Margin="0,0,10, 0" x:Name="LobbyImages">
-                                        <Border ClipToBounds="True" CornerRadius="10" MinHeight="30" MaxHeight="40">
+                                <Grid Classes="LobbyImagesGrid" Background="Transparent"
+                                      Grid.Column="1" 
+                                      x:Name="LobbyImages">
+                                        <Border Classes="AvatarBorder">
                                                 <Image Source="avares://GameRandom/Assets/steamAwatarWithNight.jpg"/>
                                         </Border>
-                                     
                                 </Grid>
                         </Grid>
                 </Border>

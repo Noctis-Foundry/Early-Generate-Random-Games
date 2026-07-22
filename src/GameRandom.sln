@@ -6,8 +6,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessageBox", "MessageBox\Me
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameRandom.IntegrationTests", "..\tests\GameRandom.IntegrationTests\GameRandom.IntegrationTests.csproj", "{CE867913-AF83-4697-87E1-CC78AB84B1BD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameRandom.UnitTests", "GameRandom.UnitTests\GameRandom.UnitTests.csproj", "{C25F5534-38BF-407C-93C9-A88EF94B253C}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamVDFParser", "SteamVDFParser\SteamVDFParser.csproj", "{8A8730D9-1F7B-41BF-9A5E-3D3D2A79E24D}"
 EndProject
 Global
@@ -56,18 +54,6 @@ Global
 		{CE867913-AF83-4697-87E1-CC78AB84B1BD}.Release|x64.Build.0 = Release|Any CPU
 		{CE867913-AF83-4697-87E1-CC78AB84B1BD}.Release|x86.ActiveCfg = Release|Any CPU
 		{CE867913-AF83-4697-87E1-CC78AB84B1BD}.Release|x86.Build.0 = Release|Any CPU
-		{C25F5534-38BF-407C-93C9-A88EF94B253C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C25F5534-38BF-407C-93C9-A88EF94B253C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C25F5534-38BF-407C-93C9-A88EF94B253C}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{C25F5534-38BF-407C-93C9-A88EF94B253C}.Debug|x64.Build.0 = Debug|Any CPU
-		{C25F5534-38BF-407C-93C9-A88EF94B253C}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{C25F5534-38BF-407C-93C9-A88EF94B253C}.Debug|x86.Build.0 = Debug|Any CPU
-		{C25F5534-38BF-407C-93C9-A88EF94B253C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C25F5534-38BF-407C-93C9-A88EF94B253C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C25F5534-38BF-407C-93C9-A88EF94B253C}.Release|x64.ActiveCfg = Release|Any CPU
-		{C25F5534-38BF-407C-93C9-A88EF94B253C}.Release|x64.Build.0 = Release|Any CPU
-		{C25F5534-38BF-407C-93C9-A88EF94B253C}.Release|x86.ActiveCfg = Release|Any CPU
-		{C25F5534-38BF-407C-93C9-A88EF94B253C}.Release|x86.Build.0 = Release|Any CPU
 		{8A8730D9-1F7B-41BF-9A5E-3D3D2A79E24D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8A8730D9-1F7B-41BF-9A5E-3D3D2A79E24D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A8730D9-1F7B-41BF-9A5E-3D3D2A79E24D}.Debug|x64.ActiveCfg = Debug|Any CPU
