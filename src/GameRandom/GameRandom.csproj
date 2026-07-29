@@ -11,11 +11,13 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Folder Include="GlobalStyles\" />
         <Folder Include="Models\" />
         <Folder Include="Scripts\Events\" />
         <Content Include="Assets\Localization\**">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
+        <Folder Include="Styles\" />
         <None Include="Assets\icon.ico" />
         <None Include="Assets\Jsons\temp_apps.json">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
