@@ -9,10 +9,6 @@
         x:DataType="adminRegistrationSystem:AdminRegistrationViewModel"
         Title="AdminRegistrationWindow">
     
-    <Window.Styles>
-        <StyleInclude Source="avares://GameRandom/Styles/AdminPanelStyle.axaml"/>
-    </Window.Styles>
-    
     <DockPanel Classes="WindowContainer">
         <Border Classes="WindowTopContainer" DockPanel.Dock="Top" MinWidth="300">
             <Grid ColumnDefinitions="*, Auto">

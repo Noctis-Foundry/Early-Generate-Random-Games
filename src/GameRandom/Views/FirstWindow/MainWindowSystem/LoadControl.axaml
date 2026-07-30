@@ -4,17 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="GameRandom.Views.MainWindowSystem.LoadControl">
-    
-    <UserControl.Styles>
-        <StyleInclude Source="/GlobalStyles/ContextWindowsStyle.axaml" />
-
-        <Style Selector="ProgressBar.LoadingProgress">
-            <Setter Property="Foreground" Value="#bb9e67" />
-            <Setter Property="Background" Value="{StaticResource TextBlockBackground}" />
-            <Setter Property="Height" Value="20" />
-            <Setter Property="CornerRadius" Value="4" />
-        </Style>
-    </UserControl.Styles>
 
     <DockPanel Classes="WindowContainer">
         <Grid Classes="WindowGrid">

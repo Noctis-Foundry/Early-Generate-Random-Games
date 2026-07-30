@@ -1,0 +1,12 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ConicGradientBrush Angle="0" x:Key="StartSkyBorderBrush">
+        <GradientStop Color="{StaticResource SakuraConicSkyColor}" Offset="0.0"></GradientStop>
+        <GradientStop Color="{StaticResource MagicPurpleColor}" Offset="1.0"></GradientStop>
+    </ConicGradientBrush>
+    
+    <ConicGradientBrush Angle="360" x:Key="EndSkyBorderBrush">
+        <GradientStop Color="{StaticResource SakuraConicSkyColor}" Offset="0.0"></GradientStop>
+        <GradientStop Color="{StaticResource MagicPurpleColor}" Offset="1.0"></GradientStop>
+    </ConicGradientBrush>
+</ResourceDictionary>

@@ -1,0 +1,17 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <LinearGradientBrush x:Key="LightBlueGradient" StartPoint="0%, 0%" EndPoint="100%, 0%">
+        <GradientStop Color="{StaticResource SakuraConicSkyColor}" Offset="0.0"/>
+        <GradientStop Color="LightCyan" Offset="1.0"/>
+    </LinearGradientBrush>
+    
+    <LinearGradientBrush x:Key="SakuraLinearGradient" StartPoint="0%, 0%" EndPoint="100%, 0%">
+        <GradientStop Color="{StaticResource SakuraGradientStartColor}" Offset="0.0"/>
+        <GradientStop Color="{StaticResource SakuraGradientEndColor}" Offset="1.0"/>
+    </LinearGradientBrush>
+    
+    <LinearGradientBrush x:Key="PaperLinearGradient" StartPoint="0%, 0%" EndPoint="100%, 0%">
+        <GradientStop Color="{StaticResource WhitePinkGradientStartColor}" Offset="0.0"/>
+        <GradientStop Color="{StaticResource SakuraGradientStartColor}" Offset="1.0"/>
+    </LinearGradientBrush>
+</ResourceDictionary>

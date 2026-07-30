@@ -16,7 +16,10 @@
             <con:LongToStringConverter x:Key="LongToStringConverter"></con:LongToStringConverter>
             
             <ResourceDictionary.MergedDictionaries>
-                <ResourceInclude Source="avares://GameRandom/Resources/StylesResources.axaml"></ResourceInclude>
+                <ResourceInclude Source="avares://GameRandom/Resources/FontsResources.axaml"></ResourceInclude>
+                <ResourceInclude Source="avares://GameRandom/Resources/Backgrounds.axaml"></ResourceInclude>
+                <ResourceInclude Source="avares://GameRandom/Resources/ColorsResources.axaml"></ResourceInclude>
+                <ResourceInclude Source="avares://GameRandom/Resources/BorderBrushResources.axaml"></ResourceInclude>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
@@ -27,19 +30,11 @@
     
     <Application.Styles>
         <FluentTheme />
-        <StyleInclude Source="avares://GameRandom/GlobalStyles/CheckBoxStyle.axaml"></StyleInclude>
-        <StyleInclude Source="avares://GameRandom/Styles/RulesStyle.axaml"></StyleInclude>
-        <StyleInclude Source="avares://GameRandom/GlobalStyles/MenuItem.axaml"></StyleInclude>
-        <StyleInclude Source="avares://GameRandom/GlobalStyles/TextBlock.axaml"></StyleInclude>
-        <StyleInclude Source="avares://GameRandom/GlobalStyles/ContextWindowsStyle.axaml"></StyleInclude>
-        <StyleInclude Source="avares://GameRandom/GlobalStyles/Button.axaml"></StyleInclude>
-        <StyleInclude Source="avares://GameRandom/Styles/StatisticStyle.axaml"></StyleInclude>
-        <StyleInclude Source="avares://GameRandom/Styles/RollGameStyle.axaml"></StyleInclude>
-       
         <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
-        <StyleInclude Source="avares://GameRandom/Styles/ProfileDataGridStyle.axaml"></StyleInclude>
-        <StyleInclude Source="avares://GameRandom/Styles/LobbyStyle.axaml"></StyleInclude>
-        <StyleInclude Source="avares://GameRandom/Styles/MainWindowStyle.axaml"></StyleInclude>
-        <StyleInclude Source="avares://GameRandom/Styles/ProfileStyle.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/Styles/Components/Button.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/Styles/Components/TextBlockStyle.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/Styles/Components/PanelsBackground.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/Styles/LoadContentStyle.axaml"></StyleInclude>
+        
     </Application.Styles>
 </Application>

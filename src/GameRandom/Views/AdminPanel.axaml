@@ -10,10 +10,6 @@
              MinWidth="1000" MinHeight="460"
              MaxWidth="1000" MaxHeight="460">
     
-    <UserControl.Styles>
-        <StyleInclude Source="/Styles/AdminPanelStyle.axaml"/>
-    </UserControl.Styles>
-    
     <Grid RowDefinitions="Auto, *">
         <Grid.Background>
             <ImageBrush Source="avares://GameRandom/Assets/AppBackground.png" Stretch="Fill"></ImageBrush>

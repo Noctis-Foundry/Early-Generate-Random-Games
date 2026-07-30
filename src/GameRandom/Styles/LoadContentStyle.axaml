@@ -1,0 +1,53 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <!-- Add Controls for Previewer Here -->
+        </Border>
+    </Design.PreviewWith>
+
+    <Style Selector="DockPanel.WindowContainer">
+        <Setter Property="Background" Value="Transparent"/>
+    </Style>
+
+    <Style Selector="Grid.WindowGrid">
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#AA0D1117" Offset="0"/>
+                <GradientStop Color="#CC161B22" Offset="1"/>
+            </LinearGradientBrush>
+        </Setter>
+    </Style>
+
+    <Style Selector="StackPanel.LoadContainer">
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Spacing" Value="15"/>
+    </Style>
+
+    <Style Selector="Border.WindowTextBorder">
+        <Setter Property="Padding" Value="12,6"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                <GradientStop Color="#55A8EFFF" Offset="0"/>
+                <GradientStop Color="#5537E2FF" Offset="1"/>
+            </LinearGradientBrush>
+        </Setter>
+        <Setter Property="BorderBrush" Value="#80D9F7FF"/>
+        <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+
+    <Style Selector="TextBlock.WindowTextBlock">
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+    </Style>
+
+    <Style Selector="ProgressBar.LoadingProgress">
+        <Setter Property="Width" Value="300"/>
+        <Setter Property="Height" Value="8"/>
+        <Setter Property="CornerRadius" Value="4"/>
+    </Style>
+</Styles>
