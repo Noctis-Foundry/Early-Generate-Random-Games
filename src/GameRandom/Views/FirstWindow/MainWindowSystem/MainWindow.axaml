@@ -13,28 +13,32 @@
         MinWidth="1000" MinHeight="500"
         MaxWidth="1000" MaxHeight="500">
         
-        <DockPanel Background="Gray">
-                <Border Classes="TopProfileContainer" MinHeight="40" MaxHeight="40" DockPanel.Dock="Top" CornerRadius="0"
-                        Background="DimGray" x:Name="TopContainer">
-                        <Grid ColumnDefinitions="*, Auto">
-                                <Menu>
-                                        <MenuItem Header="Lobby System" Command="{Binding LobbyOpenCommand}"></MenuItem>
-                                        <MenuItem Header="Rules" Command="{Binding RulesOpenCommand}"></MenuItem>
-                                        <MenuItem Header="Admin Panel" Command="{Binding AdminOpenCommand}" x:Name="AdminPanel"
-                                                  IsEnabled="{Binding AdminLock.IsAdmin}"></MenuItem>
-                                </Menu>
-                                <Grid Grid.Column="1" ColumnDefinitions="Auto, Auto" HorizontalAlignment="Center" ColumnSpacing="5"
-                                      VerticalAlignment="Center" Margin="0,0,10, 0" x:Name="LobbyImages">
-                                        <Border ClipToBounds="True" CornerRadius="10" MinHeight="30" MaxHeight="40">
-                                                <Image Source="avares://GameRandom/Assets/steamAwatarWithNight.jpg"/>
+        <DockPanel>
+                <Border Classes="MenuOutlineBorder" x:Name="TopContainer" DockPanel.Dock="Top">
+                        <Grid ColumnDefinitions="Auto, *" Classes="MenuGrid">
+                                <Grid ColumnDefinitions="*, *, *" Classes="ButtonGrid">
+                                        <Button Classes="MenuButton" 
+                                                Theme="{StaticResource DefaultButton}"
+                                                Command="{Binding LobbyOpenCommand}">Lobby</Button>
+                                        <Button Grid.Column="1" Classes="MenuButton" 
+                                                Theme="{StaticResource DefaultButton}"
+                                                Command="{Binding RulesOpenCommand}">Rules</Button>
+                                        <Button Grid.Column="2" Classes="MenuButton"
+                                                Theme="{StaticResource DefaultButton}"
+                                                Command="{Binding AdminOpenCommand}">Admin</Button>
+                                </Grid>
+                                <Grid Grid.Column="1" Classes="MenuAvatarGrid" ColumnDefinitions="*" x:Name="LobbyImages">
+                                        <Border Classes="MenuAvatarBorder">
+                                                <Image Classes="MenuAvatar" Source="avares://GameRandom/Assets/steamAwatarWithNight.jpg"/>
                                         </Border>
-                                     
                                 </Grid>
                         </Grid>
                 </Border>
-                       
                 
-                <ContentControl x:Name="ControlMain" Content="{Binding UserControlNavigate.ControlContent^}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"></ContentControl>
+                <ContentControl x:Name="ControlMain" Content="{Binding UserControlNavigate.ControlContent^}" 
+                                HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                MinWidth="1000" MinHeight="430"
+                                ></ContentControl>
         </DockPanel>
         
        

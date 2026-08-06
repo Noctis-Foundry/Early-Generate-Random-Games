@@ -36,7 +36,6 @@ public class SteamWebApi : ISteamWebService
             ApiKey = value;
         }
         
-        
         if (string.IsNullOrEmpty(ApiKey))
         {
             throw new ArgumentException("Failed load steam web api. Check ethernet connection");

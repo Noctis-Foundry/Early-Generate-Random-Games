@@ -2,4 +2,5 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <FontFamily x:Key="Rye-Font">avares://GameRandom/Assets/Fonts/Rye-Regular.ttf #Rye Regular</FontFamily>
     <FontFamily x:Key="Anime Ace">avares://GameRandom/Assets/Fonts/AnimeAce.ttf #Anime Ace v05</FontFamily>
+    <FontFamily x:Key="Mplus Font">avares://GameRandom/Assets/Fonts/MPLUS1-VariableFont_wght.ttf #M PLUS 1</FontFamily>
 </ResourceDictionary>

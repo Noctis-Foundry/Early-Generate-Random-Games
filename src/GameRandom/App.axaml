@@ -20,6 +20,7 @@
                 <ResourceInclude Source="avares://GameRandom/Resources/Backgrounds.axaml"></ResourceInclude>
                 <ResourceInclude Source="avares://GameRandom/Resources/ColorsResources.axaml"></ResourceInclude>
                 <ResourceInclude Source="avares://GameRandom/Resources/BorderBrushResources.axaml"></ResourceInclude>
+                <ResourceInclude Source="avares://GameRandom/Resources/Themes/ButtonTheme.axaml"></ResourceInclude>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
@@ -34,7 +35,8 @@
         <StyleInclude Source="avares://GameRandom/Styles/Components/Button.axaml"></StyleInclude>
         <StyleInclude Source="avares://GameRandom/Styles/Components/TextBlockStyle.axaml"></StyleInclude>
         <StyleInclude Source="avares://GameRandom/Styles/Components/PanelsBackground.axaml"></StyleInclude>
-        <StyleInclude Source="avares://GameRandom/Styles/LoadContentStyle.axaml"></StyleInclude>
         
+        <StyleInclude Source="avares://GameRandom/Styles/LoadContentStyle.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/Styles/MainMenuStyle.axaml"></StyleInclude>
     </Application.Styles>
 </Application>

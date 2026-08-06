@@ -1,0 +1,77 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <Border Classes="MenuOutlineBorder" x:Name="TopContainer">
+                <Grid ColumnDefinitions="Auto, Auto" Classes="MenuGrid">
+                    <Grid ColumnDefinitions="*, *, *" Classes="ButtonGrid">
+                        <Button Classes="MenuButton" Theme="{StaticResource DefaultButton}">Lobby</Button>
+                        <Button Grid.Column="1" Classes="MenuButton" Theme="{StaticResource DefaultButton}">Rules</Button>
+                        <Button Grid.Column="2" Classes="MenuButton" Theme="{StaticResource DefaultButton}">Admin</Button>
+                    </Grid>
+                    <Grid Grid.Column="1" Classes="MenuAvatarGrid" ColumnDefinitions="*" x:Name="LobbyImages">
+                        <Border Classes="MenuAvatarBorder">
+                            <Image Classes="MenuAvatar" Source="avares://GameRandom/Assets/steamAwatarWithNight.jpg"/>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Border>
+    </Design.PreviewWith>
+
+    <!-- Menu border style -->
+    <Style Selector="Border.MenuOutlineBorder">
+        <Setter Property="Padding" Value="6"></Setter>
+        <Setter Property="Background" Value="Transparent"/>
+        
+        <!-- Border settings -->
+        <Setter Property="BorderBrush" Value="{StaticResource MangaLineColor}"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="CornerRadius" Value="0"></Setter>
+    </Style>
+
+    <!-- Menu grid style -->
+    <Style Selector="Grid.MenuGrid">
+        <Setter Property="Background" Value="Transparent"></Setter>
+        <Setter Property="ColumnSpacing" Value="20"></Setter>
+    </Style>
+    
+    <Style Selector="Grid.MenuAvatarGrid">
+        <Setter Property="Background" Value="Transparent"></Setter>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+        
+        <Setter Property="ColumnSpacing" Value="5"></Setter>
+    </Style>
+    
+    <Style Selector="Grid.ButtonGrid">
+        <Setter Property="Background" Value="Transparent"></Setter>
+        <Setter Property="ColumnSpacing" Value="10"></Setter>
+    </Style>
+    
+    <!-- Button style -->
+    <Style Selector="Button.MenuButton">
+        <Setter Property="MinWidth" Value="100"/>
+        
+        <Style Selector="^ TextBlock">
+            <Setter Property="MinWidth" Value="70"></Setter>
+            
+            <Setter Property="FontSize" Value="16"/>
+            
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+    </Style>
+    
+    <!-- Avatar border style -->
+    <Style Selector="Border.MenuAvatarBorder">
+        <Setter Property="MaxWidth" Value="40"></Setter>
+        <Setter Property="MaxHeight" Value="40"></Setter>
+        <Setter Property="BorderBrush" Value="{StaticResource NeonPurpleColor}"/>
+        <Setter Property="BorderThickness" Value="2"></Setter>
+    </Style>
+
+    <!-- Avatar image style -->
+    <Style Selector="Image.MenuAvatar">
+        <Setter Property="Stretch" Value="UniformToFill"></Setter>
+    </Style>
+</Styles>

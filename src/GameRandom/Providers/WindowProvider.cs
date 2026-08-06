@@ -11,7 +11,7 @@ public class WindowProvider(Window mainWindow) : DiProvider
     {
         var errorService = new ErrorService(mainWindow);
         
-        DiContainer.BindInstance<IErrorService>().ToInstance(new ErrorService(mainWindow));
+        DiContainer.BindInstance<IErrorService>().ToInstance(errorService);
         DiContainer.BindSingleton(typeof(ErrorService), errorService);
        
         DiContainer.BindSingleton(typeof(TaskWaiterWindow), new TaskWaiterWindow(mainWindow));

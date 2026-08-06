@@ -2,18 +2,27 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:GameRandom.ViewModels"
+             x:DataType="vm:LoadViewModel"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             
              x:Class="GameRandom.Views.MainWindowSystem.LoadControl">
 
-    <DockPanel Classes="WindowContainer">
-        <Grid Classes="WindowGrid">
-            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="15">
-                <Border Classes="WindowTextBorder">
-                    <TextBlock Classes="WindowTextBlock" Text="Please wait" FontSize="14" />
-                </Border>
+    <DockPanel>
+        <Grid RowDefinitions="Auto, Auto" RowSpacing="15"
+              Background="Transparent" HorizontalAlignment="Center"
+              VerticalAlignment="Center">
+            <Border Classes="WindowTextBorder">
+                <TextBlock Classes="WindowTextBlock" Text="{Binding Message, 
+                FallbackValue=Loading...}" />
+            </Border>
 
-                <ProgressBar Classes="LoadingProgress" IsIndeterminate="True" x:Name="WaitBar" Width="300" />
-            </StackPanel>
+            <ProgressBar Classes="LoadingProgress"
+                         IsIndeterminate="False"
+                         Value="{Binding Progress}"
+                         Minimum="0" Maximum="100"
+                         x:Name="WaitBar" Grid.Row="1" >
+            </ProgressBar>
         </Grid>
     </DockPanel>
 </UserControl>

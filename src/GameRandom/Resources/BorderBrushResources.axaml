@@ -9,4 +9,9 @@
         <GradientStop Color="{StaticResource SakuraConicSkyColor}" Offset="0.0"></GradientStop>
         <GradientStop Color="{StaticResource MagicPurpleColor}" Offset="1.0"></GradientStop>
     </ConicGradientBrush>
+    
+    <ConicGradientBrush Angle="0" x:Key="DefaultButtonBrush">
+        <GradientStop Color="{StaticResource MangaLineColor}" Offset="0.0"></GradientStop>
+        <GradientStop Color="{StaticResource MagicPurpleColor}" Offset="1.0"></GradientStop>
+    </ConicGradientBrush>
 </ResourceDictionary>

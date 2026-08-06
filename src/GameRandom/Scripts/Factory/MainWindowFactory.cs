@@ -45,16 +45,13 @@ public class MainWindowFactory : DependenceBase
     {
         var image = new Image
         {
-            Source = AvaloniaService.Instance.CreateBitmapFromPath("Assets/avalonia-logo.ico")
+            Source = AvaloniaService.Instance.CreateBitmapFromPath("Assets/avalonia-logo.ico"),
+            Classes = { "MenuAvatar" }
         };
 
         var border = new Border
         {
-            Height = 30,
-            MinHeight = 30,
-            MaxHeight = 40,
-            ClipToBounds = true,
-            CornerRadius = new CornerRadius(10),
+            Classes = { "MenuAvatarBorder" },
             Child = image
         };
 

@@ -14,4 +14,14 @@
         <GradientStop Color="{StaticResource WhitePinkGradientStartColor}" Offset="0.0"/>
         <GradientStop Color="{StaticResource SakuraGradientStartColor}" Offset="1.0"/>
     </LinearGradientBrush>
+    
+    <LinearGradientBrush x:Key="PaperLinearGradientRevers" StartPoint="100%, 0%" EndPoint="0%, 0%">
+        <GradientStop Color="LightGray" Offset="0.0"/>
+        <GradientStop Color="{StaticResource SakuraGradientStartColor}" Offset="1.0"/>
+    </LinearGradientBrush>
+    
+    <LinearGradientBrush x:Key="SkyLinearGradient" StartPoint="0%, 0%" EndPoint="100%, 0%">
+        <GradientStop Color="{StaticResource SkyGradientStartColor}" Offset="0.0"/>
+        <GradientStop Color="{StaticResource SkyGradientEndColor}" Offset="1.0"/>
+    </LinearGradientBrush>
 </ResourceDictionary>

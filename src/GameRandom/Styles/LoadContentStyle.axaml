@@ -2,52 +2,52 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Design.PreviewWith>
         <Border Padding="20">
-            <!-- Add Controls for Previewer Here -->
+            <StackPanel>
+                <Grid RowDefinitions="Auto, Auto" RowSpacing="10">
+                    <Border Classes="WindowTextBorder">
+                        <TextBlock Classes="WindowTextBlock" Text="Loading..." />
+                    </Border>
+
+                    <ProgressBar Classes="LoadingProgress" x:Name="WaitBar"
+                                 Grid.Row="1"/>
+                </Grid>
+            </StackPanel>
         </Border>
     </Design.PreviewWith>
-
-    <Style Selector="DockPanel.WindowContainer">
-        <Setter Property="Background" Value="Transparent"/>
-    </Style>
-
-    <Style Selector="Grid.WindowGrid">
-        <Setter Property="Background">
-            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="#AA0D1117" Offset="0"/>
-                <GradientStop Color="#CC161B22" Offset="1"/>
-            </LinearGradientBrush>
-        </Setter>
-    </Style>
-
-    <Style Selector="StackPanel.LoadContainer">
-        <Setter Property="HorizontalAlignment" Value="Center"/>
-        <Setter Property="VerticalAlignment" Value="Center"/>
-        <Setter Property="Spacing" Value="15"/>
-    </Style>
 
     <Style Selector="Border.WindowTextBorder">
         <Setter Property="Padding" Value="12,6"/>
         <Setter Property="CornerRadius" Value="8"/>
-        <Setter Property="Background">
-            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                <GradientStop Color="#55A8EFFF" Offset="0"/>
-                <GradientStop Color="#5537E2FF" Offset="1"/>
-            </LinearGradientBrush>
-        </Setter>
-        <Setter Property="BorderBrush" Value="#80D9F7FF"/>
-        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Background" Value="Transparent"></Setter>
+        <Setter Property="BorderBrush" Value="{StaticResource MangaLineColor}"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="MinWidth" Value="300"></Setter>
     </Style>
 
     <Style Selector="TextBlock.WindowTextBlock">
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="FontWeight" Value="SemiBold"/>
-        <Setter Property="FontSize" Value="14"/>
+        <!-- Font Setting -->
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="FontSize" Value="16"/>
+        
         <Setter Property="HorizontalAlignment" Value="Center"/>
     </Style>
 
     <Style Selector="ProgressBar.LoadingProgress">
-        <Setter Property="Width" Value="300"/>
-        <Setter Property="Height" Value="8"/>
+        <!-- Width/Height Settings-->
+        <Setter Property="MinWidth" Value="200"/>
+        <Setter Property="MaxWidth" Value="250"/>
+        <Setter Property="Height" Value="15"/> 
+        
+        <!-- Border Properties -->
         <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="BorderBrush" Value="{StaticResource MangaLineColor}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        
+        <!-- Color Settings -->
+        <Setter Property="Background" Value="{StaticResource PaperLinearGradientRevers}"/>
+        <Setter Property="Foreground" Value="Black"/>
+        
+        <!-- Progress bar properties -->
+        <Setter Property="IsIndeterminate" Value="True"></Setter>
     </Style>
 </Styles>
