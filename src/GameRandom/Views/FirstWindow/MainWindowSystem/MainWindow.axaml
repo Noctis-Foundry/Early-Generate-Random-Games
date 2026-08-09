@@ -14,7 +14,7 @@
         MaxWidth="1000" MaxHeight="500">
         
         <DockPanel>
-                <Border Classes="MenuOutlineBorder" x:Name="TopContainer" DockPanel.Dock="Top">
+                <Border Classes="MenuOutlineBorder" x:Name="TopContainer" DockPanel.Dock="Top" Width="1000">
                         <Grid ColumnDefinitions="Auto, *" Classes="MenuGrid">
                                 <Grid ColumnDefinitions="*, *, *" Classes="ButtonGrid">
                                         <Button Classes="MenuButton" 

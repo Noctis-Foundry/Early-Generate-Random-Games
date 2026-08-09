@@ -38,5 +38,6 @@
         
         <StyleInclude Source="avares://GameRandom/Styles/LoadContentStyle.axaml"></StyleInclude>
         <StyleInclude Source="avares://GameRandom/Styles/MainMenuStyle.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/Styles/MainControlStyle.axaml"></StyleInclude>
     </Application.Styles>
 </Application>

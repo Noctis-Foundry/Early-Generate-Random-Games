@@ -14,4 +14,18 @@
         <GradientStop Color="{StaticResource MangaLineColor}" Offset="0.0"></GradientStop>
         <GradientStop Color="{StaticResource MagicPurpleColor}" Offset="1.0"></GradientStop>
     </ConicGradientBrush>
+    
+    <ConicGradientBrush Angle="0" x:Key="StartNeonButtonBrush">
+        <GradientStop Offset="0.0" Color="{StaticResource NeonPurpleColor}"></GradientStop>
+        <GradientStop Offset="0.33" Color="{StaticResource NeonBlueColor}"></GradientStop>
+        <GradientStop Offset="0.66" Color="{StaticResource SakuraConicPinkColor}"></GradientStop>
+        <GradientStop Offset="1.0" Color="{StaticResource MagicPurpleColor}"></GradientStop>
+    </ConicGradientBrush>
+    
+    <ConicGradientBrush Angle="360" x:Key="EndNeonButtonBrush">
+        <GradientStop Offset="0.0" Color="{StaticResource NeonPurpleColor}"></GradientStop>
+        <GradientStop Offset="0.33" Color="{StaticResource NeonBlueColor}"></GradientStop>
+        <GradientStop Offset="0.66" Color="{StaticResource SakuraConicPinkColor}"></GradientStop>
+        <GradientStop Offset="1.0" Color="{StaticResource MagicPurpleColor}"></GradientStop>
+    </ConicGradientBrush>
 </ResourceDictionary>

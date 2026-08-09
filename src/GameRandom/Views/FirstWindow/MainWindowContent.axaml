@@ -6,30 +6,17 @@
              MaxWidth="1920" MaxHeight="1080"
              x:Class="GameRandom.Views.MainWindowContent">
     
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-        </Grid.ColumnDefinitions>
-        <Grid.Background>
-            #778899
-        </Grid.Background>
-        
-        <Button Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top"
-                Classes="MainWindowButtons" Click="GoToTable">
-            <Image Source="avares://GameRandom/Assets/LeftUpClick.png" Stretch="UniformToFill"></Image>
-        </Button>
-        <Button Grid.Column="0" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom"
-                Background="Transparent" Padding="0" Classes="MainWindowButtons" Click="GoToProfile">
-            <Image Source="avares://GameRandom/Assets/LeftDownClick.png" Stretch="UniformToFill"></Image>
-        </Button>
-        <Button Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top"
-                Background="Transparent" Padding="0" Classes="MainWindowButtons" Click="GoToRollContent">
-            <Image Source="avares://GameRandom/Assets/RightClick.png" Stretch="UniformToFill"></Image>
-        </Button>
-    </Grid>
+    <StackPanel Width="1000" Height="430">
+        <Grid Classes="MainGrid" ColumnDefinitions="Auto, Auto" RowDefinitions="Auto, Auto">
+            <Button Classes="MainButton" Grid.Column="0" Grid.Row="0" Height="215">
+                <Image Classes="MainImage" Source="avares://GameRandom/Assets/LeftUpClick.png"></Image>
+            </Button>
+            <Button Classes="MainButton" Height="215" Grid.Column="0" Grid.Row="1">
+                <Image Classes="MainImage" Source="avares://GameRandom/Assets/LeftDownClick.png"></Image>
+            </Button>
+            <Button Classes="MainButton" Height="430" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2">
+                <Image Classes="MainImage" Source="avares://GameRandom/Assets/RightClick.png"></Image>
+            </Button>
+        </Grid>
+    </StackPanel>
 </UserControl>
