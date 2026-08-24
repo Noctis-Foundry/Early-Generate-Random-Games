@@ -12,8 +12,6 @@ using GameRandom.DISystem.DiSystem;
 using GameRandom.Providers;
 using GameRandom.Scripts.Service;
 using GameRandom.ViewModels.MainWindowSystem.Interface;
-using GameRandom.Views;
-using GameRandom.Views.MainWindowSystem;
 using MainWindow = GameRandom.Views.MainWindowSystem.MainWindow;
 
 namespace GameRandom;

@@ -7,15 +7,16 @@
         MinHeight="250" MaxHeight="250"
         Title="Error">
     
-    <DockPanel Classes="WindowContainer">
-        <Grid Classes="WindowGrid" RowDefinitions="*, Auto">
+    <DockPanel>
+        <Grid RowDefinitions="*, Auto">
             
             <Border Grid.Row="0" Classes="WindowTextBorder" MinWidth="400" MaxWidth="400" MinHeight="60" MaxHeight="80">
-                <SelectableTextBlock x:Name="ErrorLabel" Text="fdsaaaaaaadsaffffffffffffdsfaaaaaaa" Classes="WindowTextBlock"/>
+                <SelectableTextBlock x:Name="ErrorLabel" Foreground="Black" Text="Hello" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                    FontFamily="{StaticResource 'Anime Ace'}" Classes="WindowTextBlock"/>
             </Border>
             
             <Button Grid.Row="1" Click="MessageBoxButtonAction" x:Name="ErrorButton" 
-                    Content="Ok" Classes="WindowButton" HorizontalAlignment="Center"/>
+                    Content="Ok" HorizontalAlignment="Center"/>
         </Grid>
         
     </DockPanel>

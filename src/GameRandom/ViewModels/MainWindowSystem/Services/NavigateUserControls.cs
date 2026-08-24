@@ -10,7 +10,10 @@ using GameRandom.Scripts.UserControls;
 using GameRandom.ViewModels.MainWindowSystem.Enums;
 using GameRandom.ViewModels.MainWindowSystem.Interface;
 using GameRandom.Views;
-using GameRandom.Views.MainWindowSystem;
+using GameTable = GameRandom.Views.GameTable;
+using LoadControl = GameRandom.Views.MainWindowSystem.LoadControl;
+using ProfileContent = GameRandom.Views.ProfileContent;
+using RollGame = GameRandom.Views.RollGame;
 
 namespace GameRandom.ViewModels.MainWindowSystem.Services;
 

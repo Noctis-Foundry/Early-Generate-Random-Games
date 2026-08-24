@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using System.Threading.Tasks;
 using Avalonia.Threading;
 using GameRandom.DISystem;
 using GameRandom.DISystem.DiSystem;
 using GameRandom.Scripts.RollGameSystem;
-using GameRandom.Scripts.RollGameSystem.GenerateGames;
 using GameRandom.Scripts.UserControls;
-using GameRandom.ViewModels.AdminConfirmSystem;
 using GameRandom.Scripts.WindowServices.ErrorServiceSystem;
 using GameRandom.ViewModels.MainWindowSystem.Enums;
 using GameRandom.ViewModels.RollGameViewModel;
@@ -68,7 +66,7 @@ public sealed partial class RollGame : MainWindowUserControlAbstract<RollGameVie
             {
                 var text = CountApp.Text;
 
-                if (int.TryParse(text, out var count))
+                if (int.TryParse((string?)text, out var count))
                 {
                     if (count >  maxCountGames)
                         CountApp.Text = maxCountGames.ToString();
@@ -107,7 +105,7 @@ public sealed partial class RollGame : MainWindowUserControlAbstract<RollGameVie
         if (DataContext is not RollGameViewModel viewModel) 
             throw new NullReferenceException(nameof(DataContext));
         
-        int countGames = int.TryParse(CountApp.Text, out int count) ? count : DefaultCountApp;
+        int countGames = int.TryParse((string?)CountApp.Text, out int count) ? count : DefaultCountApp;
 
         GamesGrid.Children.Clear();
         _rollGameFactory.CreateLoadGif(GamesGrid);

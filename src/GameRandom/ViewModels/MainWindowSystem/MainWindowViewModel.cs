@@ -1,17 +1,11 @@
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using Autofac.Core;
-using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using GameRandom.Scripts.UserData;
-using GameRandom.ViewModels.AdminConfirmSystem;
 using GameRandom.ViewModels.BaseClasses;
 using GameRandom.ViewModels.MainWindowSystem.Enums;
 using GameRandom.ViewModels.MainWindowSystem.Interface;
 using GameRandom.ViewModels.MainWindowSystem.Services;
-using GameRandom.Views.MainWindowSystem;
 
 namespace GameRandom.ViewModels.MainWindowSystem;
 

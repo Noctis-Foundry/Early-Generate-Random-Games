@@ -1,10 +1,8 @@
 using System;
-using Avalonia;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
-using GameRandom.ViewModels.AdminConfirmSystem;
 using GameRandom.ViewModels.StatisticSystem;
 
 namespace GameRandom.Views;
@@ -26,7 +24,7 @@ public partial class StatisticControl : UserControl, IDisposable
     {
         if (DataContext is not StatisticViewModel statisticViewModel) return;
 
-        Dispatcher.UIThread.InvokeAsync(async () =>
+        Dispatcher.UIThread.InvokeAsync((Func<Task>)(async () =>
         {
             await statisticViewModel.LoadStatisticAsync();
 
@@ -36,7 +34,7 @@ public partial class StatisticControl : UserControl, IDisposable
             {
                 FactoryNewCard(cardInfo);
             }
-        });
+        }));
     }
 
     private void FactoryNewCard(StatisticCardInfo cardInfo)

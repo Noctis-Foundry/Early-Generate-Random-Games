@@ -1,20 +1,41 @@
 <Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:GameRandom.Views">
     <Design.PreviewWith>
-        <Border Padding="20" Background="Transparent">
-            <StackPanel Width="1000" Height="430">
-                <Grid Classes="MainGrid" ColumnDefinitions="Auto, Auto" RowDefinitions="Auto, Auto">
-                    <Button Classes="MainButton" Grid.Column="0" Grid.Row="0" Height="215">
-                        <Image Classes="MainImage" Source="avares://GameRandom/Assets/LeftUpClick.png"></Image>
-                    </Button>
-                    <Button Classes="MainButton" Height="215" Grid.Column="0" Grid.Row="1">
-                        <Image Classes="MainImage" Source="avares://GameRandom/Assets/LeftDownClick.png"></Image>
-                    </Button>
-                    <Button Classes="MainButton" Height="430" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2">
-                        <Image Classes="MainImage" Source="avares://GameRandom/Assets/RightClick.png"></Image>
-                    </Button>
-                </Grid>
-            </StackPanel>
+        <Border Width="1000" Height="500">
+            <DockPanel>
+                <Border Classes="MenuOutlineBorder" x:Name="TopContainer" DockPanel.Dock="Top" Width="990" Margin="0,2,0,0">
+                    <Grid ColumnDefinitions="Auto, *" Classes="MenuGrid">
+                        <Grid ColumnDefinitions="*, *, *" Classes="ButtonGrid">
+                            <Button Classes="MenuButton" 
+                                    Theme="{StaticResource DefaultButton}">Lobby</Button>
+                            <Button Grid.Column="1" Classes="MenuButton" 
+                                    Theme="{StaticResource DefaultButton}">Rules</Button>
+                            <Button Grid.Column="2" Classes="MenuButton"
+                                    Theme="{StaticResource DefaultButton}">Admin</Button>
+                        </Grid>
+                        <Grid Grid.Column="1" Classes="MenuAvatarGrid" ColumnDefinitions="*" x:Name="LobbyImages">
+                            <Border Classes="MenuAvatarBorder">
+                                <Image Classes="MenuAvatar" Source="avares://GameRandom/Assets/steamAwatarWithNight.jpg"/>
+                            </Border>
+                        </Grid>
+                    </Grid>
+                </Border>
+                
+                <StackPanel Width="1000" Height="430">
+                    <Grid Classes="MainGrid" ColumnDefinitions="Auto, Auto" RowDefinitions="Auto, Auto">
+                        <Button Classes="MainButton" Grid.Column="0" Grid.Row="0" Height="215">
+                            <Image Classes="MainImageTopLeft" Source="avares://GameRandom/Assets/LeftUpClick.png"></Image>
+                        </Button>
+                        <Button Classes="MainButton" Height="215" Grid.Column="0" Grid.Row="1">
+                            <Image Classes="MainImageBottomLeft" Source="avares://GameRandom/Assets/LeftDownClick.png"></Image>
+                        </Button>
+                        <Button Classes="MainButton" Height="430" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2">
+                            <Image Classes="MainImageRight" Source="avares://GameRandom/Assets/RightClick.png"></Image>
+                        </Button>
+                    </Grid>
+                </StackPanel>
+            </DockPanel>
         </Border>
     </Design.PreviewWith>
 
@@ -58,11 +79,48 @@
                 </KeyFrame>
             </Animation>
         </Style.Animations>
-
     </Style>
 
-    <Style Selector="Image.MainImage">
-        <Setter Property="Stretch" Value="UniformToFill"></Setter>
+    <Style Selector="Image.MainImageTopLeft">
+        <Setter Property="Stretch" Value="UniformToFill" />
+        <Setter Property="OpacityMask">
+            <Setter.Value>
+                <RadialGradientBrush Center="50%, 50%" GradientOrigin="50%, 50%"
+                                     RadiusX="70%" RadiusY="60%">
+                    <GradientStop Color="{StaticResource PaperWhiteColor}" Offset="0.0"></GradientStop>
+                    <GradientStop Color="{StaticResource PaperWhiteColor}" Offset="0.6"></GradientStop>
+                    <GradientStop Color="Transparent" Offset="0.85"></GradientStop>
+                </RadialGradientBrush>
+            </Setter.Value>
+        </Setter>
     </Style>
 
+    <Style Selector="Image.MainImageBottomLeft">
+        <Setter Property="Stretch" Value="UniformToFill" />
+        <Setter Property="OpacityMask">
+            <Setter.Value>
+                <RadialGradientBrush Center="50%, 50%" GradientOrigin="50%, 50%"
+                                     RadiusX="60%" RadiusY="70%">
+                    <GradientStop Color="{StaticResource PaperWhiteColor}" Offset="0.0"></GradientStop>
+                    <GradientStop Color="{StaticResource PaperWhiteColor}" Offset="0.7"></GradientStop>
+                    <GradientStop Color="Transparent" Offset="1"></GradientStop>
+                </RadialGradientBrush>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style Selector="Image.MainImageRight">
+        <Setter Property="Stretch" Value="UniformToFill" />
+        <Setter Property="OpacityMask">
+            <Setter.Value>
+                <RadialGradientBrush Center="50%, 50%" GradientOrigin="50%, 50%"
+                                     RadiusX="70%" RadiusY="60%">
+                    <GradientStop Color="{StaticResource PaperWhiteColor}" Offset="0.0"></GradientStop>
+                    <GradientStop Color="{StaticResource PaperWhiteColor}" Offset="0.6"></GradientStop>
+                    <GradientStop Color="Transparent" Offset="0.85"></GradientStop>
+                </RadialGradientBrush>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
 </Styles>

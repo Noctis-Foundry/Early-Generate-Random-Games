@@ -1,12 +1,9 @@
 ﻿using System;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Threading;
 using GameRandom.Scripts.UserControls;
 using GameRandom.ViewModels;
-using GameRandom.ViewModels.AdminConfirmSystem;
 using GameRandom.ViewModels.MainWindowSystem.Enums;
-using Steamworks;
 
 namespace GameRandom.Views;
 
