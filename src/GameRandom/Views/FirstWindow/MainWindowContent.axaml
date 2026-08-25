@@ -9,13 +9,13 @@
     <StackPanel Width="1000" Height="430">
         <Grid Classes="MainGrid" ColumnDefinitions="Auto, Auto" RowDefinitions="Auto, Auto">
             <Button Classes="MainButton" Grid.Column="0" Grid.Row="0" Height="215">
-                <Image Classes="MainImageTopLeft" Source="avares://GameRandom/Assets/LeftUpClick.png"></Image>
+                <Image Classes="MainImage" Source="avares://GameRandom/Assets/LeftUpClick.png"></Image>
             </Button>
             <Button Classes="MainButton" Height="215" Grid.Column="0" Grid.Row="1">
-                <Image Classes="MainImageBottomLeft" Source="avares://GameRandom/Assets/LeftDownClick.png"></Image>
+                <Image Classes="MainImage" Source="avares://GameRandom/Assets/LeftDownClick.png"></Image>
             </Button>
             <Button Classes="MainButton" Height="430" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2">
-                <Image Classes="MainImageRight" Source="avares://GameRandom/Assets/RightClick.png"></Image>
+                <Image Classes="MainImage" Source="avares://GameRandom/Assets/RightClick.png"></Image>
             </Button>
         </Grid>
     </StackPanel>
