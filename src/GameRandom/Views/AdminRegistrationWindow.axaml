@@ -9,7 +9,7 @@
         x:DataType="adminRegistrationSystem:AdminRegistrationViewModel"
         Title="AdminRegistrationWindow">
     
-    <DockPanel Classes="WindowContainer">
+    <DockPanel Classes="WindowContainer AdminRegistrationWindowRoot">
         <Border Classes="WindowTopContainer" DockPanel.Dock="Top" MinWidth="300">
             <Grid ColumnDefinitions="*, Auto">
                 <TextBlock Classes="WindowTextBlock" Text="Admin Panel" FontSize="16"/>

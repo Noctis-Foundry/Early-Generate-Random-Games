@@ -3,20 +3,22 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
-             MaxWidth="1920" MaxHeight="1080"
-             x:Class="GameRandom.Views.MainWindowContent">
+             MinHeight="460"
+             x:Class="GameRandom.Views.MainWindowContent"
+             xmlns:vm="using:GameRandom.ViewModels.MainWindowSystem"
+             x:DataType="vm:MainWindowViewModel">
     
-    <StackPanel Width="1000" Height="430">
-        <Grid Classes="MainGrid" ColumnDefinitions="Auto, Auto" RowDefinitions="Auto, Auto">
-            <Button Classes="MainButton" Grid.Column="0" Grid.Row="0" Height="215">
+    <Grid Background="{StaticResource PaperLinearGradient}">
+        <Grid Classes="MainGrid" ColumnDefinitions="*, *" RowDefinitions="*, *">
+            <Button Classes="MainButton" Grid.Column="0" Grid.Row="0" Click="GoToTable">
                 <Image Classes="MainImage" Source="avares://GameRandom/Assets/LeftUpClick.png"></Image>
             </Button>
-            <Button Classes="MainButton" Height="215" Grid.Column="0" Grid.Row="1">
+            <Button Classes="MainButton" Grid.Column="0" Grid.Row="1" Click="GoToProfile">
                 <Image Classes="MainImage" Source="avares://GameRandom/Assets/LeftDownClick.png"></Image>
             </Button>
-            <Button Classes="MainButton" Height="430" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2">
+            <Button Classes="MainButton" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Click="GoToRollContent">
                 <Image Classes="MainImage" Source="avares://GameRandom/Assets/RightClick.png"></Image>
             </Button>
         </Grid>
-    </StackPanel>
+    </Grid>
 </UserControl>

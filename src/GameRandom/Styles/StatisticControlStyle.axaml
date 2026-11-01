@@ -1,0 +1,40 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style Selector="Border.StatisticContainer">
+        <Setter Property="BorderBrush" Value="{StaticResource MangaLineColor}" />
+        <Setter Property="BorderThickness" Value="2" />
+    </Style>
+
+    <Style Selector="Border.StatisticContainer Border.StatisticHeader">
+        <Setter Property="Background" Value="{StaticResource WhitePinkGradientStartColor}" />
+        <Setter Property="BorderBrush" Value="{StaticResource MangaLineColor}" />
+        <Setter Property="BorderThickness" Value="2" />
+    </Style>
+
+    <Style Selector="Border.StatisticContainer TextBlock.StatisticHeaderText">
+        <Setter Property="Foreground" Value="{StaticResource InkBlackColor}" />
+        <Setter Property="FontFamily" Value="{StaticResource 'Anime Ace'}" />
+    </Style>
+
+    <Style Selector="Border.StatisticContainer Grid.CardContainer">
+        <Setter Property="RowSpacing" Value="8" />
+        <Setter Property="ColumnSpacing" Value="8" />
+    </Style>
+
+    <Style Selector="Border.StatisticContainer Border.StatisticPropertyBorder">
+        <Setter Property="Background" Value="{StaticResource WhitePinkGradientStartColor}" />
+        <Setter Property="BorderBrush" Value="{StaticResource MangaLineColor}" />
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="Padding" Value="10" />
+    </Style>
+
+    <Style Selector="Border.StatisticContainer Grid.CardBorderGrid">
+        <Setter Property="RowSpacing" Value="6" />
+    </Style>
+
+    <Style Selector="Border.StatisticContainer TextBlock.StatisticCardText">
+        <Setter Property="Foreground" Value="{StaticResource InkBlackColor}" />
+        <Setter Property="FontFamily" Value="{StaticResource 'Anime Ace'}" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+</Styles>

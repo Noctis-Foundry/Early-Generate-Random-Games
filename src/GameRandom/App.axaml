@@ -21,6 +21,7 @@
                 <ResourceInclude Source="avares://GameRandom/Resources/ColorsResources.axaml"></ResourceInclude>
                 <ResourceInclude Source="avares://GameRandom/Resources/BorderBrushResources.axaml"></ResourceInclude>
                 <ResourceInclude Source="avares://GameRandom/Resources/Themes/ButtonTheme.axaml"></ResourceInclude>
+                <ResourceInclude Source="avares://GameRandom/Resources/Themes/BorderTheme.axaml"></ResourceInclude>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
@@ -32,12 +33,31 @@
     <Application.Styles>
         <FluentTheme />
         <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
-        <StyleInclude Source="avares://GameRandom/Styles/Components/Button.axaml"></StyleInclude>
         <StyleInclude Source="avares://GameRandom/Styles/Components/TextBlockStyle.axaml"></StyleInclude>
         <StyleInclude Source="avares://GameRandom/Styles/Components/PanelsBackground.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/Styles/Components/WindowStyle.axaml"></StyleInclude>
         
+        
+        <StyleInclude Source="avares://GameRandom/Styles/GameTableStyle.axaml"></StyleInclude>
         <StyleInclude Source="avares://GameRandom/Styles/LoadContentStyle.axaml"></StyleInclude>
         <StyleInclude Source="avares://GameRandom/Styles/MainMenuStyle.axaml"></StyleInclude>
         <StyleInclude Source="avares://GameRandom/Styles/MainControlStyle.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/Styles/Components/WindowStyle.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/Styles/AdminConfirmWindowStyle.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/Styles/AdminPanelStyle.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/Styles/AdminRegistrationWindowStyle.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/Styles/ChooseGameWindowStyle.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/Styles/ConfirmDialogStyle.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/Styles/ConfirmFinishGameStyle.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/Styles/CurrentGameStyle.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/Styles/ErrorWindowStyle.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/Styles/FilterGameWindowStyle.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/Styles/ProfileContentStyle.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/Styles/RollGameStyle.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/Styles/RulesWindowStyle.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/Styles/StatisticControlStyle.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/Styles/GamesTableWindowStyle.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/Styles/LobbyWindowStyle.axaml"></StyleInclude>
+        <StyleInclude Source="avares://GameRandom/Styles/TaskLoadingStyle.axaml"></StyleInclude>
     </Application.Styles>
 </Application>

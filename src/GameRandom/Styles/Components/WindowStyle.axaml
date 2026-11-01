@@ -1,0 +1,29 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style Selector="DockPanel.WindowContainer">
+        <Setter Property="Background" Value="{StaticResource PaperLinearGradient}" />
+    </Style>
+
+    <Style Selector="Border.WindowTopContainer">
+        <Setter Property="Padding" Value="10,6" />
+        <Setter Property="Background" Value="{StaticResource WhitePinkGradientStartColor}" />
+        <Setter Property="BorderBrush" Value="{StaticResource MangaLineColor}" />
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="CornerRadius" Value="0" />
+    </Style>
+
+    <Style Selector="Button.WindowButton, Button.ProfileButtons">
+        <Setter Property="Theme" Value="{StaticResource DefaultButton}" />
+    </Style>
+
+    <Style Selector="Border.WindowImageBorder">
+        <Setter Property="BorderBrush" Value="{StaticResource MangaLineColor}" />
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="Padding" Value="3" />
+        <Setter Property="Background" Value="{StaticResource WhitePinkGradientStartColor}" />
+    </Style>
+
+    <Style Selector="Image.WindowHeaderImage">
+        <Setter Property="Stretch" Value="UniformToFill" />
+    </Style>
+</Styles>

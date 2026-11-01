@@ -9,14 +9,14 @@
              x:DataType="statisticSystem:StatisticViewModel">
 
     
-    <Border Classes="StatisticContainer" Height="400" Width="700">
+    <Border Classes="StatisticContainer">
         <Border.Background>
             <ImageBrush Source="avares://GameRandom/Assets/TableBorder1920.png"
                         Stretch="Fill">
             </ImageBrush>
         </Border.Background>
         <Grid RowDefinitions="Auto, Auto" HorizontalAlignment="Center" Margin="0,50,0,0">
-            <Border Classes="StatisticHeader" Height="50" Width="450">
+            <Border Classes="StatisticHeader">
                 <Grid ColumnDefinitions="*, Auto">
                     <TextBlock Text="Player Statistic"
                                Classes="StatisticHeaderText">

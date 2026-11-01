@@ -8,7 +8,7 @@
         x:Class="GameRandom.Views.TaskLoading"
         Title="TaskLoading">
 
-    <DockPanel Classes="WindowContainer">
+    <DockPanel Classes="WindowContainer TaskLoadingRoot">
         <Grid Classes="WindowGrid">
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="15">
                 <Border Classes="WindowTextBorder">

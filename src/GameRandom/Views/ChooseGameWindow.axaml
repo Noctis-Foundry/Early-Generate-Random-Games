@@ -11,13 +11,7 @@
         x:DataType="chooseGameSystem:ChooseGameViewModel"
         Title="Choose Game">
 
-        <Window.Styles>
-                <Style Selector="Border.WindowTextBorder">
-                        <Setter Property="MaxWidth" Value="300"></Setter>
-                </Style>
-        </Window.Styles>
-        
-        <DockPanel Classes="WindowContainer">
+        <DockPanel Classes="WindowContainer ChooseGameWindowRoot">
 
                 <Border DockPanel.Dock="Top" Classes="WindowTopContainer">
                         <TextBlock Text="Choose game" Classes="WindowTextBlock"></TextBlock>

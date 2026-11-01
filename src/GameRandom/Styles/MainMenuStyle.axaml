@@ -2,7 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Design.PreviewWith>
         <Border Padding="20">
-            <Border Classes="MenuOutlineBorder" x:Name="TopContainer">
+            <Border x:Name="TopContainer">
                 <Grid ColumnDefinitions="Auto, Auto" Classes="MenuGrid">
                     <Grid ColumnDefinitions="*, *, *" Classes="ButtonGrid">
                         <Button Classes="MenuButton" Theme="{StaticResource DefaultButton}">Lobby</Button>
@@ -18,17 +18,6 @@
             </Border>
         </Border>
     </Design.PreviewWith>
-
-    <!-- Menu border style -->
-    <Style Selector="Border.MenuOutlineBorder">
-        <Setter Property="Padding" Value="6"/>
-        <Setter Property="Background" Value="Transparent"/>
-        
-        <!-- Border settings -->
-        <Setter Property="BorderBrush" Value="{StaticResource MangaLineColor}"/>
-        <Setter Property="BorderThickness" Value="2"/>
-        <Setter Property="CornerRadius" Value="0"></Setter>
-    </Style>
 
     <!-- Menu grid style -->
     <Style Selector="Grid.MenuGrid">

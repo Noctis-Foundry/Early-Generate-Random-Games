@@ -14,12 +14,7 @@
         <confirmFinishGameSystem:ConfirmFinishGameViewModel />
     </Design.DataContext>
     
-    <Window.Styles>
-        <Style Selector="Button.WindowButton">
-        </Style>
-    </Window.Styles>
-    
-    <DockPanel Classes="WindowContainer">
+    <DockPanel Classes="WindowContainer ConfirmFinishGameRoot">
         <!-- Header -->
         <Border Classes="WindowTopContainer" DockPanel.Dock="Top">
             <TextBlock Classes="WindowTextBlock" FontSize="18" Text="Finish Game" />

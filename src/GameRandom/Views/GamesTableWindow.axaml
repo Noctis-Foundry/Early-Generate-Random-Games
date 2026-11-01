@@ -10,7 +10,7 @@
         x:Class="GameRandom.Views.GamesTableWindow"
         x:DataType="tablesSystem:StatisticGameTableViewModel"
         Title="GamesTable">
-    <DockPanel Background="Gray">
+    <DockPanel Classes="GamesTableWindowRoot">
         <DataGrid ItemsSource="{Binding TableData}"
                   AutoGenerateColumns="False" Classes="ProfileDataGrid" IsReadOnly="True">
             <DataGrid.Columns>

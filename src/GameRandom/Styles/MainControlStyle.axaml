@@ -4,7 +4,7 @@
     <Design.PreviewWith>
         <Border Width="1000" Height="500">
             <DockPanel>
-                <Border Classes="MenuOutlineBorder" x:Name="TopContainer" DockPanel.Dock="Top" Width="990"
+                <Border x:Name="TopContainer" DockPanel.Dock="Top" Width="990"
                         Margin="0,2,0,0">
                     <Grid ColumnDefinitions="Auto, *" Classes="MenuGrid">
                         <Grid ColumnDefinitions="*, *, *" Classes="ButtonGrid">
@@ -58,6 +58,9 @@
         <Setter Property="BorderBrush" Value="Transparent"></Setter>
         <Setter Property="BorderThickness" Value="0" />
 
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
+        
         <!-- Content settings -->
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="VerticalContentAlignment" Value="Stretch"></Setter>

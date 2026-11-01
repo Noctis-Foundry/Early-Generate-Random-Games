@@ -1,0 +1,14 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style Selector="DockPanel.ChooseGameWindowRoot">
+        <Setter Property="Background" Value="{StaticResource PaperLinearGradient}" />
+    </Style>
+
+    <Style Selector="DockPanel.ChooseGameWindowRoot Border.WindowTextBorder">
+        <Setter Property="MaxWidth" Value="300" />
+    </Style>
+
+    <Style Selector="DockPanel.ChooseGameWindowRoot Grid.WindowGrid">
+        <Setter Property="RowSpacing" Value="6" />
+    </Style>
+</Styles>

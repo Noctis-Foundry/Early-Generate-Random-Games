@@ -1,46 +1,32 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:vm="using:GameRandom.ViewModels.AdminConfirmSystem"
-             xmlns:converters="using:GameRandom.AvaloniaConverters"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:tablesSystem="clr-namespace:GameRandom.ViewModels.TablesSystem"
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="460"
-             MinHeight="460" MaxHeight="460"
+             MinHeight="460"
              x:Class="GameRandom.Views.GameTable"
              x:DataType="tablesSystem:GameTableViewModel">
-    
-    <UserControl.Resources>
-        <converters:BoolConverter x:Key="BoolConverter"></converters:BoolConverter>
-    </UserControl.Resources>
-    
-    <DockPanel Width="1000" Height="500" Margin="0,15,0,0">
-        <DockPanel.Background>
-            Gray
-        </DockPanel.Background>
-        
-        <Border Classes="TopProfileContainer" DockPanel.Dock="Top" Width="1000" Height="50" Margin="0, 20, 0, 0"
-                VerticalAlignment="Top" HorizontalAlignment="Center" Background="DimGray">
+
+    <DockPanel Classes="TableRootContainer GameTableRoot">
+
+        <Border Classes="TableTopContainer" Theme="{StaticResource DefaultBorder}" DockPanel.Dock="Top">
             <Grid ColumnDefinitions="*, Auto">
-                <TextBlock Text="Game table" Classes="TitleTextBoxStyle"
-                           HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
-                <Button Grid.Column="1" Content="Close" Classes="ProfileButtons" Click="CloseUserControl"></Button>
+                <TextBlock Text="Game table" Classes="TableTitleTextBoxStyle"/>
+                <Button Grid.Column="1" Content="Close" Classes="TableButtons" Click="CloseUserControl"/>
             </Grid>
         </Border>
-        
-        <DataGrid Classes="ProfileDataGrid" AutoGenerateColumns="False" IsReadOnly="True" Height="400"
-                  ItemsSource="{Binding TableData}">
+
+        <DataGrid Classes="TableDataGrid" ItemsSource="{Binding TableData}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="User" Binding="{Binding PlayerName, DataType=tablesSystem:GameTableData}"/>
                 <DataGridTextColumn Header="Game" Binding="{Binding GameInfo.AppName, DataType=tablesSystem:GameTableData}"/>
-                <DataGridTextColumn Header="Comment" Binding="{Binding GameInfo.Comment, DataType=tablesSystem:GameTableData}"
-                                    Width="300">
-               
-                </DataGridTextColumn>
+                <DataGridTextColumn Header="Comment" Binding="{Binding GameInfo.Comment, DataType=tablesSystem:GameTableData}"/>
                 <DataGridTextColumn Header="Begin date" Binding="{Binding GameInfo.BeginTime, DataType=tablesSystem:GameTableData}"/>
                 <DataGridTextColumn Header="End date" Binding="{Binding GameInfo.EndTime, DataType=tablesSystem:GameTableData}"/>
-                <DataGridTextColumn Header="Finished time" Binding="{Binding GameInfo.FinishTime, DataType=tablesSystem:GameTableData}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Finished time" Binding="{Binding GameInfo.FinishTime, DataType=tablesSystem:GameTableData}"/>
             </DataGrid.Columns>
         </DataGrid>
+
     </DockPanel>
 </UserControl>

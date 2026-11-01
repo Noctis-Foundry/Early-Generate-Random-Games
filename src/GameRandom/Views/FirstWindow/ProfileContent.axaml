@@ -3,17 +3,11 @@
         xmlns:vm="using:GameRandom.ViewModels"
         x:Class="GameRandom.Views.ProfileContent"
         x:DataType="vm:ProfileViewModel"
-        Width="1000" Height="460"
-        MinWidth="1000" MinHeight="460"
-        MaxWidth="1000" MaxHeight="460">
-    <DockPanel>
-        <DockPanel.Background>
-            <ImageBrush Source="avares://GameRandom/Assets/AppBackground.png"
-                        Stretch="UniformToFill"></ImageBrush>
-        </DockPanel.Background>
+        MinWidth="1000" MinHeight="460">
+    <DockPanel Classes="ProfileContentRoot">
         
         <Border DockPanel.Dock="Top" Classes="TopProfileContainer" 
-                CornerRadius="20" Height="60" Width="500" Margin="0,10,0,0">
+                Height="60" Width="500" Margin="0,10,0,0">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>

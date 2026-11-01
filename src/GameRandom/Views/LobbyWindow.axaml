@@ -11,44 +11,7 @@
         Title="LOBBY CONNECTION"
         WindowStartupLocation="CenterScreen">
     
-    <Window.Resources>
-        <ImageBrush Source="avares://GameRandom/Assets/BaseWindowAssets/TextBlockBorder.png" 
-                    Stretch="Fill" x:Key="TextBrush"></ImageBrush>
-    </Window.Resources>
-    
-    <Window.Styles>
-        <Style Selector="TextBox">
-            <Setter Property="Background" Value="{StaticResource TextBrush}"> </Setter>
-            <Setter Property="BorderThickness" Value="0"></Setter>
-            <Setter Property="Foreground" Value="White"></Setter>
-            <Setter Property="HorizontalContentAlignment" Value="Left"></Setter>
-            <Setter Property="VerticalContentAlignment" Value="Center"></Setter>
-            <Setter Property="Padding" Value="20,0,0,10"></Setter>
-            <Setter Property="FontSize" Value="16"></Setter>
-        </Style>
-        
-        <Style Selector="TextBox:pointerover">
-            <Setter Property="Foreground" Value="DarkSeaGreen"></Setter>
-            
-            <Style Selector="^/template/ Border#PART_BorderElement">
-                <Setter Property="Background" Value="{StaticResource TextBrush}"> </Setter>
-                <Setter Property="BorderBrush" Value="#bb9e67"></Setter>
-                <Setter Property="BorderThickness" Value="2"></Setter>
-            </Style>
-        </Style>
-        
-        <Style Selector="TextBox:focus">
-            <Setter Property="Foreground" Value="DarkGoldenrod"></Setter>
-            
-            <Style Selector="^/template/ Border#PART_BorderElement">
-                <Setter Property="Background" Value="{StaticResource TextBrush}"> </Setter>
-                <Setter Property="BorderBrush" Value="#bb9e67"></Setter>
-                <Setter Property="BorderThickness" Value="2"></Setter>
-            </Style>
-        </Style>
-    </Window.Styles>
-    
-    <DockPanel Classes="WindowContainer">
+    <DockPanel Classes="WindowContainer LobbyWindowRoot">
         
         <Border DockPanel.Dock="Top" Classes="WindowTopContainer" MinWidth="250" Margin="0,10,0,0">
             <TextBlock Text="Lobby Manager" Classes="WindowTextBlock" FontSize="16"/>
@@ -83,7 +46,7 @@
             <!-- Connect section -->
             <Border Grid.Row="1" Grid.Column="1" Classes="WindowTextBorder" MinHeight="170" MaxHeight="180">
                 <Grid RowDefinitions="Auto, Auto" HorizontalAlignment="Center" VerticalAlignment="Center" RowSpacing="15">
-                    <TextBox x:Name="IdBox" MaxLength="20" Text="..." MinWidth="260" MaxWidth="260" MinHeight="40" MaxHeight="50" 
+                    <TextBox Classes="LobbyIdInput" x:Name="IdBox" MaxLength="20" Text="..." MinWidth="260" MaxWidth="260" MinHeight="40" MaxHeight="50" 
                              Watermark="Enter lobby ID"/>
                     <Button Grid.Row="1" Content="Connect" Click="Connect" Classes="WindowButton" HorizontalAlignment="Center"/>
                 </Grid>

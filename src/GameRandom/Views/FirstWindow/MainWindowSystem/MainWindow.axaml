@@ -10,13 +10,25 @@
         x:DataType="mainWindowSystem:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="GameRandom"
-        Width="1000" Height="500"
+        Width="1000" Height="600"
         MinWidth="1000" MinHeight="500"
-        MaxWidth="1000" MaxHeight="500">
+        MaxWidth="1920" MaxHeight="1080">
         
-        <DockPanel>
-                <Border Classes="MenuOutlineBorder" x:Name="TopContainer" Height="60" DockPanel.Dock="Top" Width="990" Margin="0,2,0,0">
-                        <Grid ColumnDefinitions="Auto, *" Classes="MenuGrid">
+        <Window.Styles>
+                <Style Selector="Border.MainTopContainer">
+                        <Setter Property="Padding" Value="6"/>
+                        <Setter Property="Background" Value="Transparent"/>
+        
+                        <!-- Border settings -->
+                        <Setter Property="BorderBrush" Value="{StaticResource MangaLineColor}"/>
+                        <Setter Property="BorderThickness" Value="2"/>
+                        <Setter Property="CornerRadius" Value="0"></Setter>
+                </Style>
+        </Window.Styles>
+        
+        <DockPanel Background="{StaticResource PaperLinearGradient}">
+                <Border x:Name="TopContainer" Classes="MainTopContainer" DockPanel.Dock="Top" Height="50" Margin="5,2,5,0">
+                        <Grid ColumnDefinitions="Auto, *" Classes="MenuGrid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                 <Grid ColumnDefinitions="*, *, *" Classes="ButtonGrid">
                                         <Button Classes="MenuButton" 
                                                 Theme="{StaticResource DefaultButton}"
@@ -42,7 +54,8 @@
                 
                 <ContentControl x:Name="ControlMain" Content="{Binding UserControlNavigate.ControlContent^}"
                                 HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
-                                VerticalAlignment="Stretch" VerticalContentAlignment="Stretch"/>
+                                VerticalAlignment="Stretch" VerticalContentAlignment="Stretch"
+                                Margin="0,5,0,0"/>
         </DockPanel>
         
        

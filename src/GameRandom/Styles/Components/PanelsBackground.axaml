@@ -7,18 +7,18 @@
     </Design.PreviewWith>
 
     <Style Selector="Border">
-        <Setter Property="Background" Value="{StaticResource PaperLinearGradient}"/>
+        <Setter Property="Background" Value="Transparent"/>
     </Style>
     
     <Style Selector="DockPanel">
-        <Setter Property="Background" Value="{StaticResource PaperLinearGradient}"/>
+        <Setter Property="Background" Value="Transparent"/>
     </Style>
     
     <Style Selector="StackPanel">
-        <Setter Property="Background" Value="{StaticResource PaperLinearGradient}"/>
+        <Setter Property="Background" Value="Transparent"/>
     </Style>
     
     <Style Selector="Grid">
-        <Setter Property="Background" Value="{StaticResource PaperLinearGradient}"/>
+        <Setter Property="Background" Value="Transparent"/>
     </Style>
 </Styles>

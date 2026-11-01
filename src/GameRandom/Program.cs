@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using GameRandom.Providers;
 using GameRandom.Scripts.Service;
 using GameRandom.Scripts.SteamSDK;
+using HotAvalonia;
 
 namespace GameRandom;
 
@@ -42,6 +43,7 @@ sealed class Program
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .WithInterFont()
+            .UseHotReload()
             .LogToTrace();
     
     private static void GlobalExceptionHandler()

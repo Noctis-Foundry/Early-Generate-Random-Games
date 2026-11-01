@@ -5,12 +5,9 @@
              xmlns:rollGameViewModel="clr-namespace:GameRandom.ViewModels.RollGameViewModel"
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="500"
              x:Class="GameRandom.Views.RollGame" x:DataType="rollGameViewModel:RollGameViewModel"
-             Width="1000" Height="460">
+             MinWidth="1000" MinHeight="460">
 
-    <DockPanel>
-        <DockPanel.Background>
-            <ImageBrush Source="avares://GameRandom/Assets/RandomGame.png" Stretch="Fill" />
-        </DockPanel.Background>
+    <DockPanel Classes="RollGameRoot">
         
         <Border Classes="HeaderBorder" DockPanel.Dock="Top" Margin="15,15,15,0">
             <Grid ColumnDefinitions="*, Auto Auto" ColumnSpacing="10" Height="50">

@@ -10,7 +10,7 @@
         x:DataType="vm:AdminConfirmViewModel"
         Title="Confirm Game">
     
-    <DockPanel Classes="WindowContainer">
+    <DockPanel Classes="WindowContainer AdminConfirmWindowRoot">
         
         <Border DockPanel.Dock="Top" Classes="WindowTopContainer">
             <TextBlock Text="Confirm Game" Classes="WindowTextBlock" HorizontalAlignment="Center"/>

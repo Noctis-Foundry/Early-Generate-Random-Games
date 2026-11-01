@@ -11,36 +11,15 @@
         Width="800" Height="600"
         MaxWidth="1000" MinWidth="600"
         MaxHeight="750" MinHeight="500">
-   <Window.Styles>
-        <Style Selector="ListBox.FilteredBox">
-            <Setter Property="Background" Value="#2D2D30"/>
-            <Setter Property="BorderBrush" Value="#3F3F46"/>
-            <Setter Property="BorderThickness" Value="1"/>
-        </Style>
-        <Style Selector="ListBoxItem.FilteredBox">
-            <Setter Property="Padding" Value="8,4"/>
-        </Style>
-       <Style Selector="TextBlock.FilteredBox">
-           <Setter Property="Foreground" Value="GhostWhite"></Setter>
-       </Style>
-       <Style Selector="ListBox.FilteredBox TextBlock">
-           <Setter Property="Foreground" Value="PaleVioletRed"></Setter>
-       </Style>
-       
-       <Style Selector="ListBox.FilteredBox ListBoxItem:selected /template/ContentPresenter">
-           <Setter Property="Background" Value="#C1185A"></Setter>
-       </Style>
-    </Window.Styles>
-    
-    <DockPanel Background="#1E1E1E">
-        <Border DockPanel.Dock="Top" Background="#2D2D30" BorderBrush="#3F3F46" BorderThickness="0,0,0,1" Padding="16,12">
+    <DockPanel Classes="FilterGameWindowRoot">
+        <Border Classes="FilterHeader" DockPanel.Dock="Top" Padding="16,12">
             <Grid ColumnDefinitions="*,Auto">
                 <TextBlock Text="Фильтры игр" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" Classes="FilteredBox"/>
-                <Button Grid.Column="1" Content="✕" Width="32" Height="32" Click="CloseWindow"/>
+                <Button Grid.Column="1" Classes="WindowButton" Content="✕" Width="32" Height="32" Click="CloseWindow"/>
             </Grid>
         </Border>
         
-        <Border Margin="16" Background="#252526" BorderBrush="#3F3F46" BorderThickness="1">
+        <Border Classes="FilterContent" Margin="16">
             <Grid RowDefinitions="Auto,*,Auto,*,Auto,*" Margin="16">
                 <TextBlock Classes="FilteredBox" Text="Categories" FontWeight="SemiBold" Margin="0,0,0,8"/>
                 <ListBox Classes="FilteredBox" Grid.Row="1" SelectionMode="Multiple, Toggle" ItemsSource="{Binding Categories}"
