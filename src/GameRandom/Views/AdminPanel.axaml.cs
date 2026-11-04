@@ -101,7 +101,7 @@ public sealed partial class AdminPanel : MainWindowUserControlAbstract<AdminPane
     }
     private void UnsubscribeListener()
     {
-        _routeManager.GetRouteService(TableEnum.AdminTable).Subscribe(RouteStage.View, _onAdminHideHandler);
+        _routeManager.GetRouteService(TableEnum.AdminTable).Unsubscribe(RouteStage.View, _onAdminHideHandler);
     }
     
     private void ShowRegistration(object? sender, RoutedEventArgs e)

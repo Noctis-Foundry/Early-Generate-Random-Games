@@ -286,6 +286,8 @@ public sealed class CurrentGameStatusViewModel : ViewModelBase
         _currentGameLoad = null!;
         _currentGameFinish = null!;
         
+        _routeManager.GetRouteService(TableEnum.UserGames).Unsubscribe(RouteStage.View, _listener);
+        
         _routeManager = null!;
         _listener = null!;
         

@@ -97,7 +97,7 @@ public class StatisticViewModel : ViewModelBase
         _databaseService = null;
         
         if (_onEndTableHandler is not null) 
-            _routeManager?.GetRouteService(TableEnum.FinishedGames).Unsubscribe(RouteStage.View, _onEndTableHandler);
+            _routeManager.GetRouteService(TableEnum.FinishedGames).Unsubscribe(RouteStage.View, _onEndTableHandler);
         
         _routeManager = null;
         _onEndTableHandler = null;

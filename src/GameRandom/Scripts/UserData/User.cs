@@ -15,7 +15,7 @@ namespace GameRandom.Scripts.UserData;
 /// <summary>
 /// Singleton class for managing current Steam user data
 /// </summary>
-public class User
+public class User : IDisposable
 {
     [Inject] private DatabaseService _databaseService = null!;
     [Inject] private DatabaseTransitionService _transitionService = null!;
@@ -43,7 +43,7 @@ public class User
 
         await GetUserDataOrCreate();
         
-        _routeManager.GetRouteService(TableEnum.AdminTable).Subscribe(RouteStage.Data, UpdateAdminRules);
+        _routeManager.GetRouteService(TableEnum.AdminTable).Subscribe(RouteStage.Data, UpdateAdminRules); 
         
         await UpdateAdminRules();
     }
@@ -140,4 +140,9 @@ public class User
     public bool IsAdmin() => _isAdmin;
 
     public bool IsTopLevelAdmin() => _isAdmin && _isTopLevelAdmin;
+
+    public void Dispose()
+    {
+        _routeManager.GetRouteService(TableEnum.AdminTable).Unsubscribe(RouteStage.Data, UpdateAdminRules); 
+    }
 }
