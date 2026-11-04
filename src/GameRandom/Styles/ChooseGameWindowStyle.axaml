@@ -5,7 +5,8 @@
     </Style>
 
     <Style Selector="DockPanel.ChooseGameWindowRoot Border.WindowTextBorder">
-        <Setter Property="MaxWidth" Value="300" />
+        <Setter Property="MaxWidth" Value="350"/>
+        <Setter Property="Padding" Value="0"></Setter>
     </Style>
 
     <Style Selector="DockPanel.ChooseGameWindowRoot Grid.WindowGrid">

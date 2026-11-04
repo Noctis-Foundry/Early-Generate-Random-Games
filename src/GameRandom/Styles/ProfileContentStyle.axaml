@@ -10,9 +10,21 @@
         <Setter Property="BorderThickness" Value="2" />
         <Setter Property="CornerRadius" Value="0" />
     </Style>
+    
+    <Style Selector="Button.ProfileButtons">
+        <Setter Property="Theme" Value="{StaticResource DefaultButton}"></Setter>
+    </Style>
 
-    <Style Selector="DockPanel.ProfileContentRoot TextBlock.ProfileNickname">
+    <Style Selector="TextBlock.ProfileNickname">
         <Setter Property="Foreground" Value="{StaticResource InkBlackColor}" />
         <Setter Property="FontFamily" Value="{StaticResource 'Anime Ace'}" />
+        <Setter Property="FontSize" Value="20"></Setter>
+        <Setter Property="TextWrapping" Value="Wrap"></Setter>
+    </Style>
+    
+    <Style Selector="Border.AvatarContainer">
+        <Setter Property="BorderThickness" Value="2"></Setter>
+        <Setter Property="BorderBrush" Value="{StaticResource InkBlackColor}"/>
+        <Setter Property="CornerRadius" Value="20"></Setter>
     </Style>
 </Styles>
