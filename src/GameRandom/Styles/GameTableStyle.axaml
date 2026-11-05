@@ -45,6 +45,7 @@
 
     <!-- Кнопки -->
     <Style Selector="Button.TableButtons">
+        <Setter Property="Theme" Value="{StaticResource DefaultButton}"></Setter>
     </Style>
 
     <!-- Таблица -->
@@ -52,12 +53,19 @@
         <Setter Property="Background" Value="Transparent"></Setter>
         <Setter Property="Foreground" Value="{StaticResource InkBlackColor}" />
         <Setter Property="BorderBrush" Value="{StaticResource MangaLineColor}" />
-        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderThickness" Value="2" />
         <Setter Property="GridLinesVisibility" Value="All" />
-        <Setter Property="Margin" Value="5,0,5,0"></Setter>
+        <Setter Property="Margin" Value="10, 5"></Setter>
     </Style>
-
-    <Style Selector="DataGridTextColumn.TableGridTextColumn">
-        <Setter Property="Width" Value="100"></Setter>
+    
+    <Style Selector="DataGridTemplateColumn.GameTableTemplateColumn">
+        <Setter Property="Width" Value="400"></Setter>
+    </Style>
+    
+    <Style Selector="TextBlock.GameTableTextBlock">
+        <Setter Property="TextWrapping" Value="Wrap"></Setter>
+        <Setter Property="VerticalAlignment" Value="Center"></Setter>
+        <Setter Property="HorizontalAlignment" Value="Stretch"></Setter>
+        <Setter Property="Margin" Value="5"></Setter>
     </Style>
 </Styles>

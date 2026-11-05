@@ -33,12 +33,17 @@ public sealed partial class GamesTableWindow : WindowBase<StatisticGameTableView
         
         base.Show();
     }
-
+    
     protected override void OnClosing(WindowClosingEventArgs e)
     {
         base.OnClosing(e);
         
         if (DataContext is StatisticGameTableViewModel statisticGameTableViewModel)
             statisticGameTableViewModel.Dispose();
+    }
+
+    private void CloseWindow(object? sender, RoutedEventArgs e)
+    {
+        Close();
     }
 }

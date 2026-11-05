@@ -9,11 +9,12 @@
         <Setter Property="Background" Value="{StaticResource WhitePinkGradientStartColor}" />
         <Setter Property="BorderBrush" Value="{StaticResource MangaLineColor}" />
         <Setter Property="BorderThickness" Value="2" />
-        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="CornerRadius" Value="15" />
     </Style>
 
     <Style Selector="Button.WindowButton">
         <Setter Property="Theme" Value="{StaticResource DefaultButton}" />
+        <Setter Property="CornerRadius" Value="5"></Setter>
     </Style>
     
        <Style Selector="Border.WindowTextBorder">
