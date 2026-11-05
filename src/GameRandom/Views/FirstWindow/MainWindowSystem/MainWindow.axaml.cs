@@ -184,12 +184,12 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>, IInitializeMa
 
         foreach (var profile in profileList)
         {
-            Logger.Debug($"Update avatar grid with image: {profile.avatar32x32}");
+            Logger.Debug($"Update avatar grid with image: {profile.avatar64x64}");
             
             LobbyImages.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
             var image = _mainWindowFactory.CreateImageInGrid(LobbyImages, imageCount);
 
-            image.Source = await _steamService.GetImage(profile.avatar32x32, cts.Token);
+            image.Source = await _steamService.GetImage(profile.avatar64x64, cts.Token);
             imageCount++;
         }
     }
