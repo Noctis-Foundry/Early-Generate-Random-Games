@@ -17,7 +17,7 @@ public class GameEnvLoad
     {
         _client = new HttpClient();
 
-        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(3));
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(7));
         
         var json = await _client.GetAsync(_url, cts.Token);
         
