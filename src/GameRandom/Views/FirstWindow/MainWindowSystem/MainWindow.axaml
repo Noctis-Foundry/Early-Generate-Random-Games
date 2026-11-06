@@ -10,7 +10,7 @@
         x:DataType="mainWindowSystem:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="GameRandom"
-        Width="1000" Height="600"
+        Width="1435" Height="684"
         MinWidth="1000" MinHeight="500"
         MaxWidth="1920" MaxHeight="1080">
         

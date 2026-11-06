@@ -19,6 +19,10 @@
         <Setter Property="Padding" Value="12" />
     </Style>
 
+    <Style Selector="Border.RuleBorder">
+        <Setter Property="Margin" Value="5"></Setter>
+    </Style>
+    
     <Style Selector="Grid.RulesGrid Button.RulesButton">
         <Setter Property="Theme" Value="{StaticResource DefaultButton}" />
     </Style>

@@ -14,13 +14,16 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0">
-            <TextBlock x:Name="TitleText" Classes="TitleText"/>
+        <Border Grid.Row="0" Classes="WindowTopContainer" Margin="5">
+            <Grid ColumnDefinitions="*, Auto, Auto" ColumnSpacing="5">
+                <TextBlock x:Name="TitleText" Classes="TitleText" HorizontalAlignment="Left" VerticalAlignment="Center">Current Game</TextBlock>
             
-            <Button x:Name="LanguageButton" Classes="RulesButton LanguageButton" Click="ToggleLanguage"/>
+                <Button Grid.Column="1" x:Name="LanguageButton" Classes="RulesButton" Click="ToggleLanguage"/>
             
-            <Button Classes="RulesButton CloseButton" Click="Close">✕ CLOSE</Button>
-        </StackPanel>
+                <Button Grid.Column="2" Classes="RulesButton CloseButton" Click="Close">CLOSE</Button>
+            </Grid>
+        </Border>
+     
 
         <ScrollViewer Grid.Row="1" Classes="RulesScrollViewer">
             <StackPanel Spacing="15">

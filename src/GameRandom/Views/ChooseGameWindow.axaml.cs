@@ -45,4 +45,9 @@ public sealed partial class ChooseGameWindow : WindowBase<ChooseGameViewModel>
 
         Dispatcher.UIThread.InvokeAsync(async () => await viewModel.ChooseGame());
     }
+
+    private void CloseWindow(object? sender, RoutedEventArgs e)
+    {
+        Close();
+    }
 }

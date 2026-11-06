@@ -4,7 +4,7 @@
         <Setter Property="Background" Value="{StaticResource PaperLinearGradient}" />
     </Style>
 
-    <Style Selector="DockPanel.LobbyWindowRoot TextBox.LobbyIdInput">
+    <Style Selector="TextBox.LobbyIdInput">
         <Setter Property="Background" Value="{StaticResource PaperWhiteColor}" />
         <Setter Property="BorderBrush" Value="{StaticResource MangaLineColor}" />
         <Setter Property="BorderThickness" Value="2" />
@@ -14,5 +14,6 @@
         <Setter Property="Padding" Value="12,6" />
         <Setter Property="FontFamily" Value="{StaticResource 'Anime Ace'}" />
         <Setter Property="FontSize" Value="14" />
+        <Setter Property="TextWrapping" Value="Wrap"></Setter>
     </Style>
 </Styles>

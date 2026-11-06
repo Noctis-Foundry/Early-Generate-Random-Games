@@ -4,49 +4,71 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="using:GameRandom.ViewModels.AdminConfirmSystem"
         xmlns:confirmFinishGameSystem="clr-namespace:GameRandom.ViewModels.ConfirmFinishGameSystem"
+        mc:Ignorable="d" d:DesignWidth="700" d:DesignHeight="400"
         x:Class="GameRandom.Views.ConfirmFinishGame"
         x:DataType="confirmFinishGameSystem:ConfirmFinishGameViewModel"
         Title="Confirm Finish Game"
         Width="800" Height="400"
-        CanResize="False">
+        MinWidth="700" MaxWidth="900"
+        MinHeight="400" MaxHeight="400"
+        CanResize="True">
 
     <Design.DataContext>
         <confirmFinishGameSystem:ConfirmFinishGameViewModel />
     </Design.DataContext>
-    
+
+    <!-- Main container for the confirm finish game window -->
     <DockPanel Classes="WindowContainer ConfirmFinishGameRoot">
-        <!-- Header -->
-        <Border Classes="WindowTopContainer" DockPanel.Dock="Top">
-            <TextBlock Classes="WindowTextBlock" FontSize="18" Text="Finish Game" />
+
+        <Border DockPanel.Dock="Top" Classes="WindowTopContainer" Margin="5" CornerRadius="5">
+            <Grid ColumnDefinitions="*, Auto">
+                <TextBlock Text="Finish Game" Classes="WindowTextBlock" FontSize="20"
+                           HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
+
+                <Button Grid.Column="1" Theme="{StaticResource DefaultButton}" Click="CloseWindow">Close</Button>
+            </Grid>
         </Border>
 
-        <Grid Classes="WindowGrid" RowDefinitions="*,Auto" Width="310" MaxWidth="310">
-            <!-- Left Column -->
-            <Border Classes="WindowTextBorder" MinHeight="60" MaxHeight="80">
-                <TextBlock Classes="WindowTextBlock" FontSize="14" Text="{Binding GameProgress.AppName,
-                FallbackValue='Not find game'}" />
+        <!-- Main grid layout: left column for info + comment, right column for image and actions -->
+        <Grid Classes="WindowGrid" RowDefinitions="Auto, Auto, Auto, Auto, Auto" DockPanel.Dock="Left" Margin="5,0,0,20"
+              VerticalAlignment="Center" HorizontalAlignment="Left" RowSpacing="10">
+
+            <!-- Game name -->
+            <Border Grid.Row="0" Grid.Column="0" Classes="WindowTextBorder CurrentGameTextBorder">
+                <TextBlock Text="{Binding GameProgress.AppName, StringFormat='Name: {0}',
+                                  TargetNullValue='Name: Empty', FallbackValue='Failed to find app name'}"
+                           Classes="WindowTextBlock CurrentGameTextBlock" x:Name="GameName" />
             </Border>
 
             <!-- Comment TextBox -->
-            <Border Grid.Row="1" Classes="WindowTextBorder" MinHeight="70" MaxHeight="80">
-                <TextBox MinHeight="30" MaxHeight="60" TextWrapping="Wrap" AcceptsReturn="True" 
+            <Border Grid.Row="1" Grid.Column="0" Classes="WindowTextBorder CurrentGameTextBorder">
+                <TextBox MinHeight="30" MaxHeight="60" TextWrapping="Wrap" AcceptsReturn="True"
                          Watermark="Write comment..." Margin="10" MaxWidth="260" MinWidth="260" FontSize="12"
-                         x:Name="CommentBox"/>
+                         x:Name="CommentBox" />
             </Border>
         </Grid>
 
-        <Grid RowDefinitions="Auto, Auto" HorizontalAlignment="Right" VerticalAlignment="Center" Classes="WindowGrid">
+        <Grid DockPanel.Dock="Right" RowDefinitions="Auto, Auto" HorizontalAlignment="Right" Margin="20,0,20,0"
+              VerticalAlignment="Center" RowSpacing="5">
+
             <!-- Image -->
-            <Border Classes="WindowImageBorder" HorizontalAlignment="Center">
-                <Image Classes="WindowHeaderImage" Source="{Binding ImageBitmap}" />
+            <Border Grid.Row="0" Grid.Column="0" Classes="WindowImageBorder" MinHeight="200">
+                <Border>
+                    <Image Source="{Binding ImageBitmap}" x:Name="GameImage" Classes="WindowHeaderImage" />
+                </Border>
             </Border>
 
-            <!-- Buttons -->
-            <Grid Grid.Row="1" ColumnDefinitions="Auto, Auto, Auto" Margin="0,0,10,0" ColumnSpacing="5"> 
-                <Button Classes="WindowButton" Grid.Column="0" FontSize="13" Content="Choose File Image" Click="ChooseImageFromFile"/>
-                <Button Classes="WindowButton" Grid.Column="1" FontSize="13" Content="Paste from clipboard" Click="ChooseImageFromClipboard"></Button>
-                <Button Classes="WindowButton" Grid.Column="2" Content="Save Edit" Click="OnSaveEditClick" />
-            </Grid>
+            <!-- Action buttons panel -->
+            <Border Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center">
+                <Grid ColumnDefinitions="Auto, Auto, Auto" ColumnSpacing="10">
+                    <Button Classes="WindowButton" Grid.Column="0" Content="Choose file"
+                            Click="ChooseImageFromFile" HorizontalAlignment="Stretch"/>
+                    <Button Classes="WindowButton" Grid.Column="1" Content="Paste"
+                            Click="ChooseImageFromClipboard" HorizontalAlignment="Stretch" />
+                    <Button Classes="WindowButton" Grid.Column="2" Content="Save Edit" Padding="10"
+                            Click="OnSaveEditClick" HorizontalAlignment="Stretch" />
+                </Grid>
+            </Border>
         </Grid>
     </DockPanel>
 </Window>
