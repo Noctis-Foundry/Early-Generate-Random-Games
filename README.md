@@ -20,8 +20,8 @@ chmod +x ./install.sh
 ```
 
 (This script will download the latest AppImage, extract the icon, and create a .desktop shortcut so the app appears in your application menu and rofi/launchers).
-🪟 Windows
 
+🪟 Windows
 For Windows users, please download the installer from the Releases page.
 
     Go to the latest release.
