@@ -5,6 +5,33 @@ It allows you to randomly select games from your Steam library or other availabl
 
 ---
 
+📥 Installation
+
+Choose your operating system to install ChallangeRunner.
+🐧 Linux (AppImage)
+
+You can install the application automatically using our installation script. Open your terminal and run the following commands:
+bash
+
+```bash
+curl -L -O https://raw.githubusercontent.com/Noctis-Foundry/Early-Generate-Random-Games/refs/heads/main/appimage_setup/install.sh
+chmod +x ./install.sh
+./install.sh
+```
+
+(This script will download the latest AppImage, extract the icon, and create a .desktop shortcut so the app appears in your application menu and rofi/launchers).
+🪟 Windows
+
+For Windows users, please download the installer from the Releases page.
+
+    Go to the latest release.
+
+    Download the [ChallengeRunner-Setup-VERSION.exe] file.
+
+    Run the installer and follow the on-screen instructions.
+
+---
+
 ## 🎮 Key Features
 
 - Randomly select a game from Steam or other sources.  
@@ -48,7 +75,7 @@ Monitor your current game session with detailed information about start date, ti
 
 ## ⚡ Project Status
 
-> **Beta Version 0.3.2**  
+> **Beta Version 0.4.0**  
 > Available installation files:  
 > - **Linux x64**: AppImage  
 > - **Windows x64**: NSIS Setup
