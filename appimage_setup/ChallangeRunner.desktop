@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=ChallangeRunner
+Comment=Generating events for friends party
+Exec=$HOME/.local/share/ChallangeRunner.AppImage
+Icon=$HOME/.local/share/ChallangeRunner.png
+Terminal=false
+Categories=Utility;
