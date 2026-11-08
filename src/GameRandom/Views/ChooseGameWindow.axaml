@@ -5,71 +5,81 @@
         xmlns:vm="using:GameRandom.ViewModels.AdminConfirmSystem"
         xmlns:chooseGameSystem="clr-namespace:GameRandom.ViewModels.ChooseGameSystem"
         mc:Ignorable="d" d:DesignWidth="700" d:DesignHeight="400"
-        MinWidth="700" MaxWidth="700"
+        Width="800" Height="400"
+        MinWidth="700" MaxWidth="900"
         MinHeight="400" MaxHeight="400"
         x:Class="GameRandom.Views.ChooseGameWindow"
         x:DataType="chooseGameSystem:ChooseGameViewModel"
         Title="Choose Game">
 
-        <Window.Styles>
-                <Style Selector="Border.WindowTextBorder">
-                        <Setter Property="MaxWidth" Value="300"></Setter>
-                </Style>
-        </Window.Styles>
-        
-        <DockPanel Classes="WindowContainer">
+    <!-- Main container for the choose game window -->
+    <DockPanel Classes="WindowContainer ChooseGameWindowRoot">
 
-                <Border DockPanel.Dock="Top" Classes="WindowTopContainer">
-                        <TextBlock Text="Choose game" Classes="WindowTextBlock"></TextBlock>
+        <Border DockPanel.Dock="Top" Classes="WindowTopContainer" Margin="5" CornerRadius="5">
+            <Grid ColumnDefinitions="*, Auto">
+                <TextBlock Text="Choose game" Classes="WindowTextBlock" FontSize="20"
+                           HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
+
+                <Button Grid.Column="1" Theme="{StaticResource DefaultButton}" Click="CloseWindow">Close</Button>
+            </Grid>
+        </Border>
+
+        <!-- Main grid layout: left column for info, right column for image and actions -->
+        <Grid Classes="WindowGrid" RowDefinitions="Auto, Auto, Auto, Auto, Auto" DockPanel.Dock="Left" Margin="5,0,0,20"
+              VerticalAlignment="Center" HorizontalAlignment="Left">
+
+            <!-- Game name -->
+            <Border Grid.Row="0" Grid.Column="0" Classes="WindowTextBorder CurrentGameTextBorder">
+                <TextBlock Text="{Binding AppInfo.AppData.AppName, StringFormat='Name: {0}',
+                                      TargetNullValue='Name: Empty', FallbackValue='Failed to find app name'}"
+                                     Classes="WindowTextBlock CurrentGameTextBlock" x:Name="GameName" />
+            </Border>
+
+            <!-- Game genres -->
+            <Border Grid.Row="1" Grid.Column="0" Classes="WindowTextBorder CurrentGameTextBorder">
+                <TextBlock Text="{Binding AppInfo.AppData.AppGenres,
+                                  Converter={StaticResource ArrayTextJoinConverter}, ConverterParameter='Genres',
+                                  FallbackValue='Genres not find'}"
+                           Classes="WindowTextBlock CurrentGameTextBlock" x:Name="GameGenres" />
+            </Border>
+
+            <!-- Game categories -->
+            <Border Grid.Row="2" Grid.Column="0" Classes="WindowTextBorder CurrentGameTextBorder">
+                <TextBlock Text="{Binding AppInfo.AppData.AppCategories,
+                                  Converter={StaticResource ArrayTextJoinConverter}, ConverterParameter='Categories',
+                                  FallbackValue='Categories not find'}"
+                           Classes="WindowTextBlock CurrentGameTextBlock" x:Name="GameCategories" />
+            </Border>
+
+            <!-- Release date -->
+            <Border Grid.Row="3" Grid.Column="0" Classes="WindowTextBorder CurrentGameTextBorder">
+                <TextBlock Text="{Binding AppInfo.AppData.AppReleaseYear, StringFormat='Release: {0}',
+                                  TargetNullValue='Release is null', FallbackValue='Not find release'}"
+                           Classes="WindowTextBlock CurrentGameTextBlock" x:Name="ReleaseDate" />
+            </Border>
+        </Grid>
+
+        <Grid DockPanel.Dock="Right" RowDefinitions="Auto, Auto" HorizontalAlignment="Right" Margin="20,0,20,0"
+              VerticalAlignment="Center" RowSpacing="5">
+
+            <!-- Game image -->
+            <Border Grid.Row="0" Grid.Column="0" Classes="WindowImageBorder">
+                <Border>
+                    <Image Source="{Binding AppInfo.ImageBytes, Converter={StaticResource ByteToImageConverter}}"
+                           x:Name="GameHeader" Classes="WindowHeaderImage" />
                 </Border>
-                
-                <Grid Classes="WindowGrid" RowDefinitions="Auto, Auto, Auto, Auto, Auto" ColumnDefinitions="Auto, Auto" MaxWidth="300">
+            </Border>
 
-                        <!-- Game name -->
-                        <Border Grid.Row="0" Grid.Column="0" Classes="WindowTextBorder">
-                                <SelectableTextBlock Text="{Binding AppInfo.AppData.AppName, StringFormat='App name: {0}',
-                                TargetNullValue='Name is null', FallbackValue='Not find name'}" Classes="WindowTextBlock" x:Name="GameName"/>
-                        </Border>
+            <!-- Action buttons panel -->
+            <Border Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center">
+                <Grid ColumnDefinitions="*, *" ColumnSpacing="40">
 
-                        <!-- Game genres -->
-                        <Border Grid.Row="1" Grid.Column="0" Classes="WindowTextBorder">
-                                <TextBlock Text="{Binding AppInfo.AppData.AppGenres, 
-                                Converter={StaticResource ArrayTextJoinConverter}, ConverterParameter='Genres', FallbackValue='Genres not find'}" Classes="WindowTextBlock" x:Name="GameGenres"/>
-                        </Border>
-                        
-                        <Border Grid.Row="2" Grid.Column="0" Classes="WindowTextBorder">
-                                <TextBlock Text="{Binding AppInfo.AppData.AppCategories, 
-                                Converter={StaticResource ArrayTextJoinConverter}, ConverterParameter='Categories', FallbackValue='Categories not find'}" Classes="WindowTextBlock" x:Name="GameCategories"/>
-                        </Border>
+                    <Button Classes="WindowButton" Content="Steam" Click="ToSteamStorePage" HorizontalAlignment="Stretch"></Button>
 
-                        <!-- Release date -->
-                        <Border Grid.Row="3" Grid.Column="0" Classes="WindowTextBorder">
-                                <TextBlock Text="{Binding AppInfo.AppData.AppReleaseYear, StringFormat='Release: {0}',
-                                TargetNullValue='Release is null', FallbackValue='Not find release'}" Classes="WindowTextBlock" x:Name="ReleaseDate"/>
-                        </Border>
+                    <Button Grid.Column="1" Classes="WindowButton" Content="Choose Game" Click="ChooseGame" HorizontalAlignment="Stretch"></Button>
+
                 </Grid>
-                
-                <Grid RowDefinitions="Auto, Auto" DockPanel.Dock="Left" HorizontalAlignment="Center"  VerticalAlignment="Center" RowSpacing="5">
-                        <Border  Classes="WindowImageBorder">
-                                <Border>
-                                        <Image Source="{Binding AppInfo.ImageBytes, Converter={StaticResource ByteToImageConverter}}" 
-                                               Classes="WindowHeaderImage" x:Name="GameHeader"/>
-                                </Border>
-                        </Border>
-                
-                        <!-- Action buttons -->
-                        <Border Grid.Row="1">
-                                <Grid ColumnDefinitions="Auto, Auto" HorizontalAlignment="Center" ColumnSpacing="10" 
-                                      Margin="0, 0,20,0">
-
-                                        <Button Classes="WindowButton" Content="Steam" Click="ToSteamStorePage"></Button>
-
-                                        <Button Grid.Column="1" Classes="WindowButton" Content="Choose Game" Click="ChooseGame"></Button>
-
-                                </Grid>
-                        </Border>
-                </Grid>
-                
-               
-        </DockPanel>
+            </Border>
+        </Grid>
+    </DockPanel>
 </Window>

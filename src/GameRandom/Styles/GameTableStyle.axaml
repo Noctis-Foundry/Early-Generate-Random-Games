@@ -1,0 +1,71 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <DockPanel Classes="TableRootContainer">
+
+                <Border Classes="TableTopContainer" Theme="{StaticResource DefaultBorder}" DockPanel.Dock="Top">
+                    <Grid ColumnDefinitions="*, Auto">
+                        <TextBlock Text="Game table" Classes="TableTitleTextBoxStyle" />
+                        <Button Grid.Column="1" Content="Close" Theme="{StaticResource DefaultButton}"
+                                Classes="TableButtons" />
+                    </Grid>
+                </Border>
+
+                <DataGrid Classes="TableDataGrid">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="User" />
+                        <DataGridTextColumn Header="Game" />
+                        <DataGridTextColumn Header="Comment" />
+                        <DataGridTextColumn Header="Begin date" />
+                        <DataGridTextColumn Header="End date" />
+                        <DataGridTextColumn Header="Finished time" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+        </Border>
+    </Design.PreviewWith>
+
+    <!-- Корневой контейнер -->
+    <Style Selector="DockPanel.TableRootContainer">
+        <Setter Property="Background" Value="{StaticResource PaperLinearGradient}"></Setter>
+    </Style>
+
+    <!-- Верхняя панель -->
+    <Style Selector="Border.TableTopContainer">
+        <Setter Property="Width" Value="500"></Setter>
+        <Setter Property="Margin" Value="0,10"></Setter>
+    </Style>
+
+    <!-- Заголовок -->
+    <Style Selector="TextBlock.TableTitleTextBoxStyle">
+        <Setter Property="HorizontalAlignment" Value="Left"></Setter>
+        <Setter Property="VerticalAlignment" Value="Center"></Setter>
+    </Style>
+
+    <!-- Кнопки -->
+    <Style Selector="Button.TableButtons">
+        <Setter Property="Theme" Value="{StaticResource DefaultButton}"></Setter>
+    </Style>
+
+    <!-- Таблица -->
+    <Style Selector="DataGrid.TableDataGrid">
+        <Setter Property="Background" Value="Transparent"></Setter>
+        <Setter Property="Foreground" Value="{StaticResource InkBlackColor}" />
+        <Setter Property="BorderBrush" Value="{StaticResource MangaLineColor}" />
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="GridLinesVisibility" Value="All" />
+        <Setter Property="Margin" Value="10, 5"></Setter>
+    </Style>
+    
+    <Style Selector="DataGridTemplateColumn.GameTableTemplateColumn">
+        <Setter Property="Width" Value="400"></Setter>
+    </Style>
+    
+    <Style Selector="TextBlock.GameTableTextBlock">
+        <Setter Property="TextWrapping" Value="Wrap"></Setter>
+        <Setter Property="VerticalAlignment" Value="Center"></Setter>
+        <Setter Property="HorizontalAlignment" Value="Stretch"></Setter>
+        <Setter Property="Margin" Value="5"></Setter>
+    </Style>
+</Styles>

@@ -172,23 +172,24 @@ public partial class MainWindow : WindowBase<MainWindowViewModel>, IInitializeMa
         Logger.Debug("Start updating avatar grid");
         
         if (DataContext is not MainWindowViewModel vm) return;
-
-        var profileList = vm.LobbyUpdate.UserContext;
+        
         LobbyImages.Children.Clear();
-
         LobbyImages.ColumnDefinitions.Clear();
+        
+        var profileList = vm.LobbyUpdate.UserContext;
+        
         int imageCount = 0;
 
         using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
 
         foreach (var profile in profileList)
         {
-            Logger.Debug($"Update avatar grid with image: {profile.avatarUrl}");
+            Logger.Debug($"Update avatar grid with image: {profile.avatar64x64}");
             
             LobbyImages.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
             var image = _mainWindowFactory.CreateImageInGrid(LobbyImages, imageCount);
 
-            image.Source = await _steamService.GetImage(profile.avatarUrl, cts.Token);
+            image.Source = await _steamService.GetImage(profile.avatar64x64, cts.Token);
             imageCount++;
         }
     }

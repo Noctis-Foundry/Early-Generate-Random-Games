@@ -45,4 +45,9 @@ public sealed partial class LobbyWindow : WindowBase<LobbyWindowViewModel>
         
         e.Cancel = true;
     }
+
+    private void CloseWindow(object? sender, RoutedEventArgs e)
+    {
+        Close();
+    }
 }

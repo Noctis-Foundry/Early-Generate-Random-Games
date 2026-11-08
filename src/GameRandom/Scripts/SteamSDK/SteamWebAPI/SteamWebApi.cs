@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using GameRandom.DISystem.DiSystem;
 using GameRandom.Scripts.RollGameSystem;
@@ -36,19 +37,18 @@ public class SteamWebApi : ISteamWebService
             ApiKey = value;
         }
         
-        
         if (string.IsNullOrEmpty(ApiKey))
         {
             throw new ArgumentException("Failed load steam web api. Check ethernet connection");
         }
     }
     
-    public async Task<ProfileContext?> GetProfile(ulong steamId64)
+    public async Task<ProfileContext?> GetProfile(ulong steamId64, CancellationToken token = default)
     {
         Logger.Debug($"Try get profile by id: {steamId64}");
         
         return await _profileSummary.GetUserData(GetSteamUrl(steamId64, SteamWebInterfaces.GetPlayerSummaries),
-            steamId64);
+            steamId64, token);
     }
 
     public async Task<JsonDocument?> GetOwnedGames(ulong steamId64)
@@ -240,11 +240,11 @@ public class UserProfileSummary : IProfileSummary
 {
     private static readonly HttpClient _client = new();
     
-    public async Task<ProfileContext?> GetUserData(string steamUrl, ulong userId)
+    public async Task<ProfileContext?> GetUserData(string steamUrl, ulong userId, CancellationToken token = default)
     { 
         try
         {
-            var response = await _client.GetAsync(steamUrl);
+            var response = await _client.GetAsync(steamUrl, token);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -252,17 +252,23 @@ public class UserProfileSummary : IProfileSummary
                 return null;
             }
 
-            var json = await response.Content.ReadAsStringAsync();
+            var json = await response.Content.ReadAsStringAsync(token);
             var doc = JsonDocument.Parse(json);
             var root = doc.RootElement.GetProperty("response");
         
             var players = root.GetProperty("players");
             var player = players[0];
+            var playerNickname = player.GetProperty("personaname").ToString();
             var avatar = player.GetProperty("avatar").ToString();
+            var avatarMedium = player.GetProperty("avatarmedium").ToString();
+            var avatarFull = player.GetProperty("avatarfull").ToString();
         
             var profileCtx = new ProfileContext
             {
-                avatarUrl = avatar,
+                avatar32x32 = avatar,
+                avatar64x64 = avatarMedium,
+                avatar184x184 = avatarFull,
+                nickname = playerNickname,
                 MemberID = userId,
             };
         

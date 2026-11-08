@@ -2,12 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using GameRandom.Scripts;
-using GameRandom.ViewModels.AdminConfirmSystem;
 using GameRandom.ViewModels.BaseClasses;
 
 namespace GameRandom.Views;

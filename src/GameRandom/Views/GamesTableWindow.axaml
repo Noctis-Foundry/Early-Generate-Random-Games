@@ -2,22 +2,56 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:vm="using:GameRandom.ViewModels.AdminConfirmSystem"
         xmlns:tablesSystem="clr-namespace:GameRandom.ViewModels.TablesSystem"
+        xmlns:db="clr-namespace:GameRandom.DbContext"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         Width="800" Height="500"
-        MaxHeight="700" MaxWidth="1000"
-        MinHeight="500" MinWidth="600"
+        MaxHeight="700" MaxWidth="1130"
+        MinHeight="500" MinWidth="1130"
         x:Class="GameRandom.Views.GamesTableWindow"
         x:DataType="tablesSystem:StatisticGameTableViewModel"
         Title="GamesTable">
-    <DockPanel Background="Gray">
-        <DataGrid ItemsSource="{Binding TableData}"
+    
+    <DockPanel Classes="GamesTableWindowRoot">
+        <Border Classes="WindowTopContainer" Margin="5" DockPanel.Dock="Top">
+            <Grid ColumnDefinitions="*, Auto">
+                <TextBlock Classes="WindowTextBlock" HorizontalAlignment="Left" VerticalAlignment="Center">Player game table</TextBlock>
+                <Button Grid.Column="1" Classes="WindowButton" Click="CloseWindow">Close</Button>
+            </Grid>
+        </Border>
+        
+        <DataGrid ItemsSource="{Binding TableData}" Margin="5"
                   AutoGenerateColumns="False" Classes="ProfileDataGrid" IsReadOnly="True">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Game name" Binding="{Binding AppName}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Begin data" Binding="{Binding BeginTime}"></DataGridTextColumn>
-                <DataGridTextColumn Header="End data" Binding="{Binding EndTime}"></DataGridTextColumn>
+                <DataGridTemplateColumn Header="Game" MaxWidth="500">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="db:GameProgresses">
+                            <TextBlock Classes="GameTableTextBlock"
+                                       Text="{Binding AppName}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Begin data">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="db:GameProgresses">
+                            <TextBlock Classes="GameTableTextBlock"
+                                       Text="{Binding BeginTime}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="End time" MaxWidth="555">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="db:GameProgresses">
+                            <TextBlock Classes="GameTableTextBlock"
+                                       Text="{Binding EndTime}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <!-- <DataGridTextColumn Header="Game name" Binding="{Binding AppName}"></DataGridTextColumn> -->
+                <!-- <DataGridTextColumn Header="Begin data" Binding="{Binding BeginTime}"></DataGridTextColumn> -->
+                <!-- <DataGridTextColumn Header="End data" Binding="{Binding EndTime}"></DataGridTextColumn> -->
                 <DataGridCheckBoxColumn Header="IsFinished" Binding="{Binding IsFinished}"></DataGridCheckBoxColumn>
             </DataGrid.Columns>
         </DataGrid>

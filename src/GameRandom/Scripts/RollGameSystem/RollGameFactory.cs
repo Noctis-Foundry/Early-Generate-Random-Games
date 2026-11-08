@@ -51,7 +51,8 @@ public class RollGameFactory : IDisposable
         
         for (int i = 0; i < viewModel.AppInfo.Count; i++)
         {
-            var gridElements = _mainWindowFactory.CreateButtonInGrid(grid, i);
+            var secondRow = countApp > 4;
+            var gridElements = _mainWindowFactory.CreateButtonInGrid(grid, i, secondRow);
             InitDictionaryWithComponents(gridElements, viewModel.AppInfo[i]);
 
             await Task.Delay(IterationDelayMilliseconds);
@@ -68,7 +69,7 @@ public class RollGameFactory : IDisposable
 
         for (int i = 0; i < countGames; i++)
         {
-            grid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
+            grid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
         }
     }
     

@@ -1,0 +1,30 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style Selector="DockPanel.ProfileContentRoot">
+        <Setter Property="Background" Value="{StaticResource PaperLinearGradient}" />
+    </Style>
+
+    <Style Selector="DockPanel.ProfileContentRoot Border.TopProfileContainer">
+        <Setter Property="Background" Value="{StaticResource PaperLinearGradient}" />
+        <Setter Property="BorderBrush" Value="{StaticResource MangaLineColor}" />
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="CornerRadius" Value="0" />
+    </Style>
+    
+    <Style Selector="Button.ProfileButtons">
+        <Setter Property="Theme" Value="{StaticResource DefaultButton}"></Setter>
+    </Style>
+
+    <Style Selector="TextBlock.ProfileNickname">
+        <Setter Property="Foreground" Value="{StaticResource InkBlackColor}" />
+        <Setter Property="FontFamily" Value="{StaticResource 'Anime Ace'}" />
+        <Setter Property="FontSize" Value="20"></Setter>
+        <Setter Property="TextWrapping" Value="Wrap"></Setter>
+    </Style>
+    
+    <Style Selector="Border.AvatarContainer">
+        <Setter Property="BorderThickness" Value="2"></Setter>
+        <Setter Property="BorderBrush" Value="{StaticResource InkBlackColor}"/>
+        <Setter Property="CornerRadius" Value="20"></Setter>
+    </Style>
+</Styles>

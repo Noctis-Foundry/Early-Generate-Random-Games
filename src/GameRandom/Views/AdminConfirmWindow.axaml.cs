@@ -66,4 +66,9 @@ public sealed partial class AdminConfirmWindow : WindowBase<AdminConfirmViewMode
         
         base.Dispose();
     }
+
+    private void CloseWindow(object? sender, RoutedEventArgs e)
+    {
+        Close();
+    }
 }

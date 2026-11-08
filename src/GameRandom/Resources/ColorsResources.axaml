@@ -1,0 +1,92 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    
+    <!-- Base Colors -->
+
+    <Color x:Key="InkBlackColor">#1A1A1A</Color>
+    <Color x:Key="MangaLineColor">#2B2B2B</Color>
+
+    <Color x:Key="PureWhiteColor">#FFFFFF</Color>
+    <Color x:Key="PaperWhiteColor">#FFF8F0</Color>
+    <Color x:Key="WarmPaperColor">#F5EDE3</Color>
+    <Color x:Key="SoftShadowColor">#E8D8CC</Color>
+
+
+    <!-- ========================= -->
+    <!-- Linear Gradient Colors    -->
+    <!-- ========================= -->
+
+    <!-- Paper Background -->
+    <Color x:Key="PaperGradientStartColor">#FFF8F0</Color>
+    <Color x:Key="PaperGradientEndColor">#FCEFE6</Color>
+
+
+    <!-- White + Sakura Panel -->
+    <Color x:Key="WhitePinkGradientStartColor">#FFFFFF</Color>
+    <Color x:Key="WhitePinkGradientEndColor">#FFF1F5</Color>
+
+
+    <!-- Sakura Button -->
+    <Color x:Key="SakuraGradientStartColor">#FFE5EC</Color>
+    <Color x:Key="SakuraGradientEndColor">#FFD1DC</Color>
+
+
+    <!-- Sky -->
+    <Color x:Key="SkyGradientStartColor">#DFF4FF</Color>
+    <Color x:Key="SkyGradientEndColor">#BDE7FF</Color>
+    <Color x:Key="DimSkyColor">#2ea1b0</Color>
+    <Color x:Key="SkyColor">#00BFFF</Color>
+
+
+    <!-- Lavender -->
+    <Color x:Key="LavenderGradientStartColor">#EDE5FF</Color>
+    <Color x:Key="LavenderGradientEndColor">#CFC1FF</Color>
+
+
+    <!-- Gold -->
+    <Color x:Key="GoldGradientStartColor">#FFF5D7</Color>
+    <Color x:Key="GoldGradientEndColor">#FFE7A3</Color>
+
+
+    <!-- Mint -->
+    <Color x:Key="MintGradientStartColor">#DFFFEF</Color>
+    <Color x:Key="MintGradientEndColor">#B8F2D0</Color>
+
+
+
+    <!-- ========================= -->
+    <!-- Conic Gradient Colors     -->
+    <!-- Border Animations         -->
+    <!-- ========================= -->
+
+
+    <!-- Anime Sakura -->
+    <Color x:Key="SakuraConicPinkColor">#FFB7C5</Color>
+    <Color x:Key="SakuraConicSkyColor">#A7D8FF</Color>
+    <Color x:Key="SakuraConicLavenderColor">#C7B8FF</Color>
+
+
+    <!-- Magical UI -->
+    <Color x:Key="MagicCyanColor">#8DEBFF</Color>
+    <Color x:Key="MagicPurpleColor">#BDA7FF</Color>
+    <Color x:Key="MagicPinkColor">#FF9ECD</Color>
+
+
+    <!-- Ink Neon -->
+    <Color x:Key="NeonWhiteColor">#FFFFFF</Color>
+    <Color x:Key="NeonBlueColor">#6DD5FF</Color>
+    <Color x:Key="NeonPurpleColor">#9B8CFF</Color>
+
+
+    <!-- Manga Fire -->
+    <Color x:Key="FireGoldColor">#FFD6A5</Color>
+    <Color x:Key="FireRedColor">#FF9F9F</Color>
+    <Color x:Key="FirePinkColor">#FFB7C5</Color>
+
+
+    <!-- Cyber Manga -->
+    <Color x:Key="CyberCyanColor">#00F5FF</Color>
+    <Color x:Key="CyberPurpleColor">#7B61FF</Color>
+    <Color x:Key="CyberPinkColor">#FF4ECD</Color>
+</ResourceDictionary>

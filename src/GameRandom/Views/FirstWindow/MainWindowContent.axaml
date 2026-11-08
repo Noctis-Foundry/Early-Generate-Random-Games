@@ -3,33 +3,22 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="600"
-             MaxWidth="1920" MaxHeight="1080"
-             x:Class="GameRandom.Views.MainWindowContent">
+             MinHeight="460"
+             x:Class="GameRandom.Views.MainWindowContent"
+             xmlns:vm="using:GameRandom.ViewModels.MainWindowSystem"
+             x:DataType="vm:MainWindowViewModel">
     
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-        </Grid.ColumnDefinitions>
-        <Grid.Background>
-            #778899
-        </Grid.Background>
-        
-        <Button Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top"
-                Classes="MainWindowButtons" Click="GoToTable">
-            <Image Source="avares://GameRandom/Assets/LeftUpClick.png" Stretch="UniformToFill"></Image>
-        </Button>
-        <Button Grid.Column="0" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom"
-                Background="Transparent" Padding="0" Classes="MainWindowButtons" Click="GoToProfile">
-            <Image Source="avares://GameRandom/Assets/LeftDownClick.png" Stretch="UniformToFill"></Image>
-        </Button>
-        <Button Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top"
-                Background="Transparent" Padding="0" Classes="MainWindowButtons" Click="GoToRollContent">
-            <Image Source="avares://GameRandom/Assets/RightClick.png" Stretch="UniformToFill"></Image>
-        </Button>
+    <Grid Background="{StaticResource PaperLinearGradient}">
+        <Grid Classes="MainGrid" ColumnDefinitions="*, *" RowDefinitions="*, *">
+            <Button Classes="MainButton" Grid.Column="0" Grid.Row="0" Click="GoToTable">
+                <Image Classes="MainImage" Source="avares://GameRandom/Assets/LeftUpClick.png"></Image>
+            </Button>
+            <Button Classes="MainButton" Grid.Column="0" Grid.Row="1" Click="GoToProfile">
+                <Image Classes="MainImage" Source="avares://GameRandom/Assets/LeftDownClick.png"></Image>
+            </Button>
+            <Button Classes="MainButton" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Click="GoToRollContent">
+                <Image Classes="MainImage" Source="avares://GameRandom/Assets/RightClick.png"></Image>
+            </Button>
+        </Grid>
     </Grid>
 </UserControl>

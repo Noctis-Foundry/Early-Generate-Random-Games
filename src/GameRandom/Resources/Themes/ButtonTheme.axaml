@@ -1,0 +1,30 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <ControlTheme x:Key="DefaultButton" TargetType="Button">
+        <Setter Property="Background" Value="Transparent"></Setter>
+        <Setter Property="Padding" Value="5"></Setter>
+        
+        <!-- Border style -->
+        <Setter Property="BorderBrush" Value="{StaticResource MangaLineColor}"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        
+        <!-- Font style -->
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="FontFamily" Value="{StaticResource 'Anime Ace'}"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+        <Setter Property="Foreground" Value="Black"></Setter>
+        
+        <!-- Content position -->
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        
+        <!-- Pointer Hover effect -->
+        <Style Selector="^:pointerover /template/ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource LightBlueGradient}"/>
+            <Setter Property="Foreground" Value="Black"></Setter>
+            
+            <Setter Property="BorderBrush" Value="{StaticResource DefaultButtonBrush}"/>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

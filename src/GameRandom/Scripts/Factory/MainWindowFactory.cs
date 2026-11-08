@@ -17,7 +17,7 @@ public class MainWindowFactory : DependenceBase
             grid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
     }
 
-    public GridElements CreateButtonInGrid(Grid grid, int countGame)
+    public GridElements CreateButtonInGrid(Grid grid, int countGame, bool secondRow)
     {
         Image image = new Image
         {
@@ -36,6 +36,13 @@ public class MainWindowFactory : DependenceBase
         button.Classes.Add("RandomButton");
 
         Grid.SetColumn(button, countGame);
+        
+        if (secondRow)
+        {
+            Grid.SetRow(button, countGame % 2);
+            Grid.SetColumnSpan(button, 2);
+        }
+        
         grid.Children.Add(button);
 
         return new GridElements(button, image);
@@ -45,16 +52,13 @@ public class MainWindowFactory : DependenceBase
     {
         var image = new Image
         {
-            Source = AvaloniaService.Instance.CreateBitmapFromPath("Assets/avalonia-logo.ico")
+            Source = AvaloniaService.Instance.CreateBitmapFromPath("Assets/avalonia-logo.ico"),
+            Classes = { "MenuAvatar" }
         };
 
         var border = new Border
         {
-            Height = 30,
-            MinHeight = 30,
-            MaxHeight = 40,
-            ClipToBounds = true,
-            CornerRadius = new CornerRadius(10),
+            Classes = { "MenuAvatarBorder" },
             Child = image
         };
 

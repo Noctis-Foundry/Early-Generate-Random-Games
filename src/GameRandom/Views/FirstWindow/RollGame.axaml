@@ -1,22 +1,18 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:vm="using:GameRandom.ViewModels.AdminConfirmSystem"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:rollGameViewModel="clr-namespace:GameRandom.ViewModels.RollGameViewModel"
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="500"
              x:Class="GameRandom.Views.RollGame" x:DataType="rollGameViewModel:RollGameViewModel"
-             Width="1000" Height="460">
+             MinWidth="1000" MinHeight="460">
 
-    <DockPanel>
-        <DockPanel.Background>
-            <ImageBrush Source="avares://GameRandom/Assets/RandomGame.png" Stretch="Fill" />
-        </DockPanel.Background>
+    <DockPanel Classes="RollGameRoot">
         
-        <Border Classes="HeaderBorder" DockPanel.Dock="Top" Margin="15,15,15,0">
+        <Border Classes="HeaderBorder" DockPanel.Dock="Top" Margin="15,15,15,0" CornerRadius="15">
             <Grid ColumnDefinitions="*, Auto Auto" ColumnSpacing="10" Height="50">
                 <Border HorizontalAlignment="Left" Margin="15,0,0,0">
-                    <TextBlock Classes="HeaderText" Text="GAME RANDOMIZER" HorizontalAlignment="Center"
+                    <TextBlock Classes="HeaderText" Text="Game Randomizer" HorizontalAlignment="Center"
                                VerticalAlignment="Center" />
                 </Border>
 
@@ -32,35 +28,48 @@
         </Border>
         
 
-        <StackPanel Classes="ContentPanel" HorizontalAlignment="Center" VerticalAlignment="Top"
-                MinWidth="600" MaxWidth="900" MinHeight="280" MaxHeight="400" Width="900"
+        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                 Margin="0,15,0,0">
-            <Grid x:Name="GamesGrid" RowDefinitions="Auto, Auto" ColumnDefinitions="Auto, Auto, Auto" Margin="0,15,0,0"
-                  HorizontalAlignment="Center" RowSpacing="10" ColumnSpacing="3">
+            <Grid x:Name="GamesGrid" RowDefinitions="*, *" ColumnDefinitions="*, *, *" Margin="0,15,0,0"
+                  HorizontalAlignment="Center" VerticalAlignment="Stretch" RowSpacing="10" ColumnSpacing="3">
 
                 <Border Classes="GameBorder" Grid.Column="0">
                     <Button Classes="RandomButton" x:Name="AppButton1">
                         <Image Classes="GameImages" x:Name="AppImage1"
-                               Source="avares://GameRandom/Assets/avalonia-logo.ico" />
+                               Source="avares://GameRandom/Assets/header.jpg" />
                     </Button>
                 </Border>
 
                 <Border Classes="GameBorder" Grid.Column="1" Grid.Row="0">
                     <Button Classes="RandomButton" x:Name="AppButton2">
                         <Image Classes="GameImages" x:Name="AppImage2"
-                               Source="avares://GameRandom/Assets/avalonia-logo.ico" />
+                               Source="avares://GameRandom/Assets/header.jpg" />
                     </Button>
                 </Border>
 
                 <Border Classes="GameBorder" Grid.Column="2" Grid.Row="0">
                     <Button Classes="RandomButton" x:Name="AppButton3">
                         <Image Classes="GameImages" x:Name="AppImage3"
-                               Source="avares://GameRandom/Assets/avalonia-logo.ico" />
+                               Source="avares://GameRandom/Assets/header.jpg" />
+                    </Button>
+                </Border>
+                
+                <Border Classes="GameBorder" Grid.Column="0" Grid.Row="1">
+                    <Button Classes="RandomButton" x:Name="AppButton4">
+                        <Image Classes="GameImages" x:Name="AppImage4"
+                               Source="avares://GameRandom/Assets/header.jpg" />
+                    </Button>
+                </Border>
+                
+                <Border Classes="GameBorder" Grid.Column="2" Grid.Row="1" Grid.ColumnSpan="1">
+                    <Button Classes="RandomButton" x:Name="AppButton5" >
+                        <Image Classes="GameImages" x:Name="AppImage5"
+                               Source="avares://GameRandom/Assets/header.jpg" />
                     </Button>
                 </Border>
             </Grid>
             
-            <Border Classes="ContentBorder" Height="80" Width="450">
+            <Border Classes="ContentBorder" Margin="5" Padding="5">
                 <Grid RowDefinitions="Auto" ColumnDefinitions="Auto, Auto, Auto, Auto" HorizontalAlignment="Center"
                       VerticalAlignment="Center"
                       ColumnSpacing="15">

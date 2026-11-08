@@ -1,13 +1,11 @@
 using System;
 using System.Diagnostics;
-using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using GameRandom.DISystem;
 using GameRandom.Scripts;
 using GameRandom.Scripts.SteamSDK;
-using GameRandom.ViewModels.AdminConfirmSystem;
 using GameRandom.ViewModels.CurrentGameSystem;
 
 namespace GameRandom.Views;
@@ -88,5 +86,12 @@ public sealed partial class CurrentGame : WindowBase<CurrentGameStatusViewModel>
         _steamService = null;
         
         base.Dispose();
+    }
+
+    private void CloseWindow(object? sender, RoutedEventArgs e)
+    {
+        SetInactive();
+        Dispose();
+        Close();
     }
 }

@@ -48,7 +48,7 @@ public class LobbyUpdateService : IDisposable
             var userProfile = await _steamWebService.GetProfile(memberInfo.UserId);
             if (userProfile is null) continue;
             
-            var avatarByts = await _steamService.GetImage(userProfile.avatarUrl);
+            var avatarByts = await _steamService.GetImage(userProfile.avatar64x64);
             if (avatarByts is null) continue;
             
             var nickname = string.IsNullOrEmpty(userInfo.Nickname) ? "Unknown" : userInfo.Nickname;
@@ -82,5 +82,9 @@ public class LobbyUpdateService : IDisposable
         _steamWebService = null!;
         _lobbyRegister = null!;
         _steamService = null!;
+        
+        _routeManager.GetRouteService(TableEnum.Lobby).Unsubscribe(RouteStage.Data, UpdateLobbyRegister);
+        
+        _routeManager = null!;
     }
 }

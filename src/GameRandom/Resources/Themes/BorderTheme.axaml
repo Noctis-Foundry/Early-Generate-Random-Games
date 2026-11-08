@@ -1,0 +1,13 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <ControlTheme x:Key="DefaultBorder" TargetType="Border">
+        <Setter Property="Padding" Value="6"/>
+        <Setter Property="Background" Value="Transparent"/>
+        
+        <!-- Border settings -->
+        <Setter Property="BorderBrush" Value="{StaticResource MangaLineColor}"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="CornerRadius" Value="0"></Setter>
+    </ControlTheme>
+</ResourceDictionary>

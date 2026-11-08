@@ -1,0 +1,33 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style Selector="Grid.RulesGrid">
+        <Setter Property="Background" Value="{StaticResource PaperLinearGradient}" />
+    </Style>
+
+    <Style Selector="Grid.RulesGrid TextBlock.TitleText,
+                    Grid.RulesGrid TextBlock.RuleText,
+                    Grid.RulesGrid TextBlock.PricesTitleText,
+                    Grid.RulesGrid TextBlock.PriceText">
+        <Setter Property="Foreground" Value="{StaticResource InkBlackColor}" />
+        <Setter Property="FontFamily" Value="{StaticResource 'Anime Ace'}" />
+    </Style>
+
+    <Style Selector="Grid.RulesGrid Border.RuleBorder">
+        <Setter Property="Background" Value="{StaticResource WhitePinkGradientStartColor}" />
+        <Setter Property="BorderBrush" Value="{StaticResource MangaLineColor}" />
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="Padding" Value="12" />
+    </Style>
+
+    <Style Selector="Border.RuleBorder">
+        <Setter Property="Margin" Value="5"></Setter>
+    </Style>
+    
+    <Style Selector="Grid.RulesGrid Button.RulesButton">
+        <Setter Property="Theme" Value="{StaticResource DefaultButton}" />
+    </Style>
+
+    <Style Selector="Grid.RulesGrid ScrollViewer.RulesScrollViewer">
+        <Setter Property="Background" Value="Transparent" />
+    </Style>
+</Styles>

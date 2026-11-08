@@ -6,18 +6,9 @@
              xmlns:adminPanelSystem="clr-namespace:GameRandom.ViewModels.AdminPanelSystem"
              x:Class="GameRandom.Views.AdminPanel"
              x:DataType="adminPanelSystem:AdminPanelViewModel"
-             Width="1000" Height="460"
-             MinWidth="1000" MinHeight="460"
-             MaxWidth="1000" MaxHeight="460">
+             MinWidth="1000" MinHeight="460">
     
-    <UserControl.Styles>
-        <StyleInclude Source="/Styles/AdminPanelStyle.axaml"/>
-    </UserControl.Styles>
-    
-    <Grid RowDefinitions="Auto, *">
-        <Grid.Background>
-            <ImageBrush Source="avares://GameRandom/Assets/AppBackground.png" Stretch="Fill"></ImageBrush>
-        </Grid.Background>
+    <Grid Classes="AdminPanelRoot" RowDefinitions="Auto, *">
         
         <Grid ColumnDefinitions="*, Auto, Auto" Height="50" Margin="0,10,0, 0"
               HorizontalAlignment="Center" ColumnSpacing="10">

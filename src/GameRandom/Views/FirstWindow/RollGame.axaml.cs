@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using System.Threading.Tasks;
 using Avalonia.Threading;
 using GameRandom.DISystem;
 using GameRandom.DISystem.DiSystem;
 using GameRandom.Scripts.RollGameSystem;
-using GameRandom.Scripts.RollGameSystem.GenerateGames;
 using GameRandom.Scripts.UserControls;
-using GameRandom.ViewModels.AdminConfirmSystem;
 using GameRandom.Scripts.WindowServices.ErrorServiceSystem;
 using GameRandom.ViewModels.MainWindowSystem.Enums;
 using GameRandom.ViewModels.RollGameViewModel;
@@ -26,7 +24,7 @@ public sealed partial class RollGame : MainWindowUserControlAbstract<RollGameVie
 
     private const int DefaultCountApp = 1;
 
-    private const int maxCountGames = 4;
+    private const int MaxCountGames = 5;
     
     private RollGameFactory _rollGameFactory = new RollGameFactory();
     private SemaphoreSlim _rollSemaphore = new(1, 1);
@@ -66,17 +64,22 @@ public sealed partial class RollGame : MainWindowUserControlAbstract<RollGameVie
         {
             if (e.Property == TextBox.TextProperty)
             {
-                var text = CountApp.Text;
-
-                if (int.TryParse(text, out var count))
-                {
-                    if (count >  maxCountGames)
-                        CountApp.Text = maxCountGames.ToString();
-                }
+                FormatTextBoxContent();
             }
         };
     }
 
+    private void FormatTextBoxContent()
+    {
+        var text = CountApp.Text;
+
+        if (int.TryParse((string?)text, out var count))
+        {
+            if (count >  MaxCountGames)
+                CountApp.Text = MaxCountGames.ToString();
+        }
+    }
+    
     /// <summary>
     /// Opens the filter configuration window.
     /// </summary>
@@ -93,6 +96,7 @@ public sealed partial class RollGame : MainWindowUserControlAbstract<RollGameVie
     /// <param name="e"></param>
     private void GenerateGame(object? sender, RoutedEventArgs e)
     {
+        FormatTextBoxContent();
         Dispatcher.UIThread.InvokeAsync(async () => await GenerateGameAsync());
     }
 
@@ -107,7 +111,7 @@ public sealed partial class RollGame : MainWindowUserControlAbstract<RollGameVie
         if (DataContext is not RollGameViewModel viewModel) 
             throw new NullReferenceException(nameof(DataContext));
         
-        int countGames = int.TryParse(CountApp.Text, out int count) ? count : DefaultCountApp;
+        int countGames = int.TryParse((string?)CountApp.Text, out int count) ? count : DefaultCountApp;
 
         GamesGrid.Children.Clear();
         _rollGameFactory.CreateLoadGif(GamesGrid);

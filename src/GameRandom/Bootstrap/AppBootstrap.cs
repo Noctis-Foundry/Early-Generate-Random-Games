@@ -11,7 +11,7 @@ public class AppBootstrap
     public async Task PriorityInitialization()
     {
         await new GameEnvLoad().InitializeEnv();
-
+        
         var priorityDependence = new PriorityDependence();
         priorityDependence.BindingInstance();
             

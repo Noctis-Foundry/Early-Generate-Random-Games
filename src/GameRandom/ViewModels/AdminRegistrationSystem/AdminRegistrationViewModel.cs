@@ -112,6 +112,8 @@ public sealed class AdminRegistrationViewModel : ViewModelBase
     /// </summary>
     public override void Dispose()
     {
+        _routeManager.GetRouteService(TableEnum.AdminTable).Unsubscribe(RouteStage.View, UpdateData);
+        
         _routeManager = null!;
 
         _loadAdminTable = null!;

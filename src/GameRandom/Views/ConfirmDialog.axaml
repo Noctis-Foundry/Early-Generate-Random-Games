@@ -8,28 +8,7 @@
         MinWidth="500" MinHeight="300"
         Title="ConfirmDialog">
     
-    <Window.Styles>
-        <Style Selector="SelectableTextBlock.ConfirmWindowText">
-            <Setter Property="Foreground" Value="Azure"></Setter>
-            <Setter Property="FontSize" Value="20"></Setter>
-        </Style>
-        
-        <Style Selector="Border.ConfirmTextBorder">
-            <Setter Property="Background" Value="DimGray"></Setter>
-            <Setter Property="BorderThickness" Value="2"></Setter>
-            <Setter Property="BorderBrush">
-                <Setter.Value>
-                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%, 0%">
-                        <GradientStop Color="{StaticResource GradientColorStart}" Offset="0.0"></GradientStop>
-                        <GradientStop Color="{StaticResource GradientColorMiddle}" Offset="0.5"></GradientStop>
-                        <GradientStop Color="{StaticResource GradientColorEnd}" Offset="1.0"></GradientStop>
-                    </LinearGradientBrush>
-                </Setter.Value>
-            </Setter>
-        </Style>
-    </Window.Styles>
-    
-    <DockPanel Background="Gray" >
+    <DockPanel Classes="ConfirmDialogRoot">
         <Grid RowDefinitions="Auto, Auto" HorizontalAlignment="Center" VerticalAlignment="Center" RowSpacing="10">
             <Border Classes="ConfirmTextBorder" HorizontalAlignment="Center" VerticalAlignment="Center" DockPanel.Dock="Left"
                     MinHeight="100"  MaxHeight="200"
