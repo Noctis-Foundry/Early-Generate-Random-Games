@@ -4,7 +4,7 @@
 OWNER="Noctis-Foundry"
 REPO="Early-Generate-Random-Games"
 TAG="v0.4.0"
-FILE_PATTERN="ChallangeRunner-x86_64-.*\.AppImage"
+FILE_PATTERN="ChallangeRunner-x86_64.AppImage"
 OUTPUT_FILE="ChallangeRunner.AppImage"
 
 # Paths
