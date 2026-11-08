@@ -1,13 +1,13 @@
-# Early-Generate-Random-Games
+# Challange Runner
 
-**Early-Generate-Random-Games** is an application for quickly discovering random games and organizing challenges with friends.  
+**Challange Runner** is an application for quickly discovering random games and organizing challenges with friends.  
 It allows you to randomly select games from your Steam library or other available sources, create player parties, and start challenges.
 
 ---
 
 📥 Installation
 
-Choose your operating system to install ChallangeRunner.
+Choose your operating system to install Challange Runner.
 🐧 Linux (AppImage)
 
 You can install the application automatically using our installation script. Open your terminal and run the following commands:
