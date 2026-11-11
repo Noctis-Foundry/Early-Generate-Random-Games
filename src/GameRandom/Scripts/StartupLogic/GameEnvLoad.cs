@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using GameRandom.Scripts.Service;
 
 namespace GameRandom.Scripts.StartupLogic;
 
@@ -29,6 +30,8 @@ public class GameEnvLoad
 
         if (string.IsNullOrEmpty(databaseApi) || string.IsNullOrEmpty(steamApi))
             throw new NullReferenceException("Failed to get config from server. Check connection"); //TODO Add module for check offline mode and online mode [Check summary for this model in docs/TODO]
+        
+        Logger.Debug("Api: " +steamApi);
         
         _envCollection.Add(EnvType.DatabaseEnv, databaseApi);
         _envCollection.Add(EnvType.SteamApiEnv, steamApi);
